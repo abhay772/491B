@@ -1,0 +1,132 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.SqlUserDAO\\AA.PMTOGO.SqlUserDAO.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.Models\\AA.PMTOGO.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.Models\\AA.PMTOGO.Models.csproj",
+        "projectName": "AA.PMTOGO.Models",
+        "projectPath": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.Models\\AA.PMTOGO.Models.csproj",
+        "packagesPath": "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mssie_fu6p4ih\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.SqlUserDAO\\AA.PMTOGO.SqlUserDAO.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.SqlUserDAO\\AA.PMTOGO.SqlUserDAO.csproj",
+        "projectName": "AA.PMTOGO.SqlUserDAO",
+        "projectPath": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.SqlUserDAO\\AA.PMTOGO.SqlUserDAO.csproj",
+        "packagesPath": "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.SqlUserDAO\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mssie_fu6p4ih\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.Models\\AA.PMTOGO.Models.csproj": {
+                "projectPath": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\AA.PMTOGO.Models\\AA.PMTOGO.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[5.1.0, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.5, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
