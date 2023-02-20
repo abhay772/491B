@@ -18,6 +18,12 @@ function UserRole(){
     return role;
 }
 
+function getUserByEmail(email){
+    fetch('https://localhost:7281/api/Users/${email}')
+    .then(data => data.json())
+    .then(response => console.log(response))
+}
+
 function addUser(firstName, lastName, email, password, role){
     const body = {
         email: email,
