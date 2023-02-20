@@ -1,0 +1,23 @@
+{
+  "name": "491b",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhay772/491B.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abhay772/491B/issues"
+  },
+  "homepage": "https://github.com/abhay772/491B#readme",
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  }
+}
