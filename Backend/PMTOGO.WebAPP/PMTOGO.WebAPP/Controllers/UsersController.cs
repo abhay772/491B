@@ -25,11 +25,11 @@ namespace PMTOGO.WebAPP.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            var result = "";//await _usersDbContext.Users.ToListAsync();
-            
-            _logger.Log("GetUsers", 1, LogCategory.Data, result);
-            
-            return Ok(result);
+            var user = await _usersDbContext.Users.ToListAsync();
+
+            _logger.Log("GetUserById", 1, LogCategory.Data, user);
+
+            return Ok(user);
         }
 
         [HttpGet]
@@ -41,10 +41,14 @@ namespace PMTOGO.WebAPP.Controllers
 
             var user = await _usersDbContext.Users.FindAsync(id);
 
+
             if (user == null)
             {
                 return NotFound();
             }
+
+            _logger.Log("GetUserById", 1, LogCategory.Data, user);
+
             return Ok(user);
         }
 
@@ -61,6 +65,9 @@ namespace PMTOGO.WebAPP.Controllers
             {
                 return NotFound();
             }
+
+            _logger.Log("GetUserById", 1, LogCategory.Data, user);
+
             return Ok(user);
         }
 
@@ -71,6 +78,8 @@ namespace PMTOGO.WebAPP.Controllers
             user.Id = Guid.NewGuid();
             await _usersDbContext.Users.AddAsync(user);
             await _usersDbContext.SaveChangesAsync();
+
+            _logger.Log("GetUserById", 1, LogCategory.Data, user);
 
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
         }
@@ -91,6 +100,8 @@ namespace PMTOGO.WebAPP.Controllers
 
             await _usersDbContext.SaveChangesAsync();
 
+            _logger.Log("GetUserById", 1, LogCategory.Data, user);
+
             return Ok(user);
         }
         [HttpDelete]
@@ -107,6 +118,8 @@ namespace PMTOGO.WebAPP.Controllers
 
             _usersDbContext.Users.Remove(user);
             await _usersDbContext.SaveChangesAsync();
+
+            _logger.Log("GetUserById", 1, LogCategory.Data, user);
 
             return Ok();
         }
