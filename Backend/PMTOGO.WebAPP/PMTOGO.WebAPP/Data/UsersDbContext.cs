@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.EntityFrameworkCore;
-using PMTOGO.WebAPP.Models.Entities;
+using PMTOGO.Domain.Entities;
 
 namespace PMTOGO.WebAPP.Data
 {
@@ -10,6 +10,6 @@ namespace PMTOGO.WebAPP.Data
         {
 
         }
-        public DbSet<Users> Users { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

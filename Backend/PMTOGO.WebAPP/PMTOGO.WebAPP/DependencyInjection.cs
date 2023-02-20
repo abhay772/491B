@@ -7,7 +7,7 @@ namespace PMTOGO.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            services.AddSingleton<ILogger, Logger>();
+            services.AddTransient<ILogger, Logger>();
 
             return services;
         }

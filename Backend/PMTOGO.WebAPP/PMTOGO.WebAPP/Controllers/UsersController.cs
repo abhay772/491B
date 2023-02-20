@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PMTOGO.WebAPP.Data;
-using PMTOGO.WebAPP.Models.Entities;
+using PMTOGO.Domain.Entities;
 using ILogger = PMTOGO.Infrastructure.Interfaces.ILogger;
 
 namespace PMTOGO.WebAPP.Controllers
@@ -25,8 +25,11 @@ namespace PMTOGO.WebAPP.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            _logger.Log("");
-            return Ok(await _usersDbContext.Users.ToListAsync());
+            var result = "";//await _usersDbContext.Users.ToListAsync();
+            
+            _logger.Log("GetUsers", 1, LogCategory.Data, result);
+            
+            return Ok(result);
         }
 
         [HttpGet]
@@ -63,7 +66,7 @@ namespace PMTOGO.WebAPP.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddUser(Users user)
+        public async Task<IActionResult> AddUser(User user)
         {
             user.Id = Guid.NewGuid();
             await _usersDbContext.Users.AddAsync(user);
@@ -74,7 +77,7 @@ namespace PMTOGO.WebAPP.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] Users updateUser)
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] User updateUser)
         {
             var user = await _usersDbContext.Users.FindAsync(id);
 

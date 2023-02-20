@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PMTOGO.WebAPP.Models.Entities
+namespace PMTOGO.Domain.Entities
 {
-    public class Users
+    public class User
     {
         [Key]
         public Guid Id { get; set; }
