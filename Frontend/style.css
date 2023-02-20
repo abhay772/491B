@@ -117,9 +117,10 @@ hr {
   cursor: pointer;
 }
 
-/* Clear floats 
+/*Clear floats */
+
 .clearfix::after {
   content: "";
   clear: both;
   display: table;
-}*/
+}
