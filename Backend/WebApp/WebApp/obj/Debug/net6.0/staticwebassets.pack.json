@@ -9,8 +9,24 @@
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\WebApp\\wwwroot\\css\\style.css",
+      "PackagePath": "staticwebassets\\css\\style.css"
+    },
+    {
       "Id": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\WebApp\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\WebApp\\wwwroot\\js\\package-lock.json",
+      "PackagePath": "staticwebassets\\js\\package-lock.json"
+    },
+    {
+      "Id": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\WebApp\\wwwroot\\js\\package.json",
+      "PackagePath": "staticwebassets\\js\\package.json"
+    },
+    {
+      "Id": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\WebApp\\wwwroot\\js\\script.js",
+      "PackagePath": "staticwebassets\\js\\script.js"
     },
     {
       "Id": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\WebApp\\WebApp\\wwwroot\\js\\site.js",
