@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AA.PMTOGO_v2", "AA.PMTOGO_v2\AA.PMTOGO_v2.csproj", "{E7D65D75-D6E3-4B8C-9453-136E8525C2BB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.Authentication", "AA.PMTOGO.Authentication\AA.PMTOGO.Authentication.csproj", "{4151C0A8-C2BA-4D0B-9861-1C0708D53D33}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.AuthenticationUnitTest", "AA.PMTOGO.AuthenticationUnitTest\AA.PMTOGO.AuthenticationUnitTest.csproj", "{8EC8B3CA-524F-4E1A-A6DF-427B0D3DF0B0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.Models", "AA.PMTOGO.Models\AA.PMTOGO.Models.csproj", "{8B8BB206-7D21-482E-AF41-0F49C2633C2A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.SqlAuthenticationDAO", "AA.PMTOGO.SqlAuthenticationDAO\AA.PMTOGO.SqlAuthenticationDAO.csproj", "{E144F7EF-8532-4D50-BE7C-A0F58C750CDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E7D65D75-D6E3-4B8C-9453-136E8525C2BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7D65D75-D6E3-4B8C-9453-136E8525C2BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7D65D75-D6E3-4B8C-9453-136E8525C2BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7D65D75-D6E3-4B8C-9453-136E8525C2BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4151C0A8-C2BA-4D0B-9861-1C0708D53D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4151C0A8-C2BA-4D0B-9861-1C0708D53D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4151C0A8-C2BA-4D0B-9861-1C0708D53D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4151C0A8-C2BA-4D0B-9861-1C0708D53D33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EC8B3CA-524F-4E1A-A6DF-427B0D3DF0B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EC8B3CA-524F-4E1A-A6DF-427B0D3DF0B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EC8B3CA-524F-4E1A-A6DF-427B0D3DF0B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EC8B3CA-524F-4E1A-A6DF-427B0D3DF0B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B8BB206-7D21-482E-AF41-0F49C2633C2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B8BB206-7D21-482E-AF41-0F49C2633C2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B8BB206-7D21-482E-AF41-0F49C2633C2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B8BB206-7D21-482E-AF41-0F49C2633C2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E144F7EF-8532-4D50-BE7C-A0F58C750CDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E144F7EF-8532-4D50-BE7C-A0F58C750CDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E144F7EF-8532-4D50-BE7C-A0F58C750CDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E144F7EF-8532-4D50-BE7C-A0F58C750CDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EB0BED7B-4DFF-4815-B1A0-F2EAC50831E8}
+	EndGlobalSection
+EndGlobal
