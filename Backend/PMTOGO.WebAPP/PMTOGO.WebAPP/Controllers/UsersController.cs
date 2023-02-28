@@ -15,7 +15,14 @@ namespace PMTOGO.WebAPP.Controllers
         {
             this.usersDbContext = usersDbContext;
         }
-
+#if DEBUG
+        [HttpGet]
+        [Route("health")]   //make sure controller route works.
+        public Task<IActionResult> HealthCheck()
+        {
+            return Task.FromResult<IActionResult>(Ok("Healthy"));
+        }
+#endif
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
@@ -55,7 +62,7 @@ namespace PMTOGO.WebAPP.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost]                      //class that match the binding UserProfile/UserAccount?
         public async Task<IActionResult> AddUser(Users user)
         {
             user.Id = Guid.NewGuid();
@@ -63,6 +70,8 @@ namespace PMTOGO.WebAPP.Controllers
             await usersDbContext.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
+
+            /*curl -i -X POST https://localhost:7079/account/data */
         }
 
         [HttpPut]

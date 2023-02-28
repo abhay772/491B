@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>replit</title>
+  <title>PMTOGO</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -19,7 +19,7 @@
 <!-- Log In Form-->
 <div id="login" class="window">
     <span onclick="document.getElementById('login').style.display='none'" class="exit" title="Close Window">Back</span>
-    <form class="window-content" name="login", action="https://localhost:7281/api/Users">
+    <form class="window-content" name="login" method="GET" action="https://localhost:7281/api/Users">
      <div class="container">
         <h1>Login</h1>
         <p>Please enter your log in credentials</p>
@@ -78,7 +78,7 @@
 
       <div class="clearfix">
         <button type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn" id="cancel">Cancel</button>
-        <button type="submit" class="submit" id="register">Register</button>
+        <button type="submit" class="register" id="register">Register</button>
       </div>
     </div>
   </form>

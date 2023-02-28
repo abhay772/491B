@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "o1h84BCMIfZsubOdzA0/57m2IW50EIDAq8CGacdVaLH7+XOSkWJFo/xU0DdHzyf/HslgGp2pSUY2DtdPnkUz8A==",
+  "dgSpecHash": "BhcCPq1lgQ2AxIbFP/yNVyq8m6SP60BR/OMuNcJ+znjPbLl1InZzCWR691/7Fl4NNLjQz1dDTIk4t7mpHtK8wQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\mssie_fu6p4ih\\OneDrive\\Documents\\491BWebApp\\491B\\Backend\\PMTOGO.WebAPP\\PMTOGO.WebAPP\\PMTOGO.WebAPP.csproj",
   "expectedPackageFiles": [
@@ -44,6 +44,7 @@
     "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\mstest.testframework\\3.0.2\\mstest.testframework.3.0.2.nupkg.sha512",
     "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
     "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
     "C:\\Users\\mssie_fu6p4ih\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",

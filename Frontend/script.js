@@ -1,7 +1,9 @@
 
 
-const createUser = document.querySelector('#submit');
+const createUser = document.querySelector('#register');
+console.log(createUser);
 const firstName = document.querySelector('#firstName');
+console.log(firstName);
 const lastName = document.querySelector('#lastName');
 const email = document.querySelector('#email');
 const password = document.querySelector('#password');
@@ -9,10 +11,10 @@ const password = document.querySelector('#password');
 var role ="";
 function UserRole(){
     
-    if(document.getElementById("SP").checked) {
+    if(document.getElementById("SP")) {
     let role = "Service Provider";
     }
-    if(document.getElementById("PM").checked) {
+    if(document.getElementById("PM")) {
     let role = "Property Manager";
     }
     return role;
@@ -26,14 +28,14 @@ function getUserByEmail(email){
 
 function addUser(firstName, lastName, email, password, role){
     const body = {
-        email: email,
-        username: email,
-        firstName: firstName,
-        lastName: lastName,
-        role: role,
-        password: password,
+        'email': email,
+        'username': email,
+        'firstName': firstName,
+        'lastName': lastName,
+        'role': role,
+        'password': password,
         
-    };  
+    }
     
     fetch('https://localhost:7281/api/Users', {
         method: 'POST',
@@ -68,7 +70,7 @@ function validate() {
     }
 }
 
-createUser.addEventListener('click', function(){
+createUser.addEventListener("click", function(){
     role =  UserRole();
     addUser(firstName.value, lastName.value, email.value, password.value, role);
 })
