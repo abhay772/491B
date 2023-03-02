@@ -1,9 +1,7 @@
 
 
 const createUser = document.querySelector('#register');
-console.log(createUser);
 const firstName = document.querySelector('#firstName');
-console.log(firstName);
 const lastName = document.querySelector('#lastName');
 const email = document.querySelector('#email');
 const password = document.querySelector('#password');
@@ -36,6 +34,7 @@ function addUser(firstName, lastName, email, password, role){
         'password': password,
         
     }
+    //do i put the form inputs {username, email...}
     
     fetch('https://localhost:7281/api/Users', {
         method: 'POST',

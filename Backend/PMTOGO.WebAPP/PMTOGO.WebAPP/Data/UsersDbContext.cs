@@ -10,6 +10,6 @@ namespace PMTOGO.WebAPP.Data
         {
 
         }
-        public DbSet<Users> Users { get; set; }
+        public DbSet<User> User { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace PMTOGO.WebAPP.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsers()
         {
-            return Ok(await usersDbContext.Users.ToListAsync());
+            return Ok(await usersDbContext.User.ToListAsync());
         }
 
         [HttpGet]
@@ -34,9 +34,9 @@ namespace PMTOGO.WebAPP.Controllers
         [ActionName("GetUserById")]
         public async Task<IActionResult> GetUserById([FromRoute] Guid id)
         {
-            await usersDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+            await usersDbContext.User.FirstOrDefaultAsync(x => x.Id == id);
 
-            var user = await usersDbContext.Users.FindAsync(id);
+            var user = await usersDbContext.User.FindAsync(id);
 
             if (user == null)
             {
@@ -50,9 +50,9 @@ namespace PMTOGO.WebAPP.Controllers
         [ActionName("GetUserByEmail")]
         public async Task<IActionResult> GetUserByEmail([FromRoute] string email)
         {
-            await usersDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+            await usersDbContext.User.FirstOrDefaultAsync(x => x.Email == email);
 
-            var user = await usersDbContext.Users.FindAsync(email);
+            var user = await usersDbContext.User.FindAsync(email);
 
             if (user == null)
             {
@@ -63,10 +63,10 @@ namespace PMTOGO.WebAPP.Controllers
 
 
         [HttpPost]                      //class that match the binding UserProfile/UserAccount?
-        public async Task<IActionResult> AddUser(Users user)
+        public async Task<IActionResult> AddUser(User user)
         {
             user.Id = Guid.NewGuid();
-            await usersDbContext.Users.AddAsync(user);
+            await usersDbContext.User.AddAsync(user);
             await usersDbContext.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, user);
@@ -76,16 +76,16 @@ namespace PMTOGO.WebAPP.Controllers
 
         [HttpPut]
         [Route("{id:Guid}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] Users updateUser)
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] User updateUser)
         {
-            var user = await usersDbContext.Users.FindAsync(id);
+            var user = await usersDbContext.User.FindAsync(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            user.Password = updateUser.Password;
+            user.PassDigest = updateUser.PassDigest;
             user.Email = updateUser.Email;
 
             await usersDbContext.SaveChangesAsync();
@@ -97,14 +97,14 @@ namespace PMTOGO.WebAPP.Controllers
 
         public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
         {
-            var user = await usersDbContext.Users.FindAsync(id);
+            var user = await usersDbContext.User.FindAsync(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            usersDbContext.Users.Remove(user);
+            usersDbContext.User.Remove(user);
             await usersDbContext.SaveChangesAsync();
 
             return Ok();
