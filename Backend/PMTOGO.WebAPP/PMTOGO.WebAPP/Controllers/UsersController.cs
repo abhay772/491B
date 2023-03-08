@@ -10,6 +10,7 @@ using System.Net;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Globalization;
+using ILogger = PMTOGO.WebAPP.LibAccount.ILogger;
 
 namespace PMTOGO.WebAPP.Controllers
 {
@@ -19,10 +20,12 @@ namespace PMTOGO.WebAPP.Controllers
     {
         //private readonly UsersDbContext usersDbContext;
         private readonly IAuthManager _authManager;
+        private readonly ILogger _logger;
 
-        public UsersController(IAuthManager authManager)
+        public UsersController(IAuthManager authManager, ILogger logger)
         {
             _authManager = authManager;
+            _logger = logger;
         }
 #if DEBUG
         [HttpGet]

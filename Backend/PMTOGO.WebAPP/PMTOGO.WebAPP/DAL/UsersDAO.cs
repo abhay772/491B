@@ -65,7 +65,7 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserAccount SET isActive = false WHERE @Username = username";
+                string sqlQuery = "UPDATE UserAccount SET IsActive = false WHERE @Username = username";
           
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@Username", username);
@@ -108,7 +108,7 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserAccount SET isActive = true WHERE @Username = username";
+                string sqlQuery = "UPDATE UserAccount SET IsActive = true WHERE @Username = username";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@Username", username);
@@ -152,7 +152,7 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "insert into UserAccount values (@Username, @PassDigest, @Salt)";
+                string sqlQuery = "INSERT into UserAccount values (@Username, @PassDigest, @Salt)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -200,7 +200,7 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "insert into UserProfile values ( @UserID, @Username, @Email, @FirstName, @LastName, @Role)";
+                string sqlQuery = "INSERT into UserProfile values ( @UserID, @Username, @Email, @FirstName, @LastName, @Role)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
