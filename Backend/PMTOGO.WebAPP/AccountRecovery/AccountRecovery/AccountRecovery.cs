@@ -50,10 +50,10 @@ public class AccountRecovery
         return true;
         /*var smtpClient = new SmtpClient("smtp.gmail.com", 587);
         smtpClient.UseDefaultCredentials = false;
-        smtpClient.Credentials = new NetworkCredential("DemonicKhmer@gmail.com", "ktimvrwgykjblpgf");
+        smtpClient.Credentials = new NetworkCredential();
         smtpClient.EnableSsl = true;
 
-        var message = new MailMessage("DemonicKhmer@gmail.com", "DavidKhmerChan@gmail.com", "Account Recovey - One Time Password", oTP);
+        var message = new MailMessage("test1@gmail.com", "test2@gmail.com", "Account Recovey - One Time Password", oTP);
 
         try
         {
