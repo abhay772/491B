@@ -1,18 +1,19 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PMTOGO.WebAPP.LibAccount;
 
 namespace PMTOGO.WebAPP.Library
 {
     [TestClass]
-    public class RegistrationUnitTest
+    public class AuthNUnitTest
     {
         [TestMethod]
         public void ShouldCreateInstanceWithDefaultCtor()
         {
             // Arrange
-            var expected = typeof(Registrator);
+            var expected = typeof(Authenticator);
 
             // Act
-            var actual = new Registrator();
+            var actual = new Authenticator();
 
             // Assert
             Assert.IsNotNull(actual);
@@ -24,17 +25,17 @@ namespace PMTOGO.WebAPP.Library
         public void ShouldAssignUniqueUsername()
         {
             // Arrange
-            var registration = new Registrator();
+            var registration = new Authenticator();
             DateTime dateTime = DateTime.Now;
             byte[] salt = new byte[64];
             string saltHash = Convert.ToBase64String(salt);
             byte[] pass = new byte[64];
             string digest = Convert.ToBase64String(pass);             //username = email
 
-            bool accountCreated = registration.CreateUser(1, "username6@gmail.com", digest, "John", "Doe", "Property Manager", saltHash).IsSuccessful;
+            bool accountCreated = registration.CreateUser("username6@gmail.com", digest, "John", "Doe", "Property Manager").IsSuccessful;
 
             // Act
-            bool account2Created = registration.CreateUser(1, "username6@gmail.com", digest, "Jo", "De", "Property Manager", saltHash).IsSuccessful;
+            bool account2Created = registration.CreateUser("username6@gmail.com", digest, "Jo", "De", "Property Manager").IsSuccessful;
 
             // Assert
             Assert.IsNotNull(accountCreated);
@@ -48,7 +49,7 @@ namespace PMTOGO.WebAPP.Library
         public void ShouldProvideValidEmail()
         {
             // Arrange
-            var registration = new Registrator();
+            var registration = new Authenticator();
             //var result = new Result();
 
             // Act
@@ -72,7 +73,7 @@ namespace PMTOGO.WebAPP.Library
         public void ShouldProvideValidUsername()
         {
             // Arrange
-            var registration = new Registrator();
+            var registration = new Authenticator();
 
             // Act
             bool checkValidUsername = registration.ValidateUsername("abc@gmail.com").IsSuccessful;
@@ -96,7 +97,7 @@ namespace PMTOGO.WebAPP.Library
         public void ShouldProvideValidPassphrase()
         {
             // Arrange
-            var registration = new Registrator();
+            var registration = new Authenticator();
 
             // Act
             bool checkValidPassphrase = registration.ValidatePassphrase("aZ09  .,@-!").IsSuccessful;
@@ -118,7 +119,7 @@ namespace PMTOGO.WebAPP.Library
         public void ShouldProvideValidAge()
         {
             // Arrange
-            var registration = new Registrator();
+            var registration = new Authenticator();
             DateTime validAge = new DateTime(2000, 1, 1);
             DateTime invalidAge = DateTime.Now;
 
@@ -139,16 +140,16 @@ namespace PMTOGO.WebAPP.Library
         {
             //aranage
 
-            var registration = new Registrator();
+            var registration = new Authenticator();
             byte[] salt = new byte[64];
             string saltHash = Convert.ToBase64String(salt);
             byte[] pass = new byte[64];
             string digest = Convert.ToBase64String(pass);
             //act
-            bool checkTime = registration.CreateUser(1, "14@gmail.com", digest, "John", "Doe", "Property Manager", saltHash).IsSuccessful;
+            bool checkTime = registration.CreateUser("14@gmail.com", digest, "John", "Doe", "Property Manager").IsSuccessful;
 
             Thread.Sleep(5000);
-            bool checkOverTime = registration.CreateUser(1, "13@gmail.com", digest, "John", "Doe", "Property Manager", saltHash).IsSuccessful;
+            bool checkOverTime = registration.CreateUser("13@gmail.com", digest, "John", "Doe", "Property Manager").IsSuccessful;
 
             //private info
 

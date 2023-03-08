@@ -5,13 +5,40 @@ namespace PMTOGO.WebAPP.Models.Entities
     public class User
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
+        [Key]
         public string Username { get; set; } = string.Empty;
+        [Required]
         public string Email { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string PassDigest{ get; set; } = string.Empty;
         public string Salt { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
+
+        public User()
+        {
+
+        }
+
+        public User(int id, string username, string email, string firstName, string lastName, string role)
+        {
+            Id = id;
+            Username = username;
+            Email = email;
+            FirstName = firstName;
+            LastName = lastName;
+            Role = role;
+
+        }
+        public User(int id, string username, string passDigest, string salt, bool isActive)
+        {
+            Id = id;
+            Username = username;
+            PassDigest = passDigest;
+            Salt = salt;
+            IsActive = isActive;
+        }
     }
 }

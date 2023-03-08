@@ -7,18 +7,17 @@ namespace PMTOGO.WebAPP.DAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
         //private DatabaseLogger _Logger = new DatabaseLogger("business", new SqlLoggerDAO());
-        public UsersDAO()
-        {
 
-        }
         //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
-        public User? FindUser(string username)
+        public Result FindUser(string username)
         {
+            Result result = new Result();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "select * from UserAccount where Username = @Username";
+                string sqlQuery = "SELECT * from UserAccount WHERE Username = @Username";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -26,53 +25,37 @@ namespace PMTOGO.WebAPP.DAO
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    while (reader.Read())
+                    try
                     {
-                        var user = new User();
-                        user.Username = (string)reader["Username"];
-                        user.PassDigest = (string)reader["PassDigest"];
-                        user.Salt = (string)reader["Salt"];
-                        //user.isActive = (bool)reader["IsActive"];
-                        //user.attempts = (int)reader["Attempts"];
-
-                        return user;
-                    }
-                }
-            }
-            return null;
-        }
-
-        //look for the email in nonsensitive info Table UserProfile
-        public Result DoesUserExist(string email)
-        {
-            var result = new Result();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "select * from UserProfile where Email = @Email";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@Email", email);
-
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        if (email.Equals(reader["Email"]))
+                        reader.Read();
+                        if ((bool)reader["IsActive"])
                         {
+                            User user = new User();
+                            user.Username = (string)reader["Username"];
+                            user.PassDigest = (string)reader["PassDigest"];
+                            user.Salt = (string)reader["Salt"];
+                            user.IsActive = (bool)reader["IsActive"];
+
                             result.IsSuccessful = true;
-                            result.ErrorMessage = "User already exists.";
-                            return result;
+                            result.Payload = user;
+                        }
+                        else
+                        {
+                            result.IsSuccessful = false;
+                            result.ErrorMessage = "Account Disabled.";
                         }
                     }
-                }
+                    catch
+                    {
 
-                result.IsSuccessful = false;
-                return result;
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    }
+                }
             }
+            result.IsSuccessful = false;
+            result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+            return result;
         }
 
         public Result DeactivateUser(string username)
@@ -82,10 +65,10 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserAccount SET isActive = 0";
-
+                string sqlQuery = "UPDATE UserAccount SET isActive = false WHERE @Username = username";
+          
                 var command = new SqlCommand(sqlQuery, connection);
-
+                command.Parameters.AddWithValue("@Username", username);
                 try
                 {
                     var rows = command.ExecuteNonQuery();
@@ -125,9 +108,10 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserAccount SET isActive = 1";
+                string sqlQuery = "UPDATE UserAccount SET isActive = true WHERE @Username = username";
 
                 var command = new SqlCommand(sqlQuery, connection);
+                command.Parameters.AddWithValue("@Username", username);
 
                 try
                 {
@@ -175,6 +159,7 @@ namespace PMTOGO.WebAPP.DAO
                 command.Parameters.AddWithValue("@Username", username);
                 command.Parameters.AddWithValue("@PassDigest", passDigest);
                 command.Parameters.AddWithValue("@Salt", salt);
+                command.Parameters.AddWithValue("@IsActive", true);
 
                 try
                 {
@@ -258,7 +243,77 @@ namespace PMTOGO.WebAPP.DAO
             result.IsSuccessful = false;
             return result;
         }
-        //connection from sensitive to nonsensitive info// can i populate a table as user profile and user account is
+        public void UpdateFailedAttempts(string username)
+        {
+            //var userAuthenticator = new User();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
 
+
+                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE username = @username", connection);
+                command.Parameters.AddWithValue("@username", username);
+
+                var reader = command.ExecuteReader();
+
+                reader.Read();
+                int failedAttempts = (int)reader["Attempts"];
+
+                if (failedAttempts == 0)
+                {
+                    command = new SqlCommand("UPDATE UserAccounts SET Attempts = 1", connection);
+                    command.ExecuteNonQuery();
+
+                    command = new SqlCommand("UPDATE UserAccounts SET timestamp = CURRENT_TIMESTAMP", connection);
+                    command.ExecuteNonQuery();
+                }
+                else if (failedAttempts == 2)
+                {
+                    command = new SqlCommand("UPDATE UserAccounts SET Attempts = 2", connection);
+                    command.ExecuteNonQuery();
+                }
+                else
+                {
+                    command = new SqlCommand("UPDATE UserAccounts SET Attempts = 3", connection);
+                    reader.Close();
+                    var rows = command.ExecuteNonQuery();
+                    //TODO: log username, Ip, timestamp to database
+                }
+                reader.Close();
+
+            }
+        }
+
+        public async Task<int> GetFailedAttempts(string username)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+
+                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE username = @username", connection);
+                command.Parameters.AddWithValue("@username", username);
+
+                var reader = await command.ExecuteReaderAsync();
+
+                reader.Read();
+                return (int)reader["Attempts"];
+            }
+        }
+
+        public void ResetFailedAttempts(string username)
+        {
+            //var userAuthenticator = new User();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
+                command.Parameters.AddWithValue("@Usernamae", username);
+                command.ExecuteNonQuery();
+
+            }
+        }
     }
+
 }
