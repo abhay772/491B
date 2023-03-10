@@ -9,18 +9,13 @@
 </head>
 
 <body>
-
-      
-  <!-- ButtonS to open the window -->
-  <button onclick="document.getElementById('login').style.display='block'" class="homebtns">Log In</button>
   
-  <button onclick="document.getElementById('signup').style.display='block'" class="homebtns">Sign Up</button>
+  
 
 <!-- Log In Form-->
-<div id="login" class="window">
-    <span onclick="document.getElementById('login').style.display='none'" class="exit" title="Close Window">Back</span>
-    <form class="window-content" name="login">
-     <div class="container">
+<div id="homepage" class="login"> 
+  <form class="window-content" name="login">
+    <div class="container">
         <h1>Login</h1>
         <p>Please enter your log in credentials</p>
         <hr>
@@ -36,6 +31,7 @@
        <div class="clearfix">
          <button  onclick="document.getElementById('forgotPass').style.display='block'" class="forget">Forgot Password?</button>
           <button type="submit" class="submit" id="login">Log In</button>
+         <button onclick="document.getElementById('signup').style.display='block'" class="homebtns">Sign Up</button>
         </div>
      </div>
     </form>
