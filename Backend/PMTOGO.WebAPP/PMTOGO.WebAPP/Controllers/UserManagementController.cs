@@ -51,7 +51,7 @@ namespace PMTOGO.WebAPP.Controllers
             }
 
         }
-        [HttpPost]
+        [HttpPut]
         [Route("deactivate")]
         public async Task<IActionResult> DeleteUser([FromBody] UserCredentials userCredentials)
         {
