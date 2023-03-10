@@ -1,7 +1,6 @@
-﻿
-using System.Data.SqlClient;
-using AA.PMTOGO.Infrastructure.Interfaces;
+﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
+using System.Data.SqlClient;
 
 namespace AA.PMTOGO.DAL
 {
@@ -326,5 +325,4 @@ namespace AA.PMTOGO.DAL
             }
         }
     }
-
 }

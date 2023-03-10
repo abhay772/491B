@@ -3,8 +3,9 @@ using AA.PMTOGO.Infrastructure.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
 using AA.PMTOGO.Libary;
+using AA.PMTOGO.DAL;
 
-namespace AA.PMTOGO.Infrastructure.Services
+namespace AA.PMTOGO.Services
 {
     public class UserManagement : IUserManagement
     {

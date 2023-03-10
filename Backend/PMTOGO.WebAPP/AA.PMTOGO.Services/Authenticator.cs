@@ -1,4 +1,6 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿
+using AA.PMTOGO.DAL;
+using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Models.Entities;
 using System.Security.Cryptography;
@@ -6,7 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 //using System.Text.RegularExpressions;
-namespace AA.PMTOGO.Authentication
+namespace AA.PMTOGO.Services
 {
     public class Authenticator : IAuthenticator
     {
