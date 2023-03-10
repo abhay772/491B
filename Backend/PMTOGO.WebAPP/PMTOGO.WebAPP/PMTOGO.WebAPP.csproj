@@ -17,8 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AA.PMTOGO.Managers\AA.PMTOGO.Managers.csproj" />
-    <ProjectReference Include="..\AA.PMTOGO.Models\AA.PMTOGO.Models.csproj" />
-    <ProjectReference Include="..\PMTOGO.Infrastructure\PMTOGO.Infrastructure.csproj" />
+    <ProjectReference Include="..\PMTOGO.Infrastructure\AA.PMTOGO.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

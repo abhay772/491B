@@ -1,4 +1,4 @@
-﻿using AA.PMTOGO.Models;
+﻿using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
 
 namespace AA.PMTOGO.SqlAuthenticationDAO;
@@ -35,7 +35,7 @@ public class SqlAuthenticateDAO
                         User user = new User();
 
                         user.Username = (string)reader["Username"];
-                        user.Password = (byte[])reader["Password"];
+                        user.PassDi = (byte[])reader["Password"];
                         user.salt = (byte[])reader["Salt"];
                         user.role = (string)reader["Role"];
 

@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AA.PMTOGO.Libary\AA.PMTOGO.Libary.csproj" />
+    <ProjectReference Include="..\PMTOGO.Domain\AA.PMTOGO.Models.csproj" />
     <ProjectReference Include="..\PMTOGO.Domain\PMTOGO.Domain.csproj" />
   </ItemGroup>
 

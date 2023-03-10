@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PMTOGO.Domain\AA.PMTOGO.Models.csproj" />
+  </ItemGroup>
+
 </Project>
