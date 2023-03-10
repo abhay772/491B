@@ -26,16 +26,15 @@ function getUserByEmail(email){
 
 function addUser(firstName, lastName, email, password, role){
     const body = {
-        email: email,
-        username: email,
-        firstName: firstName,
-        lastName: lastName,
-        role: role,
-        password: password,
+        Email: email,
+        Password: password,
+        FirstName: firstName,
+        LastName: lastName,
+        Role: role,
         
     };  
     
-    fetch('https://localhost:7281/api/UserManagement', {
+    fetch('https://localhost:7135/api/UserManagement/register', {
         method: 'POST',
         body: JSON.stringify(body),
         headers: {

@@ -12,7 +12,7 @@ namespace AA.PMTOGO.Services
 {
     public class Authenticator : IAuthenticator
     {
-        private readonly ILogger? _logger;
+        //private readonly ILogger? _logger;
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
 

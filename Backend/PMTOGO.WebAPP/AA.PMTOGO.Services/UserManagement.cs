@@ -9,7 +9,7 @@ namespace AA.PMTOGO.Services
 {
     public class UserManagement : IUserManagement
     {
-        private readonly ILogger? _logger;
+        //private readonly ILogger? _logger;
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
 
@@ -20,9 +20,10 @@ namespace AA.PMTOGO.Services
             Result result = new Result();
             if (valid.ValidateEmail(email).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
             {
-
-                if (!_authNDAO.FindUser(email).IsSuccessful)
+                
+                if (!_authNDAO.FindUser(email).IsSuccessful)//user doesnt exist so procceed
                 {
+                    Console.WriteLine("User doesnt exist procceed");
                     //add user account
                     userID += 1;
                     string salt = GenerateSalt();
@@ -91,10 +92,11 @@ namespace AA.PMTOGO.Services
         }
         public string GenerateSalt()
         {
-            string salt = " ";
+            string salt = "";
 
             Random rand = new Random();
             salt = rand.Next(100000, 999999).ToString();
+            Console.WriteLine(salt);
             return salt;
         }
 
@@ -102,12 +104,12 @@ namespace AA.PMTOGO.Services
         {
             var user_salt = Encoding.UTF8.GetBytes(salt);
             var pass = Encoding.UTF8.GetBytes(password);
-            Console.WriteLine(pass);
 
             // Lecture Vong 12/13 
             var hash = new Rfc2898DeriveBytes(pass, user_salt, 1000, HashAlgorithmName.SHA512);
             var encryptedPass = hash.GetBytes(64);
             string passDigest = Encoding.UTF8.GetString(encryptedPass);
+            Console.WriteLine(passDigest);
             return passDigest;
         }
     }

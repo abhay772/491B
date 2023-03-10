@@ -29,10 +29,10 @@ namespace AA.PMTOGO.UnitTest
             var registration = new UserManagement();
            //username = email
            
-            bool accountCreated = registration.CreateAccount("me@gmail.com", "randomstring", "John", "Doe", "Property Manager").IsSuccessful;
+            bool accountCreated = registration.CreateAccount("this@gmail.com", "randomstring", "John", "Doe", "Property Manager").IsSuccessful;
 
             // Act
-            bool account2Created = registration.CreateAccount("me@gmail.com", "randompass", "Jo", "De", "Property Manager").IsSuccessful;
+            bool account2Created = registration.CreateAccount("this@gmail.com", "randompass", "Jo", "De", "Property Manager").IsSuccessful;
             Console.WriteLine(account2Created);
             // Assert
             Assert.IsNotNull(accountCreated);
