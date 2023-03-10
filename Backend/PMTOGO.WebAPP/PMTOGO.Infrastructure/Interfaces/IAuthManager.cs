@@ -10,7 +10,5 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
     public interface IAuthManager
     {
         Task<Result> Login(string username, string password);
-
-
     }
 }

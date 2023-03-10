@@ -13,7 +13,8 @@ namespace AA.PMTOGO.Services
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
 
-        int userID = 0;
+        static int userID = 0;
+
         public Result CreateAccount(string email, string password, string firstname, string lastname, string role)
         {
             Result result = new Result();
@@ -27,7 +28,7 @@ namespace AA.PMTOGO.Services
                     string salt = GenerateSalt();
                     string passDigest = EncryptPassword(password, salt);
 
-                    _authNDAO.SaveUserAccount(userID, passDigest, salt);
+                    _authNDAO.SaveUserAccount(userID, email, passDigest, salt);
                     _authNDAO.SaveUserProfile(userID, email, firstname, lastname, role);
 
                     //log account created succesfully  
@@ -49,6 +50,7 @@ namespace AA.PMTOGO.Services
             {
                 result.ErrorMessage = "Invalid email provided.Retry again or contact system administrator";
                 result.IsSuccessful = false;
+                
             }
 
             return result;

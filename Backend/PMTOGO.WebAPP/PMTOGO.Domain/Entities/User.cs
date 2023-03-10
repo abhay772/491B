@@ -5,7 +5,6 @@ namespace AA.PMTOGO.Models.Entities
 {
     public class User
     {
-        [Key]
         public int Id { get; set; }
         [Key]
         public string Username { get; set; } = string.Empty;

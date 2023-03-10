@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AA.PMTOGO.Libary\AA.PMTOGO.Libary.csproj" />
-    <ProjectReference Include="..\AA.PMTOGO.Managers\AA.PMTOGO.Managers.csproj" />
   </ItemGroup>
 
 </Project>

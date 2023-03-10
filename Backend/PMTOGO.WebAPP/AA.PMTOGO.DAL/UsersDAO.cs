@@ -18,7 +18,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * from UserAccounts WHERE Username = @Username";
+                string sqlQuery = "SELECT * FROM UserAccounts WHERE @Username = username";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -31,11 +31,13 @@ namespace AA.PMTOGO.DAL
                         reader.Read();
                         if ((bool)reader["IsActive"])
                         {
+                            reader.Read();
                             User user = new User();
                             user.Username = (string)reader["Username"];
                             user.PassDigest = (string)reader["PassDigest"];
                             user.Salt = (string)reader["Salt"];
                             user.IsActive = (bool)reader["IsActive"];
+                            user.Attempt = (int)reader["Attempts"];
 
                             result.IsSuccessful = true;
                             result.Payload = user;
@@ -49,9 +51,9 @@ namespace AA.PMTOGO.DAL
                     catch
                     {
 
-                        result.IsSuccessful = false;
                         result.ErrorMessage = "There was an unexpected server error. Please try again later.";
-                        _logger!.Log("FindUser", 4, LogCategory.Server, result);
+                        //_logger!.Log("FindUser", 4, LogCategory.Server, result);
+                        return result;
                     }
                 }
             }
@@ -67,7 +69,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserAccounts SET IsActive = false WHERE @Username = username";
+                string sqlQuery = "UPDATE UserAccounts SET IsActive = 0  WHERE @Username = username";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@Username", username);
@@ -111,7 +113,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserAccounts SET IsActive = true WHERE @Username = username";
+                string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE @Username = username";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@Username", username);
@@ -149,23 +151,26 @@ namespace AA.PMTOGO.DAL
             result.IsSuccessful = false;
             return result;
         }
+
         //sensitive info
-        public Result SaveUserAccount(int userID, string passDigest, string salt)
+        public Result SaveUserAccount(int userID, string username, string passDigest, string salt)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserAccounts values (@UserID, @PassDigest, @Salt, @IsActive, @Attempt)";
+                string sqlQuery = "INSERT into UserAccounts VALUES(@Id, @Username, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@ID", userID);
+                command.Parameters.AddWithValue("@Id", userID);
+                command.Parameters.AddWithValue("@Username", username);
                 command.Parameters.AddWithValue("@PassDigest", passDigest);
                 command.Parameters.AddWithValue("@Salt", salt);
                 command.Parameters.AddWithValue("@IsActive", 1);
-                command.Parameters.AddWithValue("@Attempt", 0);
+                command.Parameters.AddWithValue("@Attempts", 0);
+                command.Parameters.AddWithValue("@Timestamp", DateTime.Now) ;
 
                 try
                 {
@@ -207,7 +212,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserProfiles values ( @UserID, @Username, @Email, @FirstName, @LastName, @Role)";
+                string sqlQuery = "INSERT into UserProfiles VALUES(@Id, @Username, @Email, @FirstName, @LastName, @Role)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -259,8 +264,8 @@ namespace AA.PMTOGO.DAL
                 connection.Open();
 
 
-                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE username = @username", connection);
-                command.Parameters.AddWithValue("@username", username);
+                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+                command.Parameters.AddWithValue("@Username", username);
 
                 var reader = command.ExecuteReader();
 
@@ -301,7 +306,7 @@ namespace AA.PMTOGO.DAL
                 connection.Open();
 
 
-                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE username = @Username", connection);
+                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
                 command.Parameters.AddWithValue("@Username", username);
 
                 var reader = await command.ExecuteReaderAsync();

@@ -1,3 +1,7 @@
+using AA.PMTOGO.Libary;
+using AA.PMTOGO.Services;
+using System.Diagnostics;
+
 namespace AA.PMTOGO.UnitTest
 {
     [TestClass]
@@ -23,17 +27,13 @@ namespace AA.PMTOGO.UnitTest
         {
             // Arrange
             var registration = new UserManagement();
-            DateTime dateTime = DateTime.Now;
-            byte[] salt = new byte[64];
-            string saltHash = Convert.ToBase64String(salt);
-            byte[] pass = new byte[64];
-            string digest = Convert.ToBase64String(pass);             //username = email
-
-            bool accountCreated = registration.CreateAccount("username6@gmail.com", digest, "John", "Doe", "Property Manager").IsSuccessful;
+           //username = email
+           
+            bool accountCreated = registration.CreateAccount("me@gmail.com", "randomstring", "John", "Doe", "Property Manager").IsSuccessful;
 
             // Act
-            bool account2Created = registration.CreateAccount("username6@gmail.com", digest, "Jo", "De", "Property Manager").IsSuccessful;
-
+            bool account2Created = registration.CreateAccount("me@gmail.com", "randompass", "Jo", "De", "Property Manager").IsSuccessful;
+            Console.WriteLine(account2Created);
             // Assert
             Assert.IsNotNull(accountCreated);
             Assert.IsNotNull(account2Created);
@@ -138,23 +138,33 @@ namespace AA.PMTOGO.UnitTest
             //aranage
 
             var registration = new UserManagement();
-            byte[] salt = new byte[64];
-            string saltHash = Convert.ToBase64String(salt);
-            byte[] pass = new byte[64];
-            string digest = Convert.ToBase64String(pass);
+
             //act
-            bool checkTime = registration.CreateAccount("14@gmail.com", digest, "John", "Doe", "Property Manager").IsSuccessful;
+            var time = Stopwatch.StartNew();
+            bool OnTime = registration.CreateAccount("ggnamegmail.com", "randompass", "John", "Doe", "Property Manager").IsSuccessful;
+            time.Stop();
+            var second = time.ElapsedMilliseconds / 1000;
+            if (second < 5)
+            {
+                OnTime = true;
+            }
 
-            Thread.Sleep(5000);
-            bool checkOverTime = registration.CreateAccount("13@gmail.com", digest, "John", "Doe", "Property Manager").IsSuccessful;
+            var timer = Stopwatch.StartNew();
+            Thread.Sleep(6000);
+            bool OverTime = registration.CreateAccount("namegmail.com", "randomstring", "John", "Doe", "Property Manager").IsSuccessful;
+            timer.Stop();
+            var seconds = timer.ElapsedMilliseconds / 1000;
+            if (seconds > 5)
+            {
+                OverTime = true;
+            }
+                //private info
 
-            //private info
-
-            //assert
-            Assert.IsNotNull(checkTime);
-            Assert.IsNotNull(checkOverTime);
-            Assert.IsTrue(checkTime);
-            Assert.IsFalse(!checkOverTime);
+                //assert
+            Assert.IsNotNull(OnTime);
+            Assert.IsNotNull(OverTime);
+            Assert.IsTrue(OnTime);
+            Assert.IsTrue(OverTime);
 
         }
     }

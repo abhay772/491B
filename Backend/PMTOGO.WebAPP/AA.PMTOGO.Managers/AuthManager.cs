@@ -1,5 +1,5 @@
-﻿using AA.PMTOGO.Authentication;
-using AA.PMTOGO.Models;
+﻿using AA.PMTOGO.Infrastructure.Interfaces;
+using AA.PMTOGO.Models.Entities;
 using System.Security.Claims;
 using System.Security.Principal;
 
@@ -26,11 +26,11 @@ public class AuthManager : IAuthManager
 
         result = _authenticator.Authenticate(username, password);
 
-        string role = null;
+        string role = null!;
 
         if (result.IsSuccessful)
         {
-            role = (string)result.Payload;
+            role = (string)result.Payload!;
         }
 
         _authenticator.ResetFailedAttempts(username);
@@ -49,7 +49,7 @@ public class AuthManager : IAuthManager
 
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.principal = principal;
-        loginDTO.otp = otp;
+        loginDTO.Otp = otp;
 
         result.IsSuccessful = true;
         result.ErrorMessage = string.Empty;
