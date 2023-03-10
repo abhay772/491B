@@ -2,15 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using PMTOGO.WebAPP.DAO;
 using PMTOGO.WebAPP.Data;
-using PMTOGO.WebAPP.LibAccount;
-using PMTOGO.WebAPP.Managers;
 using PMTOGO.WebAPP.Models.Entities;
 using System.Net.Mail;
 using System.Net;
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Globalization;
-using ILogger = PMTOGO.WebAPP.LibAccount.ILogger;
+using ILogger = PMTOGO.WebAPP.Interfaces.ILogger;
+using PMTOGO.WebAPP.Interfaces;
 
 namespace PMTOGO.WebAPP.Controllers
 {
@@ -35,30 +33,6 @@ namespace PMTOGO.WebAPP.Controllers
             return Task.FromResult<IActionResult>(Ok("Healthy"));
         }
 #endif
-
-        [HttpPost]
-        [Route("registrator")]
-        public async Task<IActionResult> AddUser([FromBody] UserRegister userRegister)
-        {
-            try
-            {
-                Result result = await _authManager.RegisterUser(userRegister.Email, userRegister.Password, userRegister.FirstName,
-                    userRegister.LastName, userRegister.Role);
-                if (result.IsSuccessful)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return BadRequest("Invalid username or password provided. Retry again or contact system admin");
-                }
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-
-        }
 
 
         [HttpPost]

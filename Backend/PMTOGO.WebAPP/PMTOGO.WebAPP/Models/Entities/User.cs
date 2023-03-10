@@ -16,6 +16,7 @@ namespace PMTOGO.WebAPP.Models.Entities
         public string PassDigest{ get; set; } = string.Empty;
         public string Salt { get; set; } = string.Empty;
         public bool IsActive { get; set; }
+        public int Attempt { get; set; }
 
         public User()
         {
@@ -32,13 +33,13 @@ namespace PMTOGO.WebAPP.Models.Entities
             Role = role;
 
         }
-        public User(int id, string username, string passDigest, string salt, bool isActive)
+        public User(int id, string passDigest, string salt, bool isActive, int attempt)
         {
             Id = id;
-            Username = username;
             PassDigest = passDigest;
             Salt = salt;
             IsActive = isActive;
+            Attempt = attempt;
         }
     }
 }

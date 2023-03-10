@@ -1,12 +1,13 @@
 ﻿using Microsoft.Data.SqlClient;
 using PMTOGO.WebAPP.Models.Entities;
+using ILogger = PMTOGO.WebAPP.Interfaces.ILogger;
 
 namespace PMTOGO.WebAPP.DAO
 {
     public class UsersDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
-        //private DatabaseLogger _Logger = new DatabaseLogger("business", new SqlLoggerDAO());
+        private readonly ILogger? _logger;
 
         //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
         public Result FindUser(string username)
@@ -17,7 +18,7 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * from UserAccount WHERE Username = @Username";
+                string sqlQuery = "SELECT * from UserAccounts WHERE Username = @Username";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -50,6 +51,7 @@ namespace PMTOGO.WebAPP.DAO
 
                         result.IsSuccessful = false;
                         result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        _logger!.Log("FindUser", 4, LogCategory.Server, result);
                     }
                 }
             }
@@ -65,7 +67,7 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserAccount SET IsActive = false WHERE @Username = username";
+                string sqlQuery = "UPDATE UserAccounts SET IsActive = false WHERE @Username = username";
           
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@Username", username);
@@ -91,7 +93,8 @@ namespace PMTOGO.WebAPP.DAO
                 {
                     if (e.Number == 208)
                     {
-                        // _Logger.AsyncLog("error", "addUser", "Specified table not found.");
+                        result.ErrorMessage = "Specified table not found";
+                        _logger!.Log("DeactivateUser", 4, LogCategory.DataStore, result);
                     }
                 }
 
@@ -108,7 +111,7 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserAccount SET IsActive = true WHERE @Username = username";
+                string sqlQuery = "UPDATE UserAccounts SET IsActive = true WHERE @Username = username";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.AddWithValue("@Username", username);
@@ -135,7 +138,9 @@ namespace PMTOGO.WebAPP.DAO
                 {
                     if (e.Number == 208)
                     {
-                        // _Logger.AsyncLog("error", "addUser", "Specified table not found.");
+                        result.ErrorMessage = "Specified table not found";
+                        _logger!.Log("ActivateUser", 4, LogCategory.DataStore, result);
+
                     }
                 }
 
@@ -145,21 +150,22 @@ namespace PMTOGO.WebAPP.DAO
             return result;
         }
         //sensitive info
-        public Result SaveUserAccount(string username, string passDigest, string salt)
+        public Result SaveUserAccount(int userID, string passDigest, string salt)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserAccount values (@Username, @PassDigest, @Salt)";
+                string sqlQuery = "INSERT into UserAccounts values (@UserID, @PassDigest, @Salt, @IsActive, @Attempt)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@Username", username);
+                command.Parameters.AddWithValue("@ID", userID);
                 command.Parameters.AddWithValue("@PassDigest", passDigest);
                 command.Parameters.AddWithValue("@Salt", salt);
-                command.Parameters.AddWithValue("@IsActive", true);
+                command.Parameters.AddWithValue("@IsActive", 1);
+                command.Parameters.AddWithValue("@Attempt", 0);
 
                 try
                 {
@@ -183,7 +189,8 @@ namespace PMTOGO.WebAPP.DAO
                 {
                     if (e.Number == 208)
                     {
-                        // _Logger.AsyncLog("error", "addUser", "Specified table not found.");
+                        result.ErrorMessage = "Specified table not found";
+                        _logger!.Log("SaveUserAccount", 4, LogCategory.DataStore, result);
                     }
                 }
 
@@ -200,7 +207,7 @@ namespace PMTOGO.WebAPP.DAO
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserProfile values ( @UserID, @Username, @Email, @FirstName, @LastName, @Role)";
+                string sqlQuery = "INSERT into UserProfiles values ( @UserID, @Username, @Email, @FirstName, @LastName, @Role)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -234,7 +241,8 @@ namespace PMTOGO.WebAPP.DAO
                 {
                     if (e.Number == 208)
                     {
-                        // _Logger.AsyncLog("error", "addUser", "Specified table not found.");
+                        result.ErrorMessage = "Specified table not found";
+                        _logger!.Log("SaveUserProfile", 4, LogCategory.DataStore, result);
                     }
                 }
 
@@ -264,7 +272,7 @@ namespace PMTOGO.WebAPP.DAO
                     command = new SqlCommand("UPDATE UserAccounts SET Attempts = 1", connection);
                     command.ExecuteNonQuery();
 
-                    command = new SqlCommand("UPDATE UserAccounts SET timestamp = CURRENT_TIMESTAMP", connection);
+                    command = new SqlCommand("UPDATE UserAccounts SET Timestamp = CURRENT_TIMESTAMP", connection);
                     command.ExecuteNonQuery();
                 }
                 else if (failedAttempts == 2)
@@ -278,6 +286,8 @@ namespace PMTOGO.WebAPP.DAO
                     reader.Close();
                     var rows = command.ExecuteNonQuery();
                     //TODO: log username, Ip, timestamp to database
+
+                    //_logger!.Log("UpdateFailedAttempts", 4, LogCategory.DataStore, result);
                 }
                 reader.Close();
 
@@ -291,8 +301,8 @@ namespace PMTOGO.WebAPP.DAO
                 connection.Open();
 
 
-                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE username = @username", connection);
-                command.Parameters.AddWithValue("@username", username);
+                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE username = @Username", connection);
+                command.Parameters.AddWithValue("@Username", username);
 
                 var reader = await command.ExecuteReaderAsync();
 

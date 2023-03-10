@@ -1,6 +1,6 @@
 ﻿using PMTOGO.WebAPP.Models.Entities;
 
-namespace PMTOGO.WebAPP.LibAccount
+namespace PMTOGO.WebAPP.Interfaces
 {
     public interface ILogger
     {

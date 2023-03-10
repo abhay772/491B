@@ -1,18 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PMTOGO.WebAPP.LibAccount;
+using PMTOGO.WebAPP.Interfaces;
 using PMTOGO.WebAPP.Models.Entities;
+using System.Diagnostics;
 using System.Security.Claims;
 using System.Security.Principal;
+using ILogger = PMTOGO.WebAPP.Interfaces.ILogger;
 
+
+//all request for loging and authentication will be sent to the auth manager
 namespace PMTOGO.WebAPP.Managers
 {
     public class AuthManager : IAuthManager
     {
         private readonly IAuthenticator _authenticator;
+        private readonly ILogger? _logger;
 
-        public AuthManager(IAuthenticator authenticator)
+        public AuthManager(IAuthenticator authenticator, ILogger logger)
         {
             _authenticator = authenticator;
+            _logger = logger;
         }
 
         public async Task<Result> Login(string username, string password)
@@ -59,12 +65,7 @@ namespace PMTOGO.WebAPP.Managers
             return result;
         }
 
-        public async Task<Result> RegisterUser(string email, string password, string firstname, string lastname, string role)
-        {
-
-            Result result = await Task.Run(() => _authenticator.CreateUser(email, password, firstname, lastname, role));
-            return result;
-        }
+        
     }
 
 }

@@ -1,8 +1,9 @@
 ﻿using PMTOGO.WebAPP.Models.Entities;
+using ILogger = PMTOGO.WebAPP.Interfaces.ILogger;
 
-namespace PMTOGO.WebAPP.LibAccount
+namespace PMTOGO.WebAPP.Services
 {
-    public class Logger: ILogger
+    public class Logger : ILogger
     {
         public void Log(string requestName, byte logLevel, LogCategory logCategory, object result)
         {
