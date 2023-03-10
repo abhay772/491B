@@ -2,8 +2,8 @@
 using System.Net.Mail;
 using System.Net;
 using System.Text.Json;
-using AA.PMTOGO.Managers;
-using AA.PMTOGO.Models;
+using AA.PMTOGO.Models.Entities;
+using AA.PMTOGO.Infrastructure.Interfaces;
 
 namespace PMTOGO.WebAPP.Controllers;
 
@@ -26,9 +26,9 @@ public class AuthController : ControllerBase
 
             if (result.IsSuccessful)
             {
-                var loginDTO = (LoginDTO)result.Payload;
+                var loginDTO = (LoginDTO)result.Payload!;
 
-                var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
+                var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.Otp!, userCredentials.Username);
 
                 if (sendingOtpResult.IsSuccessful)
                 {
@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
             }
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -129,7 +129,7 @@ public class AuthController : ControllerBase
 
     public class UserCredentials
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

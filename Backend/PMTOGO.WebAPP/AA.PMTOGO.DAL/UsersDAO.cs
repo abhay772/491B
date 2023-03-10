@@ -170,7 +170,7 @@ namespace AA.PMTOGO.DAL
                 command.Parameters.AddWithValue("@Salt", salt);
                 command.Parameters.AddWithValue("@IsActive", 1);
                 command.Parameters.AddWithValue("@Attempts", 0);
-                command.Parameters.AddWithValue("@Timestamp", DateTime.Now) ;
+                command.Parameters.AddWithValue("@Timestamp", DateTime.Now);
 
                 try
                 {

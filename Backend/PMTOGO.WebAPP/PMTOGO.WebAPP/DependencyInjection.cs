@@ -1,5 +1,5 @@
-﻿using PMTOGO.Infrastructure.Services;
-using ILogger = PMTOGO.Infrastructure.Interfaces.ILogger;
+﻿using AA.PMTOGO.Services;
+using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
 
 namespace PMTOGO.Infrastructure
 {

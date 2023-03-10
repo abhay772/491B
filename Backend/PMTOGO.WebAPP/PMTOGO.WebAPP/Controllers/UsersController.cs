@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PMTOGO.WebAPP.Data;
-using PMTOGO.Domain.Entities;
-using ILogger = PMTOGO.Infrastructure.Interfaces.ILogger;
+using AA.PMTOGO.Models.Entities;
 
 namespace PMTOGO.WebAPP.Controllers
 {
-    [ApiController]
+    /*[ApiController]
     [Route("api/[controller]")]
     public class UsersController : Controller
     {
@@ -123,5 +121,5 @@ namespace PMTOGO.WebAPP.Controllers
 
             return Ok();
         }
-    }
+    }*/
 }

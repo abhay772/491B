@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using AA.PMTOGO.WebAPP.Models;
-using ILogger = PMTOGO.WebAPP.Interfaces.ILogger;
-using PMTOGO.WebAPP.Interfaces;
-
+﻿using AA.PMTOGO.Infrastructure.Interfaces;
+using AA.PMTOGO.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
 
 namespace PMTOGO.WebAPP.Controllers
 {
