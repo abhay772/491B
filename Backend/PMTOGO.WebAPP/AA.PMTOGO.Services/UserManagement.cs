@@ -21,7 +21,7 @@ namespace AA.PMTOGO.Services
             if (valid.ValidateEmail(email).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
             {
                 
-                if (!_authNDAO.FindUser(email).IsSuccessful)//user doesnt exist so procceed
+                if (!_authNDAO.DoesUserExist(email).IsSuccessful)//user doesnt exist so procceed
                 {
                     Console.WriteLine("User doesnt exist procceed");
                     //add user account

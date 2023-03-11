@@ -41,11 +41,13 @@ namespace AA.PMTOGO.DAL
 
                             result.IsSuccessful = true;
                             result.Payload = user;
+                            return result;
                         }
                         else
                         {
                             result.IsSuccessful = false;
                             result.ErrorMessage = "Account Disabled.";
+                            return result;
                         }
                     }
                     catch
@@ -53,14 +55,46 @@ namespace AA.PMTOGO.DAL
 
                         result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                         result.IsSuccessful = false;
-                        //_logger!.Log("FindUser", 4, LogCategory.Server, result);
-                        return result;
+                        _logger!.Log("FindUser", 4, LogCategory.Server, result);
+                        
                     }
                 }
             }
             result.IsSuccessful = false;
-            result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
             return result;
+        }
+
+        public Result DoesUserExist(string email)
+        {
+            var result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM UserProfiles WHERE @Email = email";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@Email", email);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (email.Equals(reader["Email"]))
+                        {
+                            result.IsSuccessful = true;
+                            result.ErrorMessage = "User already exists.";
+                            return result;
+                        }
+                    }
+                }
+
+                result.IsSuccessful = false;
+                return result;
+            }
         }
 
         public Result DeactivateUser(string username)
