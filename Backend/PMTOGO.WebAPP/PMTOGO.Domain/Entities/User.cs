@@ -5,7 +5,6 @@ namespace AA.PMTOGO.Models.Entities
 {
     public class User
     {
-        public int Id { get; set; }
         [Key]
         public string Username { get; set; } = string.Empty;
         [Required]
@@ -23,9 +22,9 @@ namespace AA.PMTOGO.Models.Entities
 
         }
 
-        public User(int id, string username, string email, string firstName, string lastName, string role)
+        public User(string username, string email, string firstName, string lastName, string role)
         {
-            Id = id;
+
             Username = username;
             Email = email;
             FirstName = firstName;
@@ -33,9 +32,9 @@ namespace AA.PMTOGO.Models.Entities
             Role = role;
 
         }
-        public User(int id, string passDigest, string salt, bool isActive, int attempt)
+        public User(string passDigest, string salt, bool isActive, int attempt)
         {
-            Id = id;
+
             PassDigest = passDigest;
             Salt = salt;
             IsActive = isActive;

@@ -13,9 +13,9 @@ namespace AA.PMTOGO.Services
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
 
-        static int userID = 0;
-
-        public Result CreateAccount(string email, string password, string firstname, string lastname, string role)
+        //static int userID = 0;
+                                            //byte[] to string
+        public Result CreateAccount(string email,string password, string firstname, string lastname, string role)
         {
             Result result = new Result();
             if (valid.ValidateEmail(email).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
@@ -25,15 +25,15 @@ namespace AA.PMTOGO.Services
                 {
                     Console.WriteLine("User doesnt exist procceed");
                     //add user account
-                    userID += 1;
+                    //userID += 1;
                     string salt = GenerateSalt();
                     string passDigest = EncryptPassword(password, salt);
 
-                    _authNDAO.SaveUserAccount(userID, email, passDigest, salt);
-                    _authNDAO.SaveUserProfile(userID, email, firstname, lastname, role);
+                    _authNDAO.SaveUserAccount(email, passDigest, salt);
+                    _authNDAO.SaveUserProfile(email, firstname, lastname, role);
 
                     //log account created succesfully  
-                    User user = new User(userID, email, email, firstname, lastname, role);
+                    User user = new User(email, email, firstname, lastname, role);
                     result.IsSuccessful = true;
                     result.Payload = user;
                     return result;
@@ -53,7 +53,7 @@ namespace AA.PMTOGO.Services
                 result.IsSuccessful = false;
                 
             }
-
+            result.IsSuccessful = false;
             return result;
         }
 
@@ -108,8 +108,8 @@ namespace AA.PMTOGO.Services
             // Lecture Vong 12/13 
             var hash = new Rfc2898DeriveBytes(pass, user_salt, 1000, HashAlgorithmName.SHA512);
             var encryptedPass = hash.GetBytes(64);
-            string passDigest = Encoding.UTF8.GetString(encryptedPass);
-            Console.WriteLine(passDigest);
+            string passDigest = Convert.ToBase64String(encryptedPass);
+            //Console.WriteLine(passDigest);
             return passDigest;
         }
     }

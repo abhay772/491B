@@ -52,6 +52,7 @@ namespace AA.PMTOGO.DAL
                     {
 
                         result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        result.IsSuccessful = false;
                         //_logger!.Log("FindUser", 4, LogCategory.Server, result);
                         return result;
                     }
@@ -153,18 +154,17 @@ namespace AA.PMTOGO.DAL
         }
 
         //sensitive info
-        public Result SaveUserAccount(int userID, string username, string passDigest, string salt)
+        public Result SaveUserAccount(string username, string passDigest, string salt)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserAccounts VALUES(@Id, @Username, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
+                string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@Id", userID);
                 command.Parameters.AddWithValue("@Username", username);
                 command.Parameters.AddWithValue("@PassDigest", passDigest);
                 command.Parameters.AddWithValue("@Salt", salt);
@@ -205,18 +205,17 @@ namespace AA.PMTOGO.DAL
             return result;
         }
         //non-sensitive info
-        public Result SaveUserProfile(int userID, string email, string firstName, string lastName, string role)
+        public Result SaveUserProfile(string email, string firstName, string lastName, string role)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserProfiles VALUES(@Id, @Username, @Email, @FirstName, @LastName, @Role)";
+                string sqlQuery = "INSERT into UserProfiles VALUES(@Username, @Email, @FirstName, @LastName, @Role)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@Id", userID);
                 command.Parameters.AddWithValue("@Username", email);
                 command.Parameters.AddWithValue("@Email", email);
                 command.Parameters.AddWithValue("@FirstName", firstName);
