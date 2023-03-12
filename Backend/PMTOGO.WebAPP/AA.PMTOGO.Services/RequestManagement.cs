@@ -12,7 +12,7 @@ namespace AA.PMTOGO.Services
         public async Task<Result> AcceptRequest(ServiceRequest service)
         {//add service request and delete from requested service and return new lsit of service request
             Result result = new Result();
-
+         
             Result add = await _requestDAO.AddService(service.ServiceRequestId, service.PropertyManagerEmail, service.ServiceName, service.ServiceDescription,
                 service.ServiceType, service.ServiceFrequency, service.ServiceProviderEmail, service.PropertyManagerName);
 
@@ -21,7 +21,11 @@ namespace AA.PMTOGO.Services
                 result = add;
                 return result;
             }
-            result = await DeclineRequest(service.ServiceRequestId, service.ServiceProviderEmail);
+            else
+            {
+                result = await DeclineRequest(service.ServiceRequestId, service.ServiceProviderEmail);
+
+            }
             return result;
         }
 
@@ -42,15 +46,22 @@ namespace AA.PMTOGO.Services
 
         public async Task<Result> GatherServiceRequest(string username)
         {
-            Result result = new Result();
-            result = await _requestDAO.GetUserRequest(username);
+            
+            Result result = await _requestDAO.GetUserRequest(username);
             return result;
         }
 
         public async Task<Result> RateService(Guid id, int rate)
         {
-            Result result = new Result();
-            result = await _requestDAO.RateUserService(id, rate);
+            
+            Result result = await _requestDAO.RateUserService(id, rate);
+            return result;
+        }
+        public async Task<Result> CreateRequest(ServiceRequest service)
+        {
+            Guid serviceRequestId = Guid.NewGuid();
+            Result result = await _requestDAO.AddRequest(serviceRequestId, service.ServiceProviderEmail, service.ServiceName, service.ServiceDescription,
+                service.ServiceType, service.ServiceFrequency, service.Comments, service.PropertyManagerName, service.PropertyManagerEmail);
             return result;
         }
 

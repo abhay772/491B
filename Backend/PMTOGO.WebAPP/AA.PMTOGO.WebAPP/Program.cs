@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure();
 
 builder.Services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDbConnectionString")));
+builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceDbConnectionString")));
 var app = builder.Build();
 
 

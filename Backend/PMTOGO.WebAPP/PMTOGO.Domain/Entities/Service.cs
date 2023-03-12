@@ -8,9 +8,9 @@ namespace AA.PMTOGO.Models.Entities
 {
     public class Service
     {
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty; 
-        public string Type { get; set; } = string.Empty;
+        public string ServiceName { get; set; } = string.Empty;
+        public string ServiceDescription { get; set; } = string.Empty; 
+        public string ServiceType { get; set; } = string.Empty;
         public string ServiceProvider { get; set; } = string.Empty;
         public string ServiceProviderEmail { get; set; } = string.Empty;
         
@@ -18,9 +18,9 @@ namespace AA.PMTOGO.Models.Entities
 
         public Service(string name, string description, string type, string serviceProvider, string providerEmail)
         {
-            Name = name;
-            Description = description;
-            Type = type;
+            ServiceName = name;
+            ServiceDescription = description;
+            ServiceType = type;
             ServiceProvider = serviceProvider;
             ServiceProviderEmail = providerEmail;
         }     

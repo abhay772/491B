@@ -15,7 +15,6 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IServiceManager, ServiceManager>();
             services.AddTransient<IRequestManagement, RequestManagement>();
             
-
             return services;
         }
     }

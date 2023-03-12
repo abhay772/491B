@@ -7,7 +7,7 @@ namespace AA.PMTOGO.DAL
 {
     public class RequestDAO
     {
-        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
+        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
         private readonly ILogger? _logger;
 
         public async Task<Result> GetUserRequest(string username)
@@ -18,7 +18,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM ServiceRequest WHERE @Username = username";
+                string sqlQuery = "SELECT * FROM ServiceRequests WHERE @Username = username";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -106,16 +106,17 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> AddService(Guid serviceId, string propertyManagerEmail, string serviceName, string serviceDescription,string serviceType, string serviceFrequency, string serviceProviderEmail, string serviceProviderName)
+        public async Task<Result> AddService(Guid serviceId, string propertyManagerEmail, string serviceName, string serviceDescription,string serviceType, string serviceFrequency, 
+            string serviceProviderEmail, string serviceProviderName)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserService VALUES(@ServiceId, @PropertyManagerEmail, @ServiceName,  @ServiceDescription," +
-                    " @ServiceType, @ServiceFrequency, @ServiceProviderEmail, @ServiceProvider, @Status, @Rating)";
- 
+                string sqlQuery = "INSERT into UserServices VALUES(@ServiceId, @PropertyManagerEmail, @ServiceName, @ServiceDescription, @ServiceType, @ServiceFrequency, @ServiceProviderEmail, @ServiceProvider, @Status, @Rating)";
+
+                
                 var command = new SqlCommand(sqlQuery, connection);
 
                 command.Parameters.AddWithValue("@ServiceId", serviceId);
@@ -159,6 +160,60 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
+        public async Task<Result> AddRequest(Guid requestId, string serviceProviderEmail, string serviceName, string serviceDescription,
+                string serviceType, string serviceFrequency, string comments, string propertyManagerName, string propertyManagerEmail)
+        {
+            var result = new Result();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "INSERT into ServiceRequests VALUES(@ServiceRequestId, @ServiceProviderEmail, @ServiceName, @ServiceDescription," +
+                    " @ServiceType, @ServiceFrequency, @Comments, @PropertyManagerEmail, @PropertyManagerName)";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceRequestId", requestId);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceName", serviceName);
+                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
+                command.Parameters.AddWithValue("@ServiceType", serviceType);
+                command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
+                command.Parameters.AddWithValue("@Comments", comments);
+                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
+                command.Parameters.AddWithValue("@PropertyManagerName", propertyManagerName);
+
+
+                try
+                {
+                    var rows = await command.ExecuteNonQueryAsync();
+                    if (rows == 1)
+                    {
+                        result.IsSuccessful = true;
+                        return result;
+                    }
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "too many rows affected";
+                        return result;
+                    }
+                }
+                catch (SqlException e)
+                {
+                    if (e.Number == 208)
+                    {
+                        result.ErrorMessage = "Specified table not found";
+                        //_logger!.Log("AddRequest", 4, LogCategory.DataStore, result);
+                    }
+                }
+
+            }
+
+            result.IsSuccessful = false;
+            return result;
+        }
+
         public async Task<Result> DeleteServiceRequest(Guid serviceId)
         {
             var result = new Result();
@@ -166,7 +221,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "DELETE FROM ServiceRequest WHERE @ServiceId = serviceId)";
+                string sqlQuery = "DELETE FROM ServiceRequests WHERE @ServiceId = serviceId)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 

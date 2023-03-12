@@ -30,7 +30,7 @@ namespace AA.PMTOGO.Managers
             {
                 Result resultLog = new Result();
                 resultLog.ErrorMessage = "Took" + seconds + "seconds to create user, longer than alloted ";
-                _logger!.Log("RegisterUser", 1, LogCategory.Data, resultLog);
+                //_logger!.Log("RegisterUser", 1, LogCategory.Data, resultLog);
                 //log it took longer than 5 seconds 
             }
 

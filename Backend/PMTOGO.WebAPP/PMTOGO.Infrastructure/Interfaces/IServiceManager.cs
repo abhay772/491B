@@ -13,5 +13,8 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
         Task<Result> RemoveServiceRequest(ServiceRequest request); // update decline
         Task<Result> RateUserService(UserService service, int rate);// rate service
         Task<Result> GetUserRequest(string username);//get all request for service provider user
+        Task<Result> RequestAService(ServiceRequest serviceRequest);
+
+
     }
 }
