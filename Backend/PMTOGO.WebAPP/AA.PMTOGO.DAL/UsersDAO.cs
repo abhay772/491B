@@ -27,7 +27,6 @@ namespace AA.PMTOGO.DAL
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    reader.Read();
                     try
                     {
                         reader.Read();
