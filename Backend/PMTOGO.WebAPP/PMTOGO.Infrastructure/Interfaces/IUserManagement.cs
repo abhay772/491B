@@ -9,8 +9,8 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
 {
     public interface IUserManagement
     {
-        Result CreateAccount(string email, string password, string firstname, string lastname, string role);
-        Result DeactivateAccount(string username, string password);
+        Task<Result> CreateAccount(string email, string password, string firstname, string lastname, string role);
+        Task<Result> DeactivateAccount(string username, string password);
         string GenerateSalt();
         string EncryptPassword(string password, string salt);
     }

@@ -23,7 +23,7 @@ namespace AA.PMTOGO.Managers
         public async Task<Result> RegisterUser(string email, string password, string firstname, string lastname, string role)
         {
             var timer = Stopwatch.StartNew();
-            Result result = await Task.Run(() => _account.CreateAccount(email, password, firstname, lastname, role));
+            Result result = await _account.CreateAccount(email, password, firstname, lastname, role);
             timer.Stop();
             var seconds = timer.ElapsedMilliseconds / 1000;
             if (seconds > 5)
@@ -39,7 +39,7 @@ namespace AA.PMTOGO.Managers
 
         public async Task<Result> RemoveUser(string username, string password)
         {
-            Result result = await Task.Run(() => _account.DeactivateAccount(username, password));
+            Result result = await _account.DeactivateAccount(username, password);
             return result;
         }
     }

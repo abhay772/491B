@@ -24,7 +24,7 @@ public class AuthManager : IAuthManager
             result.ErrorMessage = "Account disabled. Perform account recovery or contact system admin";
         }
 
-        result = _authenticator.Authenticate(username, password);
+        result = await _authenticator.Authenticate(username, password);
 
         string role = null!;
 

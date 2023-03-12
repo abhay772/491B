@@ -10,7 +10,7 @@ namespace AA.PMTOGO.Models.Entities
     {
         public bool IsSuccessful { get; set; }
 
-        public string ErrorMessage { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public object? Payload;
     }

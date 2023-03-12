@@ -4,7 +4,7 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
 {
     public interface IAuthenticator
     {
-        Result Authenticate(string username, string password);
+        Task<Result> Authenticate(string username, string password);
         string EncryptPassword(string password, string salt);
         string GenerateOTP();
         Task<int> GetFailedAttempts(string username);

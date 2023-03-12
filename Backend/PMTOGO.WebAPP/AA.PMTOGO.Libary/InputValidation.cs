@@ -15,7 +15,7 @@ namespace AA.PMTOGO.Libary
                 result.ErrorMessage = "Invalid email provided. Retry again or contact system administrator";
                 return result;
             }
-            if (Regex.IsMatch(email, @"^[a-zA-Z0-9-@.\s]+$") && email.Length >= 8 && email.Length < 30 && email.Contains("@"))
+            if (Regex.IsMatch(email, @"^[a-zA-Z0-9-@.\s]+$") && email.Length >= 8 && email.Length < 50 && email.Contains("@"))
             {
                 result.IsSuccessful = true;
                 return result;

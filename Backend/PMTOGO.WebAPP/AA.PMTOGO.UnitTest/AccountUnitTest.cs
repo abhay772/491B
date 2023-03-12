@@ -1,4 +1,7 @@
+using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
+using AA.PMTOGO.Managers;
+using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 using System.Diagnostics;
 
@@ -23,17 +26,22 @@ namespace AA.PMTOGO.UnitTest
 
         [TestMethod]
         // should provide sytstem-wide unique username
-        public void ShouldAssignUniqueUsername()
+        public async void ShouldAssignUniqueUsername()
         {
             // Arrange
-            var registration = new UserManagement();
+            var user = new UserManagement();
+            
+
            //username = email
-           
-            bool accountCreated = registration.CreateAccount("test2@gmail.com", "randomstring", "John", "Doe", "Property Manager").IsSuccessful;
+            
+            Result result = await user.CreateAccount("test2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            
+            bool accountCreated = result.IsSuccessful;
 
             // Act
-            bool account2Created = registration.CreateAccount("test2@gmail.com", "randompass", "Jo", "De", "Property Manager").IsSuccessful;
-            
+            Result result1 = await user.CreateAccount("test2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            bool account2Created = result1.IsSuccessful;
+
             // Assert
             Assert.IsNotNull(accountCreated);
             Assert.IsNotNull(account2Created);
@@ -133,7 +141,7 @@ namespace AA.PMTOGO.UnitTest
 
         }
         [TestMethod]
-        public void ShouldCreateAccountWithin5Seconds()
+        public async void ShouldCreateAccountWithin5Seconds()
         {
             //aranage
 
@@ -141,7 +149,8 @@ namespace AA.PMTOGO.UnitTest
 
             //act
             var time = Stopwatch.StartNew();
-            bool OnTime = registration.CreateAccount("ggnamegmail.com", "randompass", "John", "Doe", "Property Manager").IsSuccessful;
+            Result result = await registration.CreateAccount("OnTimegmail.com", "randompass", "John", "Doe", "Property Manager");
+            bool OnTime = result.IsSuccessful;
             time.Stop();
             var second = time.ElapsedMilliseconds / 1000;
             if (second < 5)
@@ -151,7 +160,8 @@ namespace AA.PMTOGO.UnitTest
 
             var timer = Stopwatch.StartNew();
             Thread.Sleep(6000);
-            bool OverTime = registration.CreateAccount("namegmail.com", "randomstring", "John", "Doe", "Property Manager").IsSuccessful;
+            Result result1 = await registration.CreateAccount("OverTimegmail.com", "randomstring", "John", "Doe", "Property Manager");
+            bool OverTime = result1.IsSuccessful;
             timer.Stop();
             var seconds = timer.ElapsedMilliseconds / 1000;
             if (seconds > 5)

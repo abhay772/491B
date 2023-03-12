@@ -9,7 +9,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
     [Route("api/[controller]")]
     public class UserManagementController : ControllerBase
     {
-        //private readonly UsersDbContext usersDbContext;
+        
         private readonly IAccountManager _accManager;
         private readonly ILogger _logger;
 
@@ -29,12 +29,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> AddUser([FromBody] UserRegister userRegister)
+        //[Route("{email, password, firstName, lastName, role}")]
+        [ActionName("AddUser")]
+        public async Task<IActionResult> AddUser([FromBody] UserRegister user)
         {
             try
             {
-                Result result = await _accManager.RegisterUser(userRegister.Email, userRegister.Password, userRegister.FirstName,
-                    userRegister.LastName, userRegister.Role);
+                Result result = await _accManager.RegisterUser(user.Email, user.Password, user.FirstName, user.LastName, user.Role);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);

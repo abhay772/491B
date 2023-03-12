@@ -17,12 +17,12 @@ namespace AA.PMTOGO.Services
         InputValidation valid = new InputValidation();
 
 
-        public Result Authenticate(string username, string password)
+        public async Task<Result> Authenticate(string username, string password)
         {
             Result result = new Result();
             if (valid.ValidateEmail(username).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
             {
-                result = _authNDAO.FindUser(username);
+                result = await _authNDAO.FindUser(username);
 
                 if (result.IsSuccessful)
                 {
@@ -87,14 +87,14 @@ namespace AA.PMTOGO.Services
             return await _authNDAO.GetFailedAttempts(username);
         }
 
-        public void ResetFailedAttempts(string username)
+        public async void ResetFailedAttempts(string username)
         {
-            _authNDAO.ResetFailedAttempts(username);
+            await _authNDAO.ResetFailedAttempts(username);
         }
 
-        public void UpdateFailedAttempts(string username)
+        public async void UpdateFailedAttempts(string username)
         {
-            _authNDAO.UpdateFailedAttempts(username);
+            await _authNDAO.UpdateFailedAttempts(username);
         }
 
         public string GenerateOTP()

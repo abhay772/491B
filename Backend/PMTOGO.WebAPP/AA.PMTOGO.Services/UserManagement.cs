@@ -15,13 +15,14 @@ namespace AA.PMTOGO.Services
 
         //static int userID = 0;
                                             //byte[] to string
-        public Result CreateAccount(string email,string password, string firstname, string lastname, string role)
+        public async Task<Result> CreateAccount(string email,string password, string firstname, string lastname, string role)
         {
             Result result = new Result();
             if (valid.ValidateEmail(email).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
             {
-                
-                if (!_authNDAO.DoesUserExist(email).IsSuccessful)//user doesnt exist so procceed
+                Result result1= new Result();
+                result1 = await _authNDAO.DoesUserExist(email);
+                if (result1.IsSuccessful == false)//user doesnt exist so procceed
                 {
                     Console.WriteLine("User doesnt exist procceed");
                     //add user account
@@ -29,8 +30,8 @@ namespace AA.PMTOGO.Services
                     string salt = GenerateSalt();
                     string passDigest = EncryptPassword(password, salt);
 
-                    _authNDAO.SaveUserAccount(email, passDigest, salt);
-                    _authNDAO.SaveUserProfile(email, firstname, lastname, role);
+                    await _authNDAO.SaveUserAccount(email, passDigest, salt);
+                    await _authNDAO.SaveUserProfile(email, firstname, lastname, role);
 
                     //log account created succesfully  
                     User user = new User(email, email, firstname, lastname, role);
@@ -44,7 +45,6 @@ namespace AA.PMTOGO.Services
                     result.ErrorMessage = "User account already exists.";
                     result.IsSuccessful = false;
                     return result;
-
                 }
             }
             else
@@ -57,16 +57,18 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public Result DeactivateAccount(string username, string password)
+        public async Task<Result> DeactivateAccount(string username, string password)
         {
             Result result = new Result();
             if (valid.ValidateEmail(username).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
             {
-                if (_authNDAO.FindUser(username).IsSuccessful)
+                Result result1 = new Result();
+                result1 = await _authNDAO.FindUser(username);
+                if (result1.IsSuccessful == false)
                 {
                     //deactivate user account
 
-                    _authNDAO.DeactivateUser(username);
+                   await _authNDAO.DeactivateUser(username);
 
                     //log account deactivate succesfully
 

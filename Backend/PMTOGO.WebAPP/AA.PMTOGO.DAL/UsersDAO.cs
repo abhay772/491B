@@ -1,6 +1,7 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
+using System.Runtime.CompilerServices;
 
 namespace AA.PMTOGO.DAL
 {
@@ -10,7 +11,7 @@ namespace AA.PMTOGO.DAL
         private readonly ILogger? _logger;
 
         //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
-        public Result FindUser(string username)
+        public async Task<Result> FindUser(string username)
         {
             Result result = new Result();
 
@@ -24,14 +25,14 @@ namespace AA.PMTOGO.DAL
 
                 command.Parameters.AddWithValue("@Username", username);
 
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
+                    reader.Read();
                     try
                     {
                         reader.Read();
                         if ((bool)reader["IsActive"])
                         {
-                            reader.Read();
                             User user = new User();
                             user.Username = (string)reader["Username"];
                             user.PassDigest = (string)reader["PassDigest"];
@@ -65,7 +66,7 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public Result DoesUserExist(string email)
+        public async Task<Result> DoesUserExist(string email)
         {
             var result = new Result();
 
@@ -79,7 +80,7 @@ namespace AA.PMTOGO.DAL
 
                 command.Parameters.AddWithValue("@Email", email);
 
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
                     while (reader.Read())
                     {
@@ -97,7 +98,7 @@ namespace AA.PMTOGO.DAL
             }
         }
 
-        public Result DeactivateUser(string username)
+        public async Task<Result> DeactivateUser(string username)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
@@ -110,7 +111,7 @@ namespace AA.PMTOGO.DAL
                 command.Parameters.AddWithValue("@Username", username);
                 try
                 {
-                    var rows = command.ExecuteNonQuery();
+                    var rows = await command.ExecuteNonQueryAsync();
 
                     if (rows == 1)
                     {
@@ -141,7 +142,7 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public Result ActivateUser(string username)
+        public async Task<Result> ActivateUser(string username)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
@@ -155,7 +156,7 @@ namespace AA.PMTOGO.DAL
 
                 try
                 {
-                    var rows = command.ExecuteNonQuery();
+                    var rows = await command.ExecuteNonQueryAsync();
 
                     if (rows == 1)
                     {
@@ -188,7 +189,7 @@ namespace AA.PMTOGO.DAL
         }
 
         //sensitive info
-        public Result SaveUserAccount(string username, string passDigest, string salt)
+        public async Task<Result> SaveUserAccount(string username, string passDigest, string salt)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
@@ -208,7 +209,7 @@ namespace AA.PMTOGO.DAL
 
                 try
                 {
-                    var rows = command.ExecuteNonQuery();
+                    var rows = await command.ExecuteNonQueryAsync();
 
                     if (rows == 1)
                     {
@@ -239,7 +240,7 @@ namespace AA.PMTOGO.DAL
             return result;
         }
         //non-sensitive info
-        public Result SaveUserProfile(string email, string firstName, string lastName, string role)
+        public async Task<Result> SaveUserProfile(string email, string firstName, string lastName, string role)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
@@ -259,7 +260,7 @@ namespace AA.PMTOGO.DAL
 
                 try
                 {
-                    var rows = command.ExecuteNonQuery();
+                    var rows = await command.ExecuteNonQueryAsync();
 
                     if (rows == 1)
                     {
@@ -289,7 +290,7 @@ namespace AA.PMTOGO.DAL
             result.IsSuccessful = false;
             return result;
         }
-        public void UpdateFailedAttempts(string username)
+        public async Task UpdateFailedAttempts(string username)
         {
             //var userAuthenticator = new User();
             using (var connection = new SqlConnection(_connectionString))
@@ -300,7 +301,7 @@ namespace AA.PMTOGO.DAL
                 var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
                 command.Parameters.AddWithValue("@Username", username);
 
-                var reader = command.ExecuteReader();
+                var reader = await command.ExecuteReaderAsync();
 
                 reader.Read();
                 int failedAttempts = (int)reader["Attempts"];
@@ -349,7 +350,7 @@ namespace AA.PMTOGO.DAL
             }
         }
 
-        public void ResetFailedAttempts(string username)
+        public async Task ResetFailedAttempts(string username)
         {
             //var userAuthenticator = new User();
             using (var connection = new SqlConnection(_connectionString))
@@ -358,7 +359,7 @@ namespace AA.PMTOGO.DAL
 
                 var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
                 command.Parameters.AddWithValue("@Usernamae", username);
-                command.ExecuteNonQuery();
+                await command.ExecuteNonQueryAsync();
 
             }
         }
