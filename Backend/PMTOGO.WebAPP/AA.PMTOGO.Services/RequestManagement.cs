@@ -57,7 +57,7 @@ namespace AA.PMTOGO.Services
             Result result = new Result();
             if(CheckRate(rate)) 
             { 
-                result = await _requestDAO.RateUserService(id, rate);
+                result = await _requestDAO.RateUserServices(id, rate);
                 return result;
             }
             result.IsSuccessful = false;
@@ -68,7 +68,7 @@ namespace AA.PMTOGO.Services
         {
             Guid serviceRequestId = Guid.NewGuid();
             Result result = await _requestDAO.AddRequest(serviceRequestId, request.ServiceName, request.ServiceType, request.ServiceDescription,
-               request.ServiceFrequency, request.Comments, request.ServiceProviderEmail, request.ServiceProviderName,request.PropertyManagerName, request.PropertyManagerEmail);
+               request.ServiceFrequency, request.Comments, request.ServiceProviderEmail, request.ServiceProviderName, request.PropertyManagerEmail, request.PropertyManagerName);
             return result;
         }
         public async Task<Result> CreateService(UserService service)

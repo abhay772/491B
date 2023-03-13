@@ -1,4 +1,5 @@
-﻿using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 using System.Diagnostics;
 
@@ -21,13 +22,28 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(actual.GetType() == expected);
         }
         [TestMethod]
-        public async void AcceptARequest()
+        public async Task GetServiceRequest()
+        {
+            // Arrange
+            var dao = new RequestDAO();
+
+            // Act
+            Result result = await dao.GetUserRequest("serviceProvider@gmail.com");
+            bool actual = result.IsSuccessful;
+            Console.WriteLine(result.Payload);
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
+        }
+        [TestMethod]
+        public async Task AcceptARequest()
         {
             // Arrange
             var service = new RequestManagement();
-            Guid id = Guid.NewGuid();
+            Guid id = new Guid("D0295F56-CFF3-4C1D-BA15-DE2412CDBA02");
             ServiceRequest request = new ServiceRequest(id, "Landscape", "trim palm tree leaves", "Clean", "1x/week", "nothing for now",
-                "mssierra310@gmail.com", "Sierra Harris","mssierr2001@gmail.com", "Sierra Harris");
+                "serviceProvider@gmail.com", "Sierra Harris", "Sara Jade", "propertyManager@gmail.com");
 
             // Act
             Result result = await service.AcceptRequest(request);
@@ -38,37 +54,37 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(actual);
         }
         [TestMethod]
-        public async void DeclineARequest()
+        public async Task DeclineARequest()
         {
             // Arrange
             var service = new RequestManagement();
-            Guid id = new Guid("36FDA2F7-FC46-4687-AEA8-22DF364688140");
+            Guid id = new Guid("36FD48D7-6963-457B-AA69-A64D78856564");
 
             // Act
-            Result result = await service.DeclineRequest(id,"mssierra310@gmail.com");
+            Result result = await service.DeclineRequest(id, "serviceProvider@gmail.com");
             bool actual = result.IsSuccessful;
 
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
         }
-        /*[TestMethod]
-        public async void RateARequest()
+        [TestMethod]
+        public async Task RateARequest()
         {
             // Arrange
             var service = new RequestManagement();
-            Guid id = //id from database
+            Guid id = new Guid("94B97BAF-0A2B-42B7-AC26-AB2444A9900C");
 
             // Act
-            //Result result = await service.RateService(id, 4);
-            //bool actual = result.IsSuccesfull;
+            Result result = await service.RateService(id, 4);
+            bool actual = result.IsSuccessful;
 
             // Assert
-            //Assert.IsNotNull(actual);
-            //Assert.IsTrue(actual);
-        }*/
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
+        }
         [TestMethod]
-        public async void AddAUserService()
+        public async Task AddAUserService()
         {
             // Arrange
             var service = new RequestManagement();
@@ -85,7 +101,7 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(actual);
         }
         [TestMethod]
-        public async void AddAServiceRequest()
+        public async Task AddAServiceRequest()
         {
             // Arrange
             RequestManagement service = new RequestManagement();
@@ -101,20 +117,21 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
         }
-        /*[TestMethod]
-        public void RateIsNotHigherThan5()
+        [TestMethod]
+        public async Task RateIsNotHigherThan5()
         {
             //arrange
             var service = new RequestManagement();
-            //Guid id = 
+            Guid id = new Guid("DCEA868C-DEDC-4FD2-90E8-3CCFB55A87B4");
 
             //act
-            //Result result = await service.RateService(id, 6);
-            //bool actual = result.IsSuccesfull;
+            Result result = await service.RateService(id, 6);
+            bool actual = result.IsSuccessful;
 
-            //Assert.IsNotNull(actual);
-            //Assert.IsFalse(actual);
-        }*/
+            //assert
+            Assert.IsNotNull(actual);
+            Assert.IsFalse(actual);
+        }
     }
 }
 

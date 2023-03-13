@@ -26,7 +26,7 @@ namespace AA.PMTOGO.UnitTest
 
         [TestMethod]
         // should provide sytstem-wide unique username
-        public async void ShouldAssignUniqueUsername()
+        public async Task ShouldAssignUniqueUsername()
         {
             // Arrange
             var user = new UserManagement();
@@ -34,12 +34,12 @@ namespace AA.PMTOGO.UnitTest
 
            //username = email
             
-            Result result = await user.CreateAccount("test2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            Result result = await user.CreateAccount("account@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             
             bool accountCreated = result.IsSuccessful;
 
             // Act
-            Result result1 = await user.CreateAccount("test2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            Result result1 = await user.CreateAccount("account@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             bool account2Created = result1.IsSuccessful;
 
             // Assert
@@ -141,7 +141,7 @@ namespace AA.PMTOGO.UnitTest
 
         }
         [TestMethod]
-        public async void ShouldCreateAccountWithin5Seconds()
+        public async Task ShouldCreateAccountWithin5Seconds()
         {
             //aranage
 
