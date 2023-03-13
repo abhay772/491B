@@ -27,7 +27,7 @@ namespace AA.PMTOGO.Managers
         // update decline
         public async Task<Result> RemoveServiceRequest(ServiceRequest request)
         {
-            Result result = await _service.DeclineRequest(request.ServiceRequestId, request.ServiceProviderEmail);
+            Result result = await _service.DeclineRequest(request.RequestId, request.ServiceProviderEmail);
             //_logger!.Log("RemoveServiceRequest", 1, LogCategory.Business, result);
 
             return result;

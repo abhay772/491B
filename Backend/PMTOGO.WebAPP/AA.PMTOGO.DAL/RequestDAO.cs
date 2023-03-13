@@ -35,13 +35,14 @@ namespace AA.PMTOGO.DAL
 
                             ServiceRequest request = new ServiceRequest();
 
-                            request.ServiceRequestId = (Guid)reader["ServiceRequestId"];
+                            request.RequestId = (Guid)reader["RequestId"];
                             request.ServiceName = (string)reader["ServiceName"];
-                            request.ServiceDescription = (string)reader["ServiceDescription"];
                             request.ServiceType = (string)reader["ServiceType"];
+                            request.ServiceDescription = (string)reader["ServiceDescription"];
                             request.ServiceFrequency = (string)reader["ServiceFrequency"];
                             request.Comments = (string)reader["Comments"];
                             request.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
+                            request.ServiceProviderName = (string)reader["ServiceProviderName"];
                             request.PropertyManagerName = (string)reader["PropertyManagerName"];
                             request.PropertyManagerEmail = (string)reader["PropertyManagerEmail"];
 
@@ -58,7 +59,7 @@ namespace AA.PMTOGO.DAL
 
                         result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                         result.IsSuccessful = false;
-                        _logger!.Log("FindUser", 4, LogCategory.Server, result);
+                       // _logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                     }
                 }
@@ -106,27 +107,28 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> AddService(Guid serviceId, string propertyManagerEmail, string serviceName, string serviceDescription,string serviceType, string serviceFrequency, 
-            string serviceProviderEmail, string serviceProviderName)
+        public async Task<Result> AddService(Guid serviceId, string serviceName, string serviceType, string serviceDescription, string serviceFrequency, 
+            string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserServices VALUES(@ServiceId, @PropertyManagerEmail, @ServiceName, @ServiceDescription, @ServiceType, @ServiceFrequency, @ServiceProviderEmail, @ServiceProvider, @Status, @Rating)";
+                string sqlQuery = "INSERT into UserServices VALUES(@ServiceId, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @ServiceProviderEmail, @ServiceProvider, @PropertyManagerEmail, @PropertyManagerName, @Status, @Rating)";
 
                 
                 var command = new SqlCommand(sqlQuery, connection);
 
                 command.Parameters.AddWithValue("@ServiceId", serviceId);
-                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
                 command.Parameters.AddWithValue("@ServiceName", serviceName);
-                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
                 command.Parameters.AddWithValue("@ServiceType", serviceType);
+                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
                 command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
                 command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
                 command.Parameters.AddWithValue("@ServiceProvider", serviceProviderName);
+                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
+                command.Parameters.AddWithValue("@PropertyManagerName", propertyManagerName);
                 command.Parameters.AddWithValue("@Status", "In-Progress");
                 command.Parameters.AddWithValue("@Rating", null);
 
@@ -160,26 +162,26 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> AddRequest(Guid requestId, string serviceProviderEmail, string serviceName, string serviceDescription,
-                string serviceType, string serviceFrequency, string comments, string propertyManagerName, string propertyManagerEmail)
+        public async Task<Result> AddRequest(Guid requestId, string serviceName, string serviceType, string serviceDescription,
+                 string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerName, string propertyManagerEmail)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into ServiceRequests VALUES(@ServiceRequestId, @ServiceProviderEmail, @ServiceName, @ServiceDescription," +
-                    " @ServiceType, @ServiceFrequency, @Comments, @PropertyManagerEmail, @PropertyManagerName)";
+                string sqlQuery = "INSERT into ServiceRequests VALUES(@RequestId, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @Comments, @ServiceProviderEmail, @ServiceProviderName, @PropertyManagerEmail, @PropertyManagerName)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@ServiceRequestId", requestId);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@RequestId", requestId);             
                 command.Parameters.AddWithValue("@ServiceName", serviceName);
-                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
                 command.Parameters.AddWithValue("@ServiceType", serviceType);
+                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);     
                 command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
                 command.Parameters.AddWithValue("@Comments", comments);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceProviderName", serviceProviderName);
                 command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
                 command.Parameters.AddWithValue("@PropertyManagerName", propertyManagerName);
 
