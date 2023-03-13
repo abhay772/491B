@@ -74,11 +74,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
         }
 
-        public class UserCredentials
-        {
-            public string Username { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-        }
         public class UserRegister
         {
             public string Email { get; set; } = string.Empty;

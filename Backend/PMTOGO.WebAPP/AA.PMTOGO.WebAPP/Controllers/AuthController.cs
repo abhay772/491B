@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AA.PMTOGO.Managers;
+using AA.PMTOGO.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
 using System.Text.Json;
@@ -30,23 +32,15 @@ public class AuthenticationController : ControllerBase
             {
                 var loginDTO = (LoginDTO)result.Payload;
 
-                var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
+                //var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
 
-                if (sendingOtpResult.IsSuccessful)
-                {
-                    string principalString = JsonSerializer.Serialize(loginDTO.principal);
+                string principalString = JsonSerializer.Serialize(loginDTO.principal);
 
-                    await SetCookieOptionsAsync(principalString);
+                await SetCookieOptionsAsync(principalString);
 
-                    await SetCorsOptionsAsync();
+                await SetCorsOptionsAsync();
 
-                    return Ok("Login successfull");
-                }
-
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError);
-                }
+                return Ok("Login successfull");
             }
 
             else
@@ -126,12 +120,6 @@ public class AuthenticationController : ControllerBase
         }
 
         return result;
-    }
-
-    public class UserCredentials
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 
 }

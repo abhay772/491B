@@ -80,5 +80,24 @@ namespace AA.PMTOGO.Libary
                 return result;
             }
         }
+
+        public Result ValidateRole(string role)
+        {
+            var result = new Result();
+
+            var today = DateTime.Now;
+
+            if (role == "Property Manager" || role == "Service Provider")
+            {
+                result.IsSuccessful = true;
+                return result;
+            }
+            else
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Invalid Role.";
+                return result;
+            }
+        }
     }
 }

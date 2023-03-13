@@ -35,6 +35,8 @@ public class UsersDAO
                         user.Salt = (string)reader["Salt"];
                         user.IsActive = (bool)reader["IsActive"];
                         user.Attempt = (int)reader["Attempts"];
+                        user.Role = (string)reader["Role"];
+
 
                         result.IsSuccessful = true;
                         result.Payload = user;

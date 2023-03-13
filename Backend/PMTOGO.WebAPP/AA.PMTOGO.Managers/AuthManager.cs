@@ -1,4 +1,6 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿using AA.PMTOGO.Authentication;
+using AA.PMTOGO.Infrastructure.Interfaces;
+using AA.PMTOGO.Models;
 using AA.PMTOGO.Models.Entities;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -18,19 +20,27 @@ public class AuthManager : IAuthManager
     {
         Result result = new Result();
 
-        if (await _authenticator.GetFailedAttempts(username) >= 3)
+        int attempts = await _authenticator.GetFailedAttempts(username);
+
+        if (attempts >= 3)
         {
             result.IsSuccessful = false;
             result.ErrorMessage = "Account disabled. Perform account recovery or contact system admin";
+            return result;
         }
-
+        else if (attempts < 0)
+        {
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Username or password is invalid.";
+            return result;
+        }
         result = await _authenticator.Authenticate(username, password);
 
-        string role = null!;
+        string role = null;
 
         if (result.IsSuccessful)
         {
-            role = (string)result.Payload!;
+            role = (string)result.Payload;
         }
 
         _authenticator.ResetFailedAttempts(username);
@@ -38,10 +48,10 @@ public class AuthManager : IAuthManager
         string otp = _authenticator.GenerateOTP();
 
         var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.Email, username),
+        {
+        new Claim(ClaimTypes.Name, username),
         new Claim(ClaimTypes.Role, role)
-    };
+        };
 
         IIdentity identity = new ClaimsIdentity(claims);
 

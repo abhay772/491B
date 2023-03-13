@@ -5,6 +5,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
+using AA.PMTOGO.Libary;
 
 namespace AA.PMTOGO.WebAPP.Controllers;
 
@@ -13,13 +14,14 @@ namespace AA.PMTOGO.WebAPP.Controllers;
 public class PropEvalController : ControllerBase
 {
     private readonly IPropEvalManager _propEvalManager;
+    private readonly InputValidation _inputValidation;
 
     public PropEvalController(IPropEvalManager propEvalManager)
     {
         _propEvalManager = propEvalManager;
     }
 
-    [HttpGet]
+    [HttpGet("loadProfile")]
     [Consumes("application/json")]
     public async Task<IActionResult> LoadProfile()
     {
@@ -33,6 +35,7 @@ public class PropEvalController : ControllerBase
 
             if (!string.IsNullOrEmpty(cookieValue))
             {
+                
                 // Deserializing the claims from the cookie
                 var principalString = cookieValue;
                 var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
@@ -47,7 +50,9 @@ public class PropEvalController : ControllerBase
                     string role = roleClaim.Value;
 
                     // Check if the role is Property Manager
-                    if (role != null && role == "Property Manager")
+                    bool validationCheck = _inputValidation.ValidateUsername(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+
+                    if (role != null && validationCheck && role == "Property Manager")
                     {
 
                         // Call the loadProfile function 
@@ -79,7 +84,7 @@ public class PropEvalController : ControllerBase
         }
     }
 
-    [HttpPut]
+    [HttpPut("saveProfile")]
     [Consumes("application/json")]
     public async Task<IActionResult> SaveProfile(PropertyProfile propertyProfile)
     {
@@ -107,7 +112,9 @@ public class PropEvalController : ControllerBase
                     string role = roleClaim.Value;
 
                     // Check if the role is Property Manager
-                    if (role != null && role == "Property Manager")
+                    bool validationCheck = _inputValidation.ValidateUsername(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+
+                    if (role != null && validationCheck && role == "Property Manager")
                     {
 
                         // Call the saveProfile function 
@@ -136,7 +143,7 @@ public class PropEvalController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpGet("evaluate")]
     [Consumes("application/json")]
     public async Task<IActionResult> Evaluate(PropertyProfile propertyProfile)
     {
@@ -164,7 +171,9 @@ public class PropEvalController : ControllerBase
                     string role = roleClaim.Value;
 
                     // Check if the role is Property Manager
-                    if (role != null && role == "Property Manager")
+                    bool validationCheck = _inputValidation.ValidateUsername(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+
+                    if (role != null && validationCheck && role == "Property Manager")
                     {
 
                         // Call the evaluate function 

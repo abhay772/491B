@@ -1,5 +1,7 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
+using AA.PMTOGO.Libary;
 using AA.PMTOGO.Models.Entities;
+using System.Data;
 using System.Net;
 using System.Net.Mail;
 
@@ -10,21 +12,33 @@ public class PropEvalManager : IPropEvalManager
 {
     private readonly ISqlPropEvalDAO _sqlPropEvalDAO;
     private readonly IPropertyEvaluator _evaluator;
+    private readonly InputValidation _inputeValidation;
 
     public PropEvalManager(ISqlPropEvalDAO sqlPropEvalDAO, IPropertyEvaluator evaluator)
     {
         _sqlPropEvalDAO = sqlPropEvalDAO;
         _evaluator = evaluator;
+        _inputeValidation = new InputValidation();
     }
 
     public async Task<Result> loadProfileAsync(string username)
     {
-        return await _sqlPropEvalDAO.loadProfileAsync(username);
+        if(_inputeValidation.ValidateUsername(username).IsSuccessful)
+        {
+            return await _sqlPropEvalDAO.loadProfileAsync(username);
+        }
+     
+        return new Result() { IsSuccessful =false, ErrorMessage = "Invalid Username" };
     }
 
     public async Task<Result> saveProfileAsync(string username, PropertyProfile propertyProfile)
     {
-        return await _sqlPropEvalDAO.saveProfileAsync(username, propertyProfile);
+        if (_inputeValidation.ValidateUsername(username).IsSuccessful)
+        {
+            return await _sqlPropEvalDAO.saveProfileAsync(username, propertyProfile);
+        }
+
+        return new Result() { IsSuccessful = false, ErrorMessage = "Invalid Username" };
     }
 
     public async Task<Result> evaluateAsync(string username, PropertyProfile propertyProfile)

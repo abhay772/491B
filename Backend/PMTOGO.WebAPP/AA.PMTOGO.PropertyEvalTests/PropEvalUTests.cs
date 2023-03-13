@@ -51,7 +51,7 @@ public class PropEvalUTests
         Result result = propEvalManager.loadProfileAsync(username).Result;
 
         // Assert
-        Assert.IsNull(result.Payload);
+        Assert.IsFalse(result.IsSuccessful);
     }
 
     // saveProfile(username, propertyProfile), where username is valid and non-valid, and propertyProfile full, partial and empty.
