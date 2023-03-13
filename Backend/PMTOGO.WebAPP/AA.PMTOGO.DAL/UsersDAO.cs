@@ -1,366 +1,362 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
-using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
-using System.Runtime.CompilerServices;
+namespace AA.PMTOGO.DAL;
 
-namespace AA.PMTOGO.DAL
+public class UsersDAO
 {
-    public class UsersDAO
+    private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
+    //private readonly ILogger? _logger;
+
+    //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
+    public async Task<Result> FindUser(string username)
     {
-        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
-        private readonly ILogger? _logger;
+        Result result = new Result();
 
-        //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
-        public async Task<Result> FindUser(string username)
+        using (var connection = new SqlConnection(_connectionString))
         {
-            Result result = new Result();
+            connection.Open();
 
-            using (var connection = new SqlConnection(_connectionString))
+            string sqlQuery = "SELECT * FROM UserAccounts WHERE @Username = username";
+
+            var command = new SqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@Username", username);
+
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
             {
-                connection.Open();
-
-                string sqlQuery = "SELECT * FROM UserAccounts WHERE @Username = username";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@Username", username);
-
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                {
-                    try
-                    {
-                        reader.Read();
-                        if ((bool)reader["IsActive"])
-                        {
-                            User user = new User();
-                            user.Username = (string)reader["Username"];
-                            user.PassDigest = (string)reader["PassDigest"];
-                            user.Salt = (string)reader["Salt"];
-                            user.IsActive = (bool)reader["IsActive"];
-                            user.Attempt = (int)reader["Attempts"];
-
-                            result.IsSuccessful = true;
-                            result.Payload = user;
-                            return result;
-                        }
-                        else
-                        {
-                            result.IsSuccessful = false;
-                            result.ErrorMessage = "Account Disabled.";
-                            return result;
-                        }
-                    }
-                    catch
-                    {
-
-                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
-                        result.IsSuccessful = false;
-                        _logger!.Log("FindUser", 4, LogCategory.Server, result);
-                        
-                    }
-                }
-            }
-            result.IsSuccessful = false;
-            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
-            return result;
-        }
-
-        public async Task<Result> DoesUserExist(string email)
-        {
-            var result = new Result();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "SELECT * FROM UserProfiles WHERE @Email = email";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@Email", email);
-
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                {
-                    while (reader.Read())
-                    {
-                        if (email.Equals(reader["Email"]))
-                        {
-                            result.IsSuccessful = true;
-                            result.ErrorMessage = "User already exists.";
-                            return result;
-                        }
-                    }
-                }
-
-                result.IsSuccessful = false;
-                return result;
-            }
-        }
-
-        public async Task<Result> DeactivateUser(string username)
-        {
-            var result = new Result();
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "UPDATE UserAccounts SET IsActive = 0  WHERE @Username = username";
-
-                var command = new SqlCommand(sqlQuery, connection);
-                command.Parameters.AddWithValue("@Username", username);
                 try
                 {
-                    var rows = await command.ExecuteNonQueryAsync();
-
-                    if (rows == 1)
+                    reader.Read();
+                    if ((bool)reader["IsActive"])
                     {
+                        User user = new User();
+                        user.Username = (string)reader["Username"];
+                        user.PassDigest = (string)reader["PassDigest"];
+                        user.Salt = (string)reader["Salt"];
+                        user.IsActive = (bool)reader["IsActive"];
+                        user.Attempt = (int)reader["Attempts"];
+
                         result.IsSuccessful = true;
+                        result.Payload = user;
                         return result;
                     }
-
                     else
                     {
                         result.IsSuccessful = false;
-                        result.ErrorMessage = "too many rows affected";
+                        result.ErrorMessage = "Account Disabled.";
                         return result;
                     }
                 }
-
-                catch (SqlException e)
+                catch
                 {
-                    if (e.Number == 208)
-                    {
-                        result.ErrorMessage = "Specified table not found";
-                        _logger!.Log("DeactivateUser", 4, LogCategory.DataStore, result);
-                    }
+
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
+                    //_logger!.Log("FindUser", 4, LogCategory.Server, result);
+                    
                 }
-
             }
-
-            result.IsSuccessful = false;
-            return result;
         }
+        result.IsSuccessful = false;
+        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+        return result;
+    }
 
-        public async Task<Result> ActivateUser(string username)
+    public async Task<Result> DoesUserExist(string email)
+    {
+        var result = new Result();
+
+        using (var connection = new SqlConnection(_connectionString))
         {
-            var result = new Result();
-            using (var connection = new SqlConnection(_connectionString))
+            connection.Open();
+
+            string sqlQuery = "SELECT * FROM UserProfiles WHERE @Email = email";
+
+            var command = new SqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@Email", email);
+
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
             {
-                connection.Open();
-
-                string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE @Username = username";
-
-                var command = new SqlCommand(sqlQuery, connection);
-                command.Parameters.AddWithValue("@Username", username);
-
-                try
+                while (reader.Read())
                 {
-                    var rows = await command.ExecuteNonQueryAsync();
-
-                    if (rows == 1)
+                    if (email.Equals(reader["Email"]))
                     {
                         result.IsSuccessful = true;
-                        return result;
-                    }
-
-                    else
-                    {
-                        result.IsSuccessful = false;
-                        result.ErrorMessage = "too many rows affected";
+                        result.ErrorMessage = "User already exists.";
                         return result;
                     }
                 }
-
-                catch (SqlException e)
-                {
-                    if (e.Number == 208)
-                    {
-                        result.ErrorMessage = "Specified table not found";
-                        _logger!.Log("ActivateUser", 4, LogCategory.DataStore, result);
-
-                    }
-                }
-
             }
 
             result.IsSuccessful = false;
             return result;
         }
+    }
 
-        //sensitive info
-        public async Task<Result> SaveUserAccount(string username, string passDigest, string salt)
+    public async Task<Result> DeactivateUser(string username)
+    {
+        var result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
         {
-            var result = new Result();
-            using (var connection = new SqlConnection(_connectionString))
+            connection.Open();
+
+            string sqlQuery = "UPDATE UserAccounts SET IsActive = 0  WHERE @Username = username";
+
+            var command = new SqlCommand(sqlQuery, connection);
+            command.Parameters.AddWithValue("@Username", username);
+            try
             {
-                connection.Open();
+                var rows = await command.ExecuteNonQueryAsync();
 
-                string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@Username", username);
-                command.Parameters.AddWithValue("@PassDigest", passDigest);
-                command.Parameters.AddWithValue("@Salt", salt);
-                command.Parameters.AddWithValue("@IsActive", 1);
-                command.Parameters.AddWithValue("@Attempts", 0);
-                command.Parameters.AddWithValue("@Timestamp", DateTime.Now);
-
-                try
+                if (rows == 1)
                 {
-                    var rows = await command.ExecuteNonQueryAsync();
-
-                    if (rows == 1)
-                    {
-                        result.IsSuccessful = true;
-                        return result;
-                    }
-
-                    else
-                    {
-                        result.IsSuccessful = false;
-                        result.ErrorMessage = "too many rows affected";
-                        return result;
-                    }
+                    result.IsSuccessful = true;
+                    return result;
                 }
 
-                catch (SqlException e)
-                {
-                    if (e.Number == 208)
-                    {
-                        result.ErrorMessage = "Specified table not found";
-                        _logger!.Log("SaveUserAccount", 4, LogCategory.DataStore, result);
-                    }
-                }
-
-            }
-
-            result.IsSuccessful = false;
-            return result;
-        }
-        //non-sensitive info
-        public async Task<Result> SaveUserProfile(string email, string firstName, string lastName, string role)
-        {
-            var result = new Result();
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "INSERT into UserProfiles VALUES(@Username, @Email, @FirstName, @LastName, @Role)";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@Username", email);
-                command.Parameters.AddWithValue("@Email", email);
-                command.Parameters.AddWithValue("@FirstName", firstName);
-                command.Parameters.AddWithValue("@LastName", lastName);
-                command.Parameters.AddWithValue("@Role", role);
-
-
-                try
-                {
-                    var rows = await command.ExecuteNonQueryAsync();
-
-                    if (rows == 1)
-                    {
-                        result.IsSuccessful = true;
-                        return result;
-                    }
-
-                    else
-                    {
-                        result.IsSuccessful = false;
-                        result.ErrorMessage = "too many rows affected";
-                        return result;
-                    }
-                }
-
-                catch (SqlException e)
-                {
-                    if (e.Number == 208)
-                    {
-                        result.ErrorMessage = "Specified table not found";
-                        _logger!.Log("SaveUserProfile", 4, LogCategory.DataStore, result);
-                    }
-                }
-
-            }
-
-            result.IsSuccessful = false;
-            return result;
-        }
-        public async Task UpdateFailedAttempts(string username)
-        {
-            //var userAuthenticator = new User();
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-
-                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
-                command.Parameters.AddWithValue("@Username", username);
-
-                var reader = await command.ExecuteReaderAsync();
-
-                reader.Read();
-                int failedAttempts = (int)reader["Attempts"];
-
-                if (failedAttempts == 0)
-                {
-                    command = new SqlCommand("UPDATE UserAccounts SET Attempts = 1", connection);
-                    command.ExecuteNonQuery();
-
-                    command = new SqlCommand("UPDATE UserAccounts SET Timestamp = CURRENT_TIMESTAMP", connection);
-                    command.ExecuteNonQuery();
-                }
-                else if (failedAttempts == 2)
-                {
-                    command = new SqlCommand("UPDATE UserAccounts SET Attempts = 2", connection);
-                    command.ExecuteNonQuery();
-                }
                 else
                 {
-                    command = new SqlCommand("UPDATE UserAccounts SET Attempts = 3", connection);
-                    reader.Close();
-                    var rows = command.ExecuteNonQuery();
-                    //TODO: log username, Ip, timestamp to database
-
-                    //_logger!.Log("UpdateFailedAttempts", 4, LogCategory.DataStore, result);
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = "too many rows affected";
+                    return result;
                 }
+            }
+
+            catch (SqlException e)
+            {
+                if (e.Number == 208)
+                {
+                    result.ErrorMessage = "Specified table not found";
+                    //_logger!.Log("DeactivateUser", 4, LogCategory.DataStore, result);
+                }
+            }
+
+        }
+
+        result.IsSuccessful = false;
+        return result;
+    }
+
+    public async Task<Result> ActivateUser(string username)
+    {
+        var result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE @Username = username";
+
+            var command = new SqlCommand(sqlQuery, connection);
+            command.Parameters.AddWithValue("@Username", username);
+
+            try
+            {
+                var rows = await command.ExecuteNonQueryAsync();
+
+                if (rows == 1)
+                {
+                    result.IsSuccessful = true;
+                    return result;
+                }
+
+                else
+                {
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = "too many rows affected";
+                    return result;
+                }
+            }
+
+            catch (SqlException e)
+            {
+                if (e.Number == 208)
+                {
+                    result.ErrorMessage = "Specified table not found";
+                    //_logger!.Log("ActivateUser", 4, LogCategory.DataStore, result);
+
+                }
+            }
+
+        }
+
+        result.IsSuccessful = false;
+        return result;
+    }
+
+    //sensitive info
+    public async Task<Result> SaveUserAccount(string username, string passDigest, string salt)
+    {
+        var result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
+
+            var command = new SqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@PassDigest", passDigest);
+            command.Parameters.AddWithValue("@Salt", salt);
+            command.Parameters.AddWithValue("@IsActive", 1);
+            command.Parameters.AddWithValue("@Attempts", 0);
+            command.Parameters.AddWithValue("@Timestamp", DateTime.Now);
+
+            try
+            {
+                var rows = await command.ExecuteNonQueryAsync();
+
+                if (rows == 1)
+                {
+                    result.IsSuccessful = true;
+                    return result;
+                }
+
+                else
+                {
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = "too many rows affected";
+                    return result;
+                }
+            }
+
+            catch (SqlException e)
+            {
+                if (e.Number == 208)
+                {
+                    result.ErrorMessage = "Specified table not found";
+                    //_logger!.Log("SaveUserAccount", 4, LogCategory.DataStore, result);
+                }
+            }
+
+        }
+
+        result.IsSuccessful = false;
+        return result;
+    }
+    //non-sensitive info
+    public async Task<Result> SaveUserProfile(string email, string firstName, string lastName, string role)
+    {
+        var result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = "INSERT into UserProfiles VALUES(@Username, @Email, @FirstName, @LastName, @Role)";
+
+            var command = new SqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@Username", email);
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@FirstName", firstName);
+            command.Parameters.AddWithValue("@LastName", lastName);
+            command.Parameters.AddWithValue("@Role", role);
+
+
+            try
+            {
+                var rows = await command.ExecuteNonQueryAsync();
+
+                if (rows == 1)
+                {
+                    result.IsSuccessful = true;
+                    return result;
+                }
+
+                else
+                {
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = "too many rows affected";
+                    return result;
+                }
+            }
+
+            catch (SqlException e)
+            {
+                if (e.Number == 208)
+                {
+                    result.ErrorMessage = "Specified table not found";
+                    //_logger!.Log("SaveUserProfile", 4, LogCategory.DataStore, result);
+                }
+            }
+
+        }
+
+        result.IsSuccessful = false;
+        return result;
+    }
+    public async Task UpdateFailedAttempts(string username)
+    {
+        //var userAuthenticator = new User();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+
+            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            command.Parameters.AddWithValue("@Username", username);
+
+            var reader = await command.ExecuteReaderAsync();
+
+            reader.Read();
+            int failedAttempts = (int)reader["Attempts"];
+
+            if (failedAttempts == 0)
+            {
+                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 1", connection);
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand("UPDATE UserAccounts SET Timestamp = CURRENT_TIMESTAMP", connection);
+                command.ExecuteNonQuery();
+            }
+            else if (failedAttempts == 2)
+            {
+                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 2", connection);
+                command.ExecuteNonQuery();
+            }
+            else
+            {
+                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 3", connection);
                 reader.Close();
+                var rows = command.ExecuteNonQuery();
+                //TODO: log username, Ip, timestamp to database
 
+                //_logger!.Log("UpdateFailedAttempts", 4, LogCategory.DataStore, result);
             }
+            reader.Close();
+
         }
+    }
 
-        public async Task<int> GetFailedAttempts(string username)
+    public async Task<int> GetFailedAttempts(string username)
+    {
+        using (var connection = new SqlConnection(_connectionString))
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
+            connection.Open();
 
 
-                var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
-                command.Parameters.AddWithValue("@Username", username);
+            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            command.Parameters.AddWithValue("@Username", username);
 
-                var reader = await command.ExecuteReaderAsync();
+            var reader = await command.ExecuteReaderAsync();
 
-                reader.Read();
-                return (int)reader["Attempts"];
-            }
+            reader.Read();
+            return (int)reader["Attempts"];
         }
+    }
 
-        public async Task ResetFailedAttempts(string username)
+    public async Task ResetFailedAttempts(string username)
+    {
+        //var userAuthenticator = new User();
+        using (var connection = new SqlConnection(_connectionString))
         {
-            //var userAuthenticator = new User();
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
+            connection.Open();
 
-                var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
-                command.Parameters.AddWithValue("@Usernamae", username);
-                await command.ExecuteNonQueryAsync();
+            var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
+            command.Parameters.AddWithValue("@Usernamae", username);
+            await command.ExecuteNonQueryAsync();
 
-            }
         }
     }
 }

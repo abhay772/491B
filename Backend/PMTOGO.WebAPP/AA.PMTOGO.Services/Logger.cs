@@ -5,7 +5,7 @@ namespace AA.PMTOGO.Services
 {
     public class Logger : ILogger
     {
-        public void Log(string requestName, byte logLevel, LogCategory logCategory, object result)
+        public async Task Log(string requestName, byte logLevel, LogCategory logCategory, object result)
         {
             Log log = new()     //create logEntry
             {
@@ -21,9 +21,9 @@ namespace AA.PMTOGO.Services
             var logObjectProperties = typeof(Log).GetProperties();
 
             //write to the filestream
-            writer.WriteLine("sep=,");
-            writer.WriteLine(string.Join(", ", logObjectProperties.Select(x => x.Name)));
-            writer.WriteLine(string.Join(", ", logObjectProperties.Select(x => x.GetValue(log, null))));
+            await writer.WriteLineAsync("sep=,");
+            await writer.WriteLineAsync(string.Join(", ", logObjectProperties.Select(x => x.Name)));
+            await writer.WriteLineAsync(string.Join(", ", logObjectProperties.Select(x => x.GetValue(log, null))));
 
             //set the new log file as ReadOnly
             File.SetAttributes(filePath, FileAttributes.ReadOnly);

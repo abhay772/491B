@@ -4,6 +4,6 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
 {
     public interface ILogger
     {
-        public void Log(string requestName, byte logLevel, LogCategory logCategory, object result);
+        public Task Log(string requestName, byte logLevel, LogCategory logCategory, object result);
     }
 }
