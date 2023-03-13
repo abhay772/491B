@@ -23,12 +23,17 @@ public class PropEvalManager : IPropEvalManager
 
     public async Task<Result> loadProfileAsync(string username)
     {
-        if(_inputeValidation.ValidateUsername(username).IsSuccessful)
+        if(_inputeValidation.ValidateUsername(username).IsSuccessful==true)
         {
             return await _sqlPropEvalDAO.loadProfileAsync(username);
         }
-     
-        return new Result() { IsSuccessful =false, ErrorMessage = "Invalid Username" };
+
+        Result result = new Result();
+
+        result.IsSuccessful = false;
+        result.ErrorMessage = "Invalid Username" ;
+
+        return result;
     }
 
     public async Task<Result> saveProfileAsync(string username, PropertyProfile propertyProfile)
@@ -38,7 +43,12 @@ public class PropEvalManager : IPropEvalManager
             return await _sqlPropEvalDAO.saveProfileAsync(username, propertyProfile);
         }
 
-        return new Result() { IsSuccessful = false, ErrorMessage = "Invalid Username" };
+        Result result = new Result();
+
+        result.IsSuccessful = false;
+        result.ErrorMessage = "Invalid Username";
+
+        return result;
     }
 
     public async Task<Result> evaluateAsync(string username, PropertyProfile propertyProfile)

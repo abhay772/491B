@@ -1,4 +1,6 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿using AA.PMTOGO.Authentication;
+using AA.PMTOGO.DAL;
+using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Managers;
 using AA.PMTOGO.Services;
 using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
@@ -14,7 +16,12 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IUserManagement, UserManagement>();
             services.AddTransient<IServiceManager, ServiceManager>();
             services.AddTransient<IRequestManagement, RequestManagement>();
-            
+            services.AddTransient<IAuthenticator, Authenticator>();
+            services.AddTransient<IAuthManager, AuthManager>();
+            services.AddTransient<IHistoricalSalesDAO, HistoricalSalesDAO>();
+            services.AddTransient<IPropertyEvaluator, PropertyEvaluator>();
+            services.AddTransient<IPropEvalManager, PropEvalManager>();
+            services.AddTransient<ISqlPropEvalDAO, SqlPropEvalDAO>();
 
             return services;
         }

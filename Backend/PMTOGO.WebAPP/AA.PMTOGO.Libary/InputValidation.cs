@@ -5,26 +5,51 @@ namespace AA.PMTOGO.Libary
 {
     public class InputValidation
     {
+        //public Result ValidateEmail(string email)
+        //{
+        //    var result = new Result();
+
+        //    if (email == null)
+        //    {
+        //        result.IsSuccessful = false;
+        //        result.ErrorMessage = "Invalid email provided. Retry again or contact system administrator";
+        //        return result;
+        //    }
+        //    if (Regex.IsMatch(email, @"^[a-zA-Z0-9-@.\s]+$") && email.Length >= 8 && email.Length < 50 && email.Contains("@"))
+        //    {
+        //        result.IsSuccessful = true;
+        //        return result;
+        //    }
+
+        //    result.IsSuccessful = false;
+        //    result.ErrorMessage = "Invalid email provided. Retry again or contact system administrator";
+        //    return result;
+        //}
+
         public Result ValidateEmail(string email)
         {
             var result = new Result();
 
-            if (email == null)
+            if (string.IsNullOrEmpty(email))
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Invalid email provided. Retry again or contact system administrator";
-                return result;
-            }
-            if (Regex.IsMatch(email, @"^[a-zA-Z0-9-@.\s]+$") && email.Length >= 8 && email.Length < 50 && email.Contains("@"))
-            {
-                result.IsSuccessful = true;
+                result.ErrorMessage = "Email address is required.";
                 return result;
             }
 
-            result.IsSuccessful = false;
-            result.ErrorMessage = "Invalid email provided. Retry again or contact system administrator";
+            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+
+            if (!emailRegex.IsMatch(email))
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Email address is not valid.";
+                return result;
+            }
+
+            result.IsSuccessful = true;
             return result;
         }
+
 
         public Result ValidatePassphrase(string passWord)
         {

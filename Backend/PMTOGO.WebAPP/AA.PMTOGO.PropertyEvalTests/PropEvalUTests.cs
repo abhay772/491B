@@ -11,52 +11,6 @@ namespace AA.PMTOGO.PropertyEvalTests;
 public class PropEvalUTests
 {
     [TestMethod]
-    public void True_LoadProfileWithValidUsername()
-    {
-
-        // Arrage
-        var sqlPropEvalDao = new SqlPropEvalDAO();
-        var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
-
-        var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
-        var expected = typeof(PropertyProfile);
-
-        // valid username
-        string username = "abhay@gmail.com";
-        // Act
-
-        Result result = propEvalManager.loadProfileAsync(username).Result;
-
-        // Assert
-        Assert.IsNotNull(result.Payload);
-        Assert.Equals(expected, result.Payload.GetType());
-    }
-
-    [TestMethod]
-    public void False_LoadProfileWithInvalidUsername()
-    {
-        // Arrage
-        var sqlPropEvalDao = new SqlPropEvalDAO();
-        var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
-
-        var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
-        var expected = typeof(PropertyProfile);
-
-        // invalid username
-        string username = "abhaygmail.com";
-        // Act
-
-        Result result = propEvalManager.loadProfileAsync(username).Result;
-
-        // Assert
-        Assert.IsFalse(result.IsSuccessful);
-    }
-
-    // saveProfile(username, propertyProfile), where username is valid and non-valid, and propertyProfile full, partial and empty.
-
-    [TestMethod]
     public void True_SaveProfileWithValidUsername()
     {
         // Arrage
@@ -67,7 +21,8 @@ public class PropEvalUTests
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
 
         // fully populated
-        var propertyProfile = new PropertyProfile {
+        var propertyProfile = new PropertyProfile
+        {
             NoOfBedrooms = 1,
             NoOfBathrooms = 1,
             SqFeet = 1,
@@ -180,6 +135,54 @@ public class PropEvalUTests
         // Assert
         Assert.IsFalse(result.IsSuccessful);
     }
+
+    [TestMethod]
+    public void True_LoadProfileWithValidUsername()
+    {
+
+        // Arrage
+        var sqlPropEvalDao = new SqlPropEvalDAO();
+        var historicalDAO = new HistoricalSalesDAO();
+        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+
+        var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
+        var expected = typeof(PropertyProfile);
+
+        // valid username
+        string username = "abhay@gmail.com";
+        // Act
+
+        Result result = propEvalManager.loadProfileAsync(username).Result;
+
+        // Assert
+        Assert.IsNotNull(result.Payload);
+        Assert.Equals(expected, result.Payload.GetType());
+    }
+
+    [TestMethod]
+    public void False_LoadProfileWithInvalidUsername()
+    {
+        // Arrage
+        var sqlPropEvalDao = new SqlPropEvalDAO();
+        var historicalDAO = new HistoricalSalesDAO();
+        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+
+        var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
+        var expected = typeof(PropertyProfile);
+
+        // invalid username
+        string username = "abhaygmail.com";
+        // Act
+
+        Result result = propEvalManager.loadProfileAsync(username).Result;
+
+        // Assert
+        Assert.IsFalse(result.IsSuccessful);
+    }
+
+    // saveProfile(username, propertyProfile), where username is valid and non-valid, and propertyProfile full, partial and empty.
+
+    
 
     [TestMethod]
     public void False_EvaluatePropertyNotInDB()
