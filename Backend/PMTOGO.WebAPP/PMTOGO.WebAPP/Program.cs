@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using PMTOGO.WebAPP.Data;
+//using PMTOGO.WebAPP.Data;
+using AA.PMTOGO.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
+using PMTOGO.WebAPP.Controllers;
 using PMTOGO.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +16,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure();
 
-builder.Services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDbConnectionString")));
+//builder.Services.AddDbContext<UserManagementController>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDbConnectionString")));
+
+
+
+//builder.Services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDbConnectionString")));
 
 var app = builder.Build();
 
@@ -25,8 +32,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

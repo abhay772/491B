@@ -4,23 +4,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>replit</title>
+  <title>PMTOGO</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
-
-      
-  <!-- ButtonS to open the window -->
-  <button onclick="document.getElementById('login').style.display='block'" class="homebtns">Log In</button>
   
-  <button onclick="document.getElementById('signup').style.display='block'" class="homebtns">Sign Up</button>
+  
 
 <!-- Log In Form-->
-<div id="login" class="window">
-    <span onclick="document.getElementById('login').style.display='none'" class="exit" title="Close Window">Back</span>
-    <form class="window-content" name="login">
-     <div class="container">
+<div id="homepage" class="login"> 
+  <form class="window-content" name="login">
+    <div class="container">
         <h1>Login</h1>
         <p>Please enter your log in credentials</p>
         <hr>
@@ -36,6 +31,7 @@
        <div class="clearfix">
          <button  onclick="document.getElementById('forgotPass').style.display='block'" class="forget">Forgot Password?</button>
           <button type="submit" class="submit" id="login">Log In</button>
+         <button onclick="document.getElementById('signup').style.display='block'" class="homebtns">Sign Up</button>
         </div>
      </div>
     </form>
@@ -44,37 +40,37 @@
 <!-- Sign Up form -->
 <div id="signup" class="window">
   <span onclick="document.getElementById('signup').style.display='none'" class="exit" title="Close Window">Back</span>
-  <form class="window-content" name="register" action="/action_page.php">
+  <form class="window-content" name="register">
     <div class="container">
       <h1>Sign Up</h1>
       <p>Please fill out this form to create an account.</p>
       <hr>
 
       <label for="first"><b>First Name</b></label>
-      <input type="text" id="firstName" placeholder="Enter First Name" name="fName" required>
+      <input type="text" id="firstName" placeholder="Enter First Name" name="FirstName" required>
       
       <label for="last"><b>Last Name</b></label>
-      <input type="text" id="lastName" placeholder="Enter Last Name" name="lname" required>
+      <input type="text" id="lastName" placeholder="Enter Last Name" name="LastName" required>
 
-      <label for="age"><b>Birthday</b></label>
-      <input type="text" id="bday" placeholder="Enter Birthday" name="age" required>
+      <label for="age"><b>Birthday Year</b></label>
+      <input type="number" id="bday" placeholder="Enter Birthday Year" name="age" required><br>
       
       <label for="email"><b>Email</b></label>
-      <input type="text" id="email" placeholder="Enter Email" name="email" required>
+      <input type="text" id="email" placeholder="Enter Email" name="Email" required>
     
       <h4>Choose an account type</h4>
 
       <label>
-        <input type="checkbox" checked="checked" name="SP" id="SP" style="margin-bottom:15px"> Service Provider</label>
+        <input type="checkbox" name="Role" id="SP" style="margin-bottom:15px"> Service Provider</label>
 
         <label>
-            <input type="checkbox" checked="checked" name="PM" id="PM" style="margin-bottom:15px"> Property Manager</label>
+            <input type="checkbox" name="Role" id="PM" style="margin-bottom:15px"> Property Manager</label> <br>
       
       <label for="pass"><b>Password</b></label>
-      <input type="password" id="pass" placeholder="Enter Password" name="pass" required>
+      <input type="password" id="pass" placeholder="Enter Password" name="PassDigest" required>
 
       <label for="repeatpass"><b>Repeat Password</b></label>
-      <input type="password" id="pass" placeholder="Repeat Password" name="repeatpass" required>
+      <input type="password" id="pass" placeholder="Repeat Password" name="PassDigest" required>
 
       <div class="clearfix">
         <button type="button" onclick="document.getElementById('signup').style.display='none'" class="cancelbtn" id="cancel">Cancel</button>

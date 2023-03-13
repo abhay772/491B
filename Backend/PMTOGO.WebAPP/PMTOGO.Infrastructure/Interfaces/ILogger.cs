@@ -1,6 +1,6 @@
-﻿using PMTOGO.Domain.Entities;
+﻿using AA.PMTOGO.Models.Entities;
 
-namespace PMTOGO.Infrastructure.Interfaces
+namespace AA.PMTOGO.Infrastructure.Interfaces
 {
     public interface ILogger
     {
