@@ -19,7 +19,7 @@ namespace AA.PMTOGO.Managers
         public async Task<Result> AcceptServiceRequest(ServiceRequest request)
         {
             Result result = await _service.AcceptRequest(request);
-            _logger!.Log("AcceptServiceRequest", 1, LogCategory.Business, result);
+            //_logger!.Log("AcceptServiceRequest", 1, LogCategory.Business, result);
 
             return result;
         }
@@ -27,8 +27,8 @@ namespace AA.PMTOGO.Managers
         // update decline
         public async Task<Result> RemoveServiceRequest(ServiceRequest request)
         {
-            Result result = await _service.DeclineRequest(request.ServiceRequestId, request.ServiceProviderEmail);
-            _logger!.Log("RemoveServiceRequest", 1, LogCategory.Business, result);
+            Result result = await _service.DeclineRequest(request.RequestId, request.ServiceProviderEmail);
+            //_logger!.Log("RemoveServiceRequest", 1, LogCategory.Business, result);
 
             return result;
         }
@@ -36,15 +36,22 @@ namespace AA.PMTOGO.Managers
         public async Task<Result> RateUserService(UserService service, int rate)
         {
             Result result = await _service.RateService(service.ServiceId, rate);
-            _logger!.Log("RateUserService", 1, LogCategory.Business, result);
+            //_logger!.Log("RateUserService", 1, LogCategory.Business, result);
             return result;
         }
         //get all request for service provider user    
         public async Task<Result> GetUserRequest(string username)
         {
             Result result = await _service.GatherServiceRequest(username);
-            _logger!.Log("GetUserRequest", 1, LogCategory.Business, result);
+            //_logger!.Log("GetUserRequest", 1, LogCategory.Business, result);
             return result;
+        }
+
+        public async Task<Result> RequestAService(ServiceRequest serviceRequest)
+        {
+            Result result = await _service.CreateRequest(serviceRequest);
+            return result;
+
         }
     }
 }

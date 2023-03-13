@@ -1,5 +1,6 @@
-﻿using AA.PMTOGO.Managers;
-using AA.PMTOGO.Models;
+﻿using AA.PMTOGO.Infrastructure.Interfaces;
+using AA.PMTOGO.Models.Entities;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;

@@ -55,7 +55,7 @@ public class UsersDAO
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
                     //_logger!.Log("FindUser", 4, LogCategory.Server, result);
-                    
+
                 }
             }
         }

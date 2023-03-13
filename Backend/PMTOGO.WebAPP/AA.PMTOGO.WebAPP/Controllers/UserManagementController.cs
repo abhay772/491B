@@ -32,6 +32,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         //[Route("{email, password, firstName, lastName, role}")]
         [ActionName("AddUser")]
         public async Task<IActionResult> AddUser([FromBody] UserRegister user)
+        
         {
             try
             {
