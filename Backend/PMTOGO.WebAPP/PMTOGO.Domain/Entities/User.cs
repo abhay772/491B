@@ -32,9 +32,10 @@ namespace AA.PMTOGO.Models.Entities
             Role = role;
 
         }
-        public User(string passDigest, string salt, bool isActive, int attempt)
+        public User(string username, string role, string passDigest, string salt, bool isActive, int attempt)
         {
-
+            Username = username;
+            Role = role;
             PassDigest = passDigest;
             Salt = salt;
             IsActive = isActive;

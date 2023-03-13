@@ -189,18 +189,19 @@ namespace AA.PMTOGO.DAL
         }
 
         //sensitive info
-        public async Task<Result> SaveUserAccount(string username, string passDigest, string salt)
+        public async Task<Result> SaveUserAccount(string username, string passDigest, string salt, string role)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
+                string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @Role, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
                 command.Parameters.AddWithValue("@Username", username);
+                command.Parameters.AddWithValue("@Role", role);
                 command.Parameters.AddWithValue("@PassDigest", passDigest);
                 command.Parameters.AddWithValue("@Salt", salt);
                 command.Parameters.AddWithValue("@IsActive", 1);

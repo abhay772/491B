@@ -14,6 +14,8 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IUserManagement, UserManagement>();
             services.AddTransient<IServiceManager, ServiceManager>();
             services.AddTransient<IRequestManagement, RequestManagement>();
+            //services.AddTransient<IAuthManager, AuthManager>();
+            //services.AddTransient<IAuthenticator, Authenticator>();
             
             return services;
         }
