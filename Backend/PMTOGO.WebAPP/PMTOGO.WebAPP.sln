@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PMTOGO.WebAPP", "PMTOGO.WebAPP\PMTOGO.WebAPP.csproj", "{0FF985D5-F6FE-42FF-87F9-16E12D38EF08}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.Infrastructure", "PMTOGO.Infrastructure\AA.PMTOGO.Infrastructure.csproj", "{4B65E9C5-050C-486B-8F9F-807205A45ADF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.Models", "PMTOGO.Domain\AA.PMTOGO.Models.csproj", "{AFA72F01-A22B-43A2-90CF-09DFC4815ECD}"
@@ -31,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0FF985D5-F6FE-42FF-87F9-16E12D38EF08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FF985D5-F6FE-42FF-87F9-16E12D38EF08}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0FF985D5-F6FE-42FF-87F9-16E12D38EF08}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0FF985D5-F6FE-42FF-87F9-16E12D38EF08}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4B65E9C5-050C-486B-8F9F-807205A45ADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4B65E9C5-050C-486B-8F9F-807205A45ADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B65E9C5-050C-486B-8F9F-807205A45ADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
