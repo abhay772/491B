@@ -90,7 +90,7 @@ public class Authenticator : IAuthenticator
 
         if (result.IsSuccessful)
         {
-            _authNDAO.ResetFailedAttempts(username);
+            await _authNDAO.ResetFailedAttempts(username);
         }
 
     }
@@ -101,7 +101,7 @@ public class Authenticator : IAuthenticator
 
         if (result.IsSuccessful)
         {
-            _authNDAO.UpdateFailedAttempts(username);
+            await _authNDAO.UpdateFailedAttempts(username);
         }
     }
 
