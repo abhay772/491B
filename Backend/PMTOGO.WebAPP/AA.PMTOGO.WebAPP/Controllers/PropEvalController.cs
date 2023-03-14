@@ -16,10 +16,10 @@ public class PropEvalController : ControllerBase
     private readonly IPropEvalManager _propEvalManager;
     private readonly InputValidation _inputValidation;
 
-    public PropEvalController(IPropEvalManager propEvalManager, InputValidation inputValidation)
+    public PropEvalController(IPropEvalManager propEvalManager)
     {
         _propEvalManager = propEvalManager;
-        _inputValidation = inputValidation;
+        _inputValidation = new InputValidation();
     }
 
     [HttpGet("loadProfile")]

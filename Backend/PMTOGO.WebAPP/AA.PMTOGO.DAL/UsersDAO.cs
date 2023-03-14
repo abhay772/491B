@@ -358,7 +358,7 @@ public class UsersDAO
             connection.Open();
 
             var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
-            command.Parameters.AddWithValue("@Usernamae", username);
+            command.Parameters.AddWithValue("@Username", username);
             await command.ExecuteNonQueryAsync();
 
         }
