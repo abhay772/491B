@@ -57,31 +57,6 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> AddServiceToUser(string username, Service service)
-        {
-            var result = new Result();
-            var user = (await _authNDAO.FindUser(username)).Payload as User;
-
-            if (user is null)
-            {
-                result.IsSuccessful|= false;
-                result.Payload = null;
-                result.ErrorMessage = "User cannot be found.";
-
-                return result;
-            }
-            else
-            {
-                user.Services.Add(service);
-
-                result.IsSuccessful = true;
-                result.Payload = user;
-                result.ErrorMessage = null;
-
-                return result;
-            }
-        }
-
         public async Task<Result> DeactivateAccount(string username, string password)
         {
             Result result = new Result();

@@ -137,7 +137,27 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("{username}")]
+        public async Task<IActionResult> AddServiceToUser([FromBody] UserService userService, string username)
+        {
+            try
+            {
+                Result result = await _serviceManager.AddServiceToUser(username, userService);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result.Payload);
+                }
+                else
+                {
 
-
+                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 }
