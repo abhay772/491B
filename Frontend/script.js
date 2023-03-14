@@ -1,7 +1,7 @@
 
 
 const createUser = document.getElementById('register');
-const loginUser = document.querySelector('#loginbtn');
+const loginUser = document.getElementById('login');
 const firstName = document.querySelector('#firstName');
 const lastName = document.querySelector('#lastName');
 const email = document.querySelector('#email');
@@ -103,7 +103,7 @@ createUser.addEventListener('click', function() {
 })
 
 loginUser.addEventListener('click', function() {
-  logInUser(mail.value, password.value);
+  logInUser(email.value, password.value);
 })
 
 //side bar activation
