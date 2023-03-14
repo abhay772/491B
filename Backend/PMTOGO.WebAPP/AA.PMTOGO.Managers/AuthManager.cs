@@ -43,15 +43,21 @@ public class AuthManager : IAuthManager
             role = (string)result.Payload;
         }
 
+        else
+        {
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Username or password is invalid.";
+            return result;
+        }
+
         _authenticator.ResetFailedAttempts(username);
 
         string otp = _authenticator.GenerateOTP();
 
-        var claims = new List<Claim>
-        {
-        new Claim(ClaimTypes.Name, username),
-        new Claim(ClaimTypes.Role, role)
-        };
+        var claims = new List<Claim>();
+       
+        claims.Add(new Claim(ClaimTypes.Email, username));
+        claims.Add(new Claim(ClaimTypes.Role, role));
 
         IIdentity identity = new ClaimsIdentity(claims);
 

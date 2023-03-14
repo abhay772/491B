@@ -67,7 +67,7 @@ public class Authenticator : IAuthenticator
         // Lecture Vong 12/13 
         var hash = new Rfc2898DeriveBytes(pass, user_salt, 1000, HashAlgorithmName.SHA512);
         var encryptedPass = hash.GetBytes(64);
-        string passDigest = Encoding.UTF8.GetString(encryptedPass);
+        string passDigest = Convert.ToBase64String(encryptedPass);
         return passDigest;
     }
 

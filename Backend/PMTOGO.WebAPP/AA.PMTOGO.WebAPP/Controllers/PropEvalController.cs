@@ -46,7 +46,7 @@ public class PropEvalController : ControllerBase
 
                 if (usernameClaim != null && roleClaim != null)
                 {
-                    string username = usernameClaim.Value;
+                    string Username = usernameClaim.Value;
                     string role = roleClaim.Value;
 
                     // Check if the role is Property Manager
@@ -108,7 +108,7 @@ public class PropEvalController : ControllerBase
 
                 if (usernameClaim != null && roleClaim != null)
                 {
-                    string username = usernameClaim.Value;
+                    string Username = usernameClaim.Value;
                     string role = roleClaim.Value;
 
                     // Check if the role is Property Manager
