@@ -9,6 +9,6 @@ namespace AA.PMTOGO.WebAPP.Data
         {
 
         }
-        public DbSet<RequestDAO> Users { get; set; }
+        public DbSet<RequestDAO> Request { get; set; }
     }
 }

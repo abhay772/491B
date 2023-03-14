@@ -62,7 +62,7 @@ public class PropEvalManager : IPropEvalManager
             if (result.IsSuccessful)
             {
                 // Updating the profile with the evaluation
-                Result saveEvalResult = await _sqlPropEvalDAO.updatePropEval(username, (int)evaluationResult.Payload);
+                Result saveEvalResult = await _sqlPropEvalDAO.updatePropEval(username, (int)evaluationResult.Payload!);
 
                 // Sending an email notifying the user, that their evaluation is ready.
 

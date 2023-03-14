@@ -36,11 +36,11 @@ public class AuthManager : IAuthManager
         }
         result = await _authenticator.Authenticate(username, password);
 
-        string role = null;
+        string role = null!;
 
         if (result.IsSuccessful)
         {
-            role = (string)result.Payload;
+            role = (string)result.Payload!;
         }
 
         else
