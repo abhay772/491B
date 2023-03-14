@@ -49,29 +49,10 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<Result> AddServiceToUser(string username, UserService userService)
+        public async Task<Result> AddServiceToUser(UserService service)
         {
-            var result = new Result();
-            var user = (await _authNDAO.FindUser(username)).Payload as User;
-
-            if (user is null)
-            {
-                result.IsSuccessful = false;
-                result.Payload = null;
-                result.ErrorMessage = "User cannot be found.";
-
-                return result;
-            }
-            else
-            {
-                //user.Services.Add(userService);
-
-                result.IsSuccessful = true;
-                result.Payload = user;
-                result.ErrorMessage = null;
-
-                return result;
-            }
+            Result result = await _service.CreateService(service);
+            return result;
         }
 
         public async Task<Result> RequestAService(ServiceRequest serviceRequest)
