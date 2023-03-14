@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PMTOGO.Domain\AA.PMTOGO.Models.csproj" />
     <ProjectReference Include="..\PMTOGO.Infrastructure\AA.PMTOGO.Infrastructure.csproj" />
   </ItemGroup>
 

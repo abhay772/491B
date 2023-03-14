@@ -1,9 +1,9 @@
-﻿using PMTOGO.Domain.Entities;
+﻿using AA.PMTOGO.Models.Entities;
 
-namespace PMTOGO.Infrastructure.Interfaces
+namespace AA.PMTOGO.Infrastructure.Interfaces
 {
     public interface ILogger
     {
-        public void Log(string requestName, byte logLevel, LogCategory logCategory, object result);
+        public Task Log(string requestName, byte logLevel, LogCategory logCategory, object result);
     }
 }
