@@ -15,7 +15,6 @@ namespace AA.PMTOGO.Models.Entities
         public string PassDigest { get; set; } = string.Empty;
         public string Salt { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-        public virtual List<UserService> Services { get; set; }
         public int Attempt { get; set; }
 
         public User()

@@ -12,6 +12,5 @@ public class PropertyProfile
     public string City { get; set; } = string.Empty;
     public string State { get; set; } = string.Empty;
     public string Zip { get; set; } = string.Empty;
-
-    public string? Description { get; set; }
+    public string? Description { get; set; } = string.Empty;
 }
