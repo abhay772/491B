@@ -64,7 +64,7 @@ namespace AA.PMTOGO.Managers
             }
             else
             {
-                user.Services.Add(userService);
+                //user.Services.Add(userService);
 
                 result.IsSuccessful = true;
                 result.Payload = user;
