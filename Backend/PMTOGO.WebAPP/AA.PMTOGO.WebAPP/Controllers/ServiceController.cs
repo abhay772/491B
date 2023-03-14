@@ -138,12 +138,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpPost]
-        [Route("{username}")]
-        public async Task<IActionResult> AddServiceToUser([FromBody] UserService userService, string username)
+        [Route("service")]
+        public async Task<IActionResult> AddUserService([FromBody] UserService userService)
         {
             try
             {
-                Result result = await _serviceManager.AddServiceToUser(username, userService);
+                Result result = await _serviceManager.AddServiceToUser(userService);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);
