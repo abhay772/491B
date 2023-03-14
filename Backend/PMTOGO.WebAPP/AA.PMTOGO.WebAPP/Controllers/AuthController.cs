@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
 using System.Text.Json;
-using AA.PMTOGO.Infrastructure.Interfaces;
-using AA.PMTOGO.Models.Entities;
 
 namespace AA.PMTOGO_v2.Controllers;
 
@@ -31,7 +29,7 @@ public class AuthenticationController : ControllerBase
 
             if (result.IsSuccessful)
             {
-                var loginDTO = (LoginDTO)result.Payload;
+                var loginDTO = (LoginDTO)result.Payload!;
 
                 //var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
 
@@ -51,7 +49,7 @@ public class AuthenticationController : ControllerBase
             }
         }
 
-        catch (Exception ex)
+        catch
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }

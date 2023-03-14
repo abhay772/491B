@@ -16,9 +16,10 @@ public class PropEvalController : ControllerBase
     private readonly IPropEvalManager _propEvalManager;
     private readonly InputValidation _inputValidation;
 
-    public PropEvalController(IPropEvalManager propEvalManager)
+    public PropEvalController(IPropEvalManager propEvalManager, InputValidation inputValidation)
     {
         _propEvalManager = propEvalManager;
+        _inputValidation = inputValidation;
     }
 
     [HttpGet("loadProfile")]
@@ -41,7 +42,7 @@ public class PropEvalController : ControllerBase
                 var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
 
                 // Load the username and role from the principal
-                var usernameClaim = principal.FindFirst(ClaimTypes.Email);
+                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
                 var roleClaim = principal.FindFirst(ClaimTypes.Role);
 
                 if (usernameClaim != null && roleClaim != null)
@@ -61,7 +62,7 @@ public class PropEvalController : ControllerBase
 
                         if (result.IsSuccessful)
                         {
-                            PropertyProfile propertyProfile = (PropertyProfile)result.Payload;
+                            PropertyProfile propertyProfile = (PropertyProfile)result.Payload!;
 
                             return Ok(propertyProfile);
                         }
@@ -78,7 +79,7 @@ public class PropEvalController : ControllerBase
            return Forbid(); 
         }
 
-        catch (Exception ex)
+        catch
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -103,7 +104,7 @@ public class PropEvalController : ControllerBase
                 var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
 
                 // Load the username and role from the principal
-                var usernameClaim = principal.FindFirst(ClaimTypes.Email);
+                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
                 var roleClaim = principal.FindFirst(ClaimTypes.Role);
 
                 if (usernameClaim != null && roleClaim != null)
@@ -137,7 +138,7 @@ public class PropEvalController : ControllerBase
             return Forbid();
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -162,7 +163,7 @@ public class PropEvalController : ControllerBase
                 var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
 
                 // Load the username and role from the principal
-                var usernameClaim = principal.FindFirst(ClaimTypes.Email);
+                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
                 var roleClaim = principal.FindFirst(ClaimTypes.Role);
 
                 if (usernameClaim != null && roleClaim != null)
@@ -178,7 +179,7 @@ public class PropEvalController : ControllerBase
 
                         // Call the evaluate function 
                         Result result = await _propEvalManager.evaluateAsync(username, propertyProfile);
-                        double evalPrice = (double)result.Payload;
+                        double evalPrice = (double)result.Payload!;
 
                         if (result.IsSuccessful)
                         {
@@ -197,7 +198,7 @@ public class PropEvalController : ControllerBase
             return Forbid();
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
