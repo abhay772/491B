@@ -1,0 +1,110 @@
+USE [AA.UsersDB]
+GO
+/****** Object:  Table [dbo].[UserAccounts]    Script Date: 3/13/2023 5:07:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserAccounts](
+    [Username] [varchar](50) NOT NULL,
+    [Role] [varchar](50) NOT NULL,
+    [PassDigest] [varchar](max) NOT NULL,
+    [Salt] [varchar](max) NOT NULL,
+    [IsActive] [bit] NOT NULL,
+    [Attempts] [int] NOT NULL,
+    [Timestamp] [datetime] NOT NULL,
+ CONSTRAINT [PK_UserAccounts] PRIMARY KEY CLUSTERED 
+(
+    [Username] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[UserProfiles]    Script Date: 3/13/2023 5:07:16 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserProfiles](
+    [Username] [varchar](50) NOT NULL,
+    [Email] [varchar](50) NOT NULL,
+    [FirstName] [varchar](50) NOT NULL,
+    [LastName] [varchar](50) NOT NULL,
+    [Role] [varchar](50) NOT NULL,
+ CONSTRAINT [PK_UserProfiles] PRIMARY KEY CLUSTERED 
+(
+    [Username] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+USE [AA.ServiceDB]
+GO
+/****** Object:  Table [dbo].[ServiceRequests]    Script Date: 3/13/2023 5:08:36 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ServiceRequests](
+    [RequestId] [uniqueidentifier] NOT NULL,
+    [ServiceName] [varchar](50) NOT NULL,
+    [ServiceType] [varchar](max) NULL,
+    [ServiceDescription] [varchar](max) NULL,
+    [ServiceFrequency] [varchar](max) NULL,
+    [Comments] [varchar](max) NULL,
+    [ServiceProviderEmail] [varchar](50) NOT NULL,
+    [ServiceProviderName] [varchar](max) NULL,
+    [PropertyManagerEmail] [varchar](50) NOT NULL,
+    [PropertyManagerName] [varchar](max) NULL,
+ CONSTRAINT [PK_ServiceRequests] PRIMARY KEY CLUSTERED 
+(
+    [RequestId] ASC,
+    [ServiceProviderEmail] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Services]    Script Date: 3/13/2023 5:08:36 PM ******/
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Services](
+    [ServiceProvider] [varchar](50) NOT NULL,
+    [ServiceProviderEmail] [varchar](50) NOT NULL,
+    [ServiceName] [varchar](50) NOT NULL,
+    [ServiceType] [varchar](50) NOT NULL,
+    [ServiceDescription] [varchar](max) NULL,
+ CONSTRAINT [PK_ServiceRequest] PRIMARY KEY CLUSTERED 
+(
+    [ServiceName] ASC,
+    [ServiceProviderEmail] ASC,
+    [ServiceType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[UserServices]    Script Date: 3/13/2023 5:08:36 PM ******/
+
+/****** Object:  Table [dbo].[UserServices]    Script Date: 3/13/2023 5:08:36 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UserServices](
+    [ServiceId] [uniqueidentifier] NOT NULL,
+    [ServiceName] [varchar](50) NOT NULL,
+    [ServiceType] [varchar](max) NULL,
+    [ServiceDescription] [varchar](max) NULL,
+    [ServiceFrequency] [varchar](50) NULL,
+    [ServiceProviderEmail] [varchar](50) NOT NULL,
+    [ServiceProvider] [varchar](max) NULL,
+    [PropertyManagerEmail] [varchar](50) NOT NULL,
+    [PropertyManagerName] [varchar](max) NULL,
+    [Status] [varchar](50) NULL,
+    [Rating] [int] NULL,
+ CONSTRAINT [PK_UserServices] PRIMARY KEY CLUSTERED 
+(
+    [ServiceId] ASC,
+    [PropertyManagerEmail] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO

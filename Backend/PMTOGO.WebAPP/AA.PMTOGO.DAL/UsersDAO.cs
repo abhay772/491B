@@ -203,6 +203,7 @@ public class UsersDAO
             command.Parameters.AddWithValue("@PassDigest", passDigest);
             command.Parameters.AddWithValue("@Salt", salt);
             command.Parameters.AddWithValue("@IsActive", 1);
+            command.Parameters.AddWithValue("@Role", role);
             command.Parameters.AddWithValue("@Attempts", 0);
             command.Parameters.AddWithValue("@Timestamp", DateTime.Now);
 
@@ -357,7 +358,7 @@ public class UsersDAO
             connection.Open();
 
             var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
-            command.Parameters.AddWithValue("@Usernamae", username);
+            command.Parameters.AddWithValue("@Username", username);
             await command.ExecuteNonQueryAsync();
 
         }
