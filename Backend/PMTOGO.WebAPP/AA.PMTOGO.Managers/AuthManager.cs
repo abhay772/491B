@@ -59,7 +59,7 @@ public class AuthManager : IAuthManager
 
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.principal = principal;
-        loginDTO.otp = otp;
+        loginDTO.Otp = otp;
 
         result.IsSuccessful = true;
         result.ErrorMessage = string.Empty;

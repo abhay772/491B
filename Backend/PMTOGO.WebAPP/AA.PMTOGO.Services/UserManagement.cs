@@ -30,7 +30,7 @@ namespace AA.PMTOGO.Services
                     string salt = GenerateSalt();
                     string passDigest = EncryptPassword(password, salt);
 
-                    await _authNDAO.SaveUserAccount(email, passDigest, salt, role);
+                    await _authNDAO.SaveUserAccount(email, passDigest, salt);
                     await _authNDAO.SaveUserProfile(email, firstname, lastname, role);
 
                     //log account created succesfully  

@@ -6,7 +6,7 @@ namespace AA.PMTOGO.Models.Entities
 
     public class LoginDTO
     {
-        public string? otp { get; set; }
+        public string? Otp { get; set; }
         public IPrincipal? principal { get; set; }
 
     }
