@@ -19,6 +19,7 @@ public class PropEvalController : ControllerBase
     public PropEvalController(IPropEvalManager propEvalManager)
     {
         _propEvalManager = propEvalManager;
+        _inputValidation = new InputValidation();
     }
 
     [HttpGet("loadProfile")]
@@ -41,7 +42,7 @@ public class PropEvalController : ControllerBase
                 var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
 
                 // Load the username and role from the principal
-                var usernameClaim = principal.FindFirst(ClaimTypes.Email);
+                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
                 var roleClaim = principal.FindFirst(ClaimTypes.Role);
 
                 if (usernameClaim != null && roleClaim != null)
@@ -61,7 +62,7 @@ public class PropEvalController : ControllerBase
 
                         if (result.IsSuccessful)
                         {
-                            PropertyProfile propertyProfile = (PropertyProfile)result.Payload;
+                            PropertyProfile propertyProfile = (PropertyProfile)result.Payload!;
 
                             return Ok(propertyProfile);
                         }
@@ -75,10 +76,10 @@ public class PropEvalController : ControllerBase
 
             }
 
-           return Forbid(); 
+           return BadRequest("Cookie not found"); 
         }
 
-        catch (Exception ex)
+        catch
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -103,7 +104,7 @@ public class PropEvalController : ControllerBase
                 var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
 
                 // Load the username and role from the principal
-                var usernameClaim = principal.FindFirst(ClaimTypes.Email);
+                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
                 var roleClaim = principal.FindFirst(ClaimTypes.Role);
 
                 if (usernameClaim != null && roleClaim != null)
@@ -134,10 +135,10 @@ public class PropEvalController : ControllerBase
 
             }
 
-            return Forbid();
+            return BadRequest("Cookie not found");
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -162,7 +163,7 @@ public class PropEvalController : ControllerBase
                 var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
 
                 // Load the username and role from the principal
-                var usernameClaim = principal.FindFirst(ClaimTypes.Email);
+                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
                 var roleClaim = principal.FindFirst(ClaimTypes.Role);
 
                 if (usernameClaim != null && roleClaim != null)
@@ -178,7 +179,7 @@ public class PropEvalController : ControllerBase
 
                         // Call the evaluate function 
                         Result result = await _propEvalManager.evaluateAsync(username, propertyProfile);
-                        double evalPrice = (double)result.Payload;
+                        double evalPrice = (double)result.Payload!;
 
                         if (result.IsSuccessful)
                         {
@@ -197,7 +198,7 @@ public class PropEvalController : ControllerBase
             return Forbid();
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }

@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
 using System.Text.Json;
-using AA.PMTOGO.Infrastructure.Interfaces;
-using AA.PMTOGO.Models.Entities;
 
 namespace AA.PMTOGO_v2.Controllers;
 
@@ -21,14 +19,6 @@ public class AuthenticationController : ControllerBase
         _authManager = authManager;
     }
 
-#if DEBUG
-    [HttpGet]
-    public Task<IActionResult> HealthCheck()
-    {
-        return Task.FromResult<IActionResult>(Ok("Healthy"));
-    }
-#endif
-
     [HttpPost("Login")]
     [Consumes("application/json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
@@ -39,17 +29,30 @@ public class AuthenticationController : ControllerBase
 
             if (result.IsSuccessful)
             {
-                var loginDTO = (LoginDTO)result.Payload;
+                var loginDTO = (LoginDTO)result.Payload!;
 
                 //var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
 
                 string principalString = JsonSerializer.Serialize(loginDTO.principal);
 
-                await SetCookieOptionsAsync(principalString);
+                //SetCookieOptionsAsync(principalString);
+
+
 
                 await SetCorsOptionsAsync();
 
-                return Ok("Login successfull");
+                Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Domain = "localhost:7135",
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.Now.AddDays(1),
+                    MaxAge = TimeSpan.FromHours(24),
+                    IsEssential = true,
+                });
+
+                return Ok(Response);
             }
 
             else
@@ -59,27 +62,54 @@ public class AuthenticationController : ControllerBase
             }
         }
 
-        catch (Exception ex)
+        catch(ArgumentException ex)
+        {
+            return BadRequest("Already logged in.");
+        }
+
+        catch
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
     }
 
-    private async Task SetCookieOptionsAsync(string principalString)
+    [HttpPost("Logout")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Logout()
     {
-        // Create a new cookie and add it to the response
-        Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.Now.AddDays(1),
-            MaxAge = TimeSpan.FromHours(24)
-        });
+        if (Request.Cookies.ContainsKey("CredentialCookie")){
 
-        await Task.CompletedTask;
+            Request.Cookies["CredentialCookie"].Remove(0);
+
+            return Ok("Logged out successfully");
+        }
+
+        else
+        {
+            return BadRequest("Cookie dosent exist");
+        }
+
     }
+
+    //private string SetCookieOptions(string principalString)
+    //{
+    //    // Create a new cookie and add it to the response
+    //    Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
+    //    {
+    //        //HttpOnly = true,
+    //        //Secure = true,
+    //        Domain = "https://localhost:7135/",
+    //        SameSite = SameSiteMode.None,
+    //        Expires = DateTime.Now.AddDays(1),
+    //        MaxAge = TimeSpan.FromHours(24),
+    //        IsEssential= true,
+    //    });
+
+    //    var cookieValue = Request.Cookies["CredentialCookie"];
+
+    //    return cookieValue;
+    //}
 
     private async Task SetCorsOptionsAsync()
     {

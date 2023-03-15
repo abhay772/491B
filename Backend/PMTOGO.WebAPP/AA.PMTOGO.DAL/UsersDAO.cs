@@ -187,18 +187,19 @@ public class UsersDAO
     }
 
     //sensitive info
-    public async Task<Result> SaveUserAccount(string username, string passDigest, string salt)
+    public async Task<Result> SaveUserAccount(string username, string passDigest, string salt, string role)
     {
         var result = new Result();
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
 
-            string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
+            string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @Role, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
 
             var command = new SqlCommand(sqlQuery, connection);
 
             command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@Role", role);
             command.Parameters.AddWithValue("@PassDigest", passDigest);
             command.Parameters.AddWithValue("@Salt", salt);
             command.Parameters.AddWithValue("@IsActive", 1);
@@ -356,7 +357,7 @@ public class UsersDAO
             connection.Open();
 
             var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
-            command.Parameters.AddWithValue("@Usernamae", username);
+            command.Parameters.AddWithValue("@Username", username);
             await command.ExecuteNonQueryAsync();
 
         }

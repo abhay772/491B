@@ -67,7 +67,7 @@ public class Authenticator : IAuthenticator
         // Lecture Vong 12/13 
         var hash = new Rfc2898DeriveBytes(pass, user_salt, 1000, HashAlgorithmName.SHA512);
         var encryptedPass = hash.GetBytes(64);
-        string passDigest = Encoding.UTF8.GetString(encryptedPass);
+        string passDigest = Convert.ToBase64String(encryptedPass);
         return passDigest;
     }
 
@@ -83,14 +83,14 @@ public class Authenticator : IAuthenticator
         return -1;
 
     }
-
+     
     public async void ResetFailedAttempts(string username)
     {
         Result result = await _authNDAO.FindUser(username);
 
         if (result.IsSuccessful)
         {
-            _authNDAO.ResetFailedAttempts(username);
+            await _authNDAO.ResetFailedAttempts(username);
         }
 
     }
@@ -101,7 +101,7 @@ public class Authenticator : IAuthenticator
 
         if (result.IsSuccessful)
         {
-            _authNDAO.UpdateFailedAttempts(username);
+            await _authNDAO.UpdateFailedAttempts(username);
         }
     }
 
