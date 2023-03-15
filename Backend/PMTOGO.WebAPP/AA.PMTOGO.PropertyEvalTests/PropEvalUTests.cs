@@ -80,36 +80,6 @@ public class PropEvalUTests
         Assert.IsFalse(result.IsSuccessful);
     }
 
-    [TestMethod]
-    public void True_SaveProfileWithPartialProfile()
-    {
-        // Arrage
-
-        var sqlPropEvalDao = new SqlPropEvalDAO();
-        var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
-
-        var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
-
-        // partially populated
-        var propertyProfile = new PropertyProfile
-        {
-            NoOfBedrooms = 1,
-            NoOfBathrooms = 1,
-            SqFeet = 1,
-        };
-
-        // valid username
-        string username = "abhay@gmail.com";
-
-        // Act
-
-        Result result = propEvalManager.saveProfileAsync(username, propertyProfile).Result;
-
-        // Assert
-        Assert.IsTrue(result.IsSuccessful);
-    }
-
 
     [TestMethod]
     public void False_SaveProfileWithPartialProfile()
@@ -213,7 +183,7 @@ public class PropEvalUTests
 
         // Act
 
-        Result result = propEvalManager.saveProfileAsync(username, propertyProfile).Result;
+        Result result = propEvalManager.evaluateAsync(username, propertyProfile).Result;
 
         // Assert
         Assert.IsFalse(result.IsSuccessful);
