@@ -21,7 +21,15 @@ public class AuthenticationController : ControllerBase
         _authManager = authManager;
     }
 
-    [HttpPost]
+#if DEBUG
+    [HttpGet]
+    public Task<IActionResult> HealthCheck()
+    {
+        return Task.FromResult<IActionResult>(Ok("Healthy"));
+    }
+#endif
+
+    [HttpPost("Login")]
     [Consumes("application/json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {
@@ -75,7 +83,7 @@ public class AuthenticationController : ControllerBase
 
     private async Task SetCorsOptionsAsync()
     {
-        Response.Headers.Add("Access-Control-Allow-Origin", "https://www.example.com");
+        Response.Headers.Add("Access-Control-Allow-Origin", "https://oldfashionedablechord.abhay772.repl.co, http://192.168.56.1:8080/");
         Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
         Response.Headers.Add("Access-Control-Allow-Credentials", "true");
         Response.Headers.Add("Access-Control-Allow-Methods", "POST,OPTIONS");
