@@ -35,7 +35,7 @@ public class PropEvalUTests
         };
 
         // valid username
-        string username = "abhay@gmail.com";
+        string username = "abhay2@gmail.com";
 
         // Act
 
@@ -81,7 +81,7 @@ public class PropEvalUTests
     }
 
     [TestMethod]
-    public void True_SaveProfileWithPartialProfile()
+    public void False_SaveProfileWithPartialProfile()
     {
         // Arrage
 
@@ -100,19 +100,19 @@ public class PropEvalUTests
         };
 
         // valid username
-        string username = "abhay@gmail.com";
+        string username = "abhay2@gmail.com";
 
         // Act
 
         Result result = propEvalManager.saveProfileAsync(username, propertyProfile).Result;
 
         // Assert
-        Assert.IsTrue(result.IsSuccessful);
+        Assert.IsFalse(result.IsSuccessful);
     }
 
 
     [TestMethod]
-    public void False_SaveProfileWithPartialProfile()
+    public void False_SaveProfileWithEmptyProfile()
     {
         // Arrage
 
@@ -149,7 +149,7 @@ public class PropEvalUTests
         var expected = typeof(PropertyProfile);
 
         // valid username
-        string username = "abhay@gmail.com";
+        string username = "abhay2@gmail.com";
         // Act
 
         Result result = propEvalManager.loadProfileAsync(username).Result;
@@ -209,7 +209,7 @@ public class PropEvalUTests
         };
 
         // valid username
-        string username = "abhay@gmail.com";
+        string username = "abhay2@gmail.com";
 
         // Act
 

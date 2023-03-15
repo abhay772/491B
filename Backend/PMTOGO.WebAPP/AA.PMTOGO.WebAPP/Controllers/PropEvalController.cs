@@ -76,7 +76,7 @@ public class PropEvalController : ControllerBase
 
             }
 
-           return Forbid(); 
+           return BadRequest("Cookie not found"); 
         }
 
         catch
@@ -135,7 +135,7 @@ public class PropEvalController : ControllerBase
 
             }
 
-            return Forbid();
+            return BadRequest("Cookie not found");
         }
 
         catch 

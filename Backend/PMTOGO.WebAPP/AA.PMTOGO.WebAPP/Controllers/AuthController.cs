@@ -19,7 +19,7 @@ public class AuthenticationController : ControllerBase
         _authManager = authManager;
     }
 
-    [HttpPost]
+    [HttpPost("Login")]
     [Consumes("application/json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {
@@ -35,11 +35,24 @@ public class AuthenticationController : ControllerBase
 
                 string principalString = JsonSerializer.Serialize(loginDTO.principal);
 
-                await SetCookieOptionsAsync(principalString);
+                //SetCookieOptionsAsync(principalString);
+
+
 
                 await SetCorsOptionsAsync();
 
-                return Ok("Login successfull");
+                Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Domain = "localhost:7135",
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.Now.AddDays(1),
+                    MaxAge = TimeSpan.FromHours(24),
+                    IsEssential = true,
+                });
+
+                return Ok(Response);
             }
 
             else
@@ -49,6 +62,11 @@ public class AuthenticationController : ControllerBase
             }
         }
 
+        catch(ArgumentException ex)
+        {
+            return BadRequest("Already logged in.");
+        }
+
         catch
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
@@ -56,24 +74,46 @@ public class AuthenticationController : ControllerBase
 
     }
 
-    private async Task SetCookieOptionsAsync(string principalString)
+    [HttpPost("Logout")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Logout()
     {
-        // Create a new cookie and add it to the response
-        Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Strict,
-            Expires = DateTime.Now.AddDays(1),
-            MaxAge = TimeSpan.FromHours(24)
-        });
+        if (Request.Cookies.ContainsKey("CredentialCookie")){
 
-        await Task.CompletedTask;
+            Request.Cookies["CredentialCookie"].Remove(0);
+
+            return Ok("Logged out successfully");
+        }
+
+        else
+        {
+            return BadRequest("Cookie dosent exist");
+        }
+
     }
+
+    //private string SetCookieOptions(string principalString)
+    //{
+    //    // Create a new cookie and add it to the response
+    //    Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
+    //    {
+    //        //HttpOnly = true,
+    //        //Secure = true,
+    //        Domain = "https://localhost:7135/",
+    //        SameSite = SameSiteMode.None,
+    //        Expires = DateTime.Now.AddDays(1),
+    //        MaxAge = TimeSpan.FromHours(24),
+    //        IsEssential= true,
+    //    });
+
+    //    var cookieValue = Request.Cookies["CredentialCookie"];
+
+    //    return cookieValue;
+    //}
 
     private async Task SetCorsOptionsAsync()
     {
-        Response.Headers.Add("Access-Control-Allow-Origin", "https://www.example.com");
+        Response.Headers.Add("Access-Control-Allow-Origin", "https://localhost:7135/swagger/");
         Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
         Response.Headers.Add("Access-Control-Allow-Credentials", "true");
         Response.Headers.Add("Access-Control-Allow-Methods", "POST,OPTIONS");

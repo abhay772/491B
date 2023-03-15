@@ -59,13 +59,12 @@ public class AuthManager : IAuthManager
         claims.Add(new Claim(ClaimTypes.Email, username));
         claims.Add(new Claim(ClaimTypes.Role, role));
 
-        IIdentity identity = new ClaimsIdentity(claims);
 
         IPrincipal principal = new ClaimsPrincipal(identity);
 
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.principal = principal;
-        loginDTO.otp = otp;
+        loginDTO.Otp = otp;
 
         result.IsSuccessful = true;
         result.ErrorMessage = string.Empty;
