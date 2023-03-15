@@ -35,7 +35,7 @@ public class PropEvalUTests
         };
 
         // valid username
-        string username = "abhay2@gmail.com";
+        string username = "rajaFarley@gmail.com";
 
         // Act
 
@@ -100,7 +100,7 @@ public class PropEvalUTests
         };
 
         // valid username
-        string username = "abhay2@gmail.com";
+        string username = "rajaFarley@gmail.com";
 
         // Act
 
@@ -126,7 +126,7 @@ public class PropEvalUTests
         var propertyProfile = new PropertyProfile();
 
         // valid username
-        string username = "abhay@gmail.com";
+        string username = "rajaFarley@gmail.com";
 
         // Act
 
@@ -149,7 +149,7 @@ public class PropEvalUTests
         var expected = typeof(PropertyProfile);
 
         // valid username
-        string username = "abhay2@gmail.com";
+        string username = "rajaFarley@gmail.com";
         // Act
 
         Result result = propEvalManager.loadProfileAsync(username).Result;
@@ -209,7 +209,7 @@ public class PropEvalUTests
         };
 
         // valid username
-        string username = "abhay2@gmail.com";
+        string username = "rajaFarley@gmail.com";
 
         // Act
 
@@ -219,6 +219,41 @@ public class PropEvalUTests
         Assert.IsFalse(result.IsSuccessful);
     }
 
+    [TestMethod]
+    public void True_EvaluateProperty()
+    {
+        // Arrage
+
+        var sqlPropEvalDao = new SqlPropEvalDAO();
+        var historicalDAO = new HistoricalSalesDAO();
+        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+
+        var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
+
+
+        var propertyProfile = new PropertyProfile
+        {
+            NoOfBedrooms = 5,
+            NoOfBathrooms = 2,
+            SqFeet = 5785,
+            Address1 = "9662 Golden Leaf Junction",
+            Address2 = "Suite 12",
+            City = "Sacramento",
+            State = "CA",
+            Zip = "95852",
+            Description = "This some test desciption."
+        };
+
+        // valid username
+        string username = "rajaFarley@gmail.com";
+
+        // Act
+
+        Result result = propEvalManager.evaluateAsync(username, propertyProfile).Result;
+
+        // Assert
+        Assert.IsFalse(result.IsSuccessful);
+    }
 }
 
 

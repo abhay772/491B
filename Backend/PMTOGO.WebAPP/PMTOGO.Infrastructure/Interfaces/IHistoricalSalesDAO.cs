@@ -4,6 +4,6 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
 {
     public interface IHistoricalSalesDAO
     {
-        Task<int[]> findSales(PropertyProfile propertyProfile);
+        Task<List<double>> findSales(PropertyProfile propertyProfile);
     }
 }
