@@ -10,6 +10,7 @@ namespace AA.PMTOGO.PropertyEvalTests;
 [TestClass]
 public class PropEvalUTests
 {
+
     [TestMethod]
     public void True_SaveProfileWithValidUsername()
     {
@@ -252,17 +253,6 @@ public class PropEvalUTests
         Result result = propEvalManager.evaluateAsync(username, propertyProfile).Result;
 
         // Assert
-        Assert.IsFalse(result.IsSuccessful);
+        Assert.IsTrue(result.IsSuccessful);
     }
 }
-
-
-
-//[TestMethod]
-//public void True_EmailWithNotification()
-//{
-//}
-
-// Arrage
-// Act
-// Assert

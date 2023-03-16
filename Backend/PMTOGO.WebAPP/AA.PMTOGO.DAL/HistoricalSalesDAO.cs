@@ -10,11 +10,11 @@ public class HistoricalSalesDAO : IHistoricalSalesDAO
     {
         string expectedZip = propertyProfile.Zip;
 
-        string jsonString = await File.ReadAllTextAsync("./Data/MOCK_DATA.json");
+        string jsonString = await File.ReadAllTextAsync("D:\\Program Files (x86)\\Class Stuff\\Sem11\\491B\\Backend\\PMTOGO.WebAPP\\Data\\MOCK_DATA.json");
 
         List<HistoricalSale> salesList = JsonSerializer.Deserialize<List<HistoricalSale>>(jsonString);
 
-        if(salesList != null)
+        if(salesList.Count == 0 )
         {
             return null;
         }

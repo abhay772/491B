@@ -59,7 +59,7 @@ public class PropEvalManager : IPropEvalManager
 
         try
         {
-            bool Validation = _inputeValidation.ValidateUsername(username).IsSuccessful && _inputeValidation.ValidatePropertyProfile(propertyProfile);
+            bool Validation = _inputeValidation.ValidateEmail(username).IsSuccessful && _inputeValidation.ValidatePropertyProfile(propertyProfile);
             if (!Validation)
             {
                 result.IsSuccessful = false;
