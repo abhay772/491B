@@ -156,7 +156,7 @@ public class PropEvalUTests
 
         // Assert
         Assert.IsNotNull(result.Payload);
-        Assert.Equals(expected, result.Payload.GetType());
+        Assert.AreEqual(expected, result.Payload.GetType());
     }
 
     [TestMethod]

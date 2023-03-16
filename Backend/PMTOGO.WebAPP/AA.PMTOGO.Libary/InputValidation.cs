@@ -144,15 +144,15 @@ namespace AA.PMTOGO.Libary
 
         public bool ValidatePropertyProfile(PropertyProfile propertyProfile)
         {
-            bool isEmpty = (propertyProfile.NoOfBedrooms == 0) ||
-                           (propertyProfile.NoOfBathrooms == 0) ||
-                           (propertyProfile.SqFeet == 0) ||
-                           (propertyProfile.Address1 == string.Empty) ||
-                           (propertyProfile.Address2 == string.Empty) ||
-                           (propertyProfile.City == string.Empty) ||
-                           (propertyProfile.State == string.Empty) ||
-                           (propertyProfile.Zip == string.Empty);
-            return isEmpty;
+            bool isValid = (propertyProfile.NoOfBedrooms != 0) && 
+                (propertyProfile.NoOfBathrooms != 0) && 
+                (propertyProfile.SqFeet != 0) && 
+                (propertyProfile.Address1 != string.Empty) && 
+                (propertyProfile.Address2 != string.Empty) && 
+                (propertyProfile.City != string.Empty) &&     
+                (propertyProfile.State != string.Empty) &&
+                           (propertyProfile.Zip != string.Empty);
+            return isValid;
         }
     }
 }

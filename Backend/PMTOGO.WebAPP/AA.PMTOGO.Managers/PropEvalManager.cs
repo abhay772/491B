@@ -23,7 +23,7 @@ public class PropEvalManager : IPropEvalManager
 
     public async Task<Result> loadProfileAsync(string username)
     {
-        bool Validation = _inputeValidation.ValidateUsername(username).IsSuccessful;
+        bool Validation = _inputeValidation.ValidateEmail(username).IsSuccessful;
         if (Validation)
         {
             return await _sqlPropEvalDAO.loadProfileAsync(username);
@@ -39,7 +39,7 @@ public class PropEvalManager : IPropEvalManager
 
     public async Task<Result> saveProfileAsync(string username, PropertyProfile propertyProfile)
     {
-        bool Validation = _inputeValidation.ValidateUsername(username).IsSuccessful && _inputeValidation.ValidatePropertyProfile(propertyProfile);
+        bool Validation = _inputeValidation.ValidateEmail(username).IsSuccessful && _inputeValidation.ValidatePropertyProfile(propertyProfile);
         if (Validation)
         {
             return await _sqlPropEvalDAO.saveProfileAsync(username, propertyProfile);
