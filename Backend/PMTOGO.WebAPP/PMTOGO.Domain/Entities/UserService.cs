@@ -42,4 +42,3 @@ namespace AA.PMTOGO.Models.Entities
         }
 
     }
-

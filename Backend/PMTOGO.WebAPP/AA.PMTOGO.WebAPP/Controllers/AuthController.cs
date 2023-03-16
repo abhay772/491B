@@ -113,7 +113,7 @@ public class AuthenticationController : ControllerBase
 
     private async Task SetCorsOptionsAsync()
     {
-        Response.Headers.Add("Access-Control-Allow-Origin", "https://localhost:7135/swagger/");
+        Response.Headers.Add("Access-Control-Allow-Origin", "https://oldfashionedablechord.abhay772.repl.co, http://192.168.56.1:8080/");
         Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
         Response.Headers.Add("Access-Control-Allow-Credentials", "true");
         Response.Headers.Add("Access-Control-Allow-Methods", "POST,OPTIONS");

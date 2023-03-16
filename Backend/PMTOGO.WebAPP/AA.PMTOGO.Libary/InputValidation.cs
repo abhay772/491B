@@ -5,44 +5,60 @@ namespace AA.PMTOGO.Libary
 {
     public class InputValidation
     {
-        //public Result ValidateEmail(string email)
-        //{
-        //    var result = new Result();
-
-        //    if (email == null)
-        //    {
-        //        result.IsSuccessful = false;
-        //        result.ErrorMessage = "Invalid email provided. Retry again or contact system administrator";
-        //        return result;
-        //    }
-        //    if (Regex.IsMatch(email, @"^[a-zA-Z0-9-@.\s]+$") && email.Length >= 8 && email.Length < 50 && email.Contains("@"))
-        //    {
-        //        result.IsSuccessful = true;
-        //        return result;
-        //    }
-
-        //    result.IsSuccessful = false;
-        //    result.ErrorMessage = "Invalid email provided. Retry again or contact system administrator";
-        //    return result;
-        //}
-
         public Result ValidateEmail(string email)
         {
             var result = new Result();
 
+            // Check if the email string is null or empty
             if (string.IsNullOrEmpty(email))
             {
+
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Email address is required.";
+                result.ErrorMessage = "Email address is not valid";
                 return result;
             }
 
-            var emailRegex = new Regex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-
-            if (!emailRegex.IsMatch(email))
+            // Split the email address into local and domain parts
+            string[] parts = email.Split('@');
+            if (parts.Length != 2)
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Email address is not valid.";
+                result.ErrorMessage = "Email address is not valid";
+                return result;
+            }
+
+            // Check if the local and domain parts are not empty
+            if (string.IsNullOrEmpty(parts[0]) || string.IsNullOrEmpty(parts[1]))
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Email address is not valid";
+                return result;
+            }
+
+            // Split the domain into name and extension
+            string[] domainParts = parts[1].Split('.');
+            if (domainParts.Length < 2)
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Email address is not valid";
+                return result;
+            }
+
+            // Check if the name and extension are not empty
+            if (string.IsNullOrEmpty(domainParts[0]) || string.IsNullOrEmpty(domainParts[1]))
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Email address is not valid";
+                return result;
+            }
+
+            // Check if the email is in the expected format
+            if (email.IndexOf('@') != email.LastIndexOf('@') ||
+                email.IndexOf('@') < 1 ||
+                email.LastIndexOf('.') < email.IndexOf('@') + 2)
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Email address is not valid";
                 return result;
             }
 
@@ -69,6 +85,7 @@ namespace AA.PMTOGO.Libary
             result.ErrorMessage = "Invalid passphrase provided. Retry again or contact system administrator";
             return result;
         }
+
         public Result ValidateUsername(string name)
         {
             var result = new Result();
@@ -123,6 +140,19 @@ namespace AA.PMTOGO.Libary
                 result.ErrorMessage = "Invalid Role.";
                 return result;
             }
+        }
+
+        public bool ValidatePropertyProfile(PropertyProfile propertyProfile)
+        {
+            bool isValid = (propertyProfile.NoOfBedrooms != 0) && 
+                (propertyProfile.NoOfBathrooms != 0) && 
+                (propertyProfile.SqFeet != 0) && 
+                (propertyProfile.Address1 != string.Empty) && 
+                (propertyProfile.Address2 != string.Empty) && 
+                (propertyProfile.City != string.Empty) &&     
+                (propertyProfile.State != string.Empty) &&
+                           (propertyProfile.Zip != string.Empty);
+            return isValid;
         }
     }
 }

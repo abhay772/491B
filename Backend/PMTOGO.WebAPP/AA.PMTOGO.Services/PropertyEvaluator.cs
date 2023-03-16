@@ -16,9 +16,9 @@ public class PropertyEvaluator : IPropertyEvaluator
     {
         Result result = new Result();
 
-        int[] sales = await _historicalDAO.findSales(propertyProfile);
+        List<double> sales = await _historicalDAO.findSales(propertyProfile);
 
-        if (sales.Length != 0)
+        if (sales.Count != 0)
         {
             double medianPrice = sales.Average();
 
