@@ -21,12 +21,12 @@ public class HistoricalSalesDAO : IHistoricalSalesDAO
 
         List<double> sales = new List<double>();
 
-        foreach (HistoricalSale sale in salesList)
+        foreach(HistoricalSale sale in salesList)
         {
             if(expectedZip == sale.Zip)
             {
                 double saleValue = Double.Parse(sale.SalesValue.Substring(1, sale.SalesValue.Length - 1));
-                sales.Append(saleValue);
+                sales.Add(saleValue);
             }
         }
         return sales;
