@@ -1,6 +1,5 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
-using Azure;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
@@ -35,24 +34,11 @@ public class AuthenticationController : ControllerBase
 
                 string principalString = JsonSerializer.Serialize(loginDTO.principal);
 
-                //SetCookieOptionsAsync(principalString);
-
-
+                await SetCookieOptionsAsync(principalString);
 
                 await SetCorsOptionsAsync();
 
-                Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Domain = "localhost:7135",
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = DateTime.Now.AddDays(1),
-                    MaxAge = TimeSpan.FromHours(24),
-                    IsEssential = true,
-                });
-
-                return Ok(Response);
+                return Ok();
             }
 
             else
@@ -92,31 +78,29 @@ public class AuthenticationController : ControllerBase
 
     }
 
-    //private string SetCookieOptions(string principalString)
-    //{
-    //    // Create a new cookie and add it to the response
-    //    Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
-    //    {
-    //        //HttpOnly = true,
-    //        //Secure = true,
-    //        Domain = "https://localhost:7135/",
-    //        SameSite = SameSiteMode.None,
-    //        Expires = DateTime.Now.AddDays(1),
-    //        MaxAge = TimeSpan.FromHours(24),
-    //        IsEssential= true,
-    //    });
+    private async Task SetCookieOptionsAsync(string principalString)
+    {
+        // Create a new cookie and add it to the response
+        Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            Domain = "https://localhost:7135/",
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.Now.AddDays(1),
+            MaxAge = TimeSpan.FromHours(24),
+            IsEssential = true,
+        });
 
-    //    var cookieValue = Request.Cookies["CredentialCookie"];
-
-    //    return cookieValue;
-    //}
+        await Task.Delay(10);
+    }
 
     private async Task SetCorsOptionsAsync()
     {
-        Response.Headers.Add("Access-Control-Allow-Origin", "https://oldfashionedablechord.abhay772.repl.co, http://192.168.56.1:8080/");
+        Response.Headers.Add("Access-Control-Allow-Origin", "www.example.com, http://192.168.56.1:8080");
         Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
         Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        Response.Headers.Add("Access-Control-Allow-Methods", "POST,OPTIONS");
+        Response.Headers.Add("Access-Control-Allow-Methods", "OPTIONS,POST");
         Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
         await Task.CompletedTask;
