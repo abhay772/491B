@@ -19,9 +19,11 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("Login")]
-    [Consumes("application/json")]
+    [Consumes("application/json", "application/problem+json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {
+
+
         try
         {
             Result result = await _authManager.Login(userCredentials.Username, userCredentials.Password);
@@ -34,77 +36,62 @@ public class AuthenticationController : ControllerBase
 
                 string principalString = JsonSerializer.Serialize(loginDTO.principal);
 
-                await SetCookieOptionsAsync(principalString);
+                SetCookieOptions(principalString);
 
-                await SetCorsOptionsAsync();
 
-                return Ok();
+                return Ok(new { message = "Login successful" });
             }
-
             else
             {
-                return BadRequest("Invalid username or password provided. Retry again or contact system admin");
 
+                return BadRequest(new { message = "Invalid username or password provided. Retry again or contact system admin" });
             }
         }
-
-        catch(ArgumentException ex)
+        catch (ArgumentException ex)
         {
-            return BadRequest("Already logged in.");
-        }
 
+            return BadRequest(new { message = "Already logged in." });
+        }
         catch
         {
+
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-
     }
 
-    [HttpPost("Logout")]
-    [Consumes("application/json")]
-    public async Task<IActionResult> Logout()
-    {
-        if (Request.Cookies.ContainsKey("CredentialCookie")){
 
-            Request.Cookies["CredentialCookie"].Remove(0);
+    //[HttpPost("Logout")]
+    //[Consumes("application/json")]
+    //public async Task<IActionResult> Logout()
+    //{
+    //    if (Request.Cookies.ContainsKey("CredentialCookie")){
 
-            return Ok("Logged out successfully");
-        }
+    //        Request.Cookies["CredentialCookie"].Remove(0);
 
-        else
-        {
-            return BadRequest("Cookie dosent exist");
-        }
+    //        return Ok("Logged out successfully");
+    //    }
 
-    }
+    //    else
+    //    {
+    //        return BadRequest("Cookie dosent exist");
+    //    }
 
-    private async Task SetCookieOptionsAsync(string principalString)
+    //}
+
+    private void SetCookieOptions(string principalString)
     {
         // Create a new cookie and add it to the response
         Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
-            Domain = "https://localhost:7135/",
             SameSite = SameSiteMode.None,
             Expires = DateTime.Now.AddDays(1),
             MaxAge = TimeSpan.FromHours(24),
             IsEssential = true,
         });
-
-        await Task.Delay(10);
     }
 
-    private async Task SetCorsOptionsAsync()
-    {
-        Response.Headers.Add("Access-Control-Allow-Origin", "www.example.com, http://192.168.56.1:8080");
-        Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
-        Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        Response.Headers.Add("Access-Control-Allow-Methods", "OPTIONS,POST");
-        Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-        await Task.CompletedTask;
-    }
     private async Task<Result> SendOTPtoEmailAsync(string otp, string userEmail)
     {
         Result result = new Result();

@@ -1,8 +1,7 @@
 using AA.PMTOGO.WebAPP.Data;
 using AA.PMTOGO.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using AA.PMTOGO.Models.Entities;
+using AA.PMTOGO.Infrastructure.NewFolder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-
-app.UseHttpsRedirection();
-
+app.UseMiddleware<CorsMiddleware>();
 app.MapControllers();
 
 app.Run();
