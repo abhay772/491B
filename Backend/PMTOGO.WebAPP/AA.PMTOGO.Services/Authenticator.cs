@@ -62,7 +62,6 @@ public class Authenticator : IAuthenticator
     {
         var user_salt = Encoding.UTF8.GetBytes(salt);
         var pass = Encoding.UTF8.GetBytes(password);
-        Console.WriteLine(pass);
 
         // Lecture Vong 12/13 
         var hash = new Rfc2898DeriveBytes(pass, user_salt, 1000, HashAlgorithmName.SHA512);

@@ -30,7 +30,6 @@ namespace AA.PMTOGO.UnitTest
             // Act
             Result result = await dao.GetUserRequest("serviceProvider@gmail.com");
             bool actual = result.IsSuccessful;
-            Console.WriteLine(result.Payload);
 
             // Assert
             Assert.IsNotNull(actual);

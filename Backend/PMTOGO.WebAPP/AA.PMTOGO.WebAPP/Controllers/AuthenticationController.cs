@@ -77,6 +77,7 @@ public class AuthenticationController : ControllerBase
             return BadRequest("Cookie dosent exist");
         }
 
+
     }
 
     private void SetCookieOptions(string principalString)
