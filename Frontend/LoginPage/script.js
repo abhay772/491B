@@ -6,11 +6,11 @@ form.addEventListener('submit', event => {
   const username = document.querySelector('#username').value;
   const password = document.querySelector('#password').value;
 
-  const api = "https://localhost:7169/api/Auth/Login";
+  const api = 'https://localhost:7135/api/Authentication/Login';
 
   const options = {
     method:'POST',
-    body: JSON.stringify({ username: username, password: password }),
+    body: JSON.stringify({ Username: username, Password: password }),
     mode: 'cors',
     credentials: 'include',
     headers: {
@@ -23,6 +23,6 @@ form.addEventListener('submit', event => {
   fetch(api, options)
     .then(response => response.text())
     .then(text => console.log(text))
-    .catch(error => console.error(error));
+    .catch(error => console.log(error.text()));
 
 });
