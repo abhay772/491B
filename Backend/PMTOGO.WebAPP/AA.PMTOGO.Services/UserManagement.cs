@@ -24,7 +24,6 @@ namespace AA.PMTOGO.Services
                 result1 = await _authNDAO.FindUser(email);
                 if (result1.IsSuccessful == false)//user doesnt exist so procceed
                 {
-                    Console.WriteLine("User doesnt exist procceed");
                     //add user account
                     //userID += 1;
                     string salt = GenerateSalt();
