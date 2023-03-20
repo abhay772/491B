@@ -36,6 +36,8 @@ function loadLoginPage() {
             .then(response => console.log(response.text()))
             .catch(error => console.log(error));
       });
+
+      
     })
     .catch(error => console.log(error));
 }
@@ -91,7 +93,7 @@ function get(url) {
 
   const options = {
     method: 'GET',
-    mode: 'no-cors',
+    mode: 'cors',
     cache: 'default',
     credentials: 'include',
     headers: {
@@ -108,12 +110,11 @@ function get(url) {
 function send(url, data) {
   const options = {
     method: 'POST',
-    mode: 'no-cors',
+    mode: 'cors',
     cache: 'default',
     credentials: 'include',
     headers: {
         'Content-Type': 'application/json',
-        'Origin':'www.example.com'
     },
     redirect: 'follow',
     referrerPolicy: 'no-referrer-when-downgrade',
