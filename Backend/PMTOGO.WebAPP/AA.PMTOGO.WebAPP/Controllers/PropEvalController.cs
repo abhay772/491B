@@ -28,9 +28,6 @@ public class PropEvalController : ControllerBase
     {
         try
         {
-            // Setting the cors options for the response
-            await SetCorsOptionsAsync();
-
             // Loading the cookie from the http request
             var cookieValue = Request.Cookies["CredentialCookie"];
 
@@ -91,8 +88,6 @@ public class PropEvalController : ControllerBase
     {
         try
         {
-            // Setting the cors options for the response
-            await SetCorsOptionsAsync();
 
             // Loading the cookie from the http request
             var cookieValue = Request.Cookies["CredentialCookie"];
@@ -150,9 +145,6 @@ public class PropEvalController : ControllerBase
     {
         try
         {
-            // Setting the cors options for the response
-            await SetCorsOptionsAsync();
-
             // Loading the cookie from the http request
             var cookieValue = Request.Cookies["CredentialCookie"];
 
@@ -202,16 +194,5 @@ public class PropEvalController : ControllerBase
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-    }
-
-    private async Task SetCorsOptionsAsync()
-    {
-        Response.Headers.Add("Access-Control-Allow-Origin", "https://www.example.com");
-        Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
-        Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        Response.Headers.Add("Access-Control-Allow-Methods", "POST,OPTIONS");
-        Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-        await Task.CompletedTask;
     }
 }

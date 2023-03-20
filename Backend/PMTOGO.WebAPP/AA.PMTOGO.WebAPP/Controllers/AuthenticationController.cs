@@ -60,23 +60,24 @@ public class AuthenticationController : ControllerBase
     }
 
 
-    //[HttpPost("Logout")]
-    //[Consumes("application/json")]
-    //public async Task<IActionResult> Logout()
-    //{
-    //    if (Request.Cookies.ContainsKey("CredentialCookie")){
+    [HttpPost("Logout")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Logout()
+    {
+        if (Request.Cookies.ContainsKey("CredentialCookie"))
+        {
+            Response.Cookies.Delete("CredentialCookie");
+            Console.WriteLine(Request.Cookies["CredentialCookie"].ToString());
 
-    //        Request.Cookies["CredentialCookie"].Remove(0);
+            return Ok("Logged out successfully");
+        }
 
-    //        return Ok("Logged out successfully");
-    //    }
+        else
+        {
+            return BadRequest("Cookie dosent exist");
+        }
 
-    //    else
-    //    {
-    //        return BadRequest("Cookie dosent exist");
-    //    }
-
-    //}
+    }
 
     private void SetCookieOptions(string principalString)
     {
