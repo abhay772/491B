@@ -98,7 +98,6 @@ namespace AA.PMTOGO.Services
 
             Random rand = new Random();
             salt = rand.Next(100000, 999999).ToString();
-            Console.WriteLine(salt);
             return salt;
         }
 
@@ -111,7 +110,6 @@ namespace AA.PMTOGO.Services
             var hash = new Rfc2898DeriveBytes(pass, user_salt, 1000, HashAlgorithmName.SHA512);
             var encryptedPass = hash.GetBytes(64);
             string passDigest = Convert.ToBase64String(encryptedPass);
-            //Console.WriteLine(passDigest);
             return passDigest;
         }
     }

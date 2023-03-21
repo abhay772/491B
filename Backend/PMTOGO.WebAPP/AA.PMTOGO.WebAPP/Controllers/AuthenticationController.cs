@@ -1,6 +1,5 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
-using Azure;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
@@ -20,9 +19,11 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("Login")]
-    [Consumes("application/json")]
+    [Consumes("application/json", "application/problem+json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {
+
+
         try
         {
             Result result = await _authManager.Login(userCredentials.Username, userCredentials.Password);
@@ -35,52 +36,38 @@ public class AuthenticationController : ControllerBase
 
                 string principalString = JsonSerializer.Serialize(loginDTO.principal);
 
-                //SetCookieOptionsAsync(principalString);
+                SetCookieOptions(principalString);
 
 
-
-                await SetCorsOptionsAsync();
-
-                Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Domain = "localhost:7135",
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
-                    Expires = DateTime.Now.AddDays(1),
-                    MaxAge = TimeSpan.FromHours(24),
-                    IsEssential = true,
-                });
-
-                return Ok(Response);
+                return Ok(new { message = "Login successful" });
             }
-
             else
             {
-                return BadRequest("Invalid username or password provided. Retry again or contact system admin");
 
+                return BadRequest(new { message = "Invalid username or password provided. Retry again or contact system admin" });
             }
         }
-
-        catch(ArgumentException ex)
+        catch (ArgumentException ex)
         {
-            return BadRequest("Already logged in.");
-        }
 
+            return BadRequest(new { message = "Already logged in." });
+        }
         catch
         {
+
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
-
     }
+
 
     [HttpPost("Logout")]
     [Consumes("application/json")]
     public async Task<IActionResult> Logout()
     {
-        if (Request.Cookies.ContainsKey("CredentialCookie")){
-
-            Request.Cookies["CredentialCookie"].Remove(0);
+        if (Request.Cookies.ContainsKey("CredentialCookie"))
+        {
+            Response.Cookies.Delete("CredentialCookie");
+            Console.WriteLine(Request.Cookies["CredentialCookie"].ToString());
 
             return Ok("Logged out successfully");
         }
@@ -90,37 +77,23 @@ public class AuthenticationController : ControllerBase
             return BadRequest("Cookie dosent exist");
         }
 
+
     }
 
-    //private string SetCookieOptions(string principalString)
-    //{
-    //    // Create a new cookie and add it to the response
-    //    Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
-    //    {
-    //        //HttpOnly = true,
-    //        //Secure = true,
-    //        Domain = "https://localhost:7135/",
-    //        SameSite = SameSiteMode.None,
-    //        Expires = DateTime.Now.AddDays(1),
-    //        MaxAge = TimeSpan.FromHours(24),
-    //        IsEssential= true,
-    //    });
-
-    //    var cookieValue = Request.Cookies["CredentialCookie"];
-
-    //    return cookieValue;
-    //}
-
-    private async Task SetCorsOptionsAsync()
+    private void SetCookieOptions(string principalString)
     {
-        Response.Headers.Add("Access-Control-Allow-Origin", "https://oldfashionedablechord.abhay772.repl.co, http://192.168.56.1:8080/");
-        Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
-        Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-        Response.Headers.Add("Access-Control-Allow-Methods", "POST,OPTIONS");
-        Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-        await Task.CompletedTask;
+        // Create a new cookie and add it to the response
+        Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.Now.AddDays(1),
+            MaxAge = TimeSpan.FromHours(24),
+            IsEssential = true,
+        });
     }
+
     private async Task<Result> SendOTPtoEmailAsync(string otp, string userEmail)
     {
         Result result = new Result();
