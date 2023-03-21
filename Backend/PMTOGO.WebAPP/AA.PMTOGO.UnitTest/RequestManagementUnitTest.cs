@@ -76,7 +76,7 @@ namespace AA.PMTOGO.UnitTest
             Guid id = new Guid("94B97BAF-0A2B-42B7-AC26-AB2444A9900C");
 
             // Act
-            Result result = await service.RateService(id, 4);
+            Result result = await service.RateService(id,"propertyManager@gmail.com", 4);
             bool actual = result.IsSuccessful;
 
             // Assert
@@ -125,7 +125,7 @@ namespace AA.PMTOGO.UnitTest
             Guid id = new Guid("DCEA868C-DEDC-4FD2-90E8-3CCFB55A87B4");
 
             //act
-            Result result = await service.RateService(id, 6);
+            Result result = await service.RateService(id,"propertyManager@gmail.com", 6);
             bool actual = result.IsSuccessful;
 
             //assert

@@ -16,19 +16,19 @@
  
 <!-- Log In Form-->
 <div id="loginpage" class="login"> 
-  <form class="window-content" name="login">
+  <form class="window-content" name="login" id="loginForm">
     <div class="container">
         <h1>Login</h1>
         <p>Please enter your log in credentials</p>
         <hr>
         <label for="email"><b>Email</b></label>
-        <input type="text" id="logemail" placeholder="Enter Email" name="email"required>
+        <input type="text" id="logemail" placeholder="Enter Email" name="logemail"required>
   
         <label for="password"><b>Password</b></label>
-        <input type="password" id="logpassword" placeholder="Enter Password" name="pass">
+        <input type="password" id="logpass" placeholder="Enter Password" name="logpass">
         
         <label>
-          <input type="checkbox" name="remember" style="margin-bottom:15px"> Remember me</label>
+          <input type="checkbox" name="remember" style="margin-bottom:15px">Remember me</label>
   
         <div class="clearfix">
           <button  onclick="document.getElementById('forgotPass').style.display='block'" class="forget">Forgot Password?</button>
@@ -44,7 +44,7 @@
 <!-- Sign Up form -->
 <div id="signup" class="window">
   <span onclick="document.getElementById('signup').style.display='none'" class="exit" title="Close Window">Back</span>
-  <form class="window-content" name="register">
+  <form class="window-content" name="register" id="signupForm">
     <div class="container">
       <h1>Sign Up</h1>
       <p>Please fill out this form to create an account.</p>
@@ -74,7 +74,7 @@
       <input type="password" id="pass" placeholder="Enter Password" name="pass" required>
 
       <label for="repeatpass"><b>Repeat Password</b></label>
-      <input type="password" id="pass" placeholder="Repeat Password" name="repeatpass"           required>
+      <input type="password" id="repeatpass" placeholder="Repeat Password" name="repeatpass" required>
 
       <div class="clearfix">
         <button type="button"                                                                      onclick="document.getElementById('signup').style.display='none'"                           class="cancelbtn" id="cancel">Cancel</button>
@@ -83,13 +83,15 @@
     </div>
   </form>
 </div>
+
 <div class="feature">
-  <a id="request_management">
+  <a id="request_management"></a>
+</div>
     
-  <!-- Side bar navigation/ Homepage
+<!-- Side bar navigation/ Homepage
 <body class="active">-->
 <div id="homepage" class="wrapper">
-  <a id="homepage_view">
+  <a id="homepage_view"></a>
   <span onclick="document.getElementById('homepage').style.display='none'" class="exit" title="Close Window">Log Out</span>
   <!--Top menu -->
   <div class="sidebar">

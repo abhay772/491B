@@ -52,12 +52,12 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> RateService(Guid id, int rate)
+        public async Task<Result> RateService(Guid id, string propertyManagerEmail, int rate)
         {
             Result result = new Result();
             if(CheckRate(rate)) 
             { 
-                result = await _requestDAO.RateUserServices(id, rate);
+                result = await _requestDAO.RateUserServices(id, propertyManagerEmail, rate);
                 return result;
             }
             result.IsSuccessful = false;
