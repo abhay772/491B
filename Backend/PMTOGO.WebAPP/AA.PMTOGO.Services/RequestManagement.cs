@@ -52,12 +52,12 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> RateService(Guid id, string propertyManagerEmail, int rate)
+        public async Task<Result> RateService(Guid id, int rate)
         {
             Result result = new Result();
             if(CheckRate(rate)) 
             { 
-                result = await _requestDAO.RateUserServices(id, propertyManagerEmail, rate);
+                result = await _requestDAO.RateUserServices(id, rate);
                 return result;
             }
             result.IsSuccessful = false;
@@ -73,8 +73,7 @@ namespace AA.PMTOGO.Services
         }
         public async Task<Result> CreateService(UserService service)
         {
-            Guid serviceRequestId = Guid.NewGuid();
-            Result result = await _requestDAO.AddService(serviceRequestId, service.ServiceName, service.ServiceType, service.ServiceDescription,
+            Result result = await _requestDAO.AddService(service.ServiceId, service.ServiceName, service.ServiceType, service.ServiceDescription,
                  service.ServiceFrequency, service.ServiceProviderEmail, service.ServiceProvider, service.PropertyManagerEmail, service.PropertyManagerName);
             return result;
         }

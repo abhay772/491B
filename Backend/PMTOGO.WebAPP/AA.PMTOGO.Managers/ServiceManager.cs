@@ -37,7 +37,7 @@ namespace AA.PMTOGO.Managers
         // rate service
         public async Task<Result> RateUserService(UserService service, int rate)
         {
-            Result result = await _service.RateService(service.ServiceId, service.PropertyManagerName, rate);
+            Result result = await _service.RateService(service.ServiceId, rate);
             //_logger!.Log("RateUserService", 1, LogCategory.Business, result);
             return result;
         }

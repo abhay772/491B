@@ -2,6 +2,7 @@
 using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
 using System.Net.Security;
+using System.Runtime.ConstrainedExecution;
 
 namespace AA.PMTOGO.DAL
 {
@@ -41,7 +42,7 @@ namespace AA.PMTOGO.DAL
             }
 
         }
-        public async Task<Result> FindService(Guid serviceid, string propertyManagerEmail)
+        public async Task<Result> FindService(Guid serviceid)
         {
             var result = new Result();
 
@@ -49,26 +50,27 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceId = serviceid AND @PropertyManagerEmail = propertyManagerEmail";
+                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceId = serviceid";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
                 command.Parameters.AddWithValue("@ServiceId", serviceid);
-                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
                     while (reader.Read())
                     {
-                        if (serviceid.Equals(reader["ServiceId"]) && propertyManagerEmail.Equals(reader["PropertyManagerEmail"]))
+                        if (serviceid.Equals(reader["ServiceId"]))
                         {
                             result.IsSuccessful = true;
                             result.ErrorMessage = "UserService already exists.";
                             return result;
+
                         }
                     }
                 }
 
+                
                 result.IsSuccessful = false;
                 return result;
             }
@@ -289,17 +291,16 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> RateUserServices(Guid serviceId,string propertyManagerEmail, int rate)
+        public async Task<Result> RateUserServices(Guid serviceId, int rate)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                var command = new SqlCommand("UPDATE UserServices SET @Rating = rate WHERE @ServiceId = serviceId AND @PropertyManagerEmail = propertyManagerEmail;", connection);
+                var command = new SqlCommand("UPDATE UserServices SET @Rating = rate WHERE @ServiceId = serviceId", connection);
 
                 command.Parameters.AddWithValue("@ServiceId", serviceId);
-                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
                 command.Parameters.AddWithValue("@Rating", rate);
 
                 try
@@ -334,7 +335,7 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> CheckRating(Guid id, string propertyManagerEmail, int rate)
+        public async Task<Result> CheckRating(Guid serviceId, int rate)
         {
             Result result = new Result();
 
@@ -342,12 +343,11 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceId = id AND @PropertyManagerEmail = propertyManagerEmail";
+                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceId = serviceId";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@ServiceId", id);
-                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
+                command.Parameters.AddWithValue("@ServiceId", serviceId);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {

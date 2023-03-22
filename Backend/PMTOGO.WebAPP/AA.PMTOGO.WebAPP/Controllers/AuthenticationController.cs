@@ -67,7 +67,7 @@ public class AuthenticationController : ControllerBase
         if (Request.Cookies.ContainsKey("CredentialCookie"))
         {
             Response.Cookies.Delete("CredentialCookie");
-            Console.WriteLine(Request.Cookies["CredentialCookie"].ToString());
+            Console.WriteLine(Request.Cookies["CredentialCookie"]!.ToString());
 
             return Ok("Logged out successfully");
         }
