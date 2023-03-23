@@ -1,3 +1,4 @@
+using AA.PMTOGO.DAL;
 using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers;
@@ -34,12 +35,12 @@ namespace AA.PMTOGO.UnitTest
 
            //username = email
             
-            Result result = await user.CreateAccount("account@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            Result result = await user.CreateAccount("sierra@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             
             bool accountCreated = result.IsSuccessful;
 
             // Act
-            Result result1 = await user.CreateAccount("account@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            Result result1 = await user.CreateAccount("sierra@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             bool account2Created = result1.IsSuccessful;
 
             // Assert
@@ -175,6 +176,32 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(OverTime);
             Assert.IsTrue(OnTime);
             Assert.IsTrue(OverTime);
+
+        }
+
+        [TestMethod]
+        public async Task ShouldAllUserInfo()
+        {
+            //aranage
+
+            var account = new UserManagement();
+            var dao = new UsersDAO();
+
+            //act
+            await account.CreateAccount("Delete@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            Result result1 = await dao.DoesUserExist("Delete@gmail.com");
+            bool found = result1.IsSuccessful;
+
+            await account.DeleteAccount("Delete@gmail.com", "randomstring");
+            Result result = await dao.DoesUserExist("Delete@gmail,com");
+            bool actual = result.IsSuccessful;
+
+            //private info
+
+            //assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(found);
+            Assert.IsFalse(actual);
 
         }
     }

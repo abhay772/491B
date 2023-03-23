@@ -1,6 +1,5 @@
 ﻿using AA.PMTOGO.Authentication;
 using AA.PMTOGO.Infrastructure.Interfaces;
-using AA.PMTOGO.Models;
 using AA.PMTOGO.Models.Entities;
 using System.Security.Claims;
 using System.Security.Principal;

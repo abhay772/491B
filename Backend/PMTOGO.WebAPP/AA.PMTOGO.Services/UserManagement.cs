@@ -13,7 +13,7 @@ namespace AA.PMTOGO.Services
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
 
-        //static int userID = 0;
+  
                                             //byte[] to string
         public async Task<Result> CreateAccount(string email,string password, string firstname, string lastname, string role)
         {
@@ -25,7 +25,6 @@ namespace AA.PMTOGO.Services
                 if (result1.IsSuccessful == false)//user doesnt exist so procceed
                 {
                     //add user account
-                    //userID += 1;
                     string salt = GenerateSalt();
                     string passDigest = EncryptPassword(password, salt);
 
@@ -56,7 +55,7 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> DeactivateAccount(string username, string password)
+        public async Task<Result> DeleteAccount(string username, string password)
         {
             Result result = new Result();
             if (valid.ValidateEmail(username).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
@@ -67,8 +66,8 @@ namespace AA.PMTOGO.Services
                 {
                     //deactivate user account
 
-                   await _authNDAO.DeactivateUser(username);
-
+                   await _authNDAO.DeleteUserAccount(username);
+                   await _authNDAO.DeleteUserProfile(username);
                     //log account deactivate succesfully
 
                     result.IsSuccessful = true;
@@ -85,7 +84,7 @@ namespace AA.PMTOGO.Services
             }
             else
             {
-                result.ErrorMessage = "Unable to delete account. Retry again or contact system administrator.";
+                result.ErrorMessage = "Unable to delete account. Try again later or contact system administrator.";
                 result.IsSuccessful = false;
             }
 

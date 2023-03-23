@@ -1,5 +1,37 @@
 <div>
-  <h1>Property Evaluation</h1>
-  <!-- content of property evaluation page -->
-  <h1>Here we go!</h1>
+  <div id="Evaluation"></div>
+  <form id="PropertyProfile">
+    <fieldset>
+      <legend>Property Profile</legend>
+
+      <label class="propProfile-label" for="NoOfBedrooms">Number of Bedrooms:</label>
+      <input type="text" class="propProfile-field" id="NoOfBedrooms" name="NoOfBedrooms"><br>
+
+      <label class="propProfile-label" for="NoOfBathrooms">Number of Bathrooms:</label>
+      <input type="text" class="propProfile-field" id="NoOfBathrooms" name="NoOfBathrooms"><br>
+
+      <label class="propProfile-label" for="SqFeet">Square Feet:</label>
+      <input type="text" class="propProfile-field" id="SqFeet" name="SqFeet"><br>
+
+      <label class="propProfile-label" for="Address1">Address 1:</label>
+      <input type="text" class="propProfile-field" id="Address1" name="Address1"><br>
+
+      <label class="propProfile-label" for="Address2">Address 2:</label>
+      <input type="text" class="propProfile-field" id="Address2" name="Address2"><br>
+
+      <label class="propProfile-label" for="City">City:</label>
+      <input type="text" class="propProfile-field" id="City" name="City"><br>
+
+      <label class="propProfile-label" for="State">State:</label>
+      <input type="text" class="propProfileField" id="State" name="State"><br>
+
+      <label class="propProfile-label" for="Zip">Zip Code:</label>
+      <input type="text" class="propProfile-field" id="Zip" name="Zip"><br>
+
+      <label class="propProfile-label" for="Description">Description:</label>
+      <textarea type="text" class="propProfile-field" id="Description" name="Description" rows="4" cols="50"></textarea>
+    </fieldset>
+
+    <input id="evaluate-btn" type="submit" value="Evaluate Property">
+  </form>
 </div>

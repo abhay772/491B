@@ -40,9 +40,12 @@ namespace AA.PMTOGO.UnitTest
         {
             // Arrange
             var service = new RequestManagement();
-            Guid id = new Guid("D0295F56-CFF3-4C1D-BA15-DE2412CDBA02");
-            ServiceRequest request = new ServiceRequest(id, "Landscape", "trim palm tree leaves", "Clean", "1x/week", "nothing for now",
-                "serviceProvider@gmail.com", "Sierra Harris", "Sara Jade", "propertyManager@gmail.com");
+            var dao = new RequestDAO();
+            Guid id = Guid.NewGuid();
+            await dao.AddRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month","no comment for now",
+                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+            ServiceRequest request = new ServiceRequest(id, "Landscape", "trim palm tree leaves", "Clean", "1x/week", "no comment for now",
+                "serviceProvider@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
 
             // Act
             Result result = await service.AcceptRequest(request);
@@ -57,7 +60,10 @@ namespace AA.PMTOGO.UnitTest
         {
             // Arrange
             var service = new RequestManagement();
-            Guid id = new Guid("36FD48D7-6963-457B-AA69-A64D78856564");
+            var dao = new RequestDAO();
+            Guid id = Guid.NewGuid();
+            await dao.AddRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
+                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
 
             // Act
             Result result = await service.DeclineRequest(id, "serviceProvider@gmail.com");
@@ -72,7 +78,10 @@ namespace AA.PMTOGO.UnitTest
         {
             // Arrange
             var service = new RequestManagement();
-            Guid id = new Guid("94B97BAF-0A2B-42B7-AC26-AB2444A9900C");
+            var dao = new RequestDAO();
+            Guid id = Guid.NewGuid();
+           await dao.AddService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
+                "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
 
             // Act
             Result result = await service.RateService(id, 4);
@@ -121,7 +130,10 @@ namespace AA.PMTOGO.UnitTest
         {
             //arrange
             var service = new RequestManagement();
-            Guid id = new Guid("DCEA868C-DEDC-4FD2-90E8-3CCFB55A87B4");
+            var dao = new RequestDAO();
+            Guid id = Guid.NewGuid();
+            await dao.AddService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
+                "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
 
             //act
             Result result = await service.RateService(id, 6);

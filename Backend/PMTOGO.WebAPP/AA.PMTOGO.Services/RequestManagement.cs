@@ -73,8 +73,7 @@ namespace AA.PMTOGO.Services
         }
         public async Task<Result> CreateService(UserService service)
         {
-            Guid serviceRequestId = Guid.NewGuid();
-            Result result = await _requestDAO.AddService(serviceRequestId, service.ServiceName, service.ServiceType, service.ServiceDescription,
+            Result result = await _requestDAO.AddService(service.ServiceId, service.ServiceName, service.ServiceType, service.ServiceDescription,
                  service.ServiceFrequency, service.ServiceProviderEmail, service.ServiceProvider, service.PropertyManagerEmail, service.PropertyManagerName);
             return result;
         }

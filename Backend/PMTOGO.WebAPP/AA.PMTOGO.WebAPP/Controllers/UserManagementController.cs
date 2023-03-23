@@ -29,7 +29,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("register")]
-        //[Route("{email, password, firstName, lastName, role}")]
+        //[Consumes("application/json")]
         [ActionName("AddUser")]
         public async Task<IActionResult> AddUser([FromBody] UserRegister user)
         {
@@ -53,12 +53,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         }
         [HttpPut]
-        [Route("deactivate")]
+        [Route("delete")]
+        [Consumes("application/json")]
         public async Task<IActionResult> DeleteUser([FromBody] UserCredentials userCredentials)
         {
             try
             {
-                Result result = await _accManager.RemoveUser(userCredentials.Username, userCredentials.Password);
+                Result result = await _accManager.DeleteUserAccount(userCredentials.Username, userCredentials.Password);
                 if (result.IsSuccessful)
                 {
                     return Ok(result);
@@ -81,7 +82,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
             public string LastName { get; set; } = string.Empty;
             public string Password { get; set; } = string.Empty;
             public string Role { get; set; } = string.Empty;
-
         }
     }
 }

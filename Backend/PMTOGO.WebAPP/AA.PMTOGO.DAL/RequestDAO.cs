@@ -1,15 +1,80 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
-
+using System.Text;
+using System.Windows;
 
 namespace AA.PMTOGO.DAL
 {
     public class RequestDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
-        private readonly ILogger? _logger;
+        //private readonly ILogger? _logger;
 
+        public async Task<Result> FindRequest(Guid requestId)
+        {
+            var result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM ServiceRequests WHERE @RequestId = requestId";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@RequestId", requestId);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (reader.Read())
+                    {
+                        if (requestId.Equals(reader["RequestId"]))
+                        {
+                            result.IsSuccessful = true;
+                            result.ErrorMessage = "Service Request already exists.";
+                            return result;
+                        }
+                    }
+                }
+                result.IsSuccessful = false;
+                return result;
+            }
+
+        }
+        public async Task<Result> FindService(Guid serviceid)        {
+            var result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceId = serviceid";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceId", serviceid);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (reader.Read())
+                    {
+                        if (serviceid.Equals(reader["ServiceId"]))
+                        {
+                            result.IsSuccessful = true;
+                            result.ErrorMessage = "UserService already exists.";
+                            return result;
+
+                        }
+                    }
+                }
+
+                
+                result.IsSuccessful = false;
+                return result;
+            }
+
+        }
         public async Task<Result> GetUserRequest(string serviceProviderEmail)
         {
             
@@ -29,7 +94,6 @@ namespace AA.PMTOGO.DAL
                 {
                     try
                     {
-                        //reader.Read();
                         List<ServiceRequest> listOfrequest = new List<ServiceRequest>();
                         while (reader.Read())
                         {
@@ -44,16 +108,15 @@ namespace AA.PMTOGO.DAL
                             request.Comments = (string)reader["Comments"];
                             request.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
                             request.ServiceProviderName = (string)reader["ServiceProviderName"];
-                            request.PropertyManagerName = (string)reader["PropertyManagerName"];
                             request.PropertyManagerEmail = (string)reader["PropertyManagerEmail"];
+                            request.PropertyManagerName = (string)reader["PropertyManagerName"];      
 
 
-                            listOfrequest.Add(request);
-                            
-                            result.Payload = listOfrequest;
+                            listOfrequest.Add(request);         
 
                         }
                         result.IsSuccessful = true;
+                        result.Payload = listOfrequest;
                         return result;
                     }
                     catch
@@ -73,7 +136,7 @@ namespace AA.PMTOGO.DAL
 
 
         public async Task<Result> AddRequest(Guid requestId, string serviceName, string serviceType, string serviceDescription,
-                 string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerName, string propertyManagerEmail)
+                 string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName,string propertyManagerEmail, string propertyManagerName)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
@@ -225,22 +288,23 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> RateUserServices(Guid serviceId, int rate)
+        public async Task<Result> RateUserServices(Guid serviceId, int rating)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                var command = new SqlCommand("UPDATE UserServices SET @Rating = rate WHERE @ServiceId = serviceId", connection);
+                string sqlQuery = "UPDATE UserServices SET @Rating = rating WHERE @ServiceId = serviceId";
 
+                var command = new SqlCommand(sqlQuery, connection);
+         
                 command.Parameters.AddWithValue("@ServiceId", serviceId);
-                command.Parameters.AddWithValue("@Rating", rate);
+                command.Parameters.AddWithValue("@Rating", rating);
 
                 try
                 {
                     var rows = await command.ExecuteNonQueryAsync();
-
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
@@ -255,18 +319,69 @@ namespace AA.PMTOGO.DAL
                     }
                 }
 
-                catch (SqlException e)
+                catch (SqlException ex)
                 {
-                    if (e.Number == 208)
+                    StringBuilder errorMessages = new StringBuilder();
+                    for (int i = 0; i < ex.Errors.Count; i++)
                     {
-                        result.ErrorMessage = "Specified table not found";
-                        //_logger!.Log("DeleteServiceRequest", 4, LogCategory.DataStore, result);
+                        errorMessages.Append("Index #" + i + "\n" +
+                            "Message: " + ex.Errors[i].Message + "\n" +
+                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                            "Source: " + ex.Errors[i].Source + "\n" +
+                            "Procedure: " + ex.Errors[i].Procedure + "\n");
                     }
+                    Console.WriteLine(errorMessages.ToString());
                 }
 
             }
 
             result.IsSuccessful = false;
+            return result;
+        }
+
+        public async Task<Result> CheckRating(Guid serviceId, int rating)
+        {
+            Result result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT Rating FROM UserServices WHERE @ServiceId = serviceId";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceId", serviceId);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    try
+                    {
+                        reader.Read();
+                        if ((int)reader["Rating"] == rating)
+                        {
+                            result.IsSuccessful = true;
+                            return result;
+                        }
+                        else
+                        {
+                            result.IsSuccessful = false;
+                            result.ErrorMessage = "Rate is incorrect";
+                            return result;
+                        }
+                    }
+                    catch
+                    {
+
+                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        result.IsSuccessful = false;
+                        //_logger!.Log("FindUser", 4, LogCategory.Server, result);
+
+                    }
+                }
+            }
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Invalid Service ID or Property Manager Email. Please try again later.";
             return result;
         }
 

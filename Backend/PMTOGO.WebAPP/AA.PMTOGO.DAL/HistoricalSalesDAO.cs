@@ -6,17 +6,17 @@ namespace AA.PMTOGO.DAL;
 
 public class HistoricalSalesDAO : IHistoricalSalesDAO
 {
-    public async Task<List<double>?> findSales(PropertyProfile propertyProfile)
+    public async Task<List<double>> findSales(PropertyProfile propertyProfile)
     {
         string expectedZip = propertyProfile.Zip;
 
         string jsonString = await File.ReadAllTextAsync("D:\\Program Files (x86)\\Class Stuff\\Sem11\\491B\\Backend\\PMTOGO.WebAPP\\Data\\MOCK_DATA.json");
 
-        List<HistoricalSale> salesList = JsonSerializer.Deserialize<List<HistoricalSale>>(jsonString);
+        List<HistoricalSale> salesList = JsonSerializer.Deserialize<List<HistoricalSale>>(jsonString)!;
 
-        if(salesList.Count == 0 )
+        if(salesList!.Count == 0 )
         {
-            return null;
+            return null!;
         }
 
         List<double> sales = new List<double>();
