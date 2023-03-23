@@ -35,6 +35,8 @@ function loadLoginPage() {
         get(url)
           .then(response => console.log(response.text()));
       });
+
+      
     })
     .catch(error => console.log(error));
 }
@@ -159,7 +161,7 @@ function get(url) {
 
   const options = {
     method: 'GET',
-    mode: 'no-cors',
+    mode: 'cors',
     cache: 'default',
     credentials: 'same-origin',
     headers: {
@@ -176,10 +178,11 @@ function get(url) {
 function send(url, data) {
   const options = {
     method: 'POST',
-    mode: 'no-cors',
+    mode: 'cors',
     cache: 'default',
     credentials: 'same-origin',
     headers: {
+
       'Content-Type': 'application/json'
     },
     redirect: 'follow',

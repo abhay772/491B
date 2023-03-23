@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
 using System.Net;
 using System.Text.Json;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AA.PMTOGO_v2.Controllers;
 
@@ -34,10 +36,9 @@ public class AuthenticationController : ControllerBase
 
                 //var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
 
-                string principalString = JsonSerializer.Serialize(loginDTO.principal);
+                string claims_jwt = CreateJWTToken(loginDTO.claims);
 
-                SetCookieOptions(principalString);
-
+                SetCookieOptions(claims_jwt);
 
                 return Ok(new { message = "Login successful" });
             }
@@ -59,7 +60,6 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-
     [HttpPost("Logout")]
     [Consumes("application/json")]
     public async Task<IActionResult> Logout()
@@ -69,15 +69,34 @@ public class AuthenticationController : ControllerBase
             Response.Cookies.Delete("CredentialCookie");
             Console.WriteLine(Request.Cookies["CredentialCookie"]!.ToString());
 
-            return Ok("Logged out successfully");
-        }
+    //        return Ok("Logged out successfully");
+    //    }
 
-        else
-        {
-            return BadRequest("Cookie dosent exist");
-        }
+    //    else
+    //    {
+    //        return BadRequest("Cookie dosent exist");
+    //    }
 
 
+    //}
+
+    private string CreateJWTToken(List<Claim> claims)
+    {
+
+        // Create a new Jwt token containing the claims
+        var token = new JwtSecurityToken(
+            issuer: "PMTOGO",
+            audience: "users",
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(30),
+            signingCredentials: null
+            );
+
+        // Serializing the token with the claims
+        var handler = new JwtSecurityTokenHandler();
+        string tokenString = handler.WriteToken(token);
+
+        return tokenString;
     }
 
     private void SetCookieOptions(string principalString)
