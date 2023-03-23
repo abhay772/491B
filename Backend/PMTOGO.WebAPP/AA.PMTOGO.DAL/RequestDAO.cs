@@ -1,8 +1,8 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
-using System.Net.Security;
-using System.Runtime.ConstrainedExecution;
+using System.Text;
+using System.Windows;
 
 namespace AA.PMTOGO.DAL
 {
@@ -42,8 +42,7 @@ namespace AA.PMTOGO.DAL
             }
 
         }
-        public async Task<Result> FindService(Guid serviceid)
-        {
+        public async Task<Result> FindService(Guid serviceid)        {
             var result = new Result();
 
             using (var connection = new SqlConnection(_connectionString))
@@ -95,7 +94,6 @@ namespace AA.PMTOGO.DAL
                 {
                     try
                     {
-                        //reader.Read();
                         List<ServiceRequest> listOfrequest = new List<ServiceRequest>();
                         while (reader.Read())
                         {
@@ -110,16 +108,15 @@ namespace AA.PMTOGO.DAL
                             request.Comments = (string)reader["Comments"];
                             request.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
                             request.ServiceProviderName = (string)reader["ServiceProviderName"];
-                            request.PropertyManagerName = (string)reader["PropertyManagerName"];
                             request.PropertyManagerEmail = (string)reader["PropertyManagerEmail"];
+                            request.PropertyManagerName = (string)reader["PropertyManagerName"];      
 
 
-                            listOfrequest.Add(request);
-                            
-                            result.Payload = listOfrequest;
+                            listOfrequest.Add(request);         
 
                         }
                         result.IsSuccessful = true;
+                        result.Payload = listOfrequest;
                         return result;
                     }
                     catch
@@ -139,7 +136,7 @@ namespace AA.PMTOGO.DAL
 
 
         public async Task<Result> AddRequest(Guid requestId, string serviceName, string serviceType, string serviceDescription,
-                 string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerName, string propertyManagerEmail)
+                 string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName,string propertyManagerEmail, string propertyManagerName)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
@@ -291,17 +288,19 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> RateUserServices(Guid serviceId, int rate)
+        public async Task<Result> RateUserServices(Guid serviceId, int rating)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                var command = new SqlCommand("UPDATE UserServices SET @Rating = rate WHERE @ServiceId = serviceId", connection);
+                string sqlQuery = "UPDATE UserServices SET @Rating = rating WHERE @ServiceId = serviceId";
 
+                var command = new SqlCommand(sqlQuery, connection);
+         
                 command.Parameters.AddWithValue("@ServiceId", serviceId);
-                command.Parameters.AddWithValue("@Rating", rate);
+                command.Parameters.AddWithValue("@Rating", rating);
 
                 try
                 {
@@ -320,13 +319,18 @@ namespace AA.PMTOGO.DAL
                     }
                 }
 
-                catch (SqlException e)
+                catch (SqlException ex)
                 {
-                    if (e.Number == 208)
+                    StringBuilder errorMessages = new StringBuilder();
+                    for (int i = 0; i < ex.Errors.Count; i++)
                     {
-                        result.ErrorMessage = "Specified table not found";
-                        //_logger!.Log("RateUserServices", 4, LogCategory.DataStore, result);
+                        errorMessages.Append("Index #" + i + "\n" +
+                            "Message: " + ex.Errors[i].Message + "\n" +
+                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                            "Source: " + ex.Errors[i].Source + "\n" +
+                            "Procedure: " + ex.Errors[i].Procedure + "\n");
                     }
+                    Console.WriteLine(errorMessages.ToString());
                 }
 
             }
@@ -335,7 +339,7 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> CheckRating(Guid serviceId, int rate)
+        public async Task<Result> CheckRating(Guid serviceId, int rating)
         {
             Result result = new Result();
 
@@ -343,7 +347,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceId = serviceId";
+                string sqlQuery = "SELECT Rating FROM UserServices WHERE @ServiceId = serviceId";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -354,7 +358,7 @@ namespace AA.PMTOGO.DAL
                     try
                     {
                         reader.Read();
-                        if ((int)reader["Rate"] == rate)
+                        if ((int)reader["Rating"] == rating)
                         {
                             result.IsSuccessful = true;
                             return result;

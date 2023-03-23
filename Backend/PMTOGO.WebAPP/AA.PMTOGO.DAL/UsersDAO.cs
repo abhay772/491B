@@ -96,14 +96,58 @@ public class UsersDAO
         }
     }
 
-    public async Task<Result> DeactivateUser(string username)
+    public async Task<Result> DeleteUserAccount(string username)
     {
         var result = new Result();
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
 
-            string sqlQuery = "UPDATE UserAccounts SET IsActive = 0  WHERE @Username = username";
+            string sqlQuery = "DELETE FROM UserAccounts WHERE @Username = username";
+
+            var command = new SqlCommand(sqlQuery, connection);
+            command.Parameters.AddWithValue("@Username", username);
+            try
+            {
+                var rows = await command.ExecuteNonQueryAsync();
+
+                if (rows == 1)
+                {
+                    result.IsSuccessful = true;
+                    return result;
+                }
+
+                else
+                {
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = "too many rows affected";
+                    return result;
+                }
+            }
+
+            catch (SqlException e)
+            {
+                if (e.Number == 208)
+                {
+                    result.ErrorMessage = "Specified table not found";
+                    //_logger!.Log("DeactivateUser", 4, LogCategory.DataStore, result);
+                }
+            }
+
+        }
+
+        result.IsSuccessful = false;
+        return result;
+    }
+
+    public async Task<Result> DeleteUserProfile(string username)
+    {
+        var result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = "DELETE FROM UserProfiles WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);

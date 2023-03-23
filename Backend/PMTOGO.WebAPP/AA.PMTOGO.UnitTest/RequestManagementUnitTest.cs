@@ -45,7 +45,7 @@ namespace AA.PMTOGO.UnitTest
             await dao.AddRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month","no comment for now",
                  "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
             ServiceRequest request = new ServiceRequest(id, "Landscape", "trim palm tree leaves", "Clean", "1x/week", "no comment for now",
-                "serviceProvider@gmail.com", "Sierra Harris", "Sara Jade", "propertyManager@gmail.com");
+                "serviceProvider@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
 
             // Act
             Result result = await service.AcceptRequest(request);

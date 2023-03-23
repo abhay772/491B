@@ -53,13 +53,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         }
         [HttpPut]
-        [Route("deactivate")]
+        [Route("delete")]
         [Consumes("application/json")]
         public async Task<IActionResult> DeleteUser([FromBody] UserCredentials userCredentials)
         {
             try
             {
-                Result result = await _accManager.RemoveUser(userCredentials.Username, userCredentials.Password);
+                Result result = await _accManager.DeleteUserAccount(userCredentials.Username, userCredentials.Password);
                 if (result.IsSuccessful)
                 {
                     return Ok(result);
