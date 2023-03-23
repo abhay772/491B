@@ -1,4 +1,5 @@
-﻿using System.Security.Principal;
+﻿using System.Security.Claims;
+using System.Security.Principal;
 
 
 namespace AA.PMTOGO.Models.Entities
@@ -7,7 +8,7 @@ namespace AA.PMTOGO.Models.Entities
     public class LoginDTO
     {
         public string? Otp { get; set; }
-        public IPrincipal? principal { get; set; }
+        public List<Claim>? claims { get; set; }
 
     }
 }

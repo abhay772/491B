@@ -6,6 +6,7 @@ using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
 using AA.PMTOGO.Libary;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AA.PMTOGO.WebAPP.Controllers;
 
@@ -33,14 +34,19 @@ public class PropEvalController : ControllerBase
 
             if (!string.IsNullOrEmpty(cookieValue))
             {
-                
-                // Deserializing the claims from the cookie
-                var principalString = cookieValue;
-                var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
+                var handler = new JwtSecurityTokenHandler();
 
-                // Load the username and role from the principal
-                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
-                var roleClaim = principal.FindFirst(ClaimTypes.Role);
+                var jwtToken = handler.ReadJwtToken(cookieValue);
+
+                if (jwtToken == null)
+                {
+                    return BadRequest("Invalid Claims");
+                }
+
+                var claims = jwtToken.Claims.ToList();
+                Claim usernameClaim = claims[0];
+                Claim roleClaim = claims[1];
+                
 
                 if (usernameClaim != null && roleClaim != null)
                 {
@@ -48,7 +54,7 @@ public class PropEvalController : ControllerBase
                     string role = roleClaim.Value;
 
                     // Check if the role is Property Manager
-                    bool validationCheck = _inputValidation.ValidateUsername(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+                    bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
 
                     if (role != null && validationCheck && role == "Property Manager")
                     {
@@ -73,7 +79,7 @@ public class PropEvalController : ControllerBase
 
             }
 
-           return BadRequest("Cookie not found"); 
+           return BadRequest("Not Authorized"); 
         }
 
         catch
@@ -94,13 +100,18 @@ public class PropEvalController : ControllerBase
 
             if (!string.IsNullOrEmpty(cookieValue))
             {
-                // Deserializing the claims from the cookie
-                var principalString = cookieValue;
-                var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
+                var handler = new JwtSecurityTokenHandler();
 
-                // Load the username and role from the principal
-                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
-                var roleClaim = principal.FindFirst(ClaimTypes.Role);
+                var jwtToken = handler.ReadJwtToken(cookieValue);
+
+                if (jwtToken == null)
+                {
+                    return BadRequest("Invalid Claims");
+                }
+
+                var claims = jwtToken.Claims.ToList();
+                Claim usernameClaim = claims[0];
+                Claim roleClaim = claims[1];
 
                 if (usernameClaim != null && roleClaim != null)
                 {
@@ -108,7 +119,7 @@ public class PropEvalController : ControllerBase
                     string role = roleClaim.Value;
 
                     // Check if the role is Property Manager
-                    bool validationCheck = _inputValidation.ValidateUsername(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+                    bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
 
                     if (role != null && validationCheck && role == "Property Manager")
                     {
