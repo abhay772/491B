@@ -3,7 +3,7 @@ const api = "https://localhost:7135/swagger/api"
 
 function loadLoginPage() {
   // fetch login page
-  fetch('./Views/deleteAcc.html')
+  fetch('./Views/login.html')
     .then(response => response.text())
     .then(data => {
       // update content div with login page
@@ -12,7 +12,7 @@ function loadLoginPage() {
       // select register link
       const registerLink = document.getElementById('register-link');
       // select forgot password button
-      const forgotPasswordButton = document.querySelector('.forget');
+      //const forgotPasswordButton = document.querySelector('.forget');
 
       // add event listeners to register link, forgot password button
       registerLink.addEventListener('click', loadRegisterPage);
@@ -33,9 +33,15 @@ function loadLoginPage() {
         data = { username: username, password: password }
 
         get(url)
-          .then(response => console.log(response.text()));
-      });
-
+          .then(response => console.log(response.text()))
+          .then(response => {const status = response.headers.get("status");
+            if(status == 200 || status == 204){
+              loadHomePage
+            }
+            else{alert("Try again")}});
+          
+      })
+      .catch(error => console.log(error));
       
     })
     .catch(error => console.log(error));

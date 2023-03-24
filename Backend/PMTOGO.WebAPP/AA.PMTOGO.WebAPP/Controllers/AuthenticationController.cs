@@ -36,7 +36,7 @@ public class AuthenticationController : ControllerBase
 
                 //var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
 
-                string claims_jwt = CreateJWTToken(loginDTO.claims);
+                string claims_jwt = CreateJWTToken(loginDTO.claims!);
 
                 SetCookieOptions(claims_jwt);
 
@@ -60,7 +60,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    [HttpPost("Logout")]
+    /*[HttpPost("Logout")]
     [Consumes("application/json")]
     public async Task<IActionResult> Logout()
     {
@@ -78,7 +78,7 @@ public class AuthenticationController : ControllerBase
     //    }
 
 
-    //}
+    }*/
 
     private string CreateJWTToken(List<Claim> claims)
     {
