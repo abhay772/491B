@@ -1,5 +1,5 @@
 const content = document.getElementById('content');
-const api = "https://localhost:7135/swagger/api"
+const api = "https://localhost:7135/api"
 
 function loadLoginPage() {
   // fetch login page
@@ -29,19 +29,16 @@ function loadLoginPage() {
         const username = document.querySelector('#logemail').value;
         const password = document.querySelector('#logpassword').value;
 
-        url = api + "/Auth/Login";
+        url = api + "/Authentication/Login";
         data = { username: username, password: password }
 
-        get(url)
-          .then(response => console.log(response.text()))
-          .then(response => {const status = response.headers.get("status");
-            if(status == 200 || status == 204){
-              loadHomePage
-            }
-            else{alert("Try again")}});
-          
-      })
-      .catch(error => console.log(error));
+        send(url, data)
+          .then(data => data.json())
+          .then(response => console.log(response))
+          .then(loadHomePage());
+          //.then(function(response){if(response.ok){loadHomePage}})
+
+      });
       
     })
     .catch(error => console.log(error));
@@ -88,8 +85,9 @@ function loadRegisterPage() {
         url = 'https://localhost:7135/api/UserManagement/register';
         data = {Email: email, Password: password, FirstName: firstName, LastName: lastName, Role: role }
     
-            send(url)
-              .then(response => console.log(response.text()));
+          send(url)
+            .then(data => data.json())
+            .then(response => console.log(response))
         // You can perform your registration API call here
 
         // after successful registration, load propertyEval.html homePage.html
@@ -147,10 +145,11 @@ function loadHomePage() {
     .catch(error => console.log(error));
 
     //select log out
-    const logoutUser = document.getElementById('settings');
-    logoutUser.addEventListener('click', loadLoginPage);
+    const logoutUser = document.getElementById('logout');
+      logoutUser.addEventListener('click', loadLoginPage);
+
    //select propertyEvaluation
-    const propertyEvalFeature = document.getElementById('serviceManagement');
+    const propertyEvalFeature = document.getElementById('propertyEvaluation');
      //select request management
     const requestFeature = document.getElementById('requestManagement');
       //add event listener to nav to request management
