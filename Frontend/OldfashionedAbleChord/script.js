@@ -33,10 +33,12 @@ function loadLoginPage() {
         data = { username: username, password: password }
 
         send(url, data)
-          .then(data => data.json())
-          .then(response => console.log(response))
-          .then(loadHomePage());
-          //.then(function(response){if(response.ok){loadHomePage}})
+        .then((response) => {
+          if (response.ok) {
+            loadHomePage();
+          }
+        })
+          .catch(error => console.log(error.text()));
 
       });
       
@@ -49,7 +51,7 @@ function UserRole() {
   if (document.getElementById("SP").checked) {
     role = "Service Provider";
   }
-  if (document.getElementById("PM").checked) {
+  else if (document.getElementById("PM").checked) {
     role = "Property Manager";
   }
   return role;
@@ -185,7 +187,7 @@ function get(url) {
     method: 'GET',
     mode: 'cors',
     cache: 'default',
-    credentials: 'same-origin',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -202,7 +204,7 @@ function send(url, data) {
     method: 'POST',
     mode: 'cors',
     cache: 'default',
-    credentials: 'same-origin',
+    credentials: 'include',
     headers: {
 
       'Content-Type': 'application/json'
