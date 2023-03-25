@@ -44,6 +44,7 @@ function loadLoginPage() {
     .catch(error => console.log(error));
 }
 
+var role="";
 function UserRole() {
   if (document.getElementById("SP").checked) {
     role = "Service Provider";
@@ -75,17 +76,16 @@ function loadRegisterPage() {
         event.preventDefault();
 
         // perform registration action
-        console.log('Performing registration action...');
         const email = document.querySelector('#email').value;
         const password = document.querySelector('#pass').value;
         const firstName = document.querySelector('#firstName').value;
         const lastName = document.querySelector('#lastName').value; 
         const role = UserRole();
   
-        url = 'https://localhost:7135/api/UserManagement/register';
+        url = api + '/UserManagement/register';
         data = {email: email, firstName: firstName, lastName: lastName, password: password, role: role }
     
-          send(url)
+          send(url, data)
             .then(data => data.json())
             .then(response => console.log(response))
         // You can perform your registration API call here
