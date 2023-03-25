@@ -61,7 +61,7 @@ input[type="password"] {
   width: 100%;
 }*/
 button {  
-  color: white; 
+  color: white;
   border: none;
   cursor: pointer;
   opacity: 0.9;
@@ -126,7 +126,7 @@ a:hover {
 /*Request Management css*/
 td, th {
   border: 1px solid rgb(190, 190, 190);
-  padding: 10px;
+  padding: 6px 20px;
 }
 
 td {
@@ -138,12 +138,19 @@ tr:nth-child(even) {
 }
 
 th[scope='col'] {
-  background-color: #696969;
-  color: #fff;
+  /*background-color: #696969;*/
+  background-color: #f4fbff;
+  /*color: #fff;*/
+  color:black;
 }
 
 th[scope='row'] {
   background-color: #d7d9f2;
+
+}
+th[scope='action'] {
+  background-color: #465473;
+  border: none;
 
 }
 
@@ -155,12 +162,19 @@ table {
   font-size: 0.8rem;
   align-items: left;
 }
+.accept, .decline{
+  border-radius: 8px;
+  font-weight: bold;
+  padding: 14px 20px;
+  left: 0;
+  margin: 8px 0;
+}
 .accept {
-  background-color:cornflowerblue;
- 
+  background-color:darkgreen
+
 }
 .decline {
-  background-color: indianred; 
+  background-color: darkred;
 }
 .exit {
   border: none;
@@ -260,8 +274,12 @@ table {
   margin-left: 225px;
   transition: all 0.5s ease;
 }
+.wrapper .featuresection {
+  width: 100%;
+  transition: all 0.5s ease;
+}
 
-.wrapper .section .top_navbar{
+.wrapper .section .top_navbar, .wrapper .featuresection .top_navbar {
   background: rgb(7, 105, 185);
   height: 50px;
   display: flex;
@@ -270,12 +288,18 @@ table {
 
 }
 
-.wrapper .section .top_navbar .hamburger a{
+.wrapper .section .top_navbar .hamburger button{
   font-size: 28px;
   color: #f4fbff;
 }
 
-.wrapper .section .top_navbar .hamburger a:hover{
+.wrapper .section .top_navbar .hamburger button{
   color: #a2ecff;
+}
+#back{
+  font-size: 28px;
+  color: #f4fbff;
+  border-style: none;
+  background-color: rgb(7, 105, 185);
 }
 

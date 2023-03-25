@@ -33,11 +33,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
 #endif
         [HttpGet]
         [Route("getrequest")]
+        [Consumes("application/json", "application/problem+json")]
         public async Task<IActionResult> GetRequest()
         {
             try
             {
-
                 // Loading the cookie from the http request
                 var cookieValue = Request.Cookies["CredentialCookie"];
 
@@ -56,6 +56,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Claim usernameClaim = claims[0];
                     Claim roleClaim = claims[1];
 
+
                     if (usernameClaim != null && roleClaim != null)
                     {
                         string username = usernameClaim.Value;
@@ -72,11 +73,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
                                 result = await _serviceManager.GetUserRequest(username);
                                 if (result.IsSuccessful)
                                 {
-                                    return Ok(result.Payload!);
+                                    return Ok(new { message = result.Payload });
                                 }
                                 else
                                 {
-                                    return BadRequest("Invalid username or password provided. Retry again or contact system admin.");
+                                    return BadRequest(new { message = "Retry again or contact system admin." });
                                 }
                             }
                             catch
@@ -136,12 +137,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                                 Result result = await _serviceManager.RequestAService(serviceRequest);
                                 if (result.IsSuccessful)
                                 {
-                                    return Ok(result.Payload);
+                                    return Ok(new { message = result.Payload});
                                 }
                                 else
                                 {
 
-                                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                                    return BadRequest(new { message = "Retry again or contact system admin" } );
                                 }
                             }
                             catch

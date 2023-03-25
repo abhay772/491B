@@ -106,6 +106,8 @@ function loadHomePage() {
       // update content div with property evaluation page html
       content.innerHTML = data;
 
+      const hamburger = document.getElementById("back");
+      hamburger.addEventListener("click", loadHomePage);
     //select log out
     const logoutUser = document.getElementById("logout");
 
@@ -152,11 +154,26 @@ function loadPropertyEvalPage() {
 function loadRequestManagementPage() {
   // fetch request evaluation page html
   fetch('./Views/requestMan.html')
-    .then(response => response.text())
-    .then(data => {
-      // update content div with property evaluation page html
-      content.innerHTML = data;
+    //.then(response => response.text())
+    .then(response => {
+      // Get the cookie from the response headers
+      const cookie = response.headers.get('Set-Cookie');
+      // Set the cookie
+      document.cookie = cookie;
+      // Do something with the response body
+      return response.json();
     })
+    .then(data => {
+      // Handle the response data
+      content.innerHTML = data;
+      const hamburger = document.getElementById("back");
+      hamburger.addEventListener("click", loadHomePage);
+      
+      url = api + '/Service/getrequest';
+      get(url)
+        .then(data => data.json())
+        .then(response => console.log(response))
+    })   
     .catch(error => console.log(error));
 }
 
@@ -197,5 +214,6 @@ function send(url, data) {
 
   return fetch(url, options);
 }
+
 // load login page initially
 loadLoginPage();
