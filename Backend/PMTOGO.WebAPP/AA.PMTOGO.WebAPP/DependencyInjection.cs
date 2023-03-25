@@ -1,6 +1,7 @@
 ﻿using AA.PMTOGO.Authentication;
 using AA.PMTOGO.DAL;
 using AA.PMTOGO.Infrastructure.Interfaces;
+using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers;
 using AA.PMTOGO.Services;
 using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
@@ -22,7 +23,7 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IPropertyEvaluator, PropertyEvaluator>();
             services.AddTransient<IPropEvalManager, PropEvalManager>();
             services.AddTransient<ISqlPropEvalDAO, SqlPropEvalDAO>();
-
+            services.AddTransient<InputValidation>();
             return services;
         }
     }

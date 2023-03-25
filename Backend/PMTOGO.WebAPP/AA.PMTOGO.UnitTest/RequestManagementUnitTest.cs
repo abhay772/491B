@@ -115,7 +115,7 @@ namespace AA.PMTOGO.UnitTest
             RequestManagement service = new RequestManagement();
             Guid id = Guid.NewGuid();
             ServiceRequest request = new ServiceRequest(id, "Landscape", "material delivery", "soil installation ", "1x/month", "planters is far left of yard", 
-                "serviceProvider@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
+                "mssierra310@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
 
             // Act
             Result result = await service.CreateRequest(request);

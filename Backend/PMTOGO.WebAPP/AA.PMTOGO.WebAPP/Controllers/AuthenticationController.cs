@@ -36,7 +36,7 @@ public class AuthenticationController : ControllerBase
 
                 //var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
 
-                string claims_jwt = CreateJWTToken(loginDTO.claims);
+                string claims_jwt = CreateJWTToken(loginDTO.claims!);
 
                 SetCookieOptions(claims_jwt);
 
@@ -60,14 +60,14 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    //[HttpPost("Logout")]
-    //[Consumes("application/json")]
-    //public async Task<IActionResult> Logout()
-    //{
-    //    if (Request.Cookies.ContainsKey("CredentialCookie"))
-    //    {
-    //        Response.Cookies.Delete("CredentialCookie");
-    //        Console.WriteLine(Request.Cookies["CredentialCookie"]!.ToString());
+    /*[HttpPost("Logout")]
+    [Consumes("application/json")]
+    public async Task<IActionResult> Logout()
+    {
+        if (Request.Cookies.ContainsKey("CredentialCookie"))
+        {
+            Response.Cookies.Delete("CredentialCookie");
+            Console.WriteLine(Request.Cookies["CredentialCookie"]!.ToString());
 
     //        return Ok("Logged out successfully");
     //    }
@@ -78,7 +78,7 @@ public class AuthenticationController : ControllerBase
     //    }
 
 
-    //}
+    }*/
 
     private string CreateJWTToken(List<Claim> claims)
     {

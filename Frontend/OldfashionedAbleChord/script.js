@@ -1,9 +1,9 @@
 const content = document.getElementById('content');
-const api = "https://localhost:7135/swagger/api"
+const api = "https://localhost:7135/api"
 
 function loadLoginPage() {
   // fetch login page
-  fetch('./Views/deleteAcc.html')
+  fetch('./Views/login.html')
     .then(response => response.text())
     .then(data => {
       // update content div with login page
@@ -12,7 +12,7 @@ function loadLoginPage() {
       // select register link
       const registerLink = document.getElementById('register-link');
       // select forgot password button
-      const forgotPasswordButton = document.querySelector('.forget');
+      //const forgotPasswordButton = document.querySelector('.forget');
 
       // add event listeners to register link, forgot password button
       registerLink.addEventListener('click', loadRegisterPage);
@@ -29,18 +29,22 @@ function loadLoginPage() {
         const username = document.querySelector('#logemail').value;
         const password = document.querySelector('#logpassword').value;
 
-        url = api + "/Auth/Login";
+        url = api + "/Authentication/Login";
         data = { username: username, password: password }
 
-        get(url)
-          .then(response => console.log(response.text()));
-      });
+        send(url, data)
+          .then(data => data.json())
+          .then(response => console.log(response))
+          .then(loadHomePage());
+          //.then(function(response){if(response.ok){loadHomePage}})
 
+      });
       
     })
     .catch(error => console.log(error));
 }
 
+var role="";
 function UserRole() {
   if (document.getElementById("SP").checked) {
     role = "Service Provider";
@@ -72,18 +76,18 @@ function loadRegisterPage() {
         event.preventDefault();
 
         // perform registration action
-        console.log('Performing registration action...');
         const email = document.querySelector('#email').value;
-        const password = document.querySelector('#password').value;
-        const firstName = document.querySelector('#firstName');
-        const lastName = document.querySelector('#lastName'); 
+        const password = document.querySelector('#pass').value;
+        const firstName = document.querySelector('#firstName').value;
+        const lastName = document.querySelector('#lastName').value; 
         const role = UserRole();
   
-        url = 'https://localhost:7135/api/UserManagement/register';
-        data = {Email: email, Password: password, FirstName: firstName, LastName: lastName, Role: role }
+        url = api + '/UserManagement/register';
+        data = {email: email, firstName: firstName, lastName: lastName, password: password, role: role }
     
-            send(url)
-              .then(response => console.log(response.text()));
+          send(url, data)
+            .then(data => data.json())
+            .then(response => console.log(response))
         // You can perform your registration API call here
 
         // after successful registration, load propertyEval.html homePage.html
@@ -91,6 +95,36 @@ function loadRegisterPage() {
       });
     })
     .catch(error => console.log(error))
+}
+
+//function to load homepage
+function loadHomePage() {
+  // fetch property evaluation page html
+  fetch('./Views/homepage.html')
+    .then(response => response.text())
+    .then(data => {
+      // update content div with property evaluation page html
+      content.innerHTML = data;
+
+      const hamburger = document.getElementById("back");
+      hamburger.addEventListener("click", loadHomePage);
+    //select log out
+    const logoutUser = document.getElementById("logout");
+
+   //select propertyEvaluation
+    const propertyEvalFeature = document.getElementById('propertyEvaluation');
+     //select request management
+    const requestFeature = document.getElementById('requestManagement');
+    //add event listeners
+    logoutUser.addEventListener('click', loadLoginPage);
+      //add event listener to nav to request management
+    requestFeature.addEventListener('click', loadRequestManagementPage);  
+
+      // add event listeners to nav to property evaluation
+    propertyEvalFeature.addEventListener('click', loadPropertyEvalPage);
+    })
+    .catch(error => console.log(error));
+  
 }
 
 function loadAccountDeletionPage(){
@@ -120,39 +154,27 @@ function loadPropertyEvalPage() {
 function loadRequestManagementPage() {
   // fetch request evaluation page html
   fetch('./Views/requestMan.html')
-    .then(response => response.text())
-    .then(data => {
-      // update content div with property evaluation page html
-      content.innerHTML = data;
+    //.then(response => response.text())
+    .then(response => {
+      // Get the cookie from the response headers
+      const cookie = response.headers.get('Set-Cookie');
+      // Set the cookie
+      document.cookie = cookie;
+      // Do something with the response body
+      return response.json();
     })
-    .catch(error => console.log(error));
-}
-
-
-//function to load homepage
-function loadHomePage() {
-  // fetch property evaluation page html
-  fetch('./Views/homepage.html')
-    .then(response => response.text())
     .then(data => {
-      // update content div with property evaluation page html
+      // Handle the response data
       content.innerHTML = data;
-    })
+      const hamburger = document.getElementById("back");
+      hamburger.addEventListener("click", loadHomePage);
+      
+      url = api + '/Service/getrequest';
+      get(url)
+        .then(data => data.json())
+        .then(response => console.log(response))
+    })   
     .catch(error => console.log(error));
-
-    //select log out
-    const logoutUser = document.getElementById('settings');
-    logoutUser.addEventListener('click', loadLoginPage);
-   //select propertyEvaluation
-    const propertyEvalFeature = document.getElementById('serviceManagement');
-     //select request management
-    const requestFeature = document.getElementById('requestManagement');
-      //add event listener to nav to request management
-    requestFeature.addEventListener('click', loadRequestManagementPage);  
-
-      // add event listeners to nav to property evaluation
-    propertyEvalFeature.addEventListener('click', loadPropertyEvalPage);
-  
 }
 
 
@@ -192,5 +214,6 @@ function send(url, data) {
 
   return fetch(url, options);
 }
+
 // load login page initially
 loadLoginPage();
