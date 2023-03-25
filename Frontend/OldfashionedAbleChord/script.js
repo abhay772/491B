@@ -77,13 +77,13 @@ function loadRegisterPage() {
         // perform registration action
         console.log('Performing registration action...');
         const email = document.querySelector('#email').value;
-        const password = document.querySelector('#password').value;
-        const firstName = document.querySelector('#firstName');
-        const lastName = document.querySelector('#lastName'); 
+        const password = document.querySelector('#pass').value;
+        const firstName = document.querySelector('#firstName').value;
+        const lastName = document.querySelector('#lastName').value; 
         const role = UserRole();
   
         url = 'https://localhost:7135/api/UserManagement/register';
-        data = {Email: email, Password: password, FirstName: firstName, LastName: lastName, Role: role }
+        data = {email: email, firstName: firstName, lastName: lastName, password: password, role: role }
     
           send(url)
             .then(data => data.json())
@@ -95,6 +95,34 @@ function loadRegisterPage() {
       });
     })
     .catch(error => console.log(error))
+}
+
+//function to load homepage
+function loadHomePage() {
+  // fetch property evaluation page html
+  fetch('./Views/homepage.html')
+    .then(response => response.text())
+    .then(data => {
+      // update content div with property evaluation page html
+      content.innerHTML = data;
+
+    //select log out
+    const logoutUser = document.getElementById("logout");
+
+   //select propertyEvaluation
+    const propertyEvalFeature = document.getElementById('propertyEvaluation');
+     //select request management
+    const requestFeature = document.getElementById('requestManagement');
+    //add event listeners
+    logoutUser.addEventListener('click', loadLoginPage);
+      //add event listener to nav to request management
+    requestFeature.addEventListener('click', loadRequestManagementPage);  
+
+      // add event listeners to nav to property evaluation
+    propertyEvalFeature.addEventListener('click', loadPropertyEvalPage);
+    })
+    .catch(error => console.log(error));
+  
 }
 
 function loadAccountDeletionPage(){
@@ -130,34 +158,6 @@ function loadRequestManagementPage() {
       content.innerHTML = data;
     })
     .catch(error => console.log(error));
-}
-
-
-//function to load homepage
-function loadHomePage() {
-  // fetch property evaluation page html
-  fetch('./Views/homepage.html')
-    .then(response => response.text())
-    .then(data => {
-      // update content div with property evaluation page html
-      content.innerHTML = data;
-    })
-    .catch(error => console.log(error));
-
-    //select log out
-    const logoutUser = document.getElementById('logout');
-      logoutUser.addEventListener('click', loadLoginPage);
-
-   //select propertyEvaluation
-    const propertyEvalFeature = document.getElementById('propertyEvaluation');
-     //select request management
-    const requestFeature = document.getElementById('requestManagement');
-      //add event listener to nav to request management
-    requestFeature.addEventListener('click', loadRequestManagementPage);  
-
-      // add event listeners to nav to property evaluation
-    propertyEvalFeature.addEventListener('click', loadPropertyEvalPage);
-  
 }
 
 
