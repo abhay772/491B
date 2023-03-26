@@ -123,6 +123,18 @@ a:hover {
   text-decoration: underline;
 }
 /*Delete Account css*/
+#confirm, #cancel {
+  padding: 14px 20px;
+  margin: 8px 0;
+  font-weight: bold;
+  width: 50%;
+}
+#confirm {
+  background-color: #4CAF50;
+}
+#cancel{
+  background-color: #f44336;;
+}
 /*Request Management css*/
 td, th {
   border: 1px solid rgb(190, 190, 190);
@@ -288,12 +300,12 @@ table {
 
 }
 
-.wrapper .section .top_navbar .hamburger button{
+.wrapper .section .top_navbar .hamburger a{
   font-size: 28px;
   color: #f4fbff;
 }
 
-.wrapper .section .top_navbar .hamburger button{
+.wrapper .section .top_navbar .hamburger a:hover{
   color: #a2ecff;
 }
 #back{

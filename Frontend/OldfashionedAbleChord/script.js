@@ -36,7 +36,7 @@ function loadLoginPage() {
           .then(data => data.json())
           .then(response => console.log(response))
           .then(loadHomePage());
-          //.then(function(response){if(response.ok){loadHomePage}})
+          //.then((response) =>{if(response.ok){loadHomePage()}})
 
       });
       
@@ -109,19 +109,22 @@ function loadHomePage() {
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
     //select log out
-    const logoutUser = document.getElementById("logout");
+      const logoutUser = document.getElementById("logout");
+      const setting = document.getElementById("settings");
+      
+    //select propertyEvaluation
+      const propertyEvalFeature = document.getElementById('propertyEvaluation');
+      //select request management
+      const requestFeature = document.getElementById('requestManagement');
+      //add event listeners
+      logoutUser.addEventListener('click', loadLoginPage);
+        //add event listener to nav to request management
+      requestFeature.addEventListener('click', loadRequestManagementPage);  
 
-   //select propertyEvaluation
-    const propertyEvalFeature = document.getElementById('propertyEvaluation');
-     //select request management
-    const requestFeature = document.getElementById('requestManagement');
-    //add event listeners
-    logoutUser.addEventListener('click', loadLoginPage);
-      //add event listener to nav to request management
-    requestFeature.addEventListener('click', loadRequestManagementPage);  
-
-      // add event listeners to nav to property evaluation
-    propertyEvalFeature.addEventListener('click', loadPropertyEvalPage);
+        // add event listeners to nav to property evaluation
+      propertyEvalFeature.addEventListener('click', loadPropertyEvalPage);
+      setting.addEventListener('click', loadAccountDeletionPage);
+      
     })
     .catch(error => console.log(error));
   
@@ -134,6 +137,18 @@ function loadAccountDeletionPage(){
     .then(data => {
       // update content div with property evaluation page html
       content.innerHTML = data;
+      const hamburger = document.getElementById("back");
+      hamburger.addEventListener("click", loadHomePage);
+      const cancel = document.getElementById("cancel");
+      const confirm = document.getElementById("confirm");
+
+      cancel.addEventListener('click', loadHomePage);
+      confirm.addEventListener('click', ()=>{
+        url = api + '/UserManagement/delete';
+        del(url)
+          .then(data => data.json())
+          .then(response => console.log(response))
+      })
     })
     .catch(error => console.log(error));
 }
@@ -146,33 +161,51 @@ function loadPropertyEvalPage() {
     .then(data => {
       // update content div with property evaluation page html
       content.innerHTML = data;
+      const hamburger = document.getElementById("back");
+      hamburger.addEventListener("click", loadHomePage);
     })
     .catch(error => console.log(error));
+}
+
+function displayRequest(requests){
+  const requestContainer = document.getElementById("request_container");
+  let allrequest="";
+  requests?.forEach((request) => {
+    const requestElement = `
+                            <tr>
+                              <th scope="row">${request.requestId}</th>
+                              <td>${request.propertyManagerName}</td>
+                              <td>${request.propertyManagerEmail}</td>
+                              <td>${request.serviceName}</td>
+                              <td>${request.serviceType}</td>
+                              <td>${request.serviceDescription}</td>
+                              <td>${request.serviceFrequency}</td>
+                              <td>${request.comments}</td>
+                            </tr>
+                          `;
+    allrequest += requestElement;    
+  });
+  requestContainer.innerHTML = allrequest;
+
 }
 
 //fucntion to load request Management page
 function loadRequestManagementPage() {
   // fetch request evaluation page html
   fetch('./Views/requestMan.html')
-    //.then(response => response.text())
-    .then(response => {
-      // Get the cookie from the response headers
-      const cookie = response.headers.get('Set-Cookie');
-      // Set the cookie
-      document.cookie = cookie;
-      // Do something with the response body
-      return response.json();
-    })
+    .then(response => response.text())
     .then(data => {
       // Handle the response data
       content.innerHTML = data;
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
       
-      url = api + '/Service/getrequest';
+      url = api + '/Request/getrequest';
       get(url)
         .then(data => data.json())
         .then(response => console.log(response))
+        .then(response => displayRequest(response))
+        .catch(error => console.log(error));
     })   
     .catch(error => console.log(error));
 }
@@ -185,7 +218,7 @@ function get(url) {
     method: 'GET',
     mode: 'cors',
     cache: 'default',
-    credentials: 'same-origin',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -202,7 +235,7 @@ function send(url, data) {
     method: 'POST',
     mode: 'cors',
     cache: 'default',
-    credentials: 'same-origin',
+    credentials: 'include',
     headers: {
 
       'Content-Type': 'application/json'
@@ -210,6 +243,23 @@ function send(url, data) {
     redirect: 'follow',
     referrerPolicy: 'no-referrer-when-downgrade',
     body: JSON.stringify(data),
+  };
+
+  return fetch(url, options);
+}
+
+function del(url) {
+
+  const options = {
+    method: 'DELETE',
+    mode: 'cors',
+    cache: 'default',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer-when-downgrade',
   };
 
   return fetch(url, options);

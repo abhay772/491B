@@ -55,10 +55,10 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> DeleteAccount(string username, string password)
+        public async Task<Result> DeleteAccount(string username)
         {
             Result result = new Result();
-            if (valid.ValidateEmail(username).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
+            if (valid.ValidateEmail(username).IsSuccessful)
             {
                 Result result1 = new Result();
                 result1 = await _authNDAO.FindUser(username);

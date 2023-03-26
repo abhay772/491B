@@ -1,5 +1,6 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using System.Windows;
@@ -112,11 +113,12 @@ namespace AA.PMTOGO.DAL
                             request.PropertyManagerName = (string)reader["PropertyManagerName"];      
 
 
-                            listOfrequest.Add(request);         
+                            listOfrequest.Add(request);       
 
                         }
+                        ServiceRequest[] array = listOfrequest.ToArray();
                         result.IsSuccessful = true;
-                        result.Payload = listOfrequest;
+                        result.Payload = array;
                         return result;
                     }
                     catch
