@@ -77,25 +77,27 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    /*[HttpPost("Logout")]
-    [Consumes("application/json")]
-    public async Task<IActionResult> Logout()
+    [HttpGet("Logout")]
+    public IActionResult Logout()
     {
         if (Request.Cookies.ContainsKey("CredentialCookie"))
         {
-            Response.Cookies.Delete("CredentialCookie");
-            Console.WriteLine(Request.Cookies["CredentialCookie"]!.ToString());
+            Response.Cookies.Delete("CredentialCookie", new CookieOptions
+            {
+                SameSite = SameSiteMode.None,
+                Secure = true
+            });
 
-    //        return Ok("Logged out successfully");
-    //    }
+            return Ok(true);
+        }
 
-    //    else
-    //    {
-    //        return BadRequest("Cookie dosent exist");
-    //    }
+        else
+        {
+            return Ok(false);
+        }
 
 
-    }*/
+    }
 
     private string CreateJWTToken(List<Claim> claims)
     {

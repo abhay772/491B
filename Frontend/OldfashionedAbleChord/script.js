@@ -126,6 +126,7 @@ function loadHomePage() {
 
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
+
     //select log out
     const logoutUser = document.getElementById("logout");
 
@@ -133,12 +134,29 @@ function loadHomePage() {
     const propertyEvalFeature = document.getElementById('propertyEvaluation');
      //select request management
     const requestFeature = document.getElementById('requestManagement');
+
     //add event listeners
-    logoutUser.addEventListener('click', loadLoginPage);
-      //add event listener to nav to request management
+    logoutUser.addEventListener('click', () => {
+      url = api + '/Authentication/Logout';
+
+      get(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data === false){
+
+        alert('Logout was unsuccesful. Try again or contact an administratior.');
+        loadHomePage();
+        }
+        else{
+          loadLoginPage();
+        }
+      })
+    });
+
+    //add event listener to nav to request management
     requestFeature.addEventListener('click', loadRequestManagementPage);  
 
-      // add event listeners to nav to property evaluation
+    // add event listeners to nav to property evaluation
     propertyEvalFeature.addEventListener('click', loadPropertyEvalPage);
     })
     .catch(error => console.log(error));
@@ -193,6 +211,23 @@ function loadRequestManagementPage() {
         .then(response => console.log(response))
     })   
     .catch(error => console.log(error));
+}
+
+function logout(){
+  url = api + '/Authentication/Logout';
+
+  get(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data === false){
+
+        alert('Logout was unsuccesful. Try again or contact an administratior.');
+        loadHomePage();
+      }
+      else{
+        loadLoginPage();
+      }
+    })
 }
 
 // From https://github.com/v-vong3/csulb/tree/master/cecs_491
