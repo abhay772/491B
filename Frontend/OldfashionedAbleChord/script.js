@@ -1,6 +1,22 @@
 const content = document.getElementById('content');
 const api = "https://localhost:7135/api"
 
+window.addEventListener("load", function() {
+  url = api + '/Authentication/IsLoggedIn';
+
+  get(url)
+  .then(response => response.json())
+  .then(data => {
+    if (data === true){
+      loadHomePage();
+    }
+    else{
+      loadLoginPage();
+    }
+  })
+});
+
+
 function loadLoginPage() {
   // fetch login page
   fetch('./Views/login.html')
@@ -179,7 +195,6 @@ function loadRequestManagementPage() {
     .catch(error => console.log(error));
 }
 
-
 // From https://github.com/v-vong3/csulb/tree/master/cecs_491
 function get(url) {
 
@@ -216,6 +231,3 @@ function send(url, data) {
 
   return fetch(url, options);
 }
-
-// load login page initially
-loadLoginPage();

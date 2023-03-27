@@ -6,6 +6,7 @@ using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using static System.Net.WebRequestMethods;
 
 namespace AA.PMTOGO_v2.Controllers;
 
@@ -20,12 +21,28 @@ public class AuthenticationController : ControllerBase
         _authManager = authManager;
     }
 
-    [HttpPost("Login")]
+    [HttpGet("IsLoggedIn")]
+    public  IActionResult IsLoggedIn()
+    {
+        try
+        {
+            if (Request.Cookies["CredentialCookie"] != null)
+            {
+                return Ok(true);
+            }
+
+            return Ok(false);
+        }
+
+        catch (Exception ex) {
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+        [HttpPost("Login")]
     [Consumes("application/json", "application/problem+json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {
-
-
         try
         {
             Result result = await _authManager.Login(userCredentials.Username, userCredentials.Password);
@@ -104,6 +121,8 @@ public class AuthenticationController : ControllerBase
         // Create a new cookie and add it to the response
         Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
         {
+            Domain = "localhost",
+            Path= "/",
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,
