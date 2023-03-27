@@ -192,7 +192,7 @@ namespace AA.PMTOGO.UnitTest
             Result result1 = await dao.DoesUserExist("Delete@gmail.com");
             bool found = result1.IsSuccessful;
 
-            await account.DeleteAccount("Delete@gmail.com", "randomstring");
+            await account.DeleteAccount("Delete@gmail.com");
             Result result = await dao.DoesUserExist("Delete@gmail,com");
             bool actual = result.IsSuccessful;
 

@@ -116,9 +116,9 @@ namespace AA.PMTOGO.DAL
                             listOfrequest.Add(request);       
 
                         }
-                        ServiceRequest[] array = listOfrequest.ToArray();
+                        //ServiceRequest[] array = listOfrequest.ToArray();
                         result.IsSuccessful = true;
-                        result.Payload = array;
+                        result.Payload = listOfrequest;
                         return result;
                     }
                     catch

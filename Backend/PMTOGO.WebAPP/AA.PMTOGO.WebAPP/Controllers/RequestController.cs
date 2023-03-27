@@ -73,8 +73,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
                                 result = await _serviceManager.GetUserRequest(username);
                                 if (result.IsSuccessful)
                                 {
-                                    ServiceRequest[] array = (ServiceRequest[])result.Payload!;
-                                    return Ok(array);
+                                    //ServiceRequest[] array = (ServiceRequest[])result.Payload!;
+                                    return Ok(result.Payload!) ;
                                 }
                                 else
                                 {

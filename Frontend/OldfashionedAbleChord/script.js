@@ -168,27 +168,42 @@ function loadPropertyEvalPage() {
 }
 
 function displayRequest(requests){
-  const requestContainer = document.getElementById("request_container");
+  const requestContainer = document.querySelector("#request_container");
   let allrequest="";
-  requests?.forEach((request) => {
-    const requestElement = `
-                            <tr>
-                              <th scope="row">${request.requestId}</th>
-                              <td>${request.propertyManagerName}</td>
-                              <td>${request.propertyManagerEmail}</td>
-                              <td>${request.serviceName}</td>
-                              <td>${request.serviceType}</td>
-                              <td>${request.serviceDescription}</td>
-                              <td>${request.serviceFrequency}</td>
-                              <td>${request.comments}</td>
-                            </tr>
-                          `;
-    allrequest += requestElement;    
-  });
-  requestContainer.innerHTML = allrequest;
+  //for (int i = 0; i < requests.Length; i++){
+    //console.log(Object.entries(requests));
+    //console.log(Object.getOwnPropertyNames(requests[0]));
+    //console.log(`${requests[0].serviceName}`);
+    requests.forEach(() => {
+        const requestElement =` <table>
+                                  <tr>
+                                    <th scope="row">${requests[0].requestId}</th>
+                                    <td>${requests[0].propertyManagerName}</td>
+                                    <td>${requests[0].propertyManagerEmail}</td>
+                                    <td>${requests[0].serviceName}</td>
+                                    <td>${requests[0].serviceType}</td>
+                                    <td>${requests[0].serviceDescription}</td>
+                                    <td>${requests[0].serviceFrequency}</td>
+                                    <td>${requests[0].comments}</td>
+                                    <th scope="action"><button type="submit" class="accept"> Accept</button></td>
+                                    <th scope="action"><button type="submit" class="decline">Decline</button></td>
+                                  </tr>
+                                </table>
+                              `;
+      allrequest += requestElement;    
+    });
+    requestContainer.innerHTML = allrequest;
 
 }
 
+function getrequest(){
+  url = api + '/Request/getrequest';
+  get(url)
+    .then(response => response.json())
+    //.then(response => console.log(response))
+    .then(response => displayRequest(response))
+    .catch(error => console.log(error));
+}
 //fucntion to load request Management page
 function loadRequestManagementPage() {
   // fetch request evaluation page html
@@ -199,15 +214,12 @@ function loadRequestManagementPage() {
       content.innerHTML = data;
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
-      
       url = api + '/Request/getrequest';
-      get(url)
-        .then(data => data.json())
-        .then(response => console.log(response))
-        .then(response => displayRequest(response))
-        .catch(error => console.log(error));
+      getrequest();
+
     })   
     .catch(error => console.log(error));
+    
 }
 
 
