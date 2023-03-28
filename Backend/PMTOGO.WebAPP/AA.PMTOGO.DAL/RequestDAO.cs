@@ -136,6 +136,59 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
+        public async Task<Result> GetServices()
+        {
+
+            Result result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM Services";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    try
+                    {
+                        List<Service> listOfservice = new List<Service>();
+                        while (reader.Read())
+                        {
+
+                            Service service = new Service();
+                            
+                            service.ServiceName = (string)reader["ServiceName"];
+                            service.ServiceType = (string)reader["ServiceType"];
+                            service.ServiceDescription = (string)reader["ServiceDescription"];
+                            service.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
+                            service.ServiceProvider = (string)reader["ServiceProviderName"];
+
+
+                            listOfservice.Add(service);
+
+                        }
+                        result.IsSuccessful = true;
+                        result.Payload = listOfservice;
+                        return result;
+                    }
+                    catch
+                    {
+
+                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        result.IsSuccessful = false;
+                        // _logger!.Log("FindUser", 4, LogCategory.Server, result);
+
+                    }
+                }
+            }
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+            return result;
+        }
+
+
 
         public async Task<Result> AddRequest(Guid requestId, string serviceName, string serviceType, string serviceDescription,
                  string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName,string propertyManagerEmail, string propertyManagerName)
@@ -191,7 +244,7 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> AddService(Guid serviceId, string serviceName, string serviceType, string serviceDescription,
+        public async Task<Result> AddUserService(Guid serviceId, string serviceName, string serviceType, string serviceDescription,
                  string serviceFrequency, string serviceProviderEmail, string serviceProviderName, string propertyManagerName, string propertyManagerEmail)
         {
             var result = new Result();

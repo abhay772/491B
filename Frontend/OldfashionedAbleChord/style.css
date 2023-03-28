@@ -86,8 +86,8 @@ button {
 
 .forgetbtn{
   background-color: #fefefe;
-  margin: 8px 0; 
-  left: 0;
+  margin: 8px 0;
+  left:0;
   color: black;
   text-decoration: underline;
 }
@@ -126,7 +126,7 @@ a:hover {
 #confirm, #cancel {
   padding: 14px 20px;
   margin: 8px 0;
-  font-weight: bold;
+  
   width: 50%;
 }
 #confirm {
@@ -136,6 +136,15 @@ a:hover {
   background-color: #f44336;;
 }
 /*Request Management css*/
+h1{
+  font-weight: bold;
+  text-align: center;
+}
+.wrapper .userInfo{
+  font-weight: bold;
+  text-align: center;
+  color:black;
+}
 td, th {
   border: 1px solid rgb(190, 190, 190);
   padding: 6px 20px;
@@ -143,25 +152,28 @@ td, th {
 
 td {
   text-align: center;
+  align-items: center;
 }
 
 tr:nth-child(even) {
     background-color: #eee;
 }
 
-th[scope='col'] {
-  /*background-color: #696969;*/
+/*th[scope='col'], */
+.requestHeaderRow{
   background-color: #f4fbff;
-  /*color: #fff;*/
   color:black;
 }
 
-th[scope='row'] {
+/*th[scope='row'], */
+.requestTableBodyRow{
   background-color: #d7d9f2;
 
 }
+/*for table data buttuns*/
 th[scope='action'] {
   background-color: #465473;
+  border: 1px solid rgb(190, 190, 190);
   border: none;
 
 }
@@ -178,15 +190,17 @@ table {
   border-radius: 8px;
   font-weight: bold;
   padding: 14px 20px;
-  left: 0;
   margin: 8px 0;
 }
+.accept:hover, .decline:hover{
+  opacity:3;
+}
 .accept {
-  background-color:darkgreen
+  background-color:lightgreen;
 
 }
 .decline {
-  background-color: darkred;
+  background-color: lightcoral;
 }
 .exit {
   border: none;

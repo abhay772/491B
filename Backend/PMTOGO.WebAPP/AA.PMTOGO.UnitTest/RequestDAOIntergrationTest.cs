@@ -1,12 +1,6 @@
 ﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.Services;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AA.PMTOGO.UnitTest
 {
@@ -43,6 +37,22 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(actual);
         }
         [TestMethod]
+        public async Task GetServices()
+        {
+            // Arrange
+            var dao = new RequestDAO();
+
+            // Act
+            Result result = await dao.GetServices();
+            bool actual = result.IsSuccessful;
+
+
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
+        }
+        [TestMethod]
         public async Task DeclineARequest()
         {
             // Arrange
@@ -61,26 +71,6 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsFalse(actual);
         }
         [TestMethod]
-        public async Task RateAnRequest()
-        {
-            // Arrange
-            var dao = new RequestDAO();
-            Guid id = Guid.NewGuid();
-            await dao.AddService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
-                "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
-
-            int rate = 4;
-
-            // Act
-            await dao.RateUserServices(id, rate);
-            Result result = await dao.CheckRating(id, rate);
-            bool actual = result.IsSuccessful;
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual);
-        }
-        [TestMethod]
         public async Task AddAUserService()
         {
             // Arrange
@@ -88,7 +78,7 @@ namespace AA.PMTOGO.UnitTest
             Guid id = Guid.NewGuid();
 
             // Act
-            Result res = await dao.AddService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
+            Result res = await dao.AddUserService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
             Result result = await dao.FindService(id);
             bool actual = result.IsSuccessful;
@@ -114,5 +104,23 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
         }
+        //need add service method and find service method
+        /*[TestMethod]
+        public async Task AddAService()
+        {
+            // Arrange
+            var dao = new RequestDAO();
+            Guid id = Guid.NewGuid();
+
+            // Act
+            Result res = await dao.AddService("Landscape", "material delivery", "soil installation ", "1x/month",
+                "serviceProvider@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
+            Result result = await dao.FindService(id);
+            bool actual = result.IsSuccessful;
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
+        }*/
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.Models.Entities;
+using System.Data;
 using System.Data.SqlClient;
 namespace AA.PMTOGO.DAL;
 
@@ -63,7 +64,52 @@ public class UsersDAO
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
+    public async Task<User> GetUser(string username)
+    {
 
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = "SELECT * FROM UserProfile WHERE @Username = username";
+
+            var command = new SqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@Username", username);
+
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            {
+                try
+                {
+                    while (reader.Read())
+                    {
+                        if (username.Equals(reader["Username"]))
+                        {
+                            User user = new User();
+
+                            user.Username = (string)reader["Username"];
+                            user.Email = (string)reader["Email"];
+                            user.FirstName = (string)reader["FirstName"];
+                            user.LastName = (string)reader["LastName"];
+                            user.Role = (string)reader["Role"];
+
+                            return user;
+                        }
+                    }
+                }
+                catch
+                {
+                    User userEmpty = new User();
+                    return userEmpty;
+
+                    //_logger!.Log("FindUser", 4, LogCategory.Server, result);
+
+                }
+            }
+        }
+        User emptyUser = new User();
+        return emptyUser;
+    }
     public async Task<Result> DoesUserExist(string email)
     {
         var result = new Result();

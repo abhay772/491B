@@ -167,33 +167,86 @@ function loadPropertyEvalPage() {
     .catch(error => console.log(error));
 }
 
-function displayRequest(requests){
-  const requestContainer = document.querySelector("#request_container");
-  let allrequest="";
-  //for (int i = 0; i < requests.Length; i++){
-    //console.log(Object.entries(requests));
-    //console.log(Object.getOwnPropertyNames(requests[0]));
-    //console.log(`${requests[0].serviceName}`);
-    requests.forEach(() => {
-        const requestElement =` <table>
-                                  <tr>
-                                    <th scope="row">${requests[0].requestId}</th>
-                                    <td>${requests[0].propertyManagerName}</td>
-                                    <td>${requests[0].propertyManagerEmail}</td>
-                                    <td>${requests[0].serviceName}</td>
-                                    <td>${requests[0].serviceType}</td>
-                                    <td>${requests[0].serviceDescription}</td>
-                                    <td>${requests[0].serviceFrequency}</td>
-                                    <td>${requests[0].comments}</td>
-                                    <th scope="action"><button type="submit" class="accept"> Accept</button></td>
-                                    <th scope="action"><button type="submit" class="decline">Decline</button></td>
-                                  </tr>
-                                </table>
-                              `;
-      allrequest += requestElement;    
-    });
-    requestContainer.innerHTML = allrequest;
 
+const createRequestsTable = () =>{
+  const requests = document.querySelector("div.requests");
+  let tableHeaders = ["Request ID", "Service Name", "Service Type",  "Service Description", 
+  "Service Frequency", "Comments", "Property Manager Name", "Property Manager Email", "Action"];
+    while (requests.firstChild) requests.removeChild(requests.firstChild)
+    let requestsTable = document.createElement('table');
+    requestsTable.className="requestsTable";
+    requestsTable.id="requestsTable";
+
+    let requestTableHead = document.createElement("thead");
+    requestTableHead.className="requestsTableHead";
+
+    let requestTableHeaderRow= document.createElement('tr')
+    requestTableHeaderRow.className= "requestHeaderRow";
+
+    tableHeaders.forEach(header =>{
+      let requestsHeader = document.createElement('th');
+      requestsHeader.innerText = header;
+      requestTableHeaderRow.append(requestsHeader);
+    })
+
+    requestTableHead.append(requestTableHeaderRow);
+    requestsTable.append(requestTableHead);
+
+    let requestsTableBody = document.createElement('tbody');
+    requestsTableBody.className="requestsTableBody"
+    requestsTable.append(requestsTableBody);
+
+    requests.append(requestsTable);
+}
+const appendRequest =(request, id) => {
+  const requestsTable = document.querySelector(".requestsTable");
+  const userInfo = document.querySelector(".userInfo");
+  userInfo.innerText= `${request[0].serviceProviderName}`;
+  //let allrequest = ""
+  console.log(Object.entries(request));
+  let requestTableBodyRow = document.createElement('tr');
+  requestTableBodyRow.className = "requestTableBodyRow";
+  requestTableBodyRow.id= String(id);
+
+  //add the data
+  let requestId = document.createElement('td');
+  requestId.innerText = `${request[0].requestId}`;
+
+  let serviceName = document.createElement('td');
+  serviceName.innerText = `${request[0].serviceName}`;
+
+  let serviceType = document.createElement('td');
+  serviceType.innerText = `${request[0].serviceType}`;
+
+  let serviceDescription = document.createElement('td');
+  serviceDescription.innerText = `${request[0].serviceDescription}`;
+
+  let serviceFrequeny = document.createElement('td');
+  serviceFrequeny.innerText = `${request[0].serviceFrequency}`;
+
+  let comments = document.createElement('td');
+  comments.innerText = `${request[0].comments}`;
+
+  let propertyManager = document.createElement('td');
+  propertyManager.innerText = `${request[0].propertyManagerName}`;
+
+  let propertyManagerEmail = document.createElement('td');
+  propertyManagerEmail.innerText = `${request[0].propertyManagerEmail}`;
+
+  let acceptAction = document.createElement('td');
+  let accept = document.createElement('button');
+  accept.className ="accept";
+  accept.innerText = "Accept";
+  acceptAction.append(accept);
+
+  let decline = document.createElement('button');
+  decline.className="decline";
+  decline.innerText = "Decline";
+
+  requestTableBodyRow.append(requestId,serviceName,serviceType,serviceDescription,serviceFrequeny,
+    comments,propertyManager,propertyManagerEmail,accept,decline);
+    //allrequest += requestTableBodyRow;
+  requestsTable.append(requestTableBodyRow);
 }
 
 function getrequest(){
@@ -201,8 +254,20 @@ function getrequest(){
   get(url)
     .then(response => response.json())
     //.then(response => console.log(response))
-    .then(response => displayRequest(response))
+    .then(response => {
+      createRequestsTable();
+      response.forEach(() => {
+        let id = 1;
+        appendRequest(response, id);
+        id += 1;})
+    })
     .catch(error => console.log(error));
+}
+function acceptRequest(){
+  console.log("accept this request");
+}
+function declineRequest(){
+  console.log("decline this request");
 }
 //fucntion to load request Management page
 function loadRequestManagementPage() {
@@ -213,9 +278,14 @@ function loadRequestManagementPage() {
       // Handle the response data
       content.innerHTML = data;
       const hamburger = document.getElementById("back");
-      hamburger.addEventListener("click", loadHomePage);
-      url = api + '/Request/getrequest';
+      hamburger.addEventListener("click", loadHomePage);  
+      
+      
       getrequest();
+        
+      console.log("here");
+      const accept = document.getElementsByClassName("accept");
+      accept.addEventListener('click', acceptRequest());
 
     })   
     .catch(error => console.log(error));
