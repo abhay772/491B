@@ -12,9 +12,10 @@ namespace AA.PMTOGO.Services
         //private readonly ILogger? _logger;
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
+        private readonly ILogger? _logger;
 
-  
-                                            //byte[] to string
+
+        //byte[] to string
         public async Task<Result> CreateAccount(string email,string password, string firstname, string lastname, string role)
         {
             Result result = new Result();
@@ -55,10 +56,10 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> DeleteAccount(string username, string password)
+        public async Task<Result> DeleteAccount(string username)
         {
             Result result = new Result();
-            if (valid.ValidateEmail(username).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
+            if (valid.ValidateEmail(username).IsSuccessful)
             {
                 Result result1 = new Result();
                 result1 = await _authNDAO.FindUser(username);
