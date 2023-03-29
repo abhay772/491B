@@ -17,7 +17,7 @@ namespace AA.PMTOGO.Infrastructure.NewFolder
             context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:8080");
             context.Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
             context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-            context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET");
+            context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,PUT");
             context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
 
             if (context.Request.Method == "OPTIONS")

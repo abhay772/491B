@@ -1,5 +1,6 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
+using System.Diagnostics;
 
 namespace AA.PMTOGO.Services;
 
@@ -21,9 +22,12 @@ public class PropertyEvaluator : IPropertyEvaluator
         if (sales.Count != 0)
         {
             double medianPrice = sales.Average();
+            double roundedPrice = Math.Round(medianPrice, 2);
+            string formattedPrice = roundedPrice.ToString("N2");
+
 
             result.IsSuccessful = true;
-            result.Payload = medianPrice;
+            result.Payload = roundedPrice;
 
             return result;
         }
