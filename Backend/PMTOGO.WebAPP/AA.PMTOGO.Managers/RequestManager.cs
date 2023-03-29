@@ -21,18 +21,20 @@ namespace AA.PMTOGO.Managers
         }
 
         //update accept
-        public async Task<Result> AcceptServiceRequest(ServiceRequest request)
+        public async Task<Result> AcceptServiceRequest(string requestId)
         {
-            Result result = await _service.AcceptRequest(request);
+            Guid id = new Guid(requestId);
+            Result result = await _service.AcceptRequest(id);
 
 
             return result;
         }
 
         // update decline
-        public async Task<Result> RemoveServiceRequest(ServiceRequest request)
+        public async Task<Result> RemoveServiceRequest(string requestId, string email)
         {
-            Result result = await _service.DeclineRequest(request.RequestId, request.ServiceProviderEmail);
+            Guid id= new Guid(requestId);
+            Result result = await _service.DeclineRequest(id, email);
 
 
             return result;
@@ -44,18 +46,5 @@ namespace AA.PMTOGO.Managers
 
             return result;
         }
-
-        public async Task<Result> AddServiceToUser(UserService service)
-        {
-            Result result = await _service.CreateUserService(service);
-            return result;
-        }
-
-        /*public async Task<Result> RequestAService(ServiceRequest serviceRequest)
-        {
-            Result result = await _service.CreateRequest(serviceRequest);
-            return result;
-
-        }*/
     }
 }

@@ -193,7 +193,7 @@ table {
   margin: 8px 0;
 }
 .accept:hover, .decline:hover{
-  opacity:3;
+  opacity:9;
 }
 .accept {
   background-color:lightgreen;

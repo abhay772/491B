@@ -43,6 +43,52 @@ namespace AA.PMTOGO.DAL
             }
 
         }
+        public async Task<Result> GetRequest(Guid requestId)
+        {
+            var result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM ServiceRequests WHERE @RequestId = requestId";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@RequestId", requestId);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (reader.Read())
+                    {
+                        if (requestId.Equals(reader["RequestId"]))
+                        {
+                            ServiceRequest request = new ServiceRequest();
+
+                            request.RequestId = (Guid)reader["RequestId"];
+                            request.ServiceName = (string)reader["ServiceName"];
+                            request.ServiceType = (string)reader["ServiceType"];
+                            request.ServiceDescription = (string)reader["ServiceDescription"];
+                            request.ServiceFrequency = (string)reader["ServiceFrequency"];
+                            request.Comments = (string)reader["Comments"];
+                            request.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
+                            request.ServiceProviderName = (string)reader["ServiceProviderName"];
+                            request.PropertyManagerEmail = (string)reader["PropertyManagerEmail"];
+                            request.PropertyManagerName = (string)reader["PropertyManagerName"];
+
+
+                            result.IsSuccessful = true;
+                            result.Payload = request;
+                            result.ErrorMessage = "Service Request already exists.";
+                            return result;
+                        }
+                    }
+                }
+                result.IsSuccessful = false;
+                return result;
+            }
+
+        }
         public async Task<Result> FindService(Guid serviceid)        {
             var result = new Result();
 
@@ -62,6 +108,7 @@ namespace AA.PMTOGO.DAL
                     {
                         if (serviceid.Equals(reader["ServiceId"]))
                         {
+
                             result.IsSuccessful = true;
                             result.ErrorMessage = "UserService already exists.";
                             return result;
@@ -188,6 +235,8 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
+        public async Task<Result> AddService(string serviceName, string serviceType, string serviceDescription,
+                string serviceProviderEmail, string serviceProvider);)
 
 
         public async Task<Result> AddRequest(Guid requestId, string serviceName, string serviceType, string serviceDescription,

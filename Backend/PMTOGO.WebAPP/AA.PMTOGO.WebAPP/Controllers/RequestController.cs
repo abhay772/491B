@@ -99,7 +99,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
         [HttpPost]
         [Route("accept")]
-        public async Task<IActionResult> AcceptRequest([FromBody] ServiceRequest serviceRequest)
+        public async Task<IActionResult> AcceptRequest([FromBody] string requestId)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         {
                             try
                             {
-                                Result result = await _requestManager.AcceptServiceRequest(serviceRequest);
+                                Result result = await _requestManager.AcceptServiceRequest(requestId);
                                 if (result.IsSuccessful)
                                 {
                                     return Ok(result.Payload);
@@ -165,7 +165,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
         [HttpPost]
         [Route("decline")]
-        public async Task<IActionResult> DeclineRequest([FromBody] ServiceRequest serviceRequest)
+        public async Task<IActionResult> DeclineRequest([FromBody] string requestId)
         {
             try
             {
@@ -201,7 +201,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
                             try
                             {
-                                Result result = await _requestManager.RemoveServiceRequest(serviceRequest);
+                                Result result = await _requestManager.RemoveServiceRequest(requestId, username);
                                 if (result.IsSuccessful)
                                 {
                                     return Ok(result.Payload);

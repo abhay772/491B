@@ -19,7 +19,8 @@ namespace AA.PMTOGO.Services
         public async Task<Result> CreateRequest(Service service, string username, string comments, string frequency)
         {
 
-            User user = await _authNDAO.GetUser(username)!;
+            Result res = await _authNDAO.GetUser(username);
+            User user = (User)res.Payload!;
 
 
             //get user info
@@ -48,7 +49,12 @@ namespace AA.PMTOGO.Services
             Result result = await _requestDAO.GetServices();
             return result;
         }
-
+        public async Task<Result> CreateService(Service service)
+        {
+            Result result = await _requestDAO.AddService(service.ServiceName, service.ServiceType, service.ServiceDescription,
+                service.ServiceProviderEmail, service.ServiceProvider);
+            return result;
+        }
         public async Task<Result> RateService(Guid id, int rate)
         {
             Result result = new Result();

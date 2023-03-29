@@ -73,23 +73,6 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
         }
-        [TestMethod]
-        public async Task AddAUserService()
-        {
-            // Arrange
-            var service = new RequestManagement();
-            Guid id = Guid.NewGuid();
-            var request = new UserService(id,"Landscape", "soil installation ", "material delivery", "1x/month",
-                "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
-
-            // Act
-            Result result = await service.CreateUserService(request);
-            bool actual = result.IsSuccessful;
-
-            // Assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual);
-        }
     }
 }
 

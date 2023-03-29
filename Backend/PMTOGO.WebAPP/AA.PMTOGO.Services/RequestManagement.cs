@@ -10,8 +10,10 @@ namespace AA.PMTOGO.Services
     {
         RequestDAO _requestDAO = new RequestDAO();
 
-        public async Task<Result> AcceptRequest(ServiceRequest service)
+        public async Task<Result> AcceptRequest(Guid requestId)
         {//add service request and delete from requested service and return new lsit of service request
+            ServiceRequest service = await CreateUserService(requestId);
+            
             Result result = new Result();
          
             Result add = await _requestDAO.AddUserService(service.RequestId, service.ServiceName, service.ServiceType, service.ServiceDescription,
@@ -53,18 +55,12 @@ namespace AA.PMTOGO.Services
         }
 
 
-        /*public async Task<Result> CreateRequest(ServiceRequest request)
+        public async Task<ServiceRequest> CreateUserService(Guid requestId)
         {
-            Guid serviceRequestId = Guid.NewGuid();
-            Result result = await _requestDAO.AddRequest(serviceRequestId, request.ServiceName, request.ServiceType, request.ServiceDescription,
-               request.ServiceFrequency, request.Comments, request.ServiceProviderEmail, request.ServiceProviderName, request.PropertyManagerEmail, request.PropertyManagerName);
-            return result;
-        }*/
-        public async Task<Result> CreateUserService(UserService service)
-        {
-            Result result = await _requestDAO.AddUserService(service.ServiceId, service.ServiceName, service.ServiceType, service.ServiceDescription,
-                 service.ServiceFrequency, service.ServiceProviderEmail, service.ServiceProvider, service.PropertyManagerEmail, service.PropertyManagerName);
-            return result;
+            Result res = await _requestDAO.GetRequest(requestId);
+            ServiceRequest request = (ServiceRequest)res.Payload!;
+
+            return request;
         }
 
     }

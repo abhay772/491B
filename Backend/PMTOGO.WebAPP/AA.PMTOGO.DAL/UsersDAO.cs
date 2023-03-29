@@ -64,8 +64,9 @@ public class UsersDAO
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
-    public async Task<User> GetUser(string username)
+    public async Task<Result> GetUser(string username)
     {
+        Result result = new Result();
 
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -93,22 +94,30 @@ public class UsersDAO
                             user.LastName = (string)reader["LastName"];
                             user.Role = (string)reader["Role"];
 
-                            return user;
+                            result.IsSuccessful = true;
+                            result.Payload = user;
+                            return result;
+                        }
+                        else
+                        {
+                            result.IsSuccessful = false;
+                            result.ErrorMessage = "Account Disabled.";
+                            return result;
                         }
                     }
                 }
                 catch
                 {
-                    User userEmpty = new User();
-                    return userEmpty;
-
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
                     //_logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                 }
             }
         }
-        User emptyUser = new User();
-        return emptyUser;
+        result.IsSuccessful = false;
+        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+        return result;
     }
     public async Task<Result> DoesUserExist(string email)
     {
