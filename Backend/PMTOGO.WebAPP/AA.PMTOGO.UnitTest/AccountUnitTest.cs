@@ -1,7 +1,5 @@
 using AA.PMTOGO.DAL;
-using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
-using AA.PMTOGO.Managers;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 using System.Diagnostics;
@@ -35,12 +33,12 @@ namespace AA.PMTOGO.UnitTest
 
            //username = email
             
-            Result result = await user.CreateAccount("sierra@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            Result result = await user.CreateAccount("sara@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             
             bool accountCreated = result.IsSuccessful;
 
             // Act
-            Result result1 = await user.CreateAccount("sierra@gmail.com", "randomstring", "John", "Doe", "Property Manager");
+            Result result1 = await user.CreateAccount("sara@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             bool account2Created = result1.IsSuccessful;
 
             // Assert
@@ -192,7 +190,7 @@ namespace AA.PMTOGO.UnitTest
             Result result1 = await dao.DoesUserExist("Delete@gmail.com");
             bool found = result1.IsSuccessful;
 
-            await account.DeleteAccount("Delete@gmail.com", "randomstring");
+            await account.DeleteAccount("Delete@gmail.com");
             Result result = await dao.DoesUserExist("Delete@gmail,com");
             bool actual = result.IsSuccessful;
 

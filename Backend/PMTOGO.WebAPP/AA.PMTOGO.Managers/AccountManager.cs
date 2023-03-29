@@ -37,9 +37,9 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<Result> DeleteUserAccount(string username, string password)
+        public async Task<Result> DeleteUserAccount(string username)
         {
-            Result result = await _account.DeleteAccount(username, password);
+            Result result = await _account.DeleteAccount(username);
             return result;
         }
     }

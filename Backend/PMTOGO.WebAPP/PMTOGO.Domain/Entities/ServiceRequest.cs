@@ -27,7 +27,7 @@ namespace AA.PMTOGO.Models.Entities
         public ServiceRequest() { }
 
         public ServiceRequest(Guid requestId, string serviceName, string serviceType, string serviceDescription, string serviceFrequency,
-            string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerName, string propertyManagerEmail)
+            string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
         {
             RequestId = requestId;
             ServiceName = serviceName;

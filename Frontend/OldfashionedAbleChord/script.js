@@ -128,6 +128,7 @@ function loadHomePage() {
       hamburger.addEventListener("click", loadHomePage);
 
     //select log out
+    
     const logoutUser = document.getElementById("logout");
 
     const homepageContent = document.getElementsByClassName("homepage-content")[0];
@@ -176,6 +177,20 @@ function loadAccountDeletionPage(homepageContent){
     .then(data => {
       // update content div with property evaluation page html
       homepageContent.innerHTML = data;
+
+      const hamburger = document.getElementById("back");
+      hamburger.addEventListener("click", loadHomePage);
+      const cancel = document.getElementById("cancel");
+      const confirm = document.getElementById("confirm");
+
+      cancel.addEventListener('click', loadHomePage);
+      confirm.addEventListener('click', ()=>{
+        url = api + '/UserManagement/delete';
+        del(url)
+          .then(data => data.json())
+          .then(response => console.log(response))
+      })
+
     })
     .catch(error => console.log(error));
 }
@@ -208,31 +223,129 @@ function loadPropertyEvalPage(homepageContent) {
     window.location.hash = 'PropEval';
 }
 
+
+const createRequestsTable = () =>{
+  const requests = document.querySelector("div.requests");
+  let tableHeaders = ["Request ID", "Service Name", "Service Type",  "Service Description", 
+  "Service Frequency", "Comments", "Property Manager Name", "Property Manager Email", "Action"];
+    while (requests.firstChild) requests.removeChild(requests.firstChild)
+    let requestsTable = document.createElement('table');
+    requestsTable.className="requestsTable";
+    requestsTable.id="requestsTable";
+
+    let requestTableHead = document.createElement("thead");
+    requestTableHead.className="requestsTableHead";
+
+    let requestTableHeaderRow= document.createElement('tr')
+    requestTableHeaderRow.className= "requestHeaderRow";
+
+    tableHeaders.forEach(header =>{
+      let requestsHeader = document.createElement('th');
+      requestsHeader.innerText = header;
+      requestTableHeaderRow.append(requestsHeader);
+    })
+
+    requestTableHead.append(requestTableHeaderRow);
+    requestsTable.append(requestTableHead);
+
+    let requestsTableBody = document.createElement('tbody');
+    requestsTableBody.className="requestsTableBody"
+    requestsTable.append(requestsTableBody);
+
+    requests.append(requestsTable);
+}
+const appendRequest =(request, id) => {
+  const requestsTable = document.querySelector(".requestsTable");
+  const userInfo = document.querySelector(".userInfo");
+  userInfo.innerText= `${request[0].serviceProviderName}`;
+  //let allrequest = ""
+  console.log(Object.entries(request));
+  let requestTableBodyRow = document.createElement('tr');
+  requestTableBodyRow.className = "requestTableBodyRow";
+  requestTableBodyRow.id= String(id);
+
+  //add the data
+  let requestId = document.createElement('td');
+  requestId.innerText = `${request[0].requestId}`;
+
+  let serviceName = document.createElement('td');
+  serviceName.innerText = `${request[0].serviceName}`;
+
+  let serviceType = document.createElement('td');
+  serviceType.innerText = `${request[0].serviceType}`;
+
+  let serviceDescription = document.createElement('td');
+  serviceDescription.innerText = `${request[0].serviceDescription}`;
+
+  let serviceFrequeny = document.createElement('td');
+  serviceFrequeny.innerText = `${request[0].serviceFrequency}`;
+
+  let comments = document.createElement('td');
+  comments.innerText = `${request[0].comments}`;
+
+  let propertyManager = document.createElement('td');
+  propertyManager.innerText = `${request[0].propertyManagerName}`;
+
+  let propertyManagerEmail = document.createElement('td');
+  propertyManagerEmail.innerText = `${request[0].propertyManagerEmail}`;
+
+  let acceptAction = document.createElement('td');
+  let accept = document.createElement('button');
+  accept.className ="accept";
+  accept.innerText = "Accept";
+  acceptAction.append(accept);
+
+  let decline = document.createElement('button');
+  decline.className="decline";
+  decline.innerText = "Decline";
+
+  requestTableBodyRow.append(requestId,serviceName,serviceType,serviceDescription,serviceFrequeny,
+    comments,propertyManager,propertyManagerEmail,accept,decline);
+    //allrequest += requestTableBodyRow;
+  requestsTable.append(requestTableBodyRow);
+}
+
+function getrequest(){
+  url = api + '/Request/getrequest';
+  get(url)
+    .then(response => response.json())
+    //.then(response => console.log(response))
+    .then(response => {
+      createRequestsTable();
+      response.forEach(() => {
+        let id = 1;
+        appendRequest(response, id);
+        id += 1;})
+    })
+    .catch(error => console.log(error));
+}
+function acceptRequest(){
+  console.log("accept this request");
+}
+function declineRequest(){
+  console.log("decline this request");
+}
 //fucntion to load request Management page
 function loadRequestManagementPage(homepageContent) {
   // fetch request evaluation page html
   fetch('./Views/requestMan.html')
-    //.then(response => response.text())
-    .then(response => {
-      // Get the cookie from the response headers
-      const cookie = response.headers.get('Set-Cookie');
-      // Set the cookie
-      document.cookie = cookie;
-      // Do something with the response body
-      return response.json();
-    })
+    .then(response => response.text())
     .then(data => {
       // Handle the response data
       homepageContent.innerHTML = data;
       const hamburger = document.getElementById("back");
-      hamburger.addEventListener("click", loadHomePage);
+      hamburger.addEventListener("click", loadHomePage);  
       
-      url = api + '/Service/getrequest';
-      get(url)
-        .then(data => data.json())
-        .then(response => console.log(response))
+      
+      getrequest();
+        
+      console.log("here");
+      const accept = document.getElementsByClassName("accept");
+      accept.addEventListener('click', acceptRequest());
+
     })   
     .catch(error => console.log(error));
+    
 }
 
 function logout(){
@@ -362,7 +475,6 @@ function send(url, data) {
   return fetch(url, options);
 }
 
-// Exposing send() to the global object ("Public" functions)
 function put(url, data) {
   const options = {
     method: 'PUT',
@@ -379,3 +491,21 @@ function put(url, data) {
 
   return fetch(url, options);
 }
+
+function del(url) {
+
+  const options = {
+    method: 'DELETE',
+    mode: 'cors',
+    cache: 'default',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer-when-downgrade',
+  };
+
+  return fetch(url, options);
+}
+
