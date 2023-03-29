@@ -94,7 +94,6 @@ public class PropEvalController : ControllerBase
     {
         try
         {
-
             // Loading the cookie from the http request
             var cookieValue = Request.Cookies["CredentialCookie"];
 
@@ -151,8 +150,7 @@ public class PropEvalController : ControllerBase
     }
 
     [HttpGet("evaluate")]
-    [Consumes("application/json")]
-    public async Task<IActionResult> Evaluate(PropertyProfile propertyProfile)
+    public async Task<IActionResult> Evaluate()
     {
         try
         {
@@ -161,13 +159,18 @@ public class PropEvalController : ControllerBase
 
             if (!string.IsNullOrEmpty(cookieValue))
             {
-                // Deserializing the claims from the cookie
-                var principalString = cookieValue;
-                var principal = JsonSerializer.Deserialize<ClaimsPrincipal>(principalString);
+                var handler = new JwtSecurityTokenHandler();
 
-                // Load the username and role from the principal
-                var usernameClaim = principal!.FindFirst(ClaimTypes.Email);
-                var roleClaim = principal.FindFirst(ClaimTypes.Role);
+                var jwtToken = handler.ReadJwtToken(cookieValue);
+
+                if (jwtToken == null)
+                {
+                    return BadRequest("Invalid Claims");
+                }
+
+                var claims = jwtToken.Claims.ToList();
+                Claim usernameClaim = claims[0];
+                Claim roleClaim = claims[1];
 
                 if (usernameClaim != null && roleClaim != null)
                 {
@@ -175,14 +178,30 @@ public class PropEvalController : ControllerBase
                     string role = roleClaim.Value;
 
                     // Check if the role is Property Manager
-                    bool validationCheck = _inputValidation.ValidateUsername(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+                    bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
 
                     if (role != null && validationCheck && role == "Property Manager")
                     {
 
+                        Result result = await _propEvalManager.loadProfileAsync(username);
+
+                        if (result.IsSuccessful == false)
+                        { 
+                            return BadRequest(result.ErrorMessage);
+                        }
+
+                        PropertyProfile propertyProfile = (PropertyProfile)result.Payload!;
+
                         // Call the evaluate function 
-                        Result result = await _propEvalManager.evaluateAsync(username, propertyProfile);
-                        double evalPrice = (double)result.Payload!;
+
+                        result = await _propEvalManager.evaluateAsync(username, propertyProfile);
+
+                        if (result.IsSuccessful == false)
+                        {
+                            return Ok("00000.00");
+                        }
+
+                        string evalPrice = result.Payload.ToString();
 
                         if (result.IsSuccessful)
                         {
@@ -198,7 +217,7 @@ public class PropEvalController : ControllerBase
 
             }
 
-            return Forbid();
+            return BadRequest("Not Authorized");
         }
 
         catch 

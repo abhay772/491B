@@ -1,6 +1,22 @@
 const content = document.getElementById('content');
 const api = "https://localhost:7135/api"
 
+window.addEventListener("load", function() {
+  url = api + '/Authentication/IsLoggedIn';
+
+  get(url)
+  .then(response => response.json())
+  .then(data => {
+    if (data === true){
+      loadHomePage();
+    }
+    else{
+      loadLoginPage();
+    }
+  })
+});
+
+
 function loadLoginPage() {
   // fetch login page
   fetch('./Views/login.html')
@@ -33,10 +49,12 @@ function loadLoginPage() {
         data = { username: username, password: password }
 
         send(url, data)
-          .then(data => data.json())
-          .then(response => console.log(response))
-          .then(loadHomePage());
-          //.then((response) =>{if(response.ok){loadHomePage()}})
+        .then((response) => {
+          if (response.ok) {
+            loadHomePage();
+          }
+        })
+          .catch(error => console.log(error.text()));
 
       });
       
@@ -49,7 +67,7 @@ function UserRole() {
   if (document.getElementById("SP").checked) {
     role = "Service Provider";
   }
-  if (document.getElementById("PM").checked) {
+  else if (document.getElementById("PM").checked) {
     role = "Property Manager";
   }
   return role;
@@ -108,35 +126,58 @@ function loadHomePage() {
 
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
-    //select log out
-      const logoutUser = document.getElementById("logout");
-      const setting = document.getElementById("settings");
-      
-    //select propertyEvaluation
-      const propertyEvalFeature = document.getElementById('propertyEvaluation');
-      //select request management
-      const requestFeature = document.getElementById('requestManagement');
-      //add event listeners
-      logoutUser.addEventListener('click', loadLoginPage);
-        //add event listener to nav to request management
-      requestFeature.addEventListener('click', loadRequestManagementPage);  
 
-        // add event listeners to nav to property evaluation
-      propertyEvalFeature.addEventListener('click', loadPropertyEvalPage);
-      setting.addEventListener('click', loadAccountDeletionPage);
-      
+    //select log out
+    
+    const logoutUser = document.getElementById("logout");
+
+    const homepageContent = document.getElementsByClassName("homepage-content")[0];
+
+   //select propertyEvaluation
+    const propertyEvalFeature = document.getElementById('propertyEvaluation');
+     //select request management
+    const requestFeature = document.getElementById('requestManagement');
+
+    //add event listeners
+    logoutUser.addEventListener('click', () => {
+      url = api + '/Authentication/Logout';
+
+      get(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data === false){
+
+        alert('Logout was unsuccesful. Try again or contact an administratior.');
+        loadHomePage();
+        }
+        else{
+          loadLoginPage();
+        }
+      })
+    });
+
+    //add event listener to nav to request management
+    requestFeature.addEventListener('click', () => {
+      loadRequestManagementPage(homepageContent);
+    });  
+
+    // add event listeners to nav to property evaluation
+    propertyEvalFeature.addEventListener('click', () => {
+      loadPropertyEvalPage(homepageContent);
+    });
     })
     .catch(error => console.log(error));
   
 }
 
-function loadAccountDeletionPage(){
+function loadAccountDeletionPage(homepageContent){
   //fetch account deletion page
   fetch('./Views/deleteAcc.html')
     .then(response => response.text())
     .then(data => {
       // update content div with property evaluation page html
-      content.innerHTML = data;
+      homepageContent.innerHTML = data;
+
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
       const cancel = document.getElementById("cancel");
@@ -149,22 +190,37 @@ function loadAccountDeletionPage(){
           .then(data => data.json())
           .then(response => console.log(response))
       })
+
     })
     .catch(error => console.log(error));
 }
 
 // function to load property evaluation page
-function loadPropertyEvalPage() {
+function loadPropertyEvalPage(homepageContent) {
+
   // fetch property evaluation page html
   fetch('./Views/propEval.html')
     .then(response => response.text())
     .then(data => {
       // update content div with property evaluation page html
-      content.innerHTML = data;
-      const hamburger = document.getElementById("back");
-      hamburger.addEventListener("click", loadHomePage);
+      homepageContent.innerHTML = data;
+
+      updateEvaluation();
+
+      LoadProfile();
+
+      const evaluateForm = document.getElementById("PropertyProfile");
+
+      evaluateForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        SaveProfile();
+        updateEvaluation();
+      });
+      
     })
     .catch(error => console.log(error));
+
+    window.location.hash = 'PropEval';
 }
 
 
@@ -270,13 +326,13 @@ function declineRequest(){
   console.log("decline this request");
 }
 //fucntion to load request Management page
-function loadRequestManagementPage() {
+function loadRequestManagementPage(homepageContent) {
   // fetch request evaluation page html
   fetch('./Views/requestMan.html')
     .then(response => response.text())
     .then(data => {
       // Handle the response data
-      content.innerHTML = data;
+      homepageContent.innerHTML = data;
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);  
       
@@ -292,6 +348,95 @@ function loadRequestManagementPage() {
     
 }
 
+function logout(){
+  url = api + '/Authentication/Logout';
+
+  get(url)
+    .then(response => response.json())
+    .then(data => {
+      if (data === false){
+
+        alert('Logout was unsuccesful. Try again or contact an administratior.');
+        loadHomePage();
+      }
+      else{
+        loadLoginPage();
+      }
+    })
+}
+
+function updateEvaluation(){
+  // Update the evaluation
+  url = api + '/PropEval/evaluate';
+
+  get(url)
+  .then((response) => {
+    if (response.ok) {
+      return response.text();
+    }
+  })
+  .then(data => {
+    document.getElementById("property-evaluation").innerHTML = `Property Evaluation: ${data}`;
+  })
+  .catch(error => console.error(error));
+
+}
+
+async function LoadProfile(){
+  // Auto loading the Property Profile if available
+  url = api + '/PropEval/loadProfile';
+
+  get(url)
+  .then(response => response.json())
+  .then(data => {
+    const fieldset = document.querySelector('#PropertyProfile fieldset');
+    assignData(fieldset,data);
+  })
+  .catch(error => console.error(error.text));
+}
+
+function SaveProfile(){
+
+  // Saving the Property Profile
+  url = api + '/PropEval/saveProfile';
+
+  const fieldset = document.querySelector('#PropertyProfile fieldset');
+
+  let data = extractData(fieldset);
+  console.log(data);
+  put(url,data)
+  .catch(error => console.error(error));
+}
+
+function assignData(fieldset, data){
+  const inputs = fieldset.querySelectorAll('input, textarea');
+  inputs.forEach(input => {
+
+    // Lower casing the first letter of the inout field
+    // to match the property name in data
+    const key = input.name.charAt(0).toLowerCase() + input.name.slice(1);
+
+    if(data.hasOwnProperty(key)){
+      if(data[key] !== 'string' && data[key] !== 0)
+      {
+        //console.log(data[key]);
+        input.setAttribute('value',data[key]);
+      }
+    }
+  });
+}
+
+function extractData(fieldset){
+  const inputs = fieldset.querySelectorAll('input, textarea');
+  let data = {};
+
+  inputs.forEach(input => {
+    const key = input.name.charAt(0).toLowerCase() + input.name.slice(1);
+    data[key] = input.value;
+  })
+  console.log(data)
+  return data;
+}
 
 // From https://github.com/v-vong3/csulb/tree/master/cecs_491
 function get(url) {
@@ -330,6 +475,23 @@ function send(url, data) {
   return fetch(url, options);
 }
 
+function put(url, data) {
+  const options = {
+    method: 'PUT',
+    mode: 'cors',
+    cache: 'default',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer-when-downgrade',
+    body: JSON.stringify(data),
+  };
+
+  return fetch(url, options);
+}
+
 function del(url) {
 
   const options = {
@@ -347,5 +509,3 @@ function del(url) {
   return fetch(url, options);
 }
 
-// load login page initially
-loadLoginPage();

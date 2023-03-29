@@ -293,7 +293,7 @@ table {
 .wrapper .sidebar ul li a:hover:before,
 .wrapper .sidebar ul li a.active:before{
   display: block;
-}
+} 
 
 .wrapper .section{
   width: calc(100% - 225px);
@@ -329,3 +329,69 @@ table {
   background-color: rgb(7, 105, 185);
 }
 
+/* Style for the Evaluation div */
+.evaluation-container {
+  background-color: #f2f2f2;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+/* The rest of your CSS rules remain the same */
+
+/* Style for the Evaluation div */
+#Evaluation {
+  background-color: #f2f2f2;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+/* Style for the Property Profile form */
+#PropertyProfile {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Style for the Property Profile fieldset */
+#PropertyProfile fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style for the Property Profile legend */
+#PropertyProfile legend {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Style for the Property Profile labels */
+.propProfile-label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Style for the Property Profile fields */
+.propProfile-field {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Style for the Evaluate Property button */
+#evaluate-btn {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hover style for the Evaluate Property button */
+#evaluate-btn:hover {
+  background-color: #3e8e41;
+}
