@@ -6,6 +6,7 @@ using System.Net;
 using System.Text.Json;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using static System.Net.WebRequestMethods;
 
 namespace AA.PMTOGO_v2.Controllers;
 
@@ -20,12 +21,28 @@ public class AuthenticationController : ControllerBase
         _authManager = authManager;
     }
 
-    [HttpPost("Login")]
+    [HttpGet("IsLoggedIn")]
+    public  IActionResult IsLoggedIn()
+    {
+        try
+        {
+            if (Request.Cookies["CredentialCookie"] != null)
+            {
+                return Ok(true);
+            }
+
+            return Ok(false);
+        }
+
+        catch (Exception ex) {
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+        [HttpPost("Login")]
     [Consumes("application/json", "application/problem+json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {
-
-
         try
         {
             Result result = await _authManager.Login(userCredentials.Username, userCredentials.Password);
@@ -60,25 +77,27 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-    /*[HttpPost("Logout")]
-    [Consumes("application/json")]
-    public async Task<IActionResult> Logout()
+    [HttpGet("Logout")]
+    public IActionResult Logout()
     {
         if (Request.Cookies.ContainsKey("CredentialCookie"))
         {
-            Response.Cookies.Delete("CredentialCookie");
-            Console.WriteLine(Request.Cookies["CredentialCookie"]!.ToString());
+            Response.Cookies.Delete("CredentialCookie", new CookieOptions
+            {
+                SameSite = SameSiteMode.None,
+                Secure = true
+            });
 
-    //        return Ok("Logged out successfully");
-    //    }
+            return Ok(true);
+        }
 
-    //    else
-    //    {
-    //        return BadRequest("Cookie dosent exist");
-    //    }
+        else
+        {
+            return Ok(false);
+        }
 
 
-    }*/
+    }
 
     private string CreateJWTToken(List<Claim> claims)
     {
@@ -104,6 +123,8 @@ public class AuthenticationController : ControllerBase
         // Create a new cookie and add it to the response
         Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
         {
+            Domain = "localhost",
+            Path= "/",
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,

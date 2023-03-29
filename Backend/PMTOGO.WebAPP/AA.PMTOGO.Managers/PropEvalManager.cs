@@ -48,7 +48,7 @@ public class PropEvalManager : IPropEvalManager
         Result result = new Result();
 
         result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username";
+        result.ErrorMessage = "Invalid Username or Property Profile";
 
         return result;
     }
