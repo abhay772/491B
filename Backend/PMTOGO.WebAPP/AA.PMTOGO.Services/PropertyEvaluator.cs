@@ -27,7 +27,7 @@ public class PropertyEvaluator : IPropertyEvaluator
 
 
             result.IsSuccessful = true;
-            result.Payload = roundedPrice;
+            result.Payload = formattedPrice;
 
             return result;
         }
