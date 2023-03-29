@@ -99,7 +99,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
         [HttpPost]
         [Route("accept")]
-        public async Task<IActionResult> AcceptRequest([FromBody] string requestId)
+        public async Task<IActionResult> AcceptRequest([FromBody] ServiceInfo service)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         {
                             try
                             {
-                                Result result = await _requestManager.AcceptServiceRequest(requestId);
+                                Result result = await _requestManager.AcceptServiceRequest(service.RequestId);
                                 if (result.IsSuccessful)
                                 {
                                     return Ok(result.Payload);
@@ -165,7 +165,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
         [HttpPost]
         [Route("decline")]
-        public async Task<IActionResult> DeclineRequest([FromBody] string requestId)
+        public async Task<IActionResult> DeclineRequest([FromBody] ServiceInfo service)
         {
             try
             {
@@ -201,7 +201,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
                             try
                             {
-                                Result result = await _requestManager.RemoveServiceRequest(requestId, username);
+                                Result result = await _requestManager.RemoveServiceRequest(service.RequestId, username);
                                 if (result.IsSuccessful)
                                 {
                                     return Ok(result.Payload);
@@ -230,7 +230,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        
+        public class ServiceInfo
+        {
+            public string RequestId { get; set; } = string.Empty;
+        }
+
     }
 }
 

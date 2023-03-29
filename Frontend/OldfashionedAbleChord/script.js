@@ -132,7 +132,8 @@ function loadHomePage() {
     const logoutUser = document.getElementById("logout");
 
     const homepageContent = document.getElementsByClassName("homepage-content")[0];
-
+    //select settings
+    const deleteAccount = document.getElementById("settings");
    //select propertyEvaluation
     const propertyEvalFeature = document.getElementById('propertyEvaluation');
      //select request management
@@ -155,7 +156,11 @@ function loadHomePage() {
         }
       })
     });
+    //add event listener to nav to account delection
 
+    deleteAccount.addEventListener('click', () =>{
+      loadAccountDeletionPage(homepageContent);
+    });
     //add event listener to nav to request management
     requestFeature.addEventListener('click', () => {
       loadRequestManagementPage(homepageContent);
@@ -189,6 +194,7 @@ function loadAccountDeletionPage(homepageContent){
         del(url)
           .then(data => data.json())
           .then(response => console.log(response))
+          .then(loadLoginPage);
       })
 
     })
@@ -291,7 +297,7 @@ const appendRequest =(request, id) => {
 
   let acceptAction = document.createElement('td');
   let acceptbtn = document.createElement('button');
-  acceptbtn.className ="accept"; acceptbtn.value = `${request.requestId}`;
+  acceptbtn.className ="accept"; 
   acceptbtn.id=`${request.requestId}`;
   acceptbtn.innerText = "Accept";
 
@@ -322,27 +328,47 @@ function getrequest(){
         appendRequest(request, id)
         id = id + 1;
       })
-      const list = Array.from(document.getElementsByClassName("accept")); 
-      console.log(list);
-      list.forEach((key)=>{
-        acceptRequest(key.id);
+      const acceptlist = Array.from(document.getElementsByClassName("accept")); 
+      console.log(acceptlist);
+      acceptlist.forEach((key)=>{
+        key.addEventListener('click', function() { acceptRequest(key.id)});
+      })
+      const declinelist = Array.from(document.getElementsByClassName("decline")); 
+      console.log(declinelist);
+      declinelist.forEach((key)=>{
+        key.addEventListener('click', function() {declineRequest(key.id)});
       })
       
     })
     .catch(error => console.log(error));
 }
+function loadEmailPage(homepageContent){
+  fetch('./Views/Email.html')
+    .then(response => response.text())
+    .then(data => {
+      // Handle the response data
+      homepageContent.innerHTML = data;
+
+      const notify = document.getElementById("notify")
+      notify.addEventListener('click', function(){
+        console.log("send email here");
+      })
+
+    })   
+    .catch(error => console.log(error));
+}
 function acceptRequest(requestid){
   url = api + "/Request/accept";
-  data = { requestId: requestid}
+  data = {requestId: requestid}
   send(url, data)
-    .then(data => data.json())
-    .then(response => console.log(response))
-    .then(loadRequestManagementPage());
+  .then(data => data.json())
+  .then(response => console.log(response))
+  .then(loadRequestManagementPage());
   
 }
 function declineRequest(requestid){
   url = api + "/Request/decline";
-  data = { requestId: requestid}
+  data = {requestId: requestid}
   send(url, data)
     .then(data => data.json())
     .then(response => console.log(response))
@@ -356,10 +382,33 @@ function loadRequestManagementPage(homepageContent) {
     .then(data => {
       // Handle the response data
       homepageContent.innerHTML = data;
-      const hamburger = document.getElementById("back");
-      hamburger.addEventListener("click", loadHomePage);  
       
-      getrequest();
+      //getrequest();
+      url = api + '/Request/getrequest';
+      get(url)
+        .then(response => response.json())
+        //.then(response => console.log(response))
+        .then(response => {
+          createRequestsTable();
+          let id = 0;
+          response.forEach((request) =>{
+            appendRequest(request, id)
+            id = id + 1;
+          })
+          const acceptlist = Array.from(document.getElementsByClassName("accept")); 
+          acceptlist.forEach((key)=>{
+            key.addEventListener('click', function() { acceptRequest(key.id)});
+          })
+          const declinelist = Array.from(document.getElementsByClassName("decline")); 
+          declinelist.forEach((key)=>{
+            key.addEventListener('click', function() {declineRequest(key.id)});
+          })
+
+          const emailAdmin = document.getElementById("notifyAdmin");
+          emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});
+        })
+        .catch(error => console.log(error));
+
 
     })   
     .catch(error => console.log(error));

@@ -48,7 +48,7 @@ namespace AA.PMTOGO.UnitTest
                 "serviceProvider@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
 
             // Act
-            Result result = await service.AcceptRequest(request);
+            Result result = await service.AcceptRequest(id);
             bool actual = result.IsSuccessful;
 
             // Assert

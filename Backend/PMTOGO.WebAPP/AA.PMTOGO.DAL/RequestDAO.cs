@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using System.Windows;
+using System.Xml.Linq;
 
 namespace AA.PMTOGO.DAL
 {
@@ -236,7 +237,52 @@ namespace AA.PMTOGO.DAL
         }
 
         public async Task<Result> AddService(string serviceName, string serviceType, string serviceDescription,
-                string serviceProviderEmail, string serviceProvider);)
+                string serviceProviderEmail, string serviceProvider)
+        {
+            var result = new Result();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "INSERT into Services VALUES(@ServiceName, @ServiceType, @ServiceDescription, @ServiceProviderEmail, @ServiceProvider)";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceName", serviceName);
+                command.Parameters.AddWithValue("@ServiceType", serviceType);
+                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceProviderName", serviceProvider);
+
+                try
+                {
+                    var rows = await command.ExecuteNonQueryAsync();
+                    if (rows == 1)
+                    {
+                        result.IsSuccessful = true;
+                        return result;
+                    }
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "too many rows affected";
+                        return result;
+                    }
+                }
+                catch (SqlException e)
+                {
+                    if (e.Number == 208)
+                    {
+                        result.ErrorMessage = "Specified table not found";
+                        //_logger!.Log("AddRequest", 4, LogCategory.DataStore, result);
+                    }
+                }
+
+            }
+
+            result.IsSuccessful = false;
+            return result;
+        }
 
 
         public async Task<Result> AddRequest(Guid requestId, string serviceName, string serviceType, string serviceDescription,

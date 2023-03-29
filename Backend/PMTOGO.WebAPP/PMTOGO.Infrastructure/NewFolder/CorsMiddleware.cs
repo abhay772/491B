@@ -18,7 +18,7 @@ namespace AA.PMTOGO.Infrastructure.NewFolder
             context.Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
             context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
 
-            context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,PUT","DELETE");
+            context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,PUT,DELETE");
 
             context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
 

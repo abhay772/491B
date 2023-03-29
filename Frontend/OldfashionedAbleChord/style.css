@@ -96,6 +96,14 @@ button {
   color: #271197; /* change color*/
 }
 
+.notifyAdmin{
+  background-color: #fefefe;
+  padding: 14px 20px;
+  margin: 8px 0;
+  left:0;
+  color: black;
+}
+
 button:hover {
   opacity:1;
 }
