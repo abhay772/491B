@@ -162,7 +162,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
                 }
 
-                return BadRequest("Cookie not found");
+                return BadRequest("Not Authorized");
             }
 
             catch

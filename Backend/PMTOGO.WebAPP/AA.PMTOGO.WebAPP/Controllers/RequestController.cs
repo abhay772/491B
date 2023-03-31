@@ -83,16 +83,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                                 return StatusCode(StatusCodes.Status500InternalServerError);
                             }
                         }
-                        else
-                        {
-                            return Ok(new { message = "You are not authorized." });
-                        }
                     }
 
 
                 }
 
-                return BadRequest("Cookie not found");
+                return BadRequest("Not Authorized");
             }
 
             catch

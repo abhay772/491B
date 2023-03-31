@@ -414,28 +414,39 @@ const appendRequest =(request, id) => {
 function getrequest(){
   url = api + '/Request/getrequest';
   get(url)
-    .then(response => response.json())
-    //.then(response => console.log(response))
     .then(response => {
-      createRequestsTable();
-      let id = 0;
-      response.forEach((request) =>{
-        appendRequest(request, id)
-        id = id + 1;
-      })
-      const acceptlist = Array.from(document.getElementsByClassName("accept")); 
-      console.log(acceptlist);
-      acceptlist.forEach((key)=>{
-        key.addEventListener('click', function() { acceptRequest(key.id)});
-      })
-      const declinelist = Array.from(document.getElementsByClassName("decline")); 
-      console.log(declinelist);
-      declinelist.forEach((key)=>{
-        key.addEventListener('click', function() {declineRequest(key.id)});
-      })
-      
+      if(!response.ok){
+        fetch("./Views/NotAuthorized.html")
+          .then(response => response.text())
+          .then(text => {
+    
+            const homepageContent = document.getElementsByClassName("homepage-content")[0];
+        
+            homepageContent.innerHTML = text;
+          })
+  
+      } 
+      else {
+        response.json().then(data => {
+          createRequestsTable();
+          let id = 0;
+          data.forEach((request) =>{
+            appendRequest(request, id)
+            id = id + 1;
+          })
+          const acceptlist = Array.from(document.getElementsByClassName("accept")); 
+          acceptlist.forEach((key)=>{
+            key.addEventListener('click', function() { acceptRequest(key.id)});
+          })
+          const declinelist = Array.from(document.getElementsByClassName("decline")); 
+          declinelist.forEach((key)=>{
+            key.addEventListener('click', function() {declineRequest(key.id)});
+          })
+        })
+        .catch(error => console.error(error));
+      }
     })
-    .catch(error => console.log(error));
+    .catch(error => console.error(error));
 }
 function loadEmailPage(homepageContent){
   fetch('./Views/Email.html')
@@ -497,30 +508,7 @@ function loadRequestManagementPage(homepageContent) {
       // Handle the response data
       homepageContent.innerHTML = data;
       
-      //getrequest();
-      url = api + '/Request/getrequest';
-      get(url)
-        .then(response => response.json())
-        .then(response => {
-            createRequestsTable();
-            let id = 0;
-            response.forEach((request) =>{
-              appendRequest(request, id)
-              id = id + 1;
-            })
-            const acceptlist = Array.from(document.getElementsByClassName("accept")); 
-            acceptlist.forEach((key)=>{
-              key.addEventListener('click', function() { acceptRequest(key.id)});
-            })
-            const declinelist = Array.from(document.getElementsByClassName("decline")); 
-            declinelist.forEach((key)=>{
-              key.addEventListener('click', function() {declineRequest(key.id)});
-            })
-
-            /*const emailAdmin = document.getElementById("notifyAdmin");
-            emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});*/
-        })
-        .catch(error => console.log(error));
+      getrequest();
 
     })   
     .catch(error => console.log(error));
