@@ -27,7 +27,7 @@ namespace AA.PMTOGO.UnitTest
             var dao = new RequestDAO();
 
             // Act
-            Result result = await dao.GetUserRequest("serviceProvider@gmail.com");
+            Result result = await dao.GetServiceRequest("serviceProvider@gmail.com");
             bool actual = result.IsSuccessful;
            
 
@@ -78,9 +78,9 @@ namespace AA.PMTOGO.UnitTest
             Guid id = Guid.NewGuid();
 
             // Act
-            Result res = await dao.AddUserService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
-                "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
-            Result result = await dao.FindService(id);
+            Result res = await dao.AddUserService(id, "Landscape", "material delivery", "soil installation ", "1x/month",
+                "mssierra310@gmail.com", "Sara Jade", "sierra.harris01@student.csulb.edu", "Sierra Harris");
+            Result result = await dao.FindUserService(id);
             bool actual = result.IsSuccessful;
 
             // Assert
@@ -95,8 +95,8 @@ namespace AA.PMTOGO.UnitTest
             Guid id = Guid.NewGuid();
 
             // Act
-            Result res = await dao.AddRequest(id, "Landscape", "material delivery", "soil installation ", "1x/month", "planters is far left of yard",
-                "serviceProvider@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
+            await dao.AddRequest(id, "Landscape", "material delivery", "soil installation ", "2x/month", "planters is far left of yard",
+                "mssierra310@gmail.com", "Sierra Harris", "sierra.harris01@student.csulb.edu", "Sara Jade");
             Result result = await dao.FindRequest(id);
             bool actual = result.IsSuccessful;
 
@@ -104,23 +104,22 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
         }
-        //need add service method and find service method
-        /*[TestMethod]
+      
+        [TestMethod]
         public async Task AddAService()
         {
             // Arrange
             var dao = new RequestDAO();
-            Guid id = Guid.NewGuid();
 
             // Act
-            Result res = await dao.AddService("Landscape", "material delivery", "soil installation ", "1x/month",
-                "serviceProvider@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
-            Result result = await dao.FindService(id);
+            await dao.AddService("Landscape", "material delivery", "soil installation ",
+                "mssierra310@gmail.com", "Sierra Harris");
+            Result result = await dao.FindService("Landscape", "mssierra310@gmail.com", "material delivery");
             bool actual = result.IsSuccessful;
 
             // Assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
-        }*/
+        }
     }
 }

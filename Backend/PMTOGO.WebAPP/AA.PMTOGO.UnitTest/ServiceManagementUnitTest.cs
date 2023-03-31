@@ -40,15 +40,30 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(actual);
         }
         [TestMethod]
+        public async Task GetUserServices()
+        {
+            // Arrange
+            var dao = new RequestDAO();
+
+            // Act
+            Result result = await dao.GetUserService("serviceProvider@gmail.com", "serviceProvider@gmail.com");
+            bool actual = result.IsSuccessful;
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
+        }
+        [TestMethod]
         public async Task AddAServiceRequest()
         {
             // Arrange
             ServiceManagement service = new ServiceManagement();
-            Guid id = Guid.NewGuid();
-            ServiceRequest request = new ServiceRequest(id, "Landscape", "material delivery", "soil installation ", "1x/month", "planters is far left of yard",
-                "mssierra310@gmail.com", "Sierra Harris", "propertyManager@gmail.com", "Sara Jade");
+            Guid id = Guid.NewGuid(); 
+            ServiceRequest request = new ServiceRequest(id, "Parking Lot Sweep", "Sweeping", "random description", "2x/month", "300sq parking lot",
+                "mssierra310@gmail.com", "Sierra Harris", "sierra.harris01@student.csulb.edu", "Sara Jade");
 
             // Act
+            
             Result result = await service.AddRequest(request);
             bool actual = result.IsSuccessful;
 
@@ -92,5 +107,10 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
         }
+        // need frequency change test
+
+        //need cancellation test 
+
+
     }
 }

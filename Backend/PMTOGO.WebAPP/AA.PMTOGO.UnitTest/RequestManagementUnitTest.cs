@@ -25,10 +25,10 @@ namespace AA.PMTOGO.UnitTest
         public async Task GetServiceRequest()
         {
             // Arrange
-            var dao = new RequestDAO();
+            var service = new RequestManagement();
 
             // Act
-            Result result = await dao.GetUserRequest("serviceProvider@gmail.com");
+            Result result = await service.GatherServiceRequest("mssierra310@gmail.com");
             bool actual = result.IsSuccessful;
 
             // Assert

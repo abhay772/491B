@@ -49,6 +49,12 @@ namespace AA.PMTOGO.Services
             Result result = await _requestDAO.GetServices();
             return result;
         }
+        public async Task<Result> GatherUserServices(string username)
+        {
+            Result result = await _requestDAO.GetUserService(username, username);
+            return result;
+        }
+
         public async Task<Result> CreateService(Service service)
         {
             Result result = await _requestDAO.AddService(service.ServiceName, service.ServiceType, service.ServiceDescription,

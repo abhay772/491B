@@ -11,9 +11,11 @@ namespace AA.PMTOGO.DAL
     public class RequestDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
-        //private readonly ILogger? _logger;
 
-        public async Task<Result> FindRequest(Guid requestId)
+
+
+        //Service Request
+        public async Task<Result> FindRequest(Guid requestId) //single request
         {
             var result = new Result();
 
@@ -44,7 +46,7 @@ namespace AA.PMTOGO.DAL
             }
 
         }
-        public async Task<Result> GetRequest(Guid requestId)
+        public async Task<Result> GetARequest(Guid requestId) // return single request
         {
             var result = new Result();
 
@@ -80,7 +82,6 @@ namespace AA.PMTOGO.DAL
 
                             result.IsSuccessful = true;
                             result.Payload = request;
-                            result.ErrorMessage = "Service Request already exists.";
                             return result;
                         }
                     }
@@ -90,43 +91,10 @@ namespace AA.PMTOGO.DAL
             }
 
         }
-        public async Task<Result> FindService(Guid serviceid)        {
-            var result = new Result();
 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceId = serviceid";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@ServiceId", serviceid);
-
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                {
-                    while (reader.Read())
-                    {
-                        if (serviceid.Equals(reader["ServiceId"]))
-                        {
-
-                            result.IsSuccessful = true;
-                            result.ErrorMessage = "UserService already exists.";
-                            return result;
-
-                        }
-                    }
-                }
-
-                
-                result.IsSuccessful = false;
-                return result;
-            }
-
-        }
-        public async Task<Result> GetUserRequest(string serviceProviderEmail)
+        public async Task<Result> GetServiceRequest(string serviceProviderEmail) // list of request
         {
-            
+
             Result result = new Result();
 
             using (var connection = new SqlConnection(_connectionString))
@@ -158,13 +126,12 @@ namespace AA.PMTOGO.DAL
                             request.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
                             request.ServiceProviderName = (string)reader["ServiceProviderName"];
                             request.PropertyManagerEmail = (string)reader["PropertyManagerEmail"];
-                            request.PropertyManagerName = (string)reader["PropertyManagerName"];      
+                            request.PropertyManagerName = (string)reader["PropertyManagerName"];
 
 
-                            listOfrequest.Add(request);       
+                            listOfrequest.Add(request);
 
                         }
-                        //ServiceRequest[] array = listOfrequest.ToArray();
                         result.IsSuccessful = true;
                         result.Payload = listOfrequest;
                         return result;
@@ -174,7 +141,6 @@ namespace AA.PMTOGO.DAL
 
                         result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                         result.IsSuccessful = false;
-                       // _logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                     }
                 }
@@ -183,110 +149,9 @@ namespace AA.PMTOGO.DAL
             result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
             return result;
         }
-
-        public async Task<Result> GetServices()
-        {
-
-            Result result = new Result();
-
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "SELECT * FROM Services";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                {
-                    try
-                    {
-                        List<Service> listOfservice = new List<Service>();
-                        while (reader.Read())
-                        {
-
-                            Service service = new Service();
-                            
-                            service.ServiceName = (string)reader["ServiceName"];
-                            service.ServiceType = (string)reader["ServiceType"];
-                            service.ServiceDescription = (string)reader["ServiceDescription"];
-                            service.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
-                            service.ServiceProvider = (string)reader["ServiceProviderName"];
-
-
-                            listOfservice.Add(service);
-
-                        }
-                        result.IsSuccessful = true;
-                        result.Payload = listOfservice;
-                        return result;
-                    }
-                    catch
-                    {
-
-                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
-                        result.IsSuccessful = false;
-                        // _logger!.Log("FindUser", 4, LogCategory.Server, result);
-
-                    }
-                }
-            }
-            result.IsSuccessful = false;
-            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
-            return result;
-        }
-
-        public async Task<Result> AddService(string serviceName, string serviceType, string serviceDescription,
-                string serviceProviderEmail, string serviceProvider)
-        {
-            var result = new Result();
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "INSERT into Services VALUES(@ServiceName, @ServiceType, @ServiceDescription, @ServiceProviderEmail, @ServiceProvider)";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@ServiceName", serviceName);
-                command.Parameters.AddWithValue("@ServiceType", serviceType);
-                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
-                command.Parameters.AddWithValue("@ServiceProviderName", serviceProvider);
-
-                try
-                {
-                    var rows = await command.ExecuteNonQueryAsync();
-                    if (rows == 1)
-                    {
-                        result.IsSuccessful = true;
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccessful = false;
-                        result.ErrorMessage = "too many rows affected";
-                        return result;
-                    }
-                }
-                catch (SqlException e)
-                {
-                    if (e.Number == 208)
-                    {
-                        result.ErrorMessage = "Specified table not found";
-                        //_logger!.Log("AddRequest", 4, LogCategory.DataStore, result);
-                    }
-                }
-
-            }
-
-            result.IsSuccessful = false;
-            return result;
-        }
-
 
         public async Task<Result> AddRequest(Guid requestId, string serviceName, string serviceType, string serviceDescription,
-                 string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName,string propertyManagerEmail, string propertyManagerName)
+                 string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
@@ -297,10 +162,10 @@ namespace AA.PMTOGO.DAL
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@RequestId", requestId);             
+                command.Parameters.AddWithValue("@RequestId", requestId);
                 command.Parameters.AddWithValue("@ServiceName", serviceName);
                 command.Parameters.AddWithValue("@ServiceType", serviceType);
-                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);     
+                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
                 command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
                 command.Parameters.AddWithValue("@Comments", comments);
                 command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
@@ -329,62 +194,6 @@ namespace AA.PMTOGO.DAL
                     if (e.Number == 208)
                     {
                         result.ErrorMessage = "Specified table not found";
-                        //_logger!.Log("AddRequest", 4, LogCategory.DataStore, result);
-                    }
-                }
-
-            }
-
-            result.IsSuccessful = false;
-            return result;
-        }
-
-        public async Task<Result> AddUserService(Guid serviceId, string serviceName, string serviceType, string serviceDescription,
-                 string serviceFrequency, string serviceProviderEmail, string serviceProviderName, string propertyManagerName, string propertyManagerEmail)
-        {
-            var result = new Result();
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "INSERT into UserServices VALUES(@ServiceId, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @ServiceProviderEmail, @ServiceProviderName, @PropertyManagerEmail, @PropertyManagerName, @Status, @Rating)";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@ServiceId", serviceId);
-                command.Parameters.AddWithValue("@ServiceName", serviceName);
-                command.Parameters.AddWithValue("@ServiceType", serviceType);
-                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
-                command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
-                command.Parameters.AddWithValue("@ServiceProviderName", serviceProviderName);
-                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
-                command.Parameters.AddWithValue("@PropertyManagerName", propertyManagerName);
-                command.Parameters.AddWithValue("@Status", "In-Progress");
-                command.Parameters.AddWithValue("@Rating", 0);
-
-
-                try
-                {
-                    var rows = await command.ExecuteNonQueryAsync();
-                    if (rows == 1)
-                    {
-                        result.IsSuccessful = true;
-                        return result;
-                    }
-                    else
-                    {
-                        result.IsSuccessful = false;
-                        result.ErrorMessage = "too many rows affected";
-                        return result;
-                    }
-                }
-                catch (SqlException e)
-                {
-                    if (e.Number == 208)
-                    {
-                        result.ErrorMessage = "Specified table not found";
-                        //_logger!.Log("AddService", 4, LogCategory.DataStore, result);
                     }
                 }
 
@@ -428,7 +237,159 @@ namespace AA.PMTOGO.DAL
                     if (e.Number == 208)
                     {
                         result.ErrorMessage = "Specified table not found";
-                        //_logger!.Log("DeleteServiceRequest", 4, LogCategory.DataStore, result);
+
+                    }
+                }
+
+            }
+
+            result.IsSuccessful = false;
+            return result;
+        }
+        //User Services DAO
+
+        public async Task<Result> FindUserService(Guid serviceid)     // single user service   
+        {
+            var result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceId = serviceid";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceId", serviceid);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (reader.Read())
+                    {
+                        if (serviceid.Equals(reader["ServiceId"]))
+                        {
+
+                            result.IsSuccessful = true;
+                            result.ErrorMessage = "UserService already exists.";
+                            return result;
+
+                        }
+                    }
+                }
+
+                
+                result.IsSuccessful = false;
+                return result;
+            }
+
+        }
+        
+
+        public async Task<Result> GetUserService(string serviceProviderEmail, string propertyManagerEmail) // return all user services
+        {
+
+            Result result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM UserServices WHERE @PropertyManagerEmail = propertyManagerEmail OR @ServiceProviderEmail = serviceProviderEmail";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    try
+                    {
+                        List<UserService> listOfUserServices = new List<UserService>();
+                        while (reader.Read())
+                        {
+
+                            UserService service = new UserService();
+
+                            service.ServiceId = (Guid)reader["ServiceId"];
+                            service.ServiceName = (string)reader["ServiceName"];
+                            service.ServiceType = (string)reader["ServiceType"];
+                            service.ServiceDescription = (string)reader["ServiceDescription"];
+                            service.ServiceFrequency = (string)reader["ServiceFrequency"];
+                            service.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
+                            service.ServiceProvider = (string)reader["ServiceProvider"];
+                            service.PropertyManagerEmail = (string)reader["PropertyManagerEmail"];
+                            service.PropertyManagerName = (string)reader["PropertyManagerName"];
+                            service.Status = (string)reader["Status"];
+                            service.Rating = (int)reader["Rating"];
+
+
+                            listOfUserServices.Add(service);
+
+                        }
+                        result.IsSuccessful = true;
+                        result.Payload = listOfUserServices;
+                        return result;
+                    }
+                    catch
+                    {
+
+                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        result.IsSuccessful = false;
+
+                    }
+                }
+            }
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+            return result;
+        }
+
+        public async Task<Result> AddUserService(Guid serviceId, string serviceName, string serviceType, string serviceDescription,
+                string serviceFrequency, string serviceProviderEmail, string serviceProvider, string propertyManagerEmail, string propertyManagerName)
+        {
+            var result = new Result();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "INSERT into UserServices VALUES(@ServiceId, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @ServiceProviderEmail, @ServiceProvider, @PropertyManagerEmail, @PropertyManagerName, @Status, @Rating)";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceId", serviceId);
+                command.Parameters.AddWithValue("@ServiceName", serviceName);
+                command.Parameters.AddWithValue("@ServiceType", serviceType);
+                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
+                command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceProvider", serviceProvider);
+                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
+                command.Parameters.AddWithValue("@PropertyManagerName", propertyManagerName);
+                command.Parameters.AddWithValue("@Status", "In-Progress");
+                command.Parameters.AddWithValue("@Rating", 0);
+
+
+                try
+                {
+                    var rows = await command.ExecuteNonQueryAsync();
+                    if (rows == 1)
+                    {
+                        result.IsSuccessful = true;
+                        return result;
+                    }
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "too many rows affected";
+                        return result;
+                    }
+                }
+                catch (SqlException e)
+                {
+                    if (e.Number == 208)
+                    {
+                        result.ErrorMessage = "Specified table not found";
                     }
                 }
 
@@ -438,6 +399,146 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
+        // Service Provider - Services DAO
+        public async Task<Result> GetServices() //list of services
+        {
+
+            Result result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM Services";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    try
+                    {
+                        List<Service> listOfservice = new List<Service>();
+                        while (reader.Read())
+                        {
+
+                            Service service = new Service();
+
+                            service.ServiceProvider = (string)reader["ServiceProvider"];
+                            service.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
+                            service.ServiceName = (string)reader["ServiceName"];
+                            service.ServiceType = (string)reader["ServiceType"];
+                            service.ServiceDescription = (string)reader["ServiceDescription"];
+
+
+
+                            listOfservice.Add(service);
+
+                        }
+                        result.IsSuccessful = true;
+                        result.Payload = listOfservice;
+                        return result;
+                    }
+                    catch
+                    {
+
+                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        result.IsSuccessful = false;
+
+                    }
+                }
+            }
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+            return result;
+        }
+
+
+        public async Task<Result> FindService(string serviceName, string serviceProviderEmail, string serviceType)//single service
+        {
+            var result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceProviderEmail = serviceProviderEmail AND @ServiceName = serviceName";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail );
+                command.Parameters.AddWithValue("@ServiceName", serviceName);
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (reader.Read())
+                    {
+                        if (serviceProviderEmail.Equals(reader["ServiceProviderEmail"]) && serviceName.Equals(reader["ServiceName"]) && serviceType.Equals(reader["ServiceType"]))
+                        {
+
+                            result.IsSuccessful = true;
+                            result.ErrorMessage = "Service already exists.";
+                            return result;
+
+                        }
+                    }
+                }
+
+
+                result.IsSuccessful = false;
+                return result;
+            }
+
+        }
+
+        public async Task<Result> AddService(string serviceName, string serviceType, string serviceDescription,
+                string serviceProviderEmail, string serviceProvider)
+        {
+            var result = new Result();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "INSERT into Services VALUES(@ServiceProvider,@ServiceProviderEmail, @ServiceName, @ServiceType, @ServiceDescription)";
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceProvider", serviceProvider);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceName", serviceName);
+                command.Parameters.AddWithValue("@ServiceType", serviceType);
+                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
+
+
+                try
+                {
+                    var rows = await command.ExecuteNonQueryAsync();
+                    if (rows == 1)
+                    {
+                        result.IsSuccessful = true;
+                        return result;
+                    }
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "too many rows affected";
+                        return result;
+                    }
+                }
+                catch (SqlException e)
+                {
+                    if (e.Number == 208)
+                    {
+                        result.ErrorMessage = "Specified table not found";
+                    }
+                }
+
+            }
+
+            result.IsSuccessful = false;
+            return result;
+        }
+
+
+        //Rating
         public async Task<Result> RateUserServices(Guid serviceId, int rating)
         {
             var result = new Result();
@@ -525,7 +626,6 @@ namespace AA.PMTOGO.DAL
 
                         result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                         result.IsSuccessful = false;
-                        //_logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                     }
                 }

@@ -34,5 +34,14 @@ namespace AA.PMTOGO.Managers
             return result;
 
         }
+
+        public async Task<Result> GetAllUserServices(string username)
+        {
+            Result result = await _service.GatherUserServices(username);
+
+            return result;
+        }
+
+
     }
 }

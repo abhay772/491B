@@ -38,7 +38,7 @@ namespace AA.PMTOGO.Services
             Result result = await _requestDAO.DeleteServiceRequest(id);
             if (result.IsSuccessful == true)
             {
-                result1 = await _requestDAO.GetUserRequest(username);
+                result1 = await _requestDAO.GetServiceRequest(username);
             }
             else
             {
@@ -50,14 +50,14 @@ namespace AA.PMTOGO.Services
         public async Task<Result> GatherServiceRequest(string username)
         {
             
-            Result result = await _requestDAO.GetUserRequest(username);
+            Result result = await _requestDAO.GetServiceRequest(username);
             return result;
         }
 
 
         public async Task<ServiceRequest> CreateUserService(Guid requestId)
         {
-            Result res = await _requestDAO.GetRequest(requestId);
+            Result res = await _requestDAO.GetARequest(requestId);
             ServiceRequest request = (ServiceRequest)res.Payload!;
 
             return request;

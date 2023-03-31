@@ -3,8 +3,9 @@ using AA.PMTOGO.Libary;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
+using System.Net;
 using System.Security.Claims;
-using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -12,15 +13,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
     [Route("api/[controller]")]
     public class RequestController: ControllerBase
     {
-        //private readonly UsersDbContext usersDbContext;
         private readonly IRequestManager _requestManager;
         private readonly InputValidation _inputValidation;
-        private readonly ILogger _logger;
 
-        public RequestController(IRequestManager requestManager, ILogger logger, InputValidation inputValidation)
+        public RequestController(IRequestManager requestManager, InputValidation inputValidation)
         {
             _requestManager = requestManager;
-            _logger = logger;
             _inputValidation = inputValidation;
         }
 #if DEBUG
@@ -85,7 +83,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                                 return StatusCode(StatusCodes.Status500InternalServerError);
                             }
                         }
+                        else
+                        {
+                            return Ok(new { message = "You are not authorized." });
+                        }
                     }
+
 
                 }
 
@@ -230,6 +233,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        
         public class ServiceInfo
         {
             public string RequestId { get; set; } = string.Empty;

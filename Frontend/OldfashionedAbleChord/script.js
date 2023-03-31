@@ -54,7 +54,9 @@ function loadLoginPage() {
             loadHomePage();
           }
         })
-          .catch(error => console.log(error.text()));
+        .catch(error => {
+          console.log(error.text())
+        });
 
       });
       
@@ -138,6 +140,8 @@ function loadHomePage() {
     const propertyEvalFeature = document.getElementById('propertyEvaluation');
      //select request management
     const requestFeature = document.getElementById('requestManagement');
+      //select service Management
+    const serviceFeature = document.getElementById('serviceManagement');
 
     //add event listeners
     logoutUser.addEventListener('click', () => {
@@ -166,6 +170,11 @@ function loadHomePage() {
       loadRequestManagementPage(homepageContent);
     });  
 
+    //add event listener to nav to service management
+    serviceFeature.addEventListener('click', () => {
+      loadServiceManagementPage(homepageContent);
+    });  
+
     // add event listeners to nav to property evaluation
     propertyEvalFeature.addEventListener('click', () => {
       loadPropertyEvalPage(homepageContent);
@@ -183,8 +192,6 @@ function loadAccountDeletionPage(homepageContent){
       // update content div with property evaluation page html
       homepageContent.innerHTML = data;
 
-      const hamburger = document.getElementById("back");
-      hamburger.addEventListener("click", loadHomePage);
       const cancel = document.getElementById("cancel");
       const confirm = document.getElementById("confirm");
 
@@ -349,30 +356,49 @@ function loadEmailPage(homepageContent){
       // Handle the response data
       homepageContent.innerHTML = data;
 
-      const notify = document.getElementById("notify")
-      notify.addEventListener('click', function(){
-        console.log("send email here");
-      })
+      const emailForm = document.getElementById('email-form');
+
+      // add event listener to register form submit
+      emailForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        // perform registration action
+        const firstName = document.querySelector('#firstName').value;
+        const lastName = document.querySelector('#lastName').value; 
+        const description = document.querySelector('#description').value;
+        var subject = "Request Management issue";
+
+        url = api + '/Request/email';
+        data = {FirstName: firstName, LastName: lastName, Subject: subject, Description: description}
+    
+        send(url, data)
+          .then(data => data.json())
+          .then(response => console.log(response))
+          .then(response => alert(response))
+          .then(loadRequestManagementPage());
+      });
 
     })   
     .catch(error => console.log(error));
 }
 function acceptRequest(requestid){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
   url = api + "/Request/accept";
   data = {requestId: requestid}
   send(url, data)
   .then(data => data.json())
   .then(response => console.log(response))
-  .then(loadRequestManagementPage());
+  .then(loadRequestManagementPage(homepageContent));
   
 }
 function declineRequest(requestid){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
   url = api + "/Request/decline";
   data = {requestId: requestid}
   send(url, data)
     .then(data => data.json())
     .then(response => console.log(response))
-    .then(loadRequestManagementPage());
+    .then(loadRequestManagementPage(homepageContent));
 }
 //fucntion to load request Management page
 function loadRequestManagementPage(homepageContent) {
@@ -387,28 +413,130 @@ function loadRequestManagementPage(homepageContent) {
       url = api + '/Request/getrequest';
       get(url)
         .then(response => response.json())
-        //.then(response => console.log(response))
         .then(response => {
-          createRequestsTable();
-          let id = 0;
-          response.forEach((request) =>{
-            appendRequest(request, id)
-            id = id + 1;
-          })
-          const acceptlist = Array.from(document.getElementsByClassName("accept")); 
-          acceptlist.forEach((key)=>{
-            key.addEventListener('click', function() { acceptRequest(key.id)});
-          })
-          const declinelist = Array.from(document.getElementsByClassName("decline")); 
-          declinelist.forEach((key)=>{
-            key.addEventListener('click', function() {declineRequest(key.id)});
-          })
+            createRequestsTable();
+            let id = 0;
+            response.forEach((request) =>{
+              appendRequest(request, id)
+              id = id + 1;
+            })
+            const acceptlist = Array.from(document.getElementsByClassName("accept")); 
+            acceptlist.forEach((key)=>{
+              key.addEventListener('click', function() { acceptRequest(key.id)});
+            })
+            const declinelist = Array.from(document.getElementsByClassName("decline")); 
+            declinelist.forEach((key)=>{
+              key.addEventListener('click', function() {declineRequest(key.id)});
+            })
 
-          const emailAdmin = document.getElementById("notifyAdmin");
-          emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});
+            /*const emailAdmin = document.getElementById("notifyAdmin");
+            emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});*/
         })
         .catch(error => console.log(error));
 
+    })   
+    .catch(error => console.log(error));
+    
+}
+const createUserServiceTable = () =>{
+  const userservices = document.querySelector("div.userservices");
+  let tableHeaders = ["Service ID", "Service Name", "Service Type",  "Service Description", 
+  "Service Frequency", "Service Provider Name", "Service Provider Email", "Status", "Rating"];
+    while (userservices.firstChild) userservices.removeChild(userservices.firstChild)
+    let userServiceTable = document.createElement('table');
+    userServiceTable.className="userServiceTable";
+    userServiceTable.id="userServiceTable";
+
+    let userServiceTableHead = document.createElement("thead");
+    userServiceTableHead.className="userServiceTableHead";
+
+    let userServiceTableHeaderRow= document.createElement('tr')
+    userServiceTableHeaderRow.className= "userServiceHeaderRow";
+
+    tableHeaders.forEach(header =>{
+      let userServiceHeader = document.createElement('th');
+      userServiceHeader.innerText = header;
+      userServiceTableHeaderRow.append(userServiceHeader);
+    })
+
+    userServiceTableHead.append(userServiceTableHeaderRow);
+    userServiceTable.append(userServiceTableHead);
+
+    let userServiceTableBody = document.createElement('tbody');
+    userServiceTableBody.className="userServiceTableBody"
+    userServiceTable.append(userServiceTableBody);
+
+    userservices.append(userServiceTable);
+}
+
+const appendUserService =(userservice, id) => {
+  const UserServiceTable = document.querySelector(".userServiceTable");
+  const userInfo = document.querySelector(".userInfo");
+  userInfo.innerText= `${userservice.propertyManagerName}`;
+
+  let userServiceTableBodyRow = document.createElement('tr');
+  userServiceTableBodyRow.className = "userServiceTableBodyRow";
+  userServiceTableBodyRow.id= String(id);
+
+  //add the data
+  let serviceId = document.createElement('td');
+  serviceId.innerText = `${userservice.serviceId}`;
+
+  let serviceName = document.createElement('td');
+  serviceName.innerText = `${userservice.serviceName}`;
+
+  let serviceType = document.createElement('td');
+  serviceType.innerText = `${userservice.serviceType}`;
+
+  let serviceDescription = document.createElement('td');
+  serviceDescription.innerText = `${userservice.serviceDescription}`;
+
+  let serviceFrequeny = document.createElement('td');
+  serviceFrequeny.innerText = `${userservice.serviceFrequency}`;
+
+  let serviceProvider = document.createElement('td');
+  serviceProvider.innerText = `${userservice.serviceProvider}`;
+
+  let serviceProviderEmail = document.createElement('td');
+  serviceProviderEmail.innerText = `${userservice.serviceProviderEmail}`;
+
+  let status = document.createElement('td');
+  status.innerText = `${userservice.status}`;
+
+  let rating = document.createElement('td');
+  rating.innerText = `${userservice.rating}`;
+
+
+  userServiceTableBodyRow.append(serviceId,serviceName,serviceType,serviceDescription,serviceFrequeny,
+    serviceProvider,serviceProviderEmail,status,rating);
+    //allrequest += requestTableBodyRow;
+  UserServiceTable.append(userServiceTableBodyRow);
+}
+//fucntion to load service Management page
+function loadServiceManagementPage(homepageContent) {
+  // fetch request evaluation page html
+  fetch('./Views/serviceMan.html')
+    .then(response => response.text())
+    .then(data => {
+      // Handle the response data
+      homepageContent.innerHTML = data;
+      
+      //getrequest();
+      url = api + '/Service/getuserservice';
+      get(url)
+        .then(response => response.json())
+        .then(response => {
+            createUserServiceTable();
+            let id = 0;
+            response.forEach((userservice) =>{
+              appendUserService(userservice, id)
+              id = id + 1;
+            })
+
+            /*const emailAdmin = document.getElementById("notifyAdmin");
+            emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});*/
+        })
+        .catch(error => console.log(error));
 
     })   
     .catch(error => console.log(error));

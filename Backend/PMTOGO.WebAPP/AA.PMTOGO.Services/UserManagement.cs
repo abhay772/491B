@@ -63,7 +63,7 @@ namespace AA.PMTOGO.Services
             {
                 Result result1 = new Result();
                 result1 = await _authNDAO.FindUser(username);
-                if (result1.IsSuccessful == false)
+                if (result1.IsSuccessful == true)
                 {
                     //deactivate user account
 

@@ -14,7 +14,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
     [Route("api/[controller]")]
     public class ServiceController : ControllerBase
     {
-        //private readonly UsersDbContext usersDbContext;
         private readonly IServiceManager _serviceManager;
         private readonly InputValidation _inputValidation;
         private readonly ILogger _logger;
@@ -34,6 +33,77 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 #endif
 
+        [HttpGet]
+        [Route("getuserservice")]
+        [Consumes("application/json", "application/problem+json")]
+        public async Task<IActionResult> GetUserService()
+        {
+            try
+            {
+                // Loading the cookie from the http request
+                var cookieValue = Request.Cookies["CredentialCookie"];
+
+                if (!string.IsNullOrEmpty(cookieValue))
+                {
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jwtToken = handler.ReadJwtToken(cookieValue);
+
+                    if (jwtToken == null)
+                    {
+                        return BadRequest("Invalid Claims");
+                    }
+
+                    var claims = jwtToken.Claims.ToList();
+                    Claim usernameClaim = claims[0];
+                    Claim roleClaim = claims[1];
+
+
+                    if (usernameClaim != null && roleClaim != null)
+                    {
+                        string username = usernameClaim.Value;
+                        string role = roleClaim.Value;
+
+                        // Check if the role is Property Manager
+                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+
+                        if (role != null && validationCheck)
+                        {
+                            Result result = new Result();
+                            try
+                            {
+                                result = await _serviceManager.GetAllUserServices(username);
+                                if (result.IsSuccessful)
+                                {
+                                    return Ok(result.Payload!);
+                                }
+                                else
+                                {
+                                    return BadRequest(new { message = "Retry again or contact system admin." });
+                                }
+                            }
+                            catch
+                            {
+                                return StatusCode(StatusCodes.Status500InternalServerError);
+                            }
+                        }
+                        else
+                        {
+                            return Ok(new { message = "You are not authorized." });
+                        }
+                    }
+
+
+                }
+
+                return BadRequest("Cookie not found");
+            }
+
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
         [HttpGet]
         [Route("getservice")]
         [Consumes("application/json", "application/problem+json")]
