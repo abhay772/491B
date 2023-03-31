@@ -112,9 +112,9 @@ namespace AA.PMTOGO.UnitTest
             var dao = new RequestDAO();
 
             // Act
-            await dao.AddService("Landscape", "material delivery", "soil installation ",
+            await dao.AddService("Parking Lot Sweep", "Sweeping", "random description",
                 "mssierra310@gmail.com", "Sierra Harris");
-            Result result = await dao.FindService("Landscape", "mssierra310@gmail.com", "material delivery");
+            Result result = await dao.FindService("Parking Lot Sweep", "Sweeping", "random description");
             bool actual = result.IsSuccessful;
 
             // Assert
