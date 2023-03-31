@@ -21,7 +21,7 @@ module.exports = {
   page_objects_path: ['node_modules/nightwatch/examples/pages/'],
 
   // See https://nightwatchjs.org/guide/extending-nightwatch/adding-custom-commands.html
-  custom_commands_path: ['node_modules/nightwatch/examples/custom-commands/'],
+  custom_commands_path: [],
 
   // See https://nightwatchjs.org/guide/extending-nightwatch/adding-custom-assertions.html
   custom_assertions_path: '',
@@ -51,12 +51,12 @@ module.exports = {
       },
 
       desiredCapabilities: {
-        browserName : 'firefox'
+        browserName : 'chrome'
       },
 
       webdriver: {
         start_process: true,
-        server_path: ''
+        server_path: require('chromedriver').path
       }
     },
 

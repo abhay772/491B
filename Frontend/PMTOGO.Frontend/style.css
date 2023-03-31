@@ -329,6 +329,10 @@ table {
   background-color: rgb(7, 105, 185);
 }
 
+.homepage-content{
+  background-color: white;
+}
+
 /* Style for the Evaluation div */
 .evaluation-container {
   background-color: #f2f2f2;
