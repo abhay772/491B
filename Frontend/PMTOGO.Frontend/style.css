@@ -1,0 +1,414 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+*{ 
+    list-style: none;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+body{
+    background: #f5f6fa;
+}
+
+/* Page wrapper */
+#page-wrapper {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Form styles */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  margin: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.window {
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+  overflow: auto;  
+  padding: 40px;  
+}
+.window-content {
+  background-color: #fefefe;
+  margin: 5% auto 15% auto;
+  border: 1px solid #888;
+  width: 80%;
+  padding: 40px;
+}
+
+/*button {
+  padding: 10px;
+  margin: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}*/
+button {  
+  color: white;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+}
+ .registrationbtn{
+  background-color: #0d49c9;
+  padding: 14px 20px;
+  margin: 8px 0; 
+  left: 0;
+  font-weight: bold;
+  width: 60%;
+}
+
+.loginbtn, .submit{
+  background-color: #04AA6D;
+  padding: 14px 20px;
+  left: 0;
+  margin: 8px 0;
+  width: 100%;
+}
+
+
+.forgetbtn{
+  background-color: #fefefe;
+  margin: 8px 0;
+  left:0;
+  color: black;
+  text-decoration: underline;
+}
+
+.forgetbtn:hover{
+  color: #271197; /* change color*/
+}
+
+.notifyAdmin{
+  background-color: #fefefe;
+  padding: 14px 20px;
+  margin: 8px 0;
+  left:0;
+  color: black;
+}
+
+button:hover {
+  opacity:1;
+}
+
+/* Extra styles for the cancel button */
+.cancelbtn {
+  margin: 8px 0; 
+  padding: 14px 20px;
+  border: none;
+  background-color: #f44336;
+}
+
+/* Float cancel and signup buttons and add an equal width */
+.cancelbtn, .registrationbtn {
+  float: left;
+  width: 50%;
+}
+
+a {
+  color: #4CAF50;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+/*Delete Account css*/
+#confirm, #cancel {
+  padding: 14px 20px;
+  margin: 8px 0;
+  
+  width: 50%;
+}
+#confirm {
+  background-color: #4CAF50;
+}
+#cancel{
+  background-color: #f44336;;
+}
+/*Request Management / Service Management css*/
+h1{
+  font-weight: bold;
+  text-align: center;
+}
+.wrapper .userInfo{
+  font-weight: bold;
+  text-align: center;
+  color:black;
+}
+td, th {
+  border: 1px solid rgb(190, 190, 190);
+  padding: 6px 20px;
+}
+
+td {
+  text-align: center;
+  align-items: center;
+}
+
+tr:nth-child(even) {
+    background-color: #eee;
+}
+
+/*th[scope='col'], */
+.requestHeaderRow, .userServiceHeaderRow{
+  background-color: #f4fbff;
+  color:black;
+}
+
+/*th[scope='row'], */
+.requestTableBodyRow, .userServiceTableBodyRow{
+  background-color: #d7d9f2;
+
+}
+/*for table data buttuns*/
+th[scope='action'] {
+  background-color: #465473;
+  border: 1px solid rgb(190, 190, 190);
+  border: none;
+
+}
+
+table {
+  border-collapse: collapse;
+  border: 2px solid rgb(200, 200, 200);
+  letter-spacing: 1px;
+  font-family: sans-serif;
+  font-size: 0.8rem;
+  align-items: left;
+  overflow: auto;
+}
+.accept, .decline{
+  border-radius: 8px;
+  font-weight: bold;
+  padding: 14px 20px;
+  margin: 8px 0;
+}
+.accept:hover, .decline:hover{
+  opacity:9;
+}
+.accept {
+  background-color:lightgreen;
+
+}
+.decline {
+  background-color: lightcoral;
+}
+.exit {
+  border: none;
+  position: absolute;
+  right: 35px;
+  top: 5px;
+  font-size: 30px;
+  font-weight: bold;
+  background-color: rgb(7, 105, 185);
+}
+
+.exit:hover, .exit:focus {
+  color: #271197; /* change color*/
+  cursor: pointer;
+}
+
+/*Developer, F. (2022, June 2). Sidebar menu using HTML and CSS. DEV Community. Retrieved March 31, 2023, 
+  from https://dev.to/code_mystery/sidebar-menu-using-html-and-css-o49#:~:text=Sidebar%20Menu%20Using%20HTML%20and%20CSS%201%20Step,JavaScript%20code%20to%20activate%20the%20menu%20button%20 */
+  
+/* side bar*/ 
+.wrapper {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: #465473;
+}
+
+.wrapper .sidebar{
+  background: rgb(5, 68, 104);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 225px;
+  height: 100%;
+  padding: 20px 0;
+  overflow: auto;
+  transition: all 0.5s ease;
+}
+
+.wrapper .sidebar .profile{
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.wrapper .sidebar .profile img{
+  display: block;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.wrapper .sidebar .profile h3{
+  color: #ffffff;
+  margin: 10px 0 5px;
+}
+
+.wrapper .sidebar .profile p{
+  color: rgb(206, 240, 253);
+  font-size: 14px;
+}
+
+.wrapper .sidebar ul li a{
+  display: block;
+  padding: 13px 30px;
+  border-bottom: 1px solid #10558d;
+  color: rgb(241, 237, 237);
+  font-size: 16px;
+  position: relative;
+}
+
+.wrapper .sidebar ul li a .icon{
+  color: #dee4ec;
+  width: 30px;
+  display: inline-block;
+}
+
+.wrapper .sidebar ul li a:hover,
+.wrapper .sidebar ul li a.active{
+  color: #0c7db1;
+  background:#dee4ec;
+  border-right: 2px solid rgb(5, 68, 104);
+}
+
+.wrapper .sidebar ul li a:hover .icon,
+.wrapper .sidebar ul li a.active .icon{
+  color: #0c7db1;
+}
+
+.wrapper .sidebar ul li a:hover:before,
+.wrapper .sidebar ul li a.active:before{
+  display: block;
+} 
+
+.wrapper .section{
+  width: calc(100% - 225px);
+  margin-left: 225px;
+  transition: all 0.5s ease;
+}
+.wrapper .featuresection {
+  width: 100%;
+  transition: all 0.5s ease;
+}
+
+.wrapper .section .top_navbar, .wrapper .featuresection .top_navbar {
+  background: rgb(7, 105, 185);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+
+}
+
+.wrapper .section .top_navbar .hamburger a{
+  font-size: 28px;
+  color: #f4fbff;
+}
+
+.wrapper .section .top_navbar .hamburger a:hover{
+  color: #a2ecff;
+}
+#back{
+  font-size: 28px;
+  color: #f4fbff;
+  border-style: none;
+  background-color: rgb(7, 105, 185);
+}
+
+.homepage-content{
+  background-color: white;
+}
+
+/* Style for the Evaluation div */
+.evaluation-container {
+  background-color: #f2f2f2;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+/* The rest of your CSS rules remain the same */
+
+/* Style for the Evaluation div */
+#Evaluation {
+  background-color: #f2f2f2;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+/* Style for the Property Profile form */
+#PropertyProfile {
+  background-color: #fff;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Style for the Property Profile fieldset */
+#PropertyProfile fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style for the Property Profile legend */
+#PropertyProfile legend {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Style for the Property Profile labels */
+.propProfile-label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Style for the Property Profile fields */
+.propProfile-field {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Style for the Evaluate Property button */
+#evaluate-btn {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hover style for the Evaluate Property button */
+#evaluate-btn:hover {
+  background-color: #3e8e41;
+}

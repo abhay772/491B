@@ -24,6 +24,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AA.PMTOGO.PropertyEvalTests", "AA.PMTOGO.PropertyEvalTests\AA.PMTOGO.PropertyEvalTests.csproj", "{1B1CB19A-425B-41F1-9B60-A2EF8F2384C8}"
 EndProject
 Global
+	GlobalSection(StartupProject) = preSolution
+   	 	StartupProject = {4348D241-C758-4705-BC8A-4D30E2FBB584}
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
