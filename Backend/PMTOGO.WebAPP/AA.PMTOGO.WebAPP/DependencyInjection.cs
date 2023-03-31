@@ -19,7 +19,7 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IRequestManagement, RequestManagement>();
             services.AddTransient<IRequestManager, RequestManager>();
             services.AddTransient<IServiceManagement, ServiceManagement>();
-            services.AddTransient<IAuthenticator, Authenticator>();
+            services.AddSingleton<IAuthenticator, Authenticator>();
             services.AddTransient<IAuthManager, AuthManager>();
             services.AddTransient<IHistoricalSalesDAO, HistoricalSalesDAO>();
             services.AddTransient<IPropertyEvaluator, PropertyEvaluator>();
