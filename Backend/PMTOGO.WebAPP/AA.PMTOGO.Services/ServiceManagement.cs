@@ -82,12 +82,12 @@ namespace AA.PMTOGO.Services
             return true;
         }
 
-        public async Task<Result> FrequencyChangeUserService(UserService service)
+        public async Task<Result> FrequencyChangeUserService(UserService service, string serviceFrequency)
         {
             Result result = new Result();
             if ((await GatherUserServices(service.PropertyManagerEmail)).IsSuccessful)
             {
-                result = await _requestDAO.UpdateUserService(service);
+                result = await _requestDAO.FrequencyChangeUserService(service, serviceFrequency);
                 return result;
             }
             result.IsSuccessful = false;

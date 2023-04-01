@@ -42,9 +42,9 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<Result> FrequencyChangeUserService(UserService service)
+        public async Task<Result> FrequencyChangeUserService(UserService service, string serviceFrequency)
         {
-            Result result = await _service.FrequencyChangeUserService(service);
+            Result result = await _service.FrequencyChangeUserService(service, serviceFrequency);
 
             return result;
         }

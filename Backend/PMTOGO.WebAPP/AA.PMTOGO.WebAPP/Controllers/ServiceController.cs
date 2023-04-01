@@ -242,8 +242,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpPut]
-        [Route("")]
-        public async Task<IActionResult> FrequencyChange([FromBody] UserService service)
+        [Route("{serviceFrequency}")]
+        public async Task<IActionResult> FrequencyChange([FromBody] UserService service,[FromQuery] string serviceFrequency)
         {
             try
             {
@@ -276,7 +276,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         {
                             try
                             {
-                                Result result = await _serviceManager.FrequencyChangeUserService(service);
+                                Result result = await _serviceManager.FrequencyChangeUserService(service, serviceFrequency);
                                 if (result.IsSuccessful)
                                 {
                                     return Ok(result.Payload);

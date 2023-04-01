@@ -537,6 +537,58 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
+        //Updating
+        public async Task<Result> FrequencyChangeUserService(UserService userService, string serviceFrequency)
+        {
+            var result = new Result();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "UPDATE UserServices " +
+                    "SET @ServiceFrequency = serviceFrequency " +
+                    "WHERE @ServiceId = serviceId";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceId", userService.ServiceId);
+                command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
+
+                try
+                {
+                    var rows = await command.ExecuteNonQueryAsync();
+                    if (rows == 1)
+                    {
+                        result.IsSuccessful = true;
+                        return result;
+                    }
+
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "too many rows affected";
+                        return result;
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    StringBuilder errorMessages = new StringBuilder();
+                    for (int i = 0; i < ex.Errors.Count; i++)
+                    {
+                        errorMessages.Append("Index #" + i + "\n" +
+                            "Message: " + ex.Errors[i].Message + "\n" +
+                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                            "Source: " + ex.Errors[i].Source + "\n" +
+                            "Procedure: " + ex.Errors[i].Procedure + "\n");
+                    }
+                    Console.WriteLine(errorMessages.ToString());
+                }
+            }
+
+            result.IsSuccessful = false;
+
+            return result;
+        }
 
         //Rating
         public async Task<Result> RateUserServices(Guid serviceId, int rating)
