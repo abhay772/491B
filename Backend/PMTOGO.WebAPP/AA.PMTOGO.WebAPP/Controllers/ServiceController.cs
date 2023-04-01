@@ -243,7 +243,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPut]
         [Route("{serviceFrequency}")]
-        public async Task<IActionResult> FrequencyChange([FromBody] UserService service,[FromQuery] string serviceFrequency)
+        public async Task<IActionResult> FrequencyChange([FromBody] UserService service, string serviceFrequency)
         {
             try
             {
