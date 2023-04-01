@@ -240,7 +240,71 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
 
         }
-        
+
+        [HttpPut]
+        [Route("")]
+        public async Task<IActionResult> FrequencyChange([FromBody] UserService service)
+        {
+            try
+            {
+                // Loading the cookie from the http request
+                var cookieValue = Request.Cookies["CredentialCookie"];
+
+                if (!string.IsNullOrEmpty(cookieValue))
+                {
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(cookieValue);
+
+                    if (jwtToken == null)
+                    {
+                        return BadRequest("Invalid Claims");
+                    }
+
+                    var claims = jwtToken.Claims.ToList();
+                    Claim usernameClaim = claims[0];
+                    Claim roleClaim = claims[1];
+
+                    if (usernameClaim != null && roleClaim != null)
+                    {
+                        string username = usernameClaim.Value;
+                        string role = roleClaim.Value;
+
+                        // Check if the role is Property Manager
+                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+
+                        if (role != null && validationCheck && role == "Property Manager")
+                        {
+                            try
+                            {
+                                Result result = await _serviceManager.FrequencyChangeUserService(service);
+                                if (result.IsSuccessful)
+                                {
+                                    return Ok(result.Payload);
+                                }
+                                else
+                                {
+                                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                                }
+                            }
+                            catch
+                            {
+                                return StatusCode(StatusCodes.Status500InternalServerError);
+                            }
+
+
+                        }
+                    }
+                }
+                return BadRequest("Cookie not found");
+
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
+
         [HttpPut]
         [Route("{rate}")]
         public async Task<IActionResult> RateService([FromBody] UserService service, int rate)

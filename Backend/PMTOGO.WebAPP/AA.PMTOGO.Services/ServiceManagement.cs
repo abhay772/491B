@@ -81,5 +81,18 @@ namespace AA.PMTOGO.Services
             }
             return true;
         }
+
+        public async Task<Result> FrequencyChangeUserService(UserService service)
+        {
+            Result result = new Result();
+            if ((await GatherUserServices(service.PropertyManagerEmail)).IsSuccessful)
+            {
+                result = await _requestDAO.UpdateUserService(service);
+                return result;
+            }
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Rate is out of range. Enter a number between 1-5.";
+            return result;
+        }
     }
 }
