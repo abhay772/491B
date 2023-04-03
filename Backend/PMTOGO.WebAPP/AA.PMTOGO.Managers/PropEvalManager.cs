@@ -71,6 +71,8 @@ public class PropEvalManager : IPropEvalManager
 
             if (result.IsSuccessful)
             {
+                // can be added prop eval service
+
                 // Updating the profile with the evaluation
                 Result saveEvalResult = await _sqlPropEvalDAO.updatePropEval(username, (int)evaluationResult.Payload!);
 
@@ -81,6 +83,7 @@ public class PropEvalManager : IPropEvalManager
                 // this is to make that the task does not take more than 5 secs
                 Task taskDone = await Task.WhenAny(sendNotificationtoEmailAsync, Task.Delay(TimeSpan.FromSeconds(5)));
 
+                
                 if(taskDone == sendNotificationtoEmailAsync)
                 {
                     Result notificationResult = await sendNotificationtoEmailAsync;
@@ -93,6 +96,7 @@ public class PropEvalManager : IPropEvalManager
                     // log the error
                 }
 
+                // not needed
                 return evaluationResult;
             }
 

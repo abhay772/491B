@@ -145,6 +145,7 @@ public class PropEvalController : ControllerBase
 
         catch 
         {
+            // no useful error information
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }

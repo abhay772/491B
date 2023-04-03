@@ -39,7 +39,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-        [HttpPost("Login")]
+    [HttpPost("Login")]
     [Consumes("application/json", "application/problem+json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {

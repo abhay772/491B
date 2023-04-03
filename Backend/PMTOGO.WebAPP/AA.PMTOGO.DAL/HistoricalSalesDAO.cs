@@ -14,6 +14,7 @@ public class HistoricalSalesDAO : IHistoricalSalesDAO
 
         List<HistoricalSale> salesList = JsonSerializer.Deserialize<List<HistoricalSale>>(jsonString)!;
 
+        // return 0
         if(salesList!.Count == 0 )
         {
             return null!;
