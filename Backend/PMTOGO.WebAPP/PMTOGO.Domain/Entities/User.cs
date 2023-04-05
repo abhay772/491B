@@ -7,14 +7,15 @@ namespace AA.PMTOGO.Models.Entities
     {
         [Key]
         public string Username { get; set; } = string.Empty;
-        [Required]
         public string Email { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string PassDigest { get; set; } = string.Empty;
         public string Salt { get; set; } = string.Empty;
+        public bool RecoveryRequest { get; set; }
         public bool IsActive { get; set; }
+        public bool SuccessfulOTP { get; set; }
         public int Attempt { get; set; }
 
         public User()
@@ -40,6 +41,13 @@ namespace AA.PMTOGO.Models.Entities
             Salt = salt;
             IsActive = isActive;
             Attempt = attempt;
+        }
+        public User(string username, bool recoveryRequest, bool isActive, bool successfulOTP)
+        {
+            Username = username;
+            RecoveryRequest = recoveryRequest;
+            IsActive = isActive;
+            SuccessfulOTP = successfulOTP;
         }
     }
 }

@@ -42,5 +42,11 @@ namespace AA.PMTOGO.Managers
             Result result = await _account.DeleteAccount(username);
             return result;
         }
+
+        public async Task<Result> AccountRecovery(string email)
+        {
+            Result result = await _account.RecoveryService(email);
+            return result;
+        }
     }
 }

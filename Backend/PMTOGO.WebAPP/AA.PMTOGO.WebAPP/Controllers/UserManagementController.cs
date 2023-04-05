@@ -123,6 +123,31 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        [HttpPost]
+        [Route("recovery")]
+        //[Consumes("application/json")]
+        [ActionName("AddUser")]
+        public async Task<IActionResult> RecoverAccount([FromBody] string email)
+        {
+            try
+            {
+                Result result = await _accManager.RegisterUser(email);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result.Payload);
+                }
+                else
+                {
+
+                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+        }
 
         public class UserRegister
         {

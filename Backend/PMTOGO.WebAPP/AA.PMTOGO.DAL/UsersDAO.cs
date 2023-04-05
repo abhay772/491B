@@ -461,4 +461,108 @@ public class UsersDAO
 
         }
     }
+    public Result RejectUser(string email)
+    {
+        var result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = "UPDATE UserAccounts SET isActive = 0";
+
+            var command = new SqlCommand(sqlQuery, connection);
+
+            try
+            {
+                var rows = command.ExecuteNonQuery();
+
+                if (rows == 1)
+                {
+                    result.IsSuccessful = true;
+                    return result;
+                }
+
+                else
+                {
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = "too many rows affected";
+                    return result;
+                }
+            }
+
+            catch (SqlException e)
+            {
+            
+            }
+
+        }
+
+        result.IsSuccessful = false;
+        return result;
+    }
+    public List<User> getRecoveryRequests()
+    {
+        List<User> users = new List<User>();
+        using (SqlConnection connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+            using (SqlCommand command = new SqlCommand("SELECT * FROM RecoveryRequests WHERE RecoveryRequest = 1", connection))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        User user = new User();
+                        user.Username = (string)reader["Email"];
+                        user.RecoveryRequest = (bool)reader["RecoveryRequest"];
+                        user.IsActive = (bool)reader["IsActive"];
+                        user.SuccessfulOTP = (bool)reader["SuccessfulOTP"];
+                        users.Add(user);
+                    }
+                }
+            }
+        }
+        return users;
+    }
+    public Result SetSuccessfulOTP(string email)
+    {
+        var result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = "UPDATE RecoveryRequests SET successfulOTP = 1";
+
+            var command = new SqlCommand(sqlQuery, connection);
+
+            try
+            {
+                var rows = command.ExecuteNonQuery();
+
+                if (rows == 1)
+                {
+                    result.IsSuccessful = true;
+                    return result;
+                }
+
+                else
+                {
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = "too many rows affected";
+                    return result;
+                }
+            }
+
+            catch (SqlException e)
+            {
+             
+            }
+
+        }
+
+        result.IsSuccessful = false;
+        return result;
+    }
+
+
 }
