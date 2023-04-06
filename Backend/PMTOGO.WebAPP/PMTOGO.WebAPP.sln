@@ -21,12 +21,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.WebAPP", "AA.PMTO
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7BA78994-7FA6-46F2-A015-46B1E40D08E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AA.PMTOGO.PropertyEvalTests", "AA.PMTOGO.PropertyEvalTests\AA.PMTOGO.PropertyEvalTests.csproj", "{1B1CB19A-425B-41F1-9B60-A2EF8F2384C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.PropertyEvalTests", "AA.PMTOGO.PropertyEvalTests\AA.PMTOGO.PropertyEvalTests.csproj", "{1B1CB19A-425B-41F1-9B60-A2EF8F2384C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AA.PMTOGO.IntergrationTest", "AA.PMTOGO.IntergrationTest\AA.PMTOGO.IntergrationTest.csproj", "{302DC309-662C-4F76-B8B5-0E37D189C696}"
 EndProject
 Global
-	GlobalSection(StartupProject) = preSolution
-   	 	StartupProject = {4348D241-C758-4705-BC8A-4D30E2FBB584}
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -68,6 +67,10 @@ Global
 		{1B1CB19A-425B-41F1-9B60-A2EF8F2384C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B1CB19A-425B-41F1-9B60-A2EF8F2384C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B1CB19A-425B-41F1-9B60-A2EF8F2384C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{302DC309-662C-4F76-B8B5-0E37D189C696}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{302DC309-662C-4F76-B8B5-0E37D189C696}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{302DC309-662C-4F76-B8B5-0E37D189C696}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{302DC309-662C-4F76-B8B5-0E37D189C696}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,8 +78,12 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3BF80815-F995-4B01-A9B8-D0667FBA0A31} = {7BA78994-7FA6-46F2-A015-46B1E40D08E7}
 		{1B1CB19A-425B-41F1-9B60-A2EF8F2384C8} = {7BA78994-7FA6-46F2-A015-46B1E40D08E7}
+		{302DC309-662C-4F76-B8B5-0E37D189C696} = {7BA78994-7FA6-46F2-A015-46B1E40D08E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22B5514C-0106-491C-A989-DC118FFA5260}
+	EndGlobalSection
+	GlobalSection(StartupProject) = preSolution
+		   	 	StartupProject = {4348D241-C758-4705-BC8A-4D30E2FBB584}
 	EndGlobalSection
 EndGlobal

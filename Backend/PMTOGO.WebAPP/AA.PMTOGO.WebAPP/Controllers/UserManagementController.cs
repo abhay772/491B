@@ -1,10 +1,9 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
-using AA.PMTOGO.Libary;
+﻿using AA.PMTOGO.Libary;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -15,12 +14,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
         
         private readonly IAccountManager _accManager;
         private readonly InputValidation _inputValidation;
-        private readonly ILogger _logger;
 
-        public UserManagementController(IAccountManager accManager, ILogger logger, InputValidation inputValidation)
+        public UserManagementController(IAccountManager accManager, InputValidation inputValidation)
         {
             _accManager = accManager;
-            _logger = logger;
             _inputValidation = inputValidation;
         }
 #if DEBUG

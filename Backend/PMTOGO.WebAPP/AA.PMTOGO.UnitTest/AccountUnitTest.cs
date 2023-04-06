@@ -29,10 +29,11 @@ namespace AA.PMTOGO.UnitTest
         {
             // Arrange
             var user = new UserManagement();
-            
+            //clean up
+            await user.DeleteAccount("sara2@gmail.com");
 
-           //username = email
-            
+            //username = email
+
             Result result = await user.CreateAccount("sara2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             
             bool accountCreated = result.IsSuccessful;
@@ -46,6 +47,9 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(account2Created);
             Assert.IsTrue(accountCreated);
             Assert.IsFalse(account2Created);
+
+            
+            
         }
 
         //The user provides a valid email address that belongs to the user.
@@ -174,6 +178,10 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(OverTime);
             Assert.IsTrue(OnTime);
             Assert.IsTrue(OverTime);
+
+            //clean up
+            await registration.DeleteAccount("OverTimegmail.com");
+            await registration.DeleteAccount("OnTimegmail.com");
 
         }
 
