@@ -5,35 +5,32 @@ using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Xml.Linq;
 using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AppointmentsController : ControllerBase
+    public class ServiceController : ControllerBase
     {
+        private readonly IServiceManager _serviceManager;
         private readonly InputValidation _inputValidation;
         private readonly ILogger _logger;
 
-        public AppointmentsController(
-            ILogger logger, 
-            InputValidation inputValidation
-        )
+        public ServiceController(IServiceManager serviceManager, ILogger logger, InputValidation inputValidation)
         {
+            _serviceManager = serviceManager;
             _logger = logger;
             _inputValidation = inputValidation;
         }
-
 #if DEBUG
-
         [HttpGet]
         [Route("health")]   //make sure controller route works.
         public Task<IActionResult> HealthCheck()
         {
             return Task.FromResult<IActionResult>(Ok("Healthy"));
         }
-
 #endif
 
         [HttpGet]
