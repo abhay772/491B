@@ -1,5 +1,4 @@
-﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
@@ -12,5 +11,7 @@ namespace AA.PMTOGO.WebAPP.Data
 
         }
         //public DbSet<UsersDAO> Users { get; set; }
+
+        public DbSet<User> User { get; set; } = null!;
     }
 }
