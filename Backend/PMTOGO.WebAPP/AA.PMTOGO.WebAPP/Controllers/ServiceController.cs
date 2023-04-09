@@ -11,16 +11,19 @@ namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AppointmentsController : ControllerBase
+    public class ServiceController : ControllerBase
     {
+        private readonly IServiceManager _serviceManager;
         private readonly InputValidation _inputValidation;
         private readonly ILogger _logger;
 
-        public AppointmentsController(
+        public ServiceController(
+            IServiceManager serviceManager,
             ILogger logger, 
             InputValidation inputValidation
         )
         {
+            _serviceManager = serviceManager;
             _logger = logger;
             _inputValidation = inputValidation;
         }

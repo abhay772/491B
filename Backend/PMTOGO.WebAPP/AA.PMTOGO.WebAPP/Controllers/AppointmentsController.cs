@@ -1,7 +1,9 @@
 ﻿using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers;
+using AA.PMTOGO.Models;
 using AA.PMTOGO.Models.Entities;
+using AA.PMTOGO.WebAPP.Contracts.Appointment;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -12,31 +14,32 @@ namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ServiceController : ControllerBase
+    public class AppointmentsController : ControllerBase
     {
-        private readonly IServiceManager _serviceManager;
         private readonly InputValidation _inputValidation;
         private readonly ILogger _logger;
 
-        public ServiceController(IServiceManager serviceManager, ILogger logger, InputValidation inputValidation)
+        public AppointmentsController(
+            ILogger logger, 
+            InputValidation inputValidation)
         {
-            _serviceManager = serviceManager;
             _logger = logger;
             _inputValidation = inputValidation;
         }
+
 #if DEBUG
+
         [HttpGet]
         [Route("health")]   //make sure controller route works.
         public Task<IActionResult> HealthCheck()
         {
             return Task.FromResult<IActionResult>(Ok("Healthy"));
         }
+
 #endif
 
         [HttpGet]
-        [Route("getuserservice")]
-        [Consumes("application/json", "application/problem+json")]
-        public async Task<IActionResult> GetUserService()
+        public async Task<IActionResult> GetAppointment(int appointmentId)
         {
             try
             {
@@ -72,15 +75,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                             Result result = new Result();
                             try
                             {
-                                result = await _serviceManager.GetAllUserServices(username);
-                                if (result.IsSuccessful)
-                                {
-                                    return Ok(result.Payload!);
-                                }
-                                else
-                                {
-                                    return BadRequest(new { message = "Retry again or contact system admin." });
-                                }
+                                
                             }
                             catch
                             {
@@ -92,22 +87,18 @@ namespace AA.PMTOGO.WebAPP.Controllers
                             return Ok(new { message = "You are not authorized." });
                         }
                     }
-
-
                 }
 
                 return BadRequest("Cookie not found");
             }
-
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        
         [HttpGet]
-        [Route("getservice")]
-        [Consumes("application/json", "application/problem+json")]
-        public async Task<IActionResult> GetServices()
+        public async Task<IActionResult> GetAllAppointments()
         {
             try
             {
@@ -128,7 +119,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     var claims = jwtToken.Claims.ToList();
                     Claim usernameClaim = claims[0];
                     Claim roleClaim = claims[1];
-
 
                     if (usernameClaim != null && roleClaim != null)
                     {
@@ -143,15 +133,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                             Result result = new Result();
                             try
                             {
-                                result = await _serviceManager.GetAllServices();
-                                if (result.IsSuccessful)
-                                {
-                                    return Ok(result.Payload!);
-                                }
-                                else
-                                {
-                                    return BadRequest(new { message = "Retry again or contact system admin." });
-                                }
+                                
                             }
                             catch
                             {
@@ -159,7 +141,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                             }
                         }
                     }
-
                 }
 
                 return BadRequest("Not Authorized");
@@ -172,8 +153,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpPost]
-        [Route("addrequests")]
-        public async Task<IActionResult> AddServiceRequest(Service service, string comments, string frequency)
+        public async Task<IActionResult> InsertAppointment([FromBody]InsertAppointmentRequest appointment)
         {
             try
             {
@@ -208,15 +188,14 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         {
                             try
                             {
-                                Result result = await _serviceManager.AddServiceRequest(service, username, comments, frequency);
-                                if (result.IsSuccessful)
+                                Result result = new Result();
+                                try
                                 {
-                                    return Ok(new { message = result.Payload});
+                                    
                                 }
-                                else
+                                catch
                                 {
-
-                                    return BadRequest(new { message = "Retry again or contact system admin" } );
+                                    return StatusCode(StatusCodes.Status500InternalServerError);
                                 }
                             }
                             catch
@@ -242,8 +221,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
         
         [HttpPut]
-        [Route("{rate}")]
-        public async Task<IActionResult> RateService([FromBody] UserService service, int rate)
+        public async Task<IActionResult> UpdateAppointment([FromBody]UpdateAppointmentRequest appointment)
         {
             try
             {
@@ -279,23 +257,20 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
                             try
                             {
-                                Result result = await _serviceManager.RateUserService(service, rate);
-                                if (result.IsSuccessful)
+                                Result result = new Result();
+                                try
                                 {
-                                    return Ok(result.Payload);
+                                    
                                 }
-                                else
+                                catch
                                 {
-
-                                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                                    return StatusCode(StatusCodes.Status500InternalServerError);
                                 }
                             }
                             catch
                             {
                                 return StatusCode(StatusCodes.Status500InternalServerError);
                             }
-
-
                         }
                     }
                 }
@@ -306,8 +281,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
         }
-
     }
 }

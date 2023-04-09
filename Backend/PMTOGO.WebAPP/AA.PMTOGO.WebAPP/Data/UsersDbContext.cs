@@ -13,5 +13,11 @@ namespace AA.PMTOGO.WebAPP.Data
         //public DbSet<UsersDAO> Users { get; set; }
 
         public DbSet<User> User { get; set; } = null!;
+        public DbSet<Appointment> Appointment { get; set; } = null!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Appointment>().HasKey();
+        }
     }
 }
