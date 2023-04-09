@@ -20,7 +20,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         private readonly ILogger _logger;
 
         public AppointmentsController(
-            ILogger logger, 
+            ILogger logger,
             InputValidation inputValidation)
         {
             _logger = logger;
@@ -38,7 +38,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
 #endif
 
-        [HttpGet]
+        [HttpGet("appointmentId")]
         public async Task<IActionResult> GetAppointment(int appointmentId)
         {
             try

@@ -5,7 +5,7 @@ namespace AA.PMTOGO.DAL;
 
 public class UsersDAO
 {
-    private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
+    private static readonly string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=PMTOGO;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
     //private readonly ILogger? _logger;
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
