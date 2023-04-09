@@ -1,4 +1,4 @@
-﻿using AA.PMTOGO.Models;
+﻿using AA.PMTOGO.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 

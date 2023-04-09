@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 
-namespace AA.PMTOGO.Models
+namespace AA.PMTOGO.Models.Entities
 {
     public class Appointment
     {
