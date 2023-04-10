@@ -1,4 +1,4 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
@@ -7,6 +7,8 @@ using System.Text.Json;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using static System.Net.WebRequestMethods;
+using AA.PMTOGO.Managers.Interfaces;
+using Azure.Core;
 
 namespace AA.PMTOGO_v2.Controllers;
 
@@ -56,8 +58,8 @@ public class AuthenticationController : ControllerBase
                 string claims_jwt = CreateJWTToken(loginDTO.claims!);
 
                 SetCookieOptions(claims_jwt);
-
-                return Ok(new { message = "Login successful" });
+                //new { message = "Login successful" } + 
+                return Ok(result.Payload!);
             }
             else
             {

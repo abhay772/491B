@@ -1,24 +1,22 @@
-﻿
-using AA.PMTOGO.Libary;
-using AA.PMTOGO.Managers.Interfaces;
+﻿using AA.PMTOGO.Libary;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-
+using AA.PMTOGO.Managers.Interfaces;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ServiceController : ControllerBase
+    public class ServiceRequestController: ControllerBase
     {
-        private readonly IServiceManager _serviceManager;
+        private readonly IServiceRequestManager _requestManager;
         private readonly InputValidation _inputValidation;
 
-        public ServiceController(IServiceManager serviceManager, InputValidation inputValidation)
+        public ServiceRequestController(IServiceRequestManager requestManager, InputValidation inputValidation)
         {
-            _serviceManager = serviceManager;
+            _requestManager = requestManager;
             _inputValidation = inputValidation;
         }
 #if DEBUG
@@ -29,24 +27,23 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return Task.FromResult<IActionResult>(Ok("Healthy"));
         }
 #endif
-
         [HttpGet]
-        [Route("getuserservice")]
+        [Route("getrequest")]
         [Consumes("application/json", "application/problem+json")]
-        public async Task<IActionResult> GetUserService()
+        public async Task<IActionResult> GetServiceRequests()
         {
             Result result = new Result();
-            result = ClaimsValidation(null!);
+            result = ClaimsValidation("Service Provider");
             UserClaims user = (UserClaims)result.Payload!;
 
             if (result.IsSuccessful)
             {
                 try
                 {
-                    Result userServices = await _serviceManager.GetAllUserServices(user.ClaimUsername);
-                    if (userServices.IsSuccessful)
+                    Result requests = await _requestManager.GetUserRequests(user.ClaimUsername);
+                    if (requests.IsSuccessful)
                     {
-                        return Ok(userServices.Payload!);
+                        return Ok(requests.Payload!);
                     }
                     else
                     {
@@ -57,102 +54,76 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
-            }
-            return BadRequest("Cookie not found");
-        }
 
-        [HttpGet]
-        [Route("getservice")]
-        [Consumes("application/json", "application/problem+json")]
-        public async Task<IActionResult> GetServices()
-        {
-            Result result = new Result();
-            result = ClaimsValidation(null!);
 
-            if (result.IsSuccessful)
-            {
-                try
-                {
-                    Result services = await _serviceManager.GetAllServices();
-                    if (services.IsSuccessful)
-                    {
-                        return Ok(services.Payload!);
-                    }
-                    else
-                    {
-                        return BadRequest(new { message = "Retry again or contact system admin." });
-                    }
-                }
-                catch
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError);
-                }
             }
             return BadRequest("Not Authorized");
             
         }
-
         [HttpPost]
-        [Route("addrequests")]
-        public async Task<IActionResult> AddServiceRequest(ServiceRequest service)
+        [Route("accept")]
+        public async Task<IActionResult> AcceptRequest([FromBody] ServiceInfo service)
         {
             Result result = new Result();
-            result = ClaimsValidation("Property Manager");
-            UserClaims user = (UserClaims)result.Payload!;
+            result = ClaimsValidation("Service Provider");
 
             if (result.IsSuccessful)
             {
                 try
                 {
-                    Result insert = await _serviceManager.AddServiceRequest(service, user.ClaimUsername);
-                    if (insert.IsSuccessful)
+                    Result accept = await _requestManager.AcceptServiceRequest(service.Id);
+                    if (accept.IsSuccessful)
                     {
-                        return Ok(new { message = insert.Payload});
+                        return Ok(accept.Payload);
                     }
                     else
                     {
 
-                        return BadRequest(new { message = "Retry again or contact system admin" } );
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin");
                     }
                 }
                 catch
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
-
                 }
+
+
             }
-            return BadRequest("Invalid Credentials");
+            return BadRequest("Cookie not found");
         }
-        
-        [HttpPut]
-        [Route("rate")]
-        public async Task<IActionResult> RateService(ServiceInfo service)
+        [HttpPost]
+        [Route("decline")]
+        public async Task<IActionResult> DeclineRequest([FromBody] ServiceInfo service)
         {
             Result result = new Result();
-            result = ClaimsValidation("Property Manager");
+            result = ClaimsValidation("Service Provider");
+            UserClaims user = (UserClaims)result.Payload!;
 
-            if (result.IsSuccessful )
+            if (result.IsSuccessful)
             {
+
                 try
                 {
-                    Result rating = await _serviceManager.RateUserService(service.Id, service.rate);
-                    if (rating.IsSuccessful)
+                    Result removal = await _requestManager.RemoveServiceRequest(service.Id, user.ClaimUsername);
+                    if (removal.IsSuccessful)
                     {
-                        return Ok(rating.Payload);
+                        return Ok(removal.Payload);
                     }
                     else
                     {
 
-                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin");
                     }
                 }
                 catch
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
+
                 }
 
             }
-            return BadRequest("Invalid Credentials");
+            return BadRequest("Cookie not found");
+            
         }
 
         private Result ClaimsValidation(string role)
@@ -212,3 +183,4 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
     }
 }
+

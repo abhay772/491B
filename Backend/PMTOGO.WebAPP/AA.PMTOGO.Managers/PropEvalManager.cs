@@ -1,6 +1,8 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Libary;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
+using AA.PMTOGO.Services.Interfaces;
 using System.Data;
 using System.Net;
 using System.Net.Mail;
