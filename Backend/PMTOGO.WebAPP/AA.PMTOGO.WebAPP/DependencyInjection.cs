@@ -1,11 +1,11 @@
 ﻿using AA.PMTOGO.Authentication;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.DAL;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Services;
 using AA.PMTOGO.Services.Interfaces;
-using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
 
 namespace AA.PMTOGO.Infrastructure
 {
@@ -13,7 +13,7 @@ namespace AA.PMTOGO.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            services.AddTransient<ILogger, Logger>();
+            services.AddTransient<Logger, Logger>();
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IUserManagement, UserManagement>();
             services.AddTransient<IServiceManager, ServiceManager>();

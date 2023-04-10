@@ -16,4 +16,9 @@
     <ProjectReference Include="..\AA.PMTOGO.Libary\AA.PMTOGO.Libary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

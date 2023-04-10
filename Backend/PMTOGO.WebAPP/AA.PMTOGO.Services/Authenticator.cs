@@ -1,11 +1,11 @@
 ﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Libary;
-using AA.PMTOGO.Models;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
-using System;
+using AA.PMTOGO.Services;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
+
 
 //using System.Text.RegularExpressions;
 namespace AA.PMTOGO.Authentication;
@@ -14,6 +14,7 @@ public class Authenticator : IAuthenticator
 {
 
     UsersDAO _authNDAO = new UsersDAO();
+    Logger? _logger = new();
     InputValidation valid = new InputValidation();
 
 
@@ -34,6 +35,7 @@ public class Authenticator : IAuthenticator
                 {
                     result.IsSuccessful = true;
                     result.Payload = user.Role;
+                    await _logger!.Log("Authenticate", 4, LogCategory.Server, result);
                 }
 
                 else

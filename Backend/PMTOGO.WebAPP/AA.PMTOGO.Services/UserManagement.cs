@@ -1,19 +1,18 @@
 ﻿using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.Infrastructure.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.DAL;
 using AA.PMTOGO.Services.Interfaces;
+using AA.PMTOGO.Logging;
 
 namespace AA.PMTOGO.Services
 {
     public class UserManagement : IUserManagement
     {
-        //private readonly ILogger? _logger;
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
-        private readonly ILogger? _logger;
+        Logger _logger = new();
 
 
         //byte[] to string
@@ -34,10 +33,14 @@ namespace AA.PMTOGO.Services
                     await _authNDAO.SaveUserProfile(email, firstname, lastname, role);
 
                     //log account created succesfully  
+                    await _logger!.Log("CreateUser", 4, LogCategory.Server, result);
+
                     User user = new User(email, email, firstname, lastname, role);
                     result.IsSuccessful = true;
                     result.Payload = user;
                     return result;
+
+
 
                 }
                 else
@@ -68,10 +71,10 @@ namespace AA.PMTOGO.Services
                 {
                     //deactivate user account
 
-                   await _authNDAO.DeleteUserAccount(username);
-                   await _authNDAO.DeleteUserProfile(username);
+                    await _authNDAO.DeleteUserAccount(username);
+                    await _authNDAO.DeleteUserProfile(username);
                     //log account deactivate succesfully
-
+                    await _logger!.Log("DeleteAccount", 4, LogCategory.Server, result);
                     result.IsSuccessful = true;
                     return result;
 

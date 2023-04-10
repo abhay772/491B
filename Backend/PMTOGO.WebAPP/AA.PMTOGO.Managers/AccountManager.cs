@@ -1,13 +1,8 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿using AA.PMTOGO.Logging;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AA.PMTOGO.Managers
 {
