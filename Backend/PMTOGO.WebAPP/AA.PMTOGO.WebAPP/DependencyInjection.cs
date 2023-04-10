@@ -21,6 +21,8 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IServiceManagement, ServiceManagement>();
             services.AddSingleton<IAuthenticator, Authenticator>();
             services.AddTransient<IAuthManager, AuthManager>();
+            services.AddTransient<IDIYManager, DIYManager>();
+            services.AddTransient<IDIYService, DIYService>();
             services.AddTransient<IHistoricalSalesDAO, HistoricalSalesDAO>();
             services.AddTransient<IPropertyEvaluator, PropertyEvaluator>();
             services.AddTransient<IPropEvalManager, PropEvalManager>();
