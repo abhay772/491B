@@ -132,6 +132,7 @@ namespace AA.PMTOGO.Services
             string companyEmailKey = "Your Email third party application key. 2 factor authN must be activated for the gmail account";
             string emailSubject = "Account Recovery - OTP";
             string emailBody = "Your One-Time Password is : ";
+            var otp = "";
 
             var smtpClient = new SmtpClient("smtp.gmail.com", 587);
             smtpClient.UseDefaultCredentials = false;
@@ -142,13 +143,18 @@ namespace AA.PMTOGO.Services
             Random rand = new Random();
             for (int i = 0; i < 8; i++)
             {
+                otp += allowedChars[rand.Next(0, allowedChars.Length)];
                 emailBody += allowedChars[rand.Next(0, allowedChars.Length)];
             }
 
             var message = new MailMessage(companyEmail, userEmail, emailSubject, emailBody);
-
+            // delete
+            await _authNDAO.SaveOTP(userEmail, otp);
+            return true;
+            //delete
             try
             {
+                await _authNDAO.SaveOTP(userEmail, otp);
                 smtpClient.Send(message);
                 return true;
             }
@@ -157,6 +163,7 @@ namespace AA.PMTOGO.Services
                 Console.WriteLine("Error sending email");
             }
             return false;
+            
         }
     }
 }

@@ -58,11 +58,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Route("recovery")]
         //[Consumes("application/json")]
         [ActionName("AccountRecovery")]
-        public async Task<IActionResult> AccountRecovery([FromBody] string email)
+        public async Task<IActionResult> AccountRecovery([FromBody] string username)
         {
             try
             {
-                Result result = await _accManager.RecoverAccount(email);
+                Result result = await _accManager.RecoverAccount(username);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);
@@ -83,11 +83,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Route("otp")]
         //[Consumes("application/json")]
         [ActionName("ValidateOTP")]
-        public async Task<IActionResult> ValidateOTP([FromBody] string otp)
+        public async Task<IActionResult> ValidateOTP([FromBody] string username, string otp)
         {
             try
             {
-                Result result = await _accManager.OTPValidation(otp);
+                Result result = await _accManager.OTPValidation(username, otp);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);
@@ -108,11 +108,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Route("updatePassword")]
         //[Consumes("application/json")]
         [ActionName("UpdatePassword")]
-        public async Task<IActionResult> UpdatePassword([FromBody] string password)
+        public async Task<IActionResult> UpdatePassword([FromBody] string username, string password)
         {
             try
             {
-                Result result = await _accManager.UpdatePassword(password);
+                Result result = await _accManager.UpdatePassword(username, password);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);

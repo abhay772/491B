@@ -40,28 +40,28 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<Result> RecoverAccount(string email)
+        public async Task<Result> RecoverAccount(string username)
         {
-            Result result = await _account.AccountRecovery(email);
+            Result result = await _account.AccountRecovery(username);
             return result;
         }
 
-        public async Task<Result> DeleteUserAccount(string username)
+        public async Task<Result> DeleteUserAccount(string email)
         {
-            Result result = await _account.DeleteAccount(username);
+            Result result = await _account.DeleteAccount(email);
             return result;
         }
 
-        public async Task<Result> OTPValidation(string otp)
+        public async Task<Result> OTPValidation(string username, string otp)
         {
             var dao = new UsersDAO();
-            Result result = await dao.ValidateOTP(otp);
+            Result result = await dao.ValidateOTP(username, otp);
             return result;
         }
-        public async Task<Result> UpdatePassword(string password)
+        public async Task<Result> UpdatePassword(string username, string password)
         {
             var dao = new UsersDAO();
-            Result result = await dao.UpdatePassword(password);
+            Result result = await dao.UpdatePassword(username, password);
             return result;
         }
     }

@@ -294,7 +294,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @Role, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp)";
+            string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @Role, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp, @OTP, @OTPTimestamp, @RecoveryRequest)";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -305,6 +305,9 @@ public class UsersDAO
             command.Parameters.AddWithValue("@IsActive", 1);
             command.Parameters.AddWithValue("@Attempts", 0);
             command.Parameters.AddWithValue("@Timestamp", DateTime.Now);
+            command.Parameters.AddWithValue("@OTP", "Null");
+            command.Parameters.AddWithValue("@OTPTimestamp", DateTime.Now);
+            command.Parameters.AddWithValue("@RecoveryRequest", 0);
 
             try
             {
@@ -519,51 +522,92 @@ public class UsersDAO
         return result;
     }
 
-    public async Task<Result> ValidateOTP(string otp)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Result> UpdatePassword(string password)
+    public async Task<Result> ValidateOTP(string username, string otp)
     {
         Result result = new Result();
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
 
-
-            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE username = @Username AND otp = @OTP", connection);
             command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@OTP", otp);
 
             var reader = await command.ExecuteReaderAsync();
-
-            reader.Read();
-            int failedAttempts = (int)reader["Attempts"];
-
-            if (failedAttempts == 0)
+            if (reader.HasRows)
             {
-                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 1", connection);
-                command.ExecuteNonQuery();
-
-                command = new SqlCommand("UPDATE UserAccounts SET Timestamp = CURRENT_TIMESTAMP", connection);
-                command.ExecuteNonQuery();
-            }
-            else if (failedAttempts == 2)
-            {
-                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 2", connection);
-                command.ExecuteNonQuery();
+                if (reader.Read())
+                {
+                    DateTime otpTimestamp = (DateTime)reader["OTPTimestamp"];
+                    if ((DateTime.Now - otpTimestamp).TotalHours <= 24)
+                    {
+                        result.IsSuccessful = true;
+                    }
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "OTP is older than 24 hours";
+                    }
+                }
             }
             else
             {
-                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 3", connection);
-                reader.Close();
-                var rows = command.ExecuteNonQuery();
-                //TODO: log username, Ip, timestamp to database
-
-                //_logger!.Log("UpdateFailedAttempts", 4, LogCategory.DataStore, result);
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Invalid OTP or username";
             }
-            reader.Close();
 
+            reader.Close();
+        }
+        return result;
+    }
+
+    public async Task<Result> UpdatePassword(string username, string password)
+    {
+        Result result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+                connection.Open();
+
+                var command = new SqlCommand("UPDATE UserAccounts SET password = @Password WHERE username = @Username", connection);
+                command.Parameters.AddWithValue("@Password", password);
+                command.Parameters.AddWithValue("@Username", username);
+
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+                if (rowsAffected == 0)
+                {
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = "User not found";
+                }
+                else
+                {
+                    result.IsSuccessful = true;
+                }
+        }
+        return result;
+    }
+
+    public async Task<Result> SaveOTP(string username, string otp)
+    {
+        Result result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            var command = new SqlCommand("UPDATE UserAccounts SET otp = @OTP, otp_timestamp = @OTPTimestamp WHERE username = @Username", connection);
+            command.Parameters.AddWithValue("@OTP", otp);
+            command.Parameters.AddWithValue("@OTPTimestamp", DateTime.Now);
+            command.Parameters.AddWithValue("@Username", username);
+
+            int rowsAffected = await command.ExecuteNonQueryAsync();
+            if (rowsAffected == 0)
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "User not found";
+            }
+            else
+            {
+                result.IsSuccessful = true;
+            }
         }
         return result;
     }
