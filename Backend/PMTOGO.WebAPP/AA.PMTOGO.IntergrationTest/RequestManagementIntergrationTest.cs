@@ -95,7 +95,7 @@ namespace AA.PMTOGO.IntergrationTest
 
 
             //clean up
-            await request.DeleteServiceRequest(id);
+            //await request.DeleteServiceRequest(id);
 
             // Assert
             Assert.IsNotNull(actual);

@@ -67,11 +67,12 @@ namespace AA.PMTOGO.IntergrationTest
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
 
             //act
-            Result result = await service.RateService(id, 4);
+            await service.RateService(id, 4);
+            Result result = await dao.CheckRating(id, 4);
             bool actual = result.IsSuccessful;
 
             //clean up
-            await dao.DeleteUserService(id);
+            //await dao.DeleteUserService(id);
 
             //assert
             Assert.IsNotNull(actual);

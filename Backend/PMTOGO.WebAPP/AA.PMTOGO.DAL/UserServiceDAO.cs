@@ -210,12 +210,12 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserServices SET @Rating = rating WHERE @ServiceId = serviceId";
+                string sqlQuery = "UPDATE UserServices SET rating = @Rating WHERE Id = @ID";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@ServiceId", serviceId);
-                command.Parameters.AddWithValue("@Rating", rating);
+                command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = serviceId;
+                command.Parameters.AddWithValue("@Rating", SqlDbType.Int).Value= rating;
 
                 try
                 {
@@ -262,11 +262,11 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT Rating FROM UserServices WHERE @ServiceId = serviceId";
+                string sqlQuery = "SELECT Rating FROM UserServices WHERE @serviceId = ID";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@ServiceId", serviceId);
+                command.Parameters.AddWithValue("@serviceId", serviceId);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
