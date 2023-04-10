@@ -51,7 +51,10 @@ function loadLoginPage() {
         send(url, data)
         .then((response) => {
           if (response.ok) {
-            loadHomePage();
+            response.json().then(data => {
+              loadHomePage(`${data.claims[1].value}`);
+              console.log(data);
+            })
           }
         })
         .catch(error => {
@@ -118,7 +121,7 @@ function loadRegisterPage() {
 }
 
 //function to load homepage
-function loadHomePage() {
+function loadHomePage(userrole) {
   // fetch property evaluation page html
   fetch('./Views/homepage.html')
     .then(response => response.text())
@@ -129,6 +132,8 @@ function loadHomePage() {
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
 
+      const userinfo = document.getElementById("userrole");
+      userinfo.innerHTML = userrole;
     //select log out
     
     const logoutUser = document.getElementById("logout");
@@ -367,7 +372,7 @@ const appendRequest =(request, id) => {
 
   //add the data
   let requestId = document.createElement('td');
-  requestId.innerText = `${request.requestId}`;
+  requestId.innerText = `${request.id}`;
 
   let serviceName = document.createElement('td');
   serviceName.innerText = `${request.serviceName}`;
@@ -393,14 +398,14 @@ const appendRequest =(request, id) => {
   let acceptAction = document.createElement('td');
   let acceptbtn = document.createElement('button');
   acceptbtn.className ="accept"; 
-  acceptbtn.id=`${request.requestId}`;
+  acceptbtn.id=`${request.id}`;
   acceptbtn.innerText = "Accept";
 
   let declineAction = document.createElement('td');
   let declinebtn = document.createElement('button');
   declinebtn.innerText = "Decline";
   declinebtn.className="decline";
-  declinebtn.id=`${request.requestId}`; 
+  declinebtn.id=`${request.id}`; 
   
   acceptAction.append(acceptbtn);
   declineAction.append(declinebtn);
@@ -412,7 +417,7 @@ const appendRequest =(request, id) => {
 }
 
 function getrequest(){
-  url = api + '/Request/getrequest';
+  url = api + '/ServiceRequest/getrequest';
   get(url)
     .then(response => {
       if(!response.ok){
@@ -424,13 +429,15 @@ function getrequest(){
         
             homepageContent.innerHTML = text;
           })
+          .catch(error => console.error(error))
   
       } 
       else {
         response.json().then(data => {
           createRequestsTable();
           let id = 0;
-          data.forEach((request) =>{
+          console.log(data);
+          data.forEach((request) => {         
             appendRequest(request, id)
             id = id + 1;
           })
@@ -482,7 +489,7 @@ function loadEmailPage(homepageContent){
 }
 function acceptRequest(requestid){
   const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/Request/accept";
+  url = api + "/ServiceRequest/accept";
   data = {requestId: requestid}
   send(url, data)
   .then(data => data.json())
@@ -492,7 +499,7 @@ function acceptRequest(requestid){
 }
 function declineRequest(requestid){
   const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/Request/decline";
+  url = api + "/ServiceRequest/decline";
   data = {requestId: requestid}
   send(url, data)
     .then(data => data.json())
@@ -556,7 +563,7 @@ const appendUserService =(userservice, id) => {
 
   //add the data
   let serviceId = document.createElement('td');
-  serviceId.innerText = `${userservice.serviceId}`;
+  serviceId.innerText = `${userservice.id}`;
 
   let serviceName = document.createElement('td');
   serviceName.innerText = `${userservice.serviceName}`;

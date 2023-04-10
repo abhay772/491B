@@ -33,7 +33,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> GetServiceRequests()
         {
             Result result = new Result();
-            result = ClaimsValidation("Property Manager");
+            result = ClaimsValidation("Service Provider");
             UserClaims user = (UserClaims)result.Payload!;
 
             if (result.IsSuccessful)
@@ -43,7 +43,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result requests = await _requestManager.GetUserRequests(user.ClaimUsername);
                     if (requests.IsSuccessful)
                     {
-                        return Ok(result.Payload!);
+                        return Ok(requests.Payload!);
                     }
                     else
                     {
@@ -65,7 +65,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> AcceptRequest([FromBody] ServiceInfo service)
         {
             Result result = new Result();
-            result = ClaimsValidation("Property Manager");
+            result = ClaimsValidation("Service Provider");
 
             if (result.IsSuccessful)
             {
@@ -74,7 +74,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result accept = await _requestManager.AcceptServiceRequest(service.RequestId);
                     if (accept.IsSuccessful)
                     {
-                        return Ok(result.Payload);
+                        return Ok(accept.Payload);
                     }
                     else
                     {
@@ -96,7 +96,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> DeclineRequest([FromBody] ServiceInfo service)
         {
             Result result = new Result();
-            result = ClaimsValidation("Property Manager");
+            result = ClaimsValidation("Service Provider");
             UserClaims user = (UserClaims)result.Payload!;
 
             if (result.IsSuccessful)
@@ -107,7 +107,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result removal = await _requestManager.RemoveServiceRequest(service.RequestId, user.ClaimUsername);
                     if (removal.IsSuccessful)
                     {
-                        return Ok(result.Payload);
+                        return Ok(removal.Payload);
                     }
                     else
                     {
@@ -159,10 +159,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
                         // Check if the role is Property Manager
                         bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-                        if (validationCheck && userrole == role)
+                        if (validationCheck && userrole == role || role == null)
                         {
+                            UserClaims user = new UserClaims(username, role!);
+
                             result.IsSuccessful = true;
-                            result.Payload = claims;
+                            result.Payload = user;
                             return result;
                         }
                     }

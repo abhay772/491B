@@ -36,7 +36,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> GetUserService()
         {
             Result result = new Result();
-            result = ClaimsValidation("Property Manager");
+            result = ClaimsValidation(null!);
             UserClaims user = (UserClaims)result.Payload!;
 
             if (result.IsSuccessful)
@@ -46,7 +46,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result userServices = await _serviceManager.GetAllUserServices(user.ClaimUsername);
                     if (userServices.IsSuccessful)
                     {
-                        return Ok(result.Payload!);
+                        return Ok(userServices.Payload!);
                     }
                     else
                     {
@@ -67,7 +67,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> GetServices()
         {
             Result result = new Result();
-            result = ClaimsValidation("Property Manager");
+            result = ClaimsValidation(null!);
 
             if (result.IsSuccessful)
             {
@@ -76,7 +76,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result services = await _serviceManager.GetAllServices();
                     if (services.IsSuccessful)
                     {
-                        return Ok(result.Payload!);
+                        return Ok(services.Payload!);
                     }
                     else
                     {
@@ -107,7 +107,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result insert = await _serviceManager.AddServiceRequest(service, user!.ClaimUsername, comments, frequency);
                     if (insert.IsSuccessful)
                     {
-                        return Ok(new { message = result.Payload});
+                        return Ok(new { message = insert.Payload});
                     }
                     else
                     {
@@ -129,7 +129,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> RateService([FromBody] UserService service, int rate)
         {
             Result result = new Result();
-            result = ClaimsValidation("Property Manager");
+            result = ClaimsValidation(null!);
 
             if (result.IsSuccessful )
             {
@@ -188,9 +188,9 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
                         // Check if the role is Property Manager
                         bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-                        if (validationCheck && userrole == role)
+                        if (validationCheck && userrole == role || role == null)
                         {
-                            UserClaims user = new UserClaims(username, role);
+                            UserClaims user = new UserClaims(username, role!);
 
                             result.IsSuccessful = true;
                             result.Payload = user;

@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using static System.Net.WebRequestMethods;
 using AA.PMTOGO.Managers.Interfaces;
+using Azure.Core;
 
 namespace AA.PMTOGO_v2.Controllers;
 
@@ -40,7 +41,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
-        [HttpPost("Login")]
+    [HttpPost("Login")]
     [Consumes("application/json", "application/problem+json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {
@@ -57,8 +58,8 @@ public class AuthenticationController : ControllerBase
                 string claims_jwt = CreateJWTToken(loginDTO.claims!);
 
                 SetCookieOptions(claims_jwt);
-
-                return Ok(new { message = "Login successful" });
+                //new { message = "Login successful" } + 
+                return Ok(result.Payload!);
             }
             else
             {

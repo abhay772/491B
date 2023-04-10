@@ -10,9 +10,6 @@ namespace AA.PMTOGO.Authentication
         Task<int> GetFailedAttempts(string username);
         void ResetFailedAttempts(string username);
         void UpdateFailedAttempts(string username);
-        Result ValidateDateOfBirth(DateTime dob);
-        Result ValidateEmail(string email);
-        Result ValidatePassphrase(string passWord);
-        Result ValidateUsername(string name);
+
     }
 }
