@@ -4,6 +4,8 @@ using System.Security.Cryptography;
 using System.Text;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.DAL;
+using System.Net.Mail;
+using System.Net;
 
 namespace AA.PMTOGO.Services
 {
@@ -111,5 +113,50 @@ namespace AA.PMTOGO.Services
             string passDigest = Convert.ToBase64String(encryptedPass);
             return passDigest;
         }
+
+        public async Task<Result> AccountRecovery(string email)
+        {
+            Result result = new Result();
+            result = _authNDAO.FindUser(email).Result;
+            
+            if (result.IsSuccessful) 
+            {
+                EmailOTP(email);
+            }
+            return result;
+        }
+        public async Task<bool> EmailOTP(string userEmail)
+        {
+            string companyEmail = "DemonicKhmer@gmail.com";
+            string companyEmailKey = "Your Email third party application key. 2 factor authN must be activated for the gmail account";
+            string emailSubject = "Account Recovery - OTP";
+            string emailBody = "Your One-Time Password is : ";
+
+            var smtpClient = new SmtpClient("smtp.gmail.com", 587);
+            smtpClient.UseDefaultCredentials = false;
+            smtpClient.Credentials = new NetworkCredential(companyEmail, companyEmailKey);
+            smtpClient.EnableSsl = true;
+
+            string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-@";
+            Random rand = new Random();
+            for (int i = 0; i < 8; i++)
+            {
+                emailBody += allowedChars[rand.Next(0, allowedChars.Length)];
+            }
+
+            var message = new MailMessage(companyEmail, userEmail, emailSubject, emailBody);
+
+            try
+            {
+                smtpClient.Send(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending email");
+            }
+            return false;
+        }
     }
 }
+

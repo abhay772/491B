@@ -41,7 +41,5 @@ namespace AA.PMTOGO.Managers
 
             return result;
         }
-
-
     }
 }

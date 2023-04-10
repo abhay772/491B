@@ -28,11 +28,11 @@ function loadLoginPage() {
       // select register link
       const registerLink = document.getElementById('register-link');
       // select forgot password button
-      //const forgotPasswordButton = document.querySelector('.forget');
+        const forgotPasswordButton = document.getElementById('forgotPass');
 
       // add event listeners to register link, forgot password button
       registerLink.addEventListener('click', loadRegisterPage);
-      //forgotPasswordButton.addEventListener('click', loadForgotPasswordPage);
+      forgotPasswordButton.addEventListener('click', loadForgotPasswordPage);
 
       // select login form
       const loginForm = document.getElementById('login-form');
@@ -73,6 +73,115 @@ function UserRole() {
     role = "Property Manager";
   }
   return role;
+}
+
+function loadForgotPasswordPage() {
+    // fetch recovery page html
+    fetch("./Views/recovery.html")
+        .then(response => response.text())
+        .then(data => {
+            // update content div with recovery page
+            content.innerHTML = data;
+
+            const emailInput = document.getElementById('email-input');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // add event listener to submit button
+            submitBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                // get user email
+                const email = emailInput.value;
+
+                // perform recovery action
+                const url = api + '/UserManagement/recovery';
+                const data = { email: email }
+
+                send(url, data)
+                    .then(data => data.json())
+                    .then(response => {
+                        console.log(response);
+
+                        // after successful recovery, load login page
+                        loadEnterOTPPage();
+                    })
+                    .catch(error => console.log(error));
+                // You can perform your recovery API call here
+            });
+        })
+        .catch(error => console.log(error))
+}
+
+function loadEnterOTPPage() {
+    // fetch otpForm page html
+    fetch("./Views/otpForm.html")
+        .then(response => response.text())
+        .then(data => {
+            // update content div with recovery page
+            content.innerHTML = data;
+
+            const otpInput = document.getElementById('otp-input');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // add event listener to submit button
+            submitBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                // get user otp
+                const otp = otpInput.value;
+
+                // perform otp action
+                const url = api + '/UserManagement/otp';
+                const data = { otp: otp }
+
+                send(url, data)
+                    .then(data => data.json())
+                    .then(response => {
+                        console.log(response);
+
+                        // after successful otp, load login page
+                        loadLoginPage();
+                    })
+                    .catch(error => console.log(error));
+            });
+        })
+        .catch(error => console.log(error))
+}
+
+function loadUpdatePasswordPage() {
+    // fetch password update page html
+    fetch("./Views/updatePassword.html")
+        .then(response => response.text())
+        .then(data => {
+            // update content div with recovery page
+            content.innerHTML = data;
+
+            const passwordInput = document.getElementById('password-input');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // add event listener to submit button
+            submitBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                // get user otp
+                const password = passwordInput.value;
+
+                // perform password update action
+                const url = api + '/UserManagement/updatePassword';
+                const data = { Password: password }
+
+                send(url, data)
+                    .then(data => data.json())
+                    .then(response => {
+                        console.log(response);
+
+                        // after successful password update, load login page
+                        loadLoginPage();
+                    })
+                    .catch(error => console.log(error));
+            });
+        })
+        .catch(error => console.log(error))
 }
 
 function loadRegisterPage() {

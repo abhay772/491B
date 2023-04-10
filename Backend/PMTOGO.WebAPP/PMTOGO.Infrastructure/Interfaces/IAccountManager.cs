@@ -11,6 +11,8 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
     {
         Task<Result> RegisterUser(string email, string password, string firstname, string lastname, string role);
 
+        Task<Result> RecoverAccount(string email);
+
         Task<Result> DeleteUserAccount(string email);
     }
 }

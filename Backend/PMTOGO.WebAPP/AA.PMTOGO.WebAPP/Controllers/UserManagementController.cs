@@ -55,8 +55,83 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
         }
+
+        [HttpPost]
+        [Route("recovery")]
+        //[Consumes("application/json")]
+        [ActionName("AccountRecovery")]
+        public async Task<IActionResult> AccountRecovery([FromBody] string email)
+        {
+            try
+            {
+                Result result = await _accManager.RecoverAccount(email);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result.Payload);
+                }
+                else
+                {
+
+                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("otp")]
+        //[Consumes("application/json")]
+        [ActionName("AccountRecovery")]
+        public async Task<IActionResult> ValidateOTP([FromBody] string email)
+        {
+            try
+            {
+                Result result = await _accManager.RecoverAccount(email);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result.Payload);
+                }
+                else
+                {
+
+                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("updatePassword")]
+        //[Consumes("application/json")]
+        [ActionName("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword([FromBody] string password)
+        {
+            try
+            {
+                Result result = await _accManager.RecoverAccount(password);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result.Payload);
+                }
+                else
+                {
+
+                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpDelete]
         [Route("delete")]
         [Consumes("application/json")]

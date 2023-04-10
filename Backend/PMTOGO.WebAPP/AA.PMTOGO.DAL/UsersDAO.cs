@@ -64,6 +64,7 @@ public class UsersDAO
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
+    
     public async Task<Result> GetUser(string username)
     {
         Result result = new Result();
@@ -461,4 +462,61 @@ public class UsersDAO
 
         }
     }
+
+    public async Task<Result> RequestRecovery(string username)
+    {
+        Result result = new Result();
+
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string sqlQuery = "SELECT * FROM UserAccounts WHERE @Username = username";
+
+            var command = new SqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@Username", username);
+
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            {
+                try
+                {
+                    reader.Read();
+                    if ((bool)reader["IsActive"])
+                    {
+                        User user = new User();
+                        user.Username = (string)reader["Username"];
+                        user.PassDigest = (string)reader["PassDigest"];
+                        user.Salt = (string)reader["Salt"];
+                        user.IsActive = (bool)reader["IsActive"];
+                        user.Attempt = (int)reader["Attempts"];
+                        user.Role = (string)reader["Role"];
+
+
+                        result.IsSuccessful = true;
+                        result.Payload = user;
+                        return result;
+                    }
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "Account Disabled.";
+                        return result;
+                    }
+                }
+                catch
+                {
+
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
+                    //_logger!.Log("FindUser", 4, LogCategory.Server, result);
+
+                }
+            }
+        }
+        result.IsSuccessful = false;
+        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+        return result;
+    }
+
 }
