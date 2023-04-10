@@ -519,4 +519,52 @@ public class UsersDAO
         return result;
     }
 
+    public async Task<Result> ValidateOTP(string otp)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Result> UpdatePassword(string password)
+    {
+        Result result = new Result();
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+
+            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            command.Parameters.AddWithValue("@Username", username);
+
+            var reader = await command.ExecuteReaderAsync();
+
+            reader.Read();
+            int failedAttempts = (int)reader["Attempts"];
+
+            if (failedAttempts == 0)
+            {
+                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 1", connection);
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand("UPDATE UserAccounts SET Timestamp = CURRENT_TIMESTAMP", connection);
+                command.ExecuteNonQuery();
+            }
+            else if (failedAttempts == 2)
+            {
+                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 2", connection);
+                command.ExecuteNonQuery();
+            }
+            else
+            {
+                command = new SqlCommand("UPDATE UserAccounts SET Attempts = 3", connection);
+                reader.Close();
+                var rows = command.ExecuteNonQuery();
+                //TODO: log username, Ip, timestamp to database
+
+                //_logger!.Log("UpdateFailedAttempts", 4, LogCategory.DataStore, result);
+            }
+            reader.Close();
+
+        }
+        return result;
+    }
 }

@@ -85,12 +85,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [HttpPost]
         [Route("otp")]
         //[Consumes("application/json")]
-        [ActionName("AccountRecovery")]
-        public async Task<IActionResult> ValidateOTP([FromBody] string email)
+        [ActionName("ValidateOTP")]
+        public async Task<IActionResult> ValidateOTP([FromBody] string otp)
         {
             try
             {
-                Result result = await _accManager.RecoverAccount(email);
+                Result result = await _accManager.OTPValidation(otp);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);
@@ -115,7 +115,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             try
             {
-                Result result = await _accManager.RecoverAccount(password);
+                Result result = await _accManager.UpdatePassword(password);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);

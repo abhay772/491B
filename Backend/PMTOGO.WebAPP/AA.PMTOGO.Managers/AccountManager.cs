@@ -1,4 +1,5 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,19 @@ namespace AA.PMTOGO.Managers
         public async Task<Result> DeleteUserAccount(string username)
         {
             Result result = await _account.DeleteAccount(username);
+            return result;
+        }
+
+        public async Task<Result> OTPValidation(string otp)
+        {
+            var dao = new UsersDAO();
+            Result result = await dao.ValidateOTP(otp);
+            return result;
+        }
+        public async Task<Result> UpdatePassword(string password)
+        {
+            var dao = new UsersDAO();
+            Result result = await dao.UpdatePassword(password);
             return result;
         }
     }

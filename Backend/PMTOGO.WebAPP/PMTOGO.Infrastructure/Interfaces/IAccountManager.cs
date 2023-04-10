@@ -14,5 +14,7 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
         Task<Result> RecoverAccount(string email);
 
         Task<Result> DeleteUserAccount(string email);
+        Task<Result> UpdatePassword(string password);
+        Task<Result> OTPValidation(string otp);
     }
 }
