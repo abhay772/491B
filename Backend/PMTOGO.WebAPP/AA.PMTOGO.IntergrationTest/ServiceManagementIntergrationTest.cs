@@ -15,8 +15,9 @@ namespace AA.PMTOGO.IntergrationTest
             var request = new ServiceRequestDAO();
 
             Guid id = Guid.NewGuid();
-            await request.AddUserService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
+            ServiceRequest service = new ServiceRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+            await request.AddUserService(service);
             // Act
             Result result = await dao.GetUserService("serviceProvider@gmail.com", "serviceProvider@gmail.com");
             bool actual = result.IsSuccessful;
@@ -46,7 +47,7 @@ namespace AA.PMTOGO.IntergrationTest
             bool actual = result.IsSuccessful;
 
             //clean up
-            await dao.DeleteServiceRequest(id);
+            //await dao.DeleteServiceRequest(id);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -63,8 +64,9 @@ namespace AA.PMTOGO.IntergrationTest
             var dao = new UserServiceDAO();
             var request = new ServiceRequestDAO();
             Guid id = Guid.NewGuid();
-            await request.AddUserService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
+            ServiceRequest userService = new ServiceRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+            await request.AddUserService(userService);
 
             //act
             await service.RateService(id, 4);
@@ -89,8 +91,9 @@ namespace AA.PMTOGO.IntergrationTest
             var request = new ServiceRequestDAO();
             var dao = new UserServiceDAO();
             Guid id = Guid.NewGuid();
-            await request.AddUserService(id, "Landscape", "soil installation ", "material delivery", "1x/month",
+            ServiceRequest userService = new ServiceRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+            await request.AddUserService(userService);
 
             //act
             Result result = await service.RateService(id, 6);

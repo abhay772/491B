@@ -88,8 +88,9 @@ namespace AA.PMTOGO.IntergrationTest
             Guid id = Guid.NewGuid();
 
             // Act
-            await request.AddUserService(id, "Landscape", "material delivery", "soil installation ", "1x/month",
+            ServiceRequest service = new ServiceRequest(id, "Landscape", "material delivery", "soil installation ", "1x/month","random comment",
                 "mssierra310@gmail.com", "Sara Jade", "sierra.harris01@student.csulb.edu", "Sierra Harris");
+            await request.AddUserService(service);
             Result result = await userService.FindUserService(id);
             bool actual = result.IsSuccessful;
 

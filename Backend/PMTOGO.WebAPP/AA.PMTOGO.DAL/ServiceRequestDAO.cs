@@ -56,7 +56,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM ServiceRequests WHERE @Id = requestId";
+                string sqlQuery = "SELECT * FROM ServiceRequests WHERE ID = @Id";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -136,8 +136,7 @@ namespace AA.PMTOGO.DAL
 
         //insert user service
 
-        public async Task<Result> AddUserService(Guid Id, string serviceName, string serviceType, string serviceDescription,
-string serviceFrequency, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
+        public async Task<Result> AddUserService(ServiceRequest service)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
@@ -148,15 +147,15 @@ string serviceFrequency, string serviceProviderEmail, string serviceProviderName
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@Id", Id);
-                command.Parameters.AddWithValue("@ServiceName", serviceName);
-                command.Parameters.AddWithValue("@ServiceType", serviceType);
-                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
-                command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
-                command.Parameters.AddWithValue("@ServiceProviderName", serviceProviderName);
-                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
-                command.Parameters.AddWithValue("@PropertyManagerName", propertyManagerName);
+                command.Parameters.AddWithValue("@Id", service.Id);
+                command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
+                command.Parameters.AddWithValue("@ServiceType", service.ServiceType);
+                command.Parameters.AddWithValue("@ServiceDescription", service.ServiceDescription);
+                command.Parameters.AddWithValue("@ServiceFrequency", service.ServiceFrequency);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", service.ServiceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceProviderName", service.ServiceProviderName);
+                command.Parameters.AddWithValue("@PropertyManagerEmail", service.PropertyManagerEmail);
+                command.Parameters.AddWithValue("@PropertyManagerName", service.PropertyManagerName);
                 command.Parameters.AddWithValue("@Status", "In-Progress");
                 command.Parameters.AddWithValue("@Rating", 0);
 
@@ -200,7 +199,7 @@ string serviceFrequency, string serviceProviderEmail, string serviceProviderName
 
                 var command = new SqlCommand("DELETE FROM ServiceRequests WHERE ID = @Id", connection);
 
-                command.Parameters.AddWithValue("@ID", requestId);
+                command.Parameters.AddWithValue("@Id", requestId);
 
                 try
                 {

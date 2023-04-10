@@ -71,7 +71,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
-                    Result accept = await _requestManager.AcceptServiceRequest(service.RequestId);
+                    Result accept = await _requestManager.AcceptServiceRequest(service.Id);
                     if (accept.IsSuccessful)
                     {
                         return Ok(accept.Payload);
@@ -104,7 +104,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
                 try
                 {
-                    Result removal = await _requestManager.RemoveServiceRequest(service.RequestId, user.ClaimUsername);
+                    Result removal = await _requestManager.RemoveServiceRequest(service.Id, user.ClaimUsername);
                     if (removal.IsSuccessful)
                     {
                         return Ok(removal.Payload);
@@ -179,11 +179,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
             result.IsSuccessful = false;
             return result;
-        }
-
-        public class ServiceInfo
-        {
-            public string RequestId { get; set; } = string.Empty;
         }
 
     }

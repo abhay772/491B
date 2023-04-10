@@ -10,7 +10,7 @@ namespace AA.PMTOGO.Services
         UsersDAO _authNDAO = new UsersDAO();
 
 
-        public async Task<Result> CreateRequest(Service service, string username, string comments, string frequency)
+        public async Task<Result> CreateRequest(ServiceRequest service, string username)
         {
 
             Result res = await _authNDAO.GetUser(username);
@@ -24,7 +24,7 @@ namespace AA.PMTOGO.Services
 
             Guid serviceRequestId = Guid.NewGuid();
             //need property manager info
-            ServiceRequest request = new ServiceRequest(serviceRequestId, service.ServiceName, service.ServiceType, service.ServiceDescription, frequency, comments, service.ServiceProvider, service.ServiceProviderEmail,
+            ServiceRequest request = new ServiceRequest(serviceRequestId, service.ServiceName, service.ServiceType, service.ServiceDescription, service.ServiceFrequency, service.Comments, service.ServiceProviderName, service.ServiceProviderEmail,
                 username, propertyManagerName);
 
             Result result = await AddRequest(request);

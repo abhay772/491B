@@ -17,9 +17,10 @@ namespace AA.PMTOGO.Managers
             _userService = userService;
         }
         // rate service
-        public async Task<Result> RateUserService(UserService service, int rate)
+        public async Task<Result> RateUserService(string serviceId, int rate)
         {
-            Result result = await _userService.RateService(service.Id, rate);
+            Guid id = new Guid(serviceId);
+            Result result = await _userService.RateService(id, rate);
 
             return result;
         }
@@ -31,9 +32,9 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<Result> AddServiceRequest(Service service, string username, string comments, string frequency)
+        public async Task<Result> AddServiceRequest(ServiceRequest service, string username)
         {   
-            Result result = await _userService.CreateRequest(service, username, comments , frequency); 
+            Result result = await _userService.CreateRequest(service, username); 
             return result;
 
         }

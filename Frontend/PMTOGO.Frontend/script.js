@@ -53,7 +53,6 @@ function loadLoginPage() {
           if (response.ok) {
             response.json().then(data => {
               loadHomePage(`${data.claims[1].value}`);
-              console.log(data);
             })
           }
         })
@@ -329,7 +328,25 @@ function extractData(fieldset){
   console.log(data)
   return data;
 }
-
+function acceptRequest(requestid){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
+  url = api + "/ServiceRequest/accept";
+  data = {id: requestid}
+  send(url, data)
+  .then(data => data.json())
+  .then(response => console.log(response))
+  .then(loadRequestManagementPage(homepageContent));
+  
+}
+function declineRequest(requestid){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
+  url = api + "/ServiceRequest/decline";
+  data = {id: requestid}
+  send(url, data)
+    .then(data => data.json())
+    .then(response => console.log(response))
+    .then(loadRequestManagementPage(homepageContent));
+}
 const createRequestsTable = () =>{
   const requests = document.querySelector("div.requests");
   let tableHeaders = ["Request ID", "Service Name", "Service Type",  "Service Description", 
@@ -436,7 +453,6 @@ function getrequest(){
         response.json().then(data => {
           createRequestsTable();
           let id = 0;
-          console.log(data);
           data.forEach((request) => {         
             appendRequest(request, id)
             id = id + 1;
@@ -487,25 +503,7 @@ function loadEmailPage(homepageContent){
     })   
     .catch(error => console.log(error));
 }
-function acceptRequest(requestid){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/ServiceRequest/accept";
-  data = {requestId: requestid}
-  send(url, data)
-  .then(data => data.json())
-  .then(response => console.log(response))
-  .then(loadRequestManagementPage(homepageContent));
-  
-}
-function declineRequest(requestid){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/ServiceRequest/decline";
-  data = {requestId: requestid}
-  send(url, data)
-    .then(data => data.json())
-    .then(response => console.log(response))
-    .then(loadRequestManagementPage(homepageContent));
-}
+
 //fucntion to load request Management page
 function loadRequestManagementPage(homepageContent) {
   // fetch request evaluation page html
@@ -521,10 +519,19 @@ function loadRequestManagementPage(homepageContent) {
     .catch(error => console.log(error));
     
 }
+function rateUserService(id, rate){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
+  url = api + "/Service/rate";
+  data = {id: id, rate: rate}
+  put(url, data)
+  .then(response => console.log(response))
+  .then(loadServiceManagementPage(homepageContent));
+  
+}
 const createUserServiceTable = () =>{
   const userservices = document.querySelector("div.userservices");
-  let tableHeaders = ["Service ID", "Service Name", "Service Type",  "Service Description", 
-  "Service Frequency", "Service Provider Name", "Service Provider Email", "Status", "Rating"];
+  let tableHeaders = ["Service Name", "Service Type",  "Service Description", 
+  "Service Frequency", "Service Provider Name", "Service Provider Email", "Status", "Rating", "Rate?", "Frequency Change?"];
     while (userservices.firstChild) userservices.removeChild(userservices.firstChild)
     let userServiceTable = document.createElement('table');
     userServiceTable.className="userServiceTable";
@@ -562,9 +569,6 @@ const appendUserService =(userservice, id) => {
   userServiceTableBodyRow.id= String(id);
 
   //add the data
-  let serviceId = document.createElement('td');
-  serviceId.innerText = `${userservice.id}`;
-
   let serviceName = document.createElement('td');
   serviceName.innerText = `${userservice.serviceName}`;
 
@@ -578,7 +582,7 @@ const appendUserService =(userservice, id) => {
   serviceFrequeny.innerText = `${userservice.serviceFrequency}`;
 
   let serviceProvider = document.createElement('td');
-  serviceProvider.innerText = `${userservice.serviceProvider}`;
+  serviceProvider.innerText = `${userservice.serviceProviderName}`;
 
   let serviceProviderEmail = document.createElement('td');
   serviceProviderEmail.innerText = `${userservice.serviceProviderEmail}`;
@@ -589,14 +593,31 @@ const appendUserService =(userservice, id) => {
   let rating = document.createElement('td');
   rating.innerText = `${userservice.rating}`;
 
+  let rateAction = document.createElement('td');
+  let rateForm = document.createElement('form');
+  rateForm.id = `${userservice.id}`;
+  rateForm.className="rateform"
+  let rateInput = document.createElement('input');
+  rateInput.type ="number";
+  rateInput.placeholder="Enter rating 1-5";
+  rateInput.id ="rating"
 
-  userServiceTableBodyRow.append(serviceId,serviceName,serviceType,serviceDescription,serviceFrequeny,
-    serviceProvider,serviceProviderEmail,status,rating);
+  let ratebtn = document.createElement('button');
+  ratebtn.className="ratebtn";
+  ratebtn.type="submit"
+  ratebtn.innerText = "Submit";
+
+  rateAction.append(rateForm);
+  rateForm.append(rateInput);
+  rateForm.append(ratebtn);
+
+  userServiceTableBodyRow.append(serviceName,serviceType,serviceDescription,serviceFrequeny,
+    serviceProvider,serviceProviderEmail,status,rating, rateAction);
     //allrequest += requestTableBodyRow;
   UserServiceTable.append(userServiceTableBodyRow);
 }
 //fucntion to load service Management page
-function loadServiceManagementPage(homepageContent) {
+function loadServiceManagementPage(homepageContent) { 
   // fetch request evaluation page html
   fetch('./Views/serviceMan.html')
     .then(response => response.text())
@@ -614,6 +635,14 @@ function loadServiceManagementPage(homepageContent) {
             response.forEach((userservice) =>{
               appendUserService(userservice, id)
               id = id + 1;
+            })
+            const rateService = Array.from(document.getElementsByClassName("rateform")); 
+            rateService.forEach((key)=>{
+              key.addEventListener('submit', (event) => {
+                event.preventDefault();   
+
+                const rate = document.querySelector('#rating').value;
+                rateUserService(key.id, rate)});
             })
 
             /*const emailAdmin = document.getElementById("notifyAdmin");

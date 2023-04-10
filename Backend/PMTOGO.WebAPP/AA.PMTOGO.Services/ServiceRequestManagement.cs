@@ -12,13 +12,12 @@ namespace AA.PMTOGO.Services
         ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
 
         public async Task<Result> AcceptRequest(Guid requestId)
-        {//add service request and delete from requested service and return new lsit of service request
+        {//add service request and delete from requested service and return new list of service request
             ServiceRequest service = await CreateUserService(requestId);
             
             Result result = new Result();
          
-            Result insert = await _requestDAO.AddUserService(service.Id, service.ServiceName, service.ServiceType, service.ServiceDescription,
-                service.ServiceFrequency,service.ServiceProviderEmail, service.ServiceProviderName, service.PropertyManagerEmail, service.PropertyManagerName);
+            Result insert = await _requestDAO.AddUserService(service);
 
             if (insert.IsSuccessful == false)
             {

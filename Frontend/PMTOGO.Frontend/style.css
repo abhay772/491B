@@ -204,7 +204,10 @@ table {
 .accept:hover, .decline:hover{
   opacity:9;
 }
-.accept {
+.ratebtn:hover{
+  background-color: #04AA6D;
+}
+.accept, .ratebtn{
   background-color:lightgreen;
 
 }

@@ -94,7 +94,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("addrequests")]
-        public async Task<IActionResult> AddServiceRequest(Service service, string comments, string frequency)
+        public async Task<IActionResult> AddServiceRequest(ServiceRequest service)
         {
             Result result = new Result();
             result = ClaimsValidation("Property Manager");
@@ -104,7 +104,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
-                    Result insert = await _serviceManager.AddServiceRequest(service, user!.ClaimUsername, comments, frequency);
+                    Result insert = await _serviceManager.AddServiceRequest(service, user.ClaimUsername);
                     if (insert.IsSuccessful)
                     {
                         return Ok(new { message = insert.Payload});
@@ -125,17 +125,17 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
         
         [HttpPut]
-        [Route("{rate}")]
-        public async Task<IActionResult> RateService([FromBody] UserService service, int rate)
+        [Route("rate")]
+        public async Task<IActionResult> RateService(ServiceInfo service)
         {
             Result result = new Result();
-            result = ClaimsValidation(null!);
+            result = ClaimsValidation("Property Manager");
 
             if (result.IsSuccessful )
             {
                 try
                 {
-                    Result rating = await _serviceManager.RateUserService(service, rate);
+                    Result rating = await _serviceManager.RateUserService(service.Id, service.rate);
                     if (rating.IsSuccessful)
                     {
                         return Ok(rating.Payload);
