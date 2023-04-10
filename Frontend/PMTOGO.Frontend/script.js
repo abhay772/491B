@@ -93,7 +93,7 @@ function loadForgotPasswordPage() {
                 event.preventDefault();
 
                 // get user email
-                const email = emailInput.value;
+                const email = email.value;
 
                 // perform recovery action
                 const url = api + '/UserManagement/recovery';
@@ -122,8 +122,8 @@ function loadEnterOTPPage() {
             // update content div with recovery page
             content.innerHTML = data;
 
-            const emailInput = document.getElementById('email-input');
-            const otpInput = document.getElementById('otp-input');
+            const email = document.getElementById('email-input');
+            const otp = document.getElementById('otp-input');
             const submitBtn = document.getElementById('submit-btn');
 
             // add event listener to submit button
@@ -131,8 +131,8 @@ function loadEnterOTPPage() {
                 event.preventDefault();
 
                 // get user otp and username
-                const otp = otpInput.value;
-                const username = usernameInput.value;
+                const otp = otp.value;
+                const email = email.value;
 
                 // perform otp action
                 const url = api + '/UserManagement/otp';
@@ -159,18 +159,18 @@ function loadUpdatePasswordPage() {
         .then(data => {
             content.innerHTML = data;
 
-            const usernameInput = document.getElementById('username-input');
-            const passwordInput = document.getElementById('password-input');
+            const email = document.getElementById('email-input');
+            const password = document.getElementById('password-input');
             const submitBtn = document.getElementById('submit-btn');
 
             submitBtn.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                const username = usernameInput.value;
-                const password = passwordInput.value;
+                const email = email.value;
+                const password = password.value;
 
                 const url = api + '/UserManagement/updatePassword';
-                const data = { Username: username, Password: password };
+                const data = { email: email, Password: password };
 
                 send(url, data)
                     .then(data => data.json())
