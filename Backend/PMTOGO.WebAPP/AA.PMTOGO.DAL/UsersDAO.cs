@@ -541,6 +541,11 @@ public class UsersDAO
                     DateTime otpTimestamp = (DateTime)reader["OTPTimestamp"];
                     if ((DateTime.Now - otpTimestamp).TotalHours <= 24)
                     {
+                        // Update the RecoveryRequest column to 1 if OTP validation is successful
+                        var updateCommand = new SqlCommand("UPDATE UserAccounts SET RecoveryRequest = 1 WHERE username = @Username", connection);
+                        updateCommand.Parameters.AddWithValue("@Username", username);
+                        await updateCommand.ExecuteNonQueryAsync();
+
                         result.IsSuccessful = true;
                     }
                     else
@@ -561,27 +566,28 @@ public class UsersDAO
         return result;
     }
 
-    public async Task<Result> UpdatePassword(string username, string password)
+    public async Task<Result> UpdatePassword(string username, string passDigest, string salt)
     {
         Result result = new Result();
         using (var connection = new SqlConnection(_connectionString))
         {
-                connection.Open();
+            connection.Open();
 
-                var command = new SqlCommand("UPDATE UserAccounts SET password = @Password WHERE username = @Username", connection);
-                command.Parameters.AddWithValue("@Password", password);
-                command.Parameters.AddWithValue("@Username", username);
+            var command = new SqlCommand("UPDATE UserAccounts SET PassDigest = @PassDigest, Salt = @Salt WHERE Username = @Username", connection);
+            command.Parameters.AddWithValue("@PassDigest", passDigest);
+            command.Parameters.AddWithValue("@Salt", salt);
+            command.Parameters.AddWithValue("@Username", username);
 
-                int rowsAffected = await command.ExecuteNonQueryAsync();
-                if (rowsAffected == 0)
-                {
-                    result.IsSuccessful = false;
-                    result.ErrorMessage = "User not found";
-                }
-                else
-                {
-                    result.IsSuccessful = true;
-                }
+            int rowsAffected = await command.ExecuteNonQueryAsync();
+            if (rowsAffected == 0)
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "User not found";
+            }
+            else
+            {
+                result.IsSuccessful = true;
+            }
         }
         return result;
     }
@@ -589,13 +595,14 @@ public class UsersDAO
     public async Task<Result> SaveOTP(string username, string otp)
     {
         Result result = new Result();
+        var currentTime = DateTime.Now;
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
 
-            var command = new SqlCommand("UPDATE UserAccounts SET otp = @OTP, otp_timestamp = @OTPTimestamp WHERE username = @Username", connection);
+            var command = new SqlCommand("UPDATE UserAccounts SET otp = @OTP, OTPTimestamp = @OTPTimestamp WHERE username = @Username", connection);
             command.Parameters.AddWithValue("@OTP", otp);
-            command.Parameters.AddWithValue("@OTPTimestamp", DateTime.Now);
+            command.Parameters.AddWithValue("@OTPTimestamp", currentTime);
             command.Parameters.AddWithValue("@Username", username);
 
             int rowsAffected = await command.ExecuteNonQueryAsync();

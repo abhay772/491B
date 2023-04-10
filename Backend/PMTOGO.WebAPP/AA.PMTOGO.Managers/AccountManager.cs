@@ -61,7 +61,9 @@ namespace AA.PMTOGO.Managers
         public async Task<Result> UpdatePassword(string username, string password)
         {
             var dao = new UsersDAO();
-            Result result = await dao.UpdatePassword(username, password);
+            string salt = _account.GenerateSalt();
+            string passDigest = _account.EncryptPassword(password, salt);
+            Result result = await dao.UpdatePassword(username, passDigest, salt);
             return result;
         }
     }

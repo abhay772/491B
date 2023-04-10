@@ -14,8 +14,7 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<bool> UploadVideoAsync(strin
-            g email, string name, IFormFile videoFile)
+        public async Task<bool> UploadVideoAsync(string email, string name, IFormFile videoFile)
         {
             var result = await _dIYService.UploadVideo(email, name, videoFile);
             return result;

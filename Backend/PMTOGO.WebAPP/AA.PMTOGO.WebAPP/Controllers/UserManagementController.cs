@@ -58,11 +58,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Route("recovery")]
         //[Consumes("application/json")]
         [ActionName("AccountRecovery")]
-        public async Task<IActionResult> AccountRecovery([FromBody] string username)
+        public async Task<IActionResult> AccountRecovery([FromBody] UserRegister user)
         {
             try
             {
-                Result result = await _accManager.RecoverAccount(username);
+                Result result = await _accManager.RecoverAccount(user.Email);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);
@@ -83,11 +83,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Route("otp")]
         //[Consumes("application/json")]
         [ActionName("ValidateOTP")]
-        public async Task<IActionResult> ValidateOTP([FromBody] string username, string otp)
+        public async Task<IActionResult> ValidateOTP([FromBody] UserRegister user)
         {
             try
             {
-                Result result = await _accManager.OTPValidation(username, otp);
+                Result result = await _accManager.OTPValidation(user.Email, user.OTP);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);
@@ -108,11 +108,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Route("updatePassword")]
         //[Consumes("application/json")]
         [ActionName("UpdatePassword")]
-        public async Task<IActionResult> UpdatePassword([FromBody] string username, string password)
+        public async Task<IActionResult> UpdatePassword([FromBody] UserRegister user)
         {
             try
             {
-                Result result = await _accManager.UpdatePassword(username, password);
+                Result result = await _accManager.UpdatePassword(user.Email, user.Password);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);
@@ -203,6 +203,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             public string LastName { get; set; } = string.Empty;
             public string Password { get; set; } = string.Empty;
             public string Role { get; set; } = string.Empty;
+            public string OTP { get; set; } = string.Empty;
         }
     }
 }

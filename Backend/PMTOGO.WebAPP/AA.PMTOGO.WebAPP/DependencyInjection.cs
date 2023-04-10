@@ -1,5 +1,6 @@
 ﻿using AA.PMTOGO.Authentication;
 using AA.PMTOGO.DAL;
+using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers;
 using AA.PMTOGO.Managers.Interfaces;

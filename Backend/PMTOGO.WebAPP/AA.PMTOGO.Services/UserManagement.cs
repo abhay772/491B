@@ -148,7 +148,9 @@ namespace AA.PMTOGO.Services
             }
 
             var message = new MailMessage(companyEmail, userEmail, emailSubject, emailBody);
+
             // delete
+            Console.WriteLine(otp);
             await _authNDAO.SaveOTP(userEmail, otp);
             return true;
             //delete
