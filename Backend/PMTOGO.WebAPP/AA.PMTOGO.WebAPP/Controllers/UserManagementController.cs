@@ -13,12 +13,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
     {
         
         private readonly IAccountManager _accManager;
-        private readonly InputValidation _inputValidation;
+        private readonly ClaimValidation _claims;
+            
 
-        public UserManagementController(IAccountManager accManager, InputValidation inputValidation)
+        public UserManagementController(IAccountManager accManager, ClaimValidation claims)
         {
             _accManager = accManager;
-            _inputValidation = inputValidation;
+            _claims = claims;//uses input validation
         }
 #if DEBUG
         [HttpGet]
@@ -59,66 +60,32 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Consumes("application/json")]
         public async Task<IActionResult> DeleteUser()
         {
-            try
-            {
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
 
-                if (!string.IsNullOrEmpty(cookieValue))
+            if (result.IsSuccessful)
+            {
+
+                try
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
+                    Result delete = await _accManager.DeleteUserAccount(user.ClaimUsername);
+                    if (delete.IsSuccessful)
                     {
-                        return BadRequest("Invalid Claims");
+                        return Ok(delete);
                     }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-
-                    if (usernameClaim != null && roleClaim != null)
+                    else
                     {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
-
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck)
-                        {
-
-                            try
-                            {
-                                Result result = await _accManager.DeleteUserAccount(username);
-                                if (result.IsSuccessful)
-                                {
-                                    return Ok(result);
-                                }
-                                else
-                                {
-                                    return BadRequest("Invalid username or password provided. Retry again or contact system admin");
-                                }
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-                        }
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin");
                     }
-
                 }
-
-                return BadRequest("Cookie not found");
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
-
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+             return BadRequest("Cookie not found");
+            
         }
 
         public class UserRegister

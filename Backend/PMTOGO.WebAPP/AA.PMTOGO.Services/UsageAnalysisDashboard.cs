@@ -1,25 +1,33 @@
-﻿using AA.PMTOGO.Logging;
+﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
 
 namespace AA.PMTOGO.Services
 {
+    //input validation, error handling , logging
     public class UsageAnalysisDashboard : IUsageAnalysisDashboard
     {
-        Logger _logger = new();
-        public Task<Result> GenerateAnalysis()
+        LoggerDAO _logger = new LoggerDAO();
+        public async Task<Result> GenerateAnalysis()
         {
-            throw new NotImplementedException();
+            Result analysis = new Result();
+            Result Logins = await GetLoginsPerDay();
+            Result Registrations = await GetRegistrationsPerDay();
+            return analysis;
         }
 
-        public Task<Result> GetLoginsPerDay()
+        public async Task<Result> GetLoginsPerDay()
         {
-            throw new NotImplementedException();
+            Result logins = await _logger.GetAnalysisLogs("Authenticate");
+
+            return logins;
         }
 
-        public Task<Result> GetRegistrationsPerDay()
+        public async Task<Result> GetRegistrationsPerDay()
         {
-            throw new NotImplementedException();
+            Result registrations = await _logger.GetAnalysisLogs("CreateAccount");
+
+            return registrations;
         }
     }
 }

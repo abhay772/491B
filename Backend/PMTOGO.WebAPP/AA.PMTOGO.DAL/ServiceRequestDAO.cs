@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 
 namespace AA.PMTOGO.DAL
 {
+    //logging
     public class ServiceRequestDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";

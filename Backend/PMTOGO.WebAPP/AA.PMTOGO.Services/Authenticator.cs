@@ -2,7 +2,6 @@
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.Services;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -14,8 +13,13 @@ public class Authenticator : IAuthenticator
 {
 
     UsersDAO _authNDAO = new UsersDAO();
-    Logger? _logger = new();
     InputValidation valid = new InputValidation();
+    private readonly ILogger _logger;
+
+    public Authenticator(ILogger logger)
+    {
+        _logger = logger;
+    }
 
 
     public async Task<Result> Authenticate(string username, string password)

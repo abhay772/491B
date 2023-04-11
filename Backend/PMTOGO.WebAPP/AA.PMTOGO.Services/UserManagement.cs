@@ -8,11 +8,17 @@ using AA.PMTOGO.Logging;
 
 namespace AA.PMTOGO.Services
 {
+    //input validation, error handling , logging
     public class UserManagement : IUserManagement
     {
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
-        Logger _logger = new();
+        private readonly ILogger _logger;
+
+        public UserManagement(ILogger logger)
+        {
+            _logger = logger;
+        }
 
 
         //byte[] to string
