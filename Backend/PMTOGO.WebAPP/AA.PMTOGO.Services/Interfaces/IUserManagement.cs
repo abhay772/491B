@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AA.PMTOGO.Infrastructure.Interfaces
+namespace AA.PMTOGO.Services.Interfaces
 {
     public interface IUserManagement
     {

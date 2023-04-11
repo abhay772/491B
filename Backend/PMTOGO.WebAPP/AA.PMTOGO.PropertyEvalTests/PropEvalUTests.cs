@@ -1,9 +1,6 @@
-using AA.PMTOGO.DAL;
-using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Managers;
 using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.Services;
-using System.Net.Mail;
+using AA.PMTOGO.DAL;
 
 namespace AA.PMTOGO.PropertyEvalTests;
 

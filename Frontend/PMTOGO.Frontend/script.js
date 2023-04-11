@@ -51,7 +51,9 @@ function loadLoginPage() {
         send(url, data)
         .then((response) => {
           if (response.ok) {
-            loadHomePage();
+            response.json().then(data => {
+              loadHomePage(`${data.claims[1].value}`);
+            })
           }
         })
         .catch(error => {
@@ -118,7 +120,7 @@ function loadRegisterPage() {
 }
 
 //function to load homepage
-function loadHomePage() {
+function loadHomePage(userrole) {
   // fetch property evaluation page html
   fetch('./Views/homepage.html')
     .then(response => response.text())
@@ -129,6 +131,8 @@ function loadHomePage() {
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
 
+      const userinfo = document.getElementById("userrole");
+      userinfo.innerHTML = userrole;
     //select log out
     
     const logoutUser = document.getElementById("logout");
@@ -367,7 +371,7 @@ const appendRequest =(request, id) => {
 
   //add the data
   let requestId = document.createElement('td');
-  requestId.innerText = `${request.requestId}`;
+  requestId.innerText = `${request.id}`;
 
   let serviceName = document.createElement('td');
   serviceName.innerText = `${request.serviceName}`;
@@ -393,14 +397,14 @@ const appendRequest =(request, id) => {
   let acceptAction = document.createElement('td');
   let acceptbtn = document.createElement('button');
   acceptbtn.className ="accept"; 
-  acceptbtn.id=`${request.requestId}`;
+  acceptbtn.id=`${request.id}`;
   acceptbtn.innerText = "Accept";
 
   let declineAction = document.createElement('td');
   let declinebtn = document.createElement('button');
   declinebtn.innerText = "Decline";
   declinebtn.className="decline";
-  declinebtn.id=`${request.requestId}`; 
+  declinebtn.id=`${request.id}`; 
   
   acceptAction.append(acceptbtn);
   declineAction.append(declinebtn);
@@ -410,9 +414,27 @@ const appendRequest =(request, id) => {
     //allrequest += requestTableBodyRow;
   requestsTable.append(requestTableBodyRow);
 }
-
+function acceptRequest(requestid){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
+  url = api + "/ServiceRequest/accept";
+  data = {id: requestid}
+  send(url, data)
+  .then(data => data.json())
+  .then(response => console.log(response))
+  .then(loadRequestManagementPage(homepageContent));
+  
+}
+function declineRequest(requestid){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
+  url = api + "/ServiceRequest/decline";
+  data = {id: requestid}
+  send(url, data)
+    .then(data => data.json())
+    .then(response => console.log(response))
+    .then(loadRequestManagementPage(homepageContent));
+}
 function getrequest(){
-  url = api + '/Request/getrequest';
+  url = api + '/ServiceRequest/getrequest';
   get(url)
     .then(response => {
       if(!response.ok){
@@ -424,13 +446,14 @@ function getrequest(){
         
             homepageContent.innerHTML = text;
           })
+          .catch(error => console.error(error))
   
       } 
       else {
         response.json().then(data => {
           createRequestsTable();
           let id = 0;
-          data.forEach((request) =>{
+          data.forEach((request) => {         
             appendRequest(request, id)
             id = id + 1;
           })
@@ -480,25 +503,7 @@ function loadEmailPage(homepageContent){
     })   
     .catch(error => console.log(error));
 }
-function acceptRequest(requestid){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/Request/accept";
-  data = {requestId: requestid}
-  send(url, data)
-  .then(data => data.json())
-  .then(response => console.log(response))
-  .then(loadRequestManagementPage(homepageContent));
-  
-}
-function declineRequest(requestid){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/Request/decline";
-  data = {requestId: requestid}
-  send(url, data)
-    .then(data => data.json())
-    .then(response => console.log(response))
-    .then(loadRequestManagementPage(homepageContent));
-}
+
 //fucntion to load request Management page
 function loadRequestManagementPage(homepageContent) {
   // fetch request evaluation page html
@@ -514,10 +519,19 @@ function loadRequestManagementPage(homepageContent) {
     .catch(error => console.log(error));
     
 }
+function rateUserService(id, rate){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
+  url = api + "/Service/rate";
+  data = {id: id, rate: rate}
+  put(url, data)
+  .then(response => console.log(response))
+  .then(loadServiceManagementPage(homepageContent));
+  
+}
 const createUserServiceTable = () =>{
   const userservices = document.querySelector("div.userservices");
-  let tableHeaders = ["Service ID", "Service Name", "Service Type",  "Service Description", 
-  "Service Frequency", "Service Provider Name", "Service Provider Email", "Status", "Rating"];
+  let tableHeaders = ["Service Name", "Service Type",  "Service Description", 
+  "Service Frequency", "Service Provider Name", "Service Provider Email", "Status", "Rating", "Rate?", "Frequency Change?"];
     while (userservices.firstChild) userservices.removeChild(userservices.firstChild)
     let userServiceTable = document.createElement('table');
     userServiceTable.className="userServiceTable";
@@ -555,9 +569,6 @@ const appendUserService =(userservice, id) => {
   userServiceTableBodyRow.id= String(id);
 
   //add the data
-  let serviceId = document.createElement('td');
-  serviceId.innerText = `${userservice.serviceId}`;
-
   let serviceName = document.createElement('td');
   serviceName.innerText = `${userservice.serviceName}`;
 
@@ -571,7 +582,7 @@ const appendUserService =(userservice, id) => {
   serviceFrequeny.innerText = `${userservice.serviceFrequency}`;
 
   let serviceProvider = document.createElement('td');
-  serviceProvider.innerText = `${userservice.serviceProvider}`;
+  serviceProvider.innerText = `${userservice.serviceProviderName}`;
 
   let serviceProviderEmail = document.createElement('td');
   serviceProviderEmail.innerText = `${userservice.serviceProviderEmail}`;
@@ -582,14 +593,31 @@ const appendUserService =(userservice, id) => {
   let rating = document.createElement('td');
   rating.innerText = `${userservice.rating}`;
 
+  let rateAction = document.createElement('td');
+  let rateForm = document.createElement('form');
+  rateForm.id = `${userservice.id}`;
+  rateForm.className="rateform"
+  let rateInput = document.createElement('input');
+  rateInput.type ="number";
+  rateInput.placeholder="Enter rating 1-5";
+  rateInput.id ="rating"
 
-  userServiceTableBodyRow.append(serviceId,serviceName,serviceType,serviceDescription,serviceFrequeny,
-    serviceProvider,serviceProviderEmail,status,rating);
+  let ratebtn = document.createElement('button');
+  ratebtn.className="ratebtn";
+  ratebtn.type="submit"
+  ratebtn.innerText = "Submit";
+
+  rateAction.append(rateForm);
+  rateForm.append(rateInput);
+  rateForm.append(ratebtn);
+
+  userServiceTableBodyRow.append(serviceName,serviceType,serviceDescription,serviceFrequeny,
+    serviceProvider,serviceProviderEmail,status,rating, rateAction);
     //allrequest += requestTableBodyRow;
   UserServiceTable.append(userServiceTableBodyRow);
 }
 //fucntion to load service Management page
-function loadServiceManagementPage(homepageContent) {
+function loadServiceManagementPage(homepageContent) { 
   // fetch request evaluation page html
   fetch('./Views/serviceMan.html')
     .then(response => response.text())
@@ -607,6 +635,14 @@ function loadServiceManagementPage(homepageContent) {
             response.forEach((userservice) =>{
               appendUserService(userservice, id)
               id = id + 1;
+            })
+            const rateService = Array.from(document.getElementsByClassName("rateform")); 
+            rateService.forEach((key)=>{
+              key.addEventListener('submit', (event) => {
+                event.preventDefault();   
+
+                const rate = document.querySelector('#rating').value;
+                rateUserService(key.id, rate)});
             })
 
             /*const emailAdmin = document.getElementById("notifyAdmin");

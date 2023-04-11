@@ -1,13 +1,13 @@
 ﻿using AA.PMTOGO.Models.Entities;
 
 
-namespace AA.PMTOGO.Infrastructure.Interfaces
+namespace AA.PMTOGO.Services.Interfaces
 {
-    public interface IRequestManagement
+    public interface IServiceRequestManagement
     {
         Task<Result> AcceptRequest(Guid requestId);
         Task<Result> DeclineRequest(Guid id, string username);
-        Task<Result> GatherServiceRequest(string username);
+        Task<Result> GatherServiceRequests(string username);
         Task<ServiceRequest> CreateUserService(Guid requestId);
     }
 }

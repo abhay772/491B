@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AA.PMTOGO.Infrastructure.Interfaces
+namespace AA.PMTOGO.Managers.Interfaces
 {
-    public interface IRequestManager
+    public interface IServiceRequestManager
     {
         Task<Result> AcceptServiceRequest(string requestId);//update accept
         Task<Result> RemoveServiceRequest(string requestId, string email); // update decline
-        Task<Result> GetUserRequest(string username);//get all request for service provider user
+        Task<Result> GetUserRequests(string username);//get all request for service provider user
     }
 }

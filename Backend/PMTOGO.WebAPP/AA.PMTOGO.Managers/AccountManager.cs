@@ -1,14 +1,12 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿using AA.PMTOGO.Logging;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
-using System;
-using System.Collections.Generic;
+using AA.PMTOGO.Services.Interfaces;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AA.PMTOGO.Managers
 {
+    //input validation, error handling , logging
     public class AccountManager : IAccountManager
     {
         private readonly IUserManagement _account;
@@ -30,7 +28,7 @@ namespace AA.PMTOGO.Managers
             {
                 Result resultLog = new Result();
                 resultLog.ErrorMessage = "Took" + seconds + "seconds to create user, longer than alloted ";
-                //_logger!.Log("RegisterUser", 1, LogCategory.Data, resultLog);
+                await _logger!.Log("RegisterUser", 1, LogCategory.Data, resultLog);
                 //log it took longer than 5 seconds 
             }
 
