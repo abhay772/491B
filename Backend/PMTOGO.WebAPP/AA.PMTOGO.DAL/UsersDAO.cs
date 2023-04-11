@@ -542,10 +542,9 @@ public class UsersDAO
                     if ((DateTime.Now - otpTimestamp).TotalHours <= 24)
                     {
                         // Update the RecoveryRequest column to 1 if OTP validation is successful
-                        var updateCommand = new SqlCommand("UPDATE UserAccounts SET RecoveryRequest = 1 WHERE username = @Username", connection);
-                        updateCommand.Parameters.AddWithValue("@Username", username);
-                        await updateCommand.ExecuteNonQueryAsync();
-
+                       // command = new SqlCommand("UPDATE UserAccounts SET RecoveryRequest = 1 WHERE username = @Username", connection);
+                        //command.ExecuteNonQuery();
+                        
                         result.IsSuccessful = true;
                     }
                     else
