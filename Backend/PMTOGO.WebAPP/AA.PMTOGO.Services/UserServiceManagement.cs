@@ -4,12 +4,11 @@ using AA.PMTOGO.Services.Interfaces;
 
 namespace AA.PMTOGO.Services
 {
+    //input validation, error handling , logging
     public class UserServiceManagement : IUserServiceManagement
     {
         UserServiceDAO _userServiceDAO = new UserServiceDAO();
         UsersDAO _authNDAO = new UsersDAO();
-
-
         public async Task<Result> CreateRequest(ServiceRequest service, string username)
         {
 

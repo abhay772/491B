@@ -1,12 +1,13 @@
 ﻿using AA.PMTOGO.Models.Entities;
-using System.Data;
 using System.Data.SqlClient;
+
+
 namespace AA.PMTOGO.DAL;
 
 public class UsersDAO
 {
-    private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
-    //private readonly ILogger? _logger;
+    //logging
+    private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True";
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)
@@ -55,7 +56,6 @@ public class UsersDAO
 
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
-                    //_logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                 }
             }
@@ -111,7 +111,6 @@ public class UsersDAO
                 {
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
-                    //_logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                 }
             }
@@ -186,7 +185,6 @@ public class UsersDAO
                 if (e.Number == 208)
                 {
                     result.ErrorMessage = "Specified table not found";
-                    //_logger!.Log("DeactivateUser", 4, LogCategory.DataStore, result);
                 }
             }
 
@@ -230,7 +228,6 @@ public class UsersDAO
                 if (e.Number == 208)
                 {
                     result.ErrorMessage = "Specified table not found";
-                    //_logger!.Log("DeactivateUser", 4, LogCategory.DataStore, result);
                 }
             }
 
@@ -275,7 +272,6 @@ public class UsersDAO
                 if (e.Number == 208)
                 {
                     result.ErrorMessage = "Specified table not found";
-                    //_logger!.Log("ActivateUser", 4, LogCategory.DataStore, result);
 
                 }
             }
@@ -332,7 +328,6 @@ public class UsersDAO
                 if (e.Number == 208)
                 {
                     result.ErrorMessage = "Specified table not found";
-                    //_logger!.Log("SaveUserAccount", 4, LogCategory.DataStore, result);
                 }
             }
 
@@ -383,7 +378,6 @@ public class UsersDAO
                 if (e.Number == 208)
                 {
                     result.ErrorMessage = "Specified table not found";
-                    //_logger!.Log("SaveUserProfile", 4, LogCategory.DataStore, result);
                 }
             }
 
@@ -427,8 +421,6 @@ public class UsersDAO
                 reader.Close();
                 var rows = command.ExecuteNonQuery();
                 //TODO: log username, Ip, timestamp to database
-
-                //_logger!.Log("UpdateFailedAttempts", 4, LogCategory.DataStore, result);
             }
             reader.Close();
 

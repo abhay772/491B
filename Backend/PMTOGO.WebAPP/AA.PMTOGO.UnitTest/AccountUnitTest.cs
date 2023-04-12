@@ -1,5 +1,6 @@
 using AA.PMTOGO.DAL;
 using AA.PMTOGO.Libary;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 using System.Diagnostics;
@@ -16,7 +17,8 @@ namespace AA.PMTOGO.UnitTest
             var expected = typeof(UserManagement);
 
             // Act
-            var actual = new UserManagement();
+            var logger = new Logger();
+            var actual = new UserManagement(logger);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -28,7 +30,8 @@ namespace AA.PMTOGO.UnitTest
         public async Task ShouldAssignUniqueUsername()
         {
             // Arrange
-            var user = new UserManagement();
+            var logger = new Logger();
+            var user = new UserManagement(logger);
             //clean up
             await user.DeleteAccount("sara2@gmail.com");
 
@@ -148,7 +151,8 @@ namespace AA.PMTOGO.UnitTest
         {
             //aranage
 
-            var registration = new UserManagement();
+            var logger = new Logger();
+            var registration = new UserManagement(logger);
 
             //act
             var time = Stopwatch.StartNew();
@@ -190,7 +194,8 @@ namespace AA.PMTOGO.UnitTest
         {
             //aranage
 
-            var account = new UserManagement();
+            var logger = new Logger();
+            var account = new UserManagement(logger);
             var dao = new UsersDAO();
 
             //act

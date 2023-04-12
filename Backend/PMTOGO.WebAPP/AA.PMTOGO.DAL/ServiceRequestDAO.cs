@@ -1,14 +1,10 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
-using AA.PMTOGO.Models.Entities;
-using System.Collections.Generic;
+﻿using AA.PMTOGO.Models.Entities;
 using System.Data;
 using System.Data.SqlClient;
-using System.Text;
-using System.Windows;
-using System.Xml.Linq;
 
 namespace AA.PMTOGO.DAL
 {
+    //logging
     public class ServiceRequestDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";

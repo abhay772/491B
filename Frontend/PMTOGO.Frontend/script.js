@@ -438,25 +438,7 @@ function extractData(fieldset){
   console.log(data)
   return data;
 }
-function acceptRequest(requestid){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/ServiceRequest/accept";
-  data = {id: requestid}
-  send(url, data)
-  .then(data => data.json())
-  .then(response => console.log(response))
-  .then(loadRequestManagementPage(homepageContent));
-  
-}
-function declineRequest(requestid){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/ServiceRequest/decline";
-  data = {id: requestid}
-  send(url, data)
-    .then(data => data.json())
-    .then(response => console.log(response))
-    .then(loadRequestManagementPage(homepageContent));
-}
+
 const createRequestsTable = () =>{
   const requests = document.querySelector("div.requests");
   let tableHeaders = ["Request ID", "Service Name", "Service Type",  "Service Description", 
@@ -542,7 +524,25 @@ const appendRequest =(request, id) => {
     //allrequest += requestTableBodyRow;
   requestsTable.append(requestTableBodyRow);
 }
-
+function acceptRequest(requestid){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
+  url = api + "/ServiceRequest/accept";
+  data = {id: requestid}
+  send(url, data)
+  .then(data => data.json())
+  .then(response => console.log(response))
+  .then(loadRequestManagementPage(homepageContent));
+  
+}
+function declineRequest(requestid){
+  const homepageContent = document.getElementsByClassName("homepage-content")[0];
+  url = api + "/ServiceRequest/decline";
+  data = {id: requestid}
+  send(url, data)
+    .then(data => data.json())
+    .then(response => console.log(response))
+    .then(loadRequestManagementPage(homepageContent));
+}
 function getrequest(){
   url = api + '/ServiceRequest/getrequest';
   get(url)
