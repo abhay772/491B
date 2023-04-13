@@ -9,5 +9,6 @@ namespace AA.PMTOGO.Services.Interfaces
         Task<Result> DeclineRequest(Guid id, string username);
         Task<Result> GatherServiceRequests(string username);
         Task<ServiceRequest> CreateUserService(Guid requestId);
+        Task<Result> AddRequest(ServiceRequest request);
     }
 }

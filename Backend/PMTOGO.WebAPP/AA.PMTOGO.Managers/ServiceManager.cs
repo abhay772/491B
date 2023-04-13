@@ -7,26 +7,24 @@ namespace AA.PMTOGO.Managers
     //input validation, error handling , logging
     public class ServiceManager: IServiceManager
     {
-        private readonly IServiceManagement _service;
         private readonly IUserServiceManagement _userService;
 
-        public ServiceManager(IServiceManagement service, IUserServiceManagement userService) 
+        public ServiceManager(IUserServiceManagement userService) 
         {
-            _service = service;
             _userService = userService;
         }
         // rate service
         public async Task<Result> RateUserService(string serviceId, int rate)
         {
             Guid id = new Guid(serviceId);
-            Result result = await _userService.RateService(id, rate);
+            Result result = await _userService.Rate(id, rate);
 
             return result;
         }
         //get all request for service provider user    
         public async Task<Result> GetAllServices()
         {
-            Result result = await _service.GatherServices();
+            Result result = await _userService.GatherServices();
 
             return result;
         }

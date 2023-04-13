@@ -9,6 +9,7 @@ namespace AA.PMTOGO.Services
     public class ServiceRequestManagement : IServiceRequestManagement
     {
         ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
+        UserServiceDAO _serviceDAO= new UserServiceDAO();
 
         public async Task<Result> AcceptRequest(Guid requestId)
         {//add service request and delete from requested service and return new list of service request
@@ -16,7 +17,7 @@ namespace AA.PMTOGO.Services
             
             Result result = new Result();
          
-            Result insert = await _requestDAO.AddUserService(service);
+            Result insert = await _serviceDAO.AddUserService(service);
 
             if (insert.IsSuccessful == false)
             {
@@ -60,6 +61,13 @@ namespace AA.PMTOGO.Services
             ServiceRequest request = (ServiceRequest)result.Payload!;
 
             return request;
+        }
+
+        public async Task<Result> AddRequest(ServiceRequest request)
+        {
+            Result result = await _requestDAO.AddServiceRequest(request);
+            return result;
+
         }
 
     }

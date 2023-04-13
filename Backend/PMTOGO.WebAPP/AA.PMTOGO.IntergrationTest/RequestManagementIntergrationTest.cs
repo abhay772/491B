@@ -1,6 +1,6 @@
 ﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Models.Entities;
-
+using AA.PMTOGO.Services;
 
 namespace AA.PMTOGO.IntergrationTest
 {
@@ -14,8 +14,9 @@ namespace AA.PMTOGO.IntergrationTest
             var dao = new ServiceRequestDAO();
             var service = new UserServiceDAO();
             Guid id = Guid.NewGuid();
-            await service.AddServiceRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
+            ServiceRequest request = new ServiceRequest(id, "New Service","Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+            await dao.AddServiceRequest(request);
 
             // Act
             Result result = await dao.GetServiceRequests("serviceProvider@gmail.com");
@@ -37,17 +38,20 @@ namespace AA.PMTOGO.IntergrationTest
         {
             // Arrange
             var dao = new ServiceRequestDAO();
-            var service = new UserServiceDAO();
+            var serviceRequest = new ServiceRequestManagement();
             Guid id = Guid.NewGuid();
-            await service.AddServiceRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month","random comment",
+
+            ServiceRequest request = new ServiceRequest(id, "New Service", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+            await dao.AddServiceRequest(request);
 
             // Act
-            await dao.DeleteServiceRequest(id);
+            await serviceRequest.AcceptRequest(id);
             Result result = await dao.FindServiceRequest(id);
             bool actual = result.IsSuccessful;
 
             //clean up
+            var service = new UserServiceDAO();
             await service.DeleteUserService(id);
 
             // Assert
@@ -62,10 +66,11 @@ namespace AA.PMTOGO.IntergrationTest
         {
             // Arrange
             var dao = new ServiceRequestDAO();
-            var service = new UserServiceDAO();
+
             Guid id = Guid.NewGuid();
-            await service.AddServiceRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
+            ServiceRequest request = new ServiceRequest(id, "New Service", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+            await dao.AddServiceRequest(request);
 
             // Act
             await dao.DeleteServiceRequest(id);
@@ -88,9 +93,9 @@ namespace AA.PMTOGO.IntergrationTest
             Guid id = Guid.NewGuid();
 
             // Act
-            ServiceRequest service = new ServiceRequest(id, "Landscape", "material delivery", "soil installation ", "1x/month","random comment",
+            ServiceRequest service = new ServiceRequest(id,"New Service", "Landscape", "material delivery", "soil installation ", "1x/month","random comment",
                 "mssierra310@gmail.com", "Sara Jade", "sierra.harris01@student.csulb.edu", "Sierra Harris");
-            await request.AddUserService(service);
+            await userService.AddUserService(service);
             Result result = await userService.FindUserService(id);
             bool actual = result.IsSuccessful;
 

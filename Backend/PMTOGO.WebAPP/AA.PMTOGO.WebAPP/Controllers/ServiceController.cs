@@ -94,7 +94,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("addrequests")]
-        public async Task<IActionResult> AddServiceRequest(ServiceRequest service)
+        public async Task<IActionResult> ServiceRequest(ServiceRequest service)
         {
             Result result = new Result();
             result = _claims.ClaimsValidation("Property Manager", Request);
