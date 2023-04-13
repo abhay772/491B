@@ -11,12 +11,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ServiceController : ControllerBase
+    public class UserServiceController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
         private readonly ClaimValidation _claims;
 
-        public ServiceController(IServiceManager serviceManager, ClaimValidation claims)
+        public UserServiceController(IServiceManager serviceManager, ClaimValidation claims)
         {
             _serviceManager = serviceManager;
             _claims = claims;//uses input validation
@@ -43,7 +43,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
-                    Result userServices = await _serviceManager.GetAllUserServices(user.ClaimUsername);
+                    Result userServices = await _serviceManager.GetAllUserServices(user.ClaimUsername, user.ClaimRole);
                     if (userServices.IsSuccessful)
                     {
                         return Ok(userServices.Payload!);
@@ -73,6 +73,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
+                    //get all services service providers provide
                     Result services = await _serviceManager.GetAllServices();
                     if (services.IsSuccessful)
                     {
@@ -130,12 +131,46 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             Result result = new Result();
             result = _claims.ClaimsValidation("Property Manager", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
 
             if (result.IsSuccessful )
             {
                 try
+                {//NEED role to correspond with service provider or property manager rating column
+                    Result rating = await _serviceManager.RateUserService(service.Id, service.rate, user.ClaimRole);
+                    if (rating.IsSuccessful)
+                    {
+                        return Ok(rating.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                    }
+                }
+                catch
                 {
-                    Result rating = await _serviceManager.RateUserService(service.Id, service.rate);
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+            }
+            return BadRequest("Invalid Credentials");
+        }
+
+        [HttpPost]
+        [Route("frequencyrequest")]
+        public async Task<IActionResult> ChangeServiceFrequncy(ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+
+
+            if (result.IsSuccessful)
+            {
+                try
+                {//NEED role to correspond with service provider or property manager rating column
+                    Result rating = await _serviceManager.FrequencyChangeRequest(service.Id, service.frequency);
                     if (rating.IsSuccessful)
                     {
                         return Ok(rating.Payload);

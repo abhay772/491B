@@ -9,7 +9,7 @@ namespace AA.PMTOGO.Services
     public class UserServiceManagement : IUserServiceManagement
     {
         UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestManagement _request = new ServiceRequestManagement();
+        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
         ServiceDAO _serviceDAO = new ServiceDAO();
         UsersDAO _authNDAO = new UsersDAO();
 
@@ -27,6 +27,7 @@ namespace AA.PMTOGO.Services
 
             return propertyManagerName;
         }
+        //change create request to be used with frequency change.
         public async Task<Result> CreateRequest(ServiceRequest service, string username)
         {
             //need property manager info
@@ -37,7 +38,7 @@ namespace AA.PMTOGO.Services
             ServiceRequest request = new ServiceRequest(serviceRequestId,service.RequestType, service.ServiceName, service.ServiceType, service.ServiceDescription, service.ServiceFrequency, service.Comments, service.ServiceProviderName, service.ServiceProviderEmail,
                 username, propertyManagerName);
 
-            Result result = await _request.AddRequest(request);
+            Result result = await _requestDAO.AddServiceRequest(request);
             return result;
         }
 
@@ -46,17 +47,19 @@ namespace AA.PMTOGO.Services
             Result result = new Result();
             try
             {
+                //dont use select *
+                string select = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProvider, Status";
                 if (role == "Service Provider")
                 {
-                    string query = "SELECT * FROM UserServices WHERE ServiceProviderEmail = @ServiceProviderEmail";
-                    result = await _userServiceDAO.GetUserService(query, username);
+                    string query = select + " SPRating FROM UserServices WHERE ServiceProviderEmail = @ServiceProviderEmail";
+                    result = await _userServiceDAO.GetUserService(query, username, "SPRating");
                     return result;
 
                 }
                 if(role == "Property Manager")
                 {
-                    string query = "SELECT * FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
-                    result = await _userServiceDAO.GetUserService(query, username);
+                    string query = select + " PMRating FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
+                    result = await _userServiceDAO.GetUserService(query, username, "PMRating");
                     return result;
 
                 }
@@ -80,6 +83,7 @@ namespace AA.PMTOGO.Services
             {
                 if (CheckRate(rate))
                 {
+                    //different column for user rating
                     if(role == "Service Provider")
                     {
                         string query = "UPDATE UserServices SET SPRating = @Rating WHERE Id = @ID";
@@ -100,9 +104,9 @@ namespace AA.PMTOGO.Services
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Rate could not be updated";
-                return result;
+                result.ErrorMessage = "Rate could not be updated";  
             }
+            return result;
         }
         public bool CheckRate(int rate)
         {
@@ -112,9 +116,21 @@ namespace AA.PMTOGO.Services
             }
             return true;
         }
+        //get all services from db
         public async Task<Result> GatherServices()
         {
-            Result result = await _serviceDAO.GetServices();
+            Result result = new Result();
+            try
+            {
+                result = await _serviceDAO.GetServices();
+                return result;
+
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Could not load Services";
+            }
             return result;
         }
 
@@ -131,7 +147,7 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> FrequnecyChange(Guid id, string frequency)
+        public async Task<Result> FrequencyChange(Guid id, string frequency, string type)
         {
             Result result = new Result();
             try

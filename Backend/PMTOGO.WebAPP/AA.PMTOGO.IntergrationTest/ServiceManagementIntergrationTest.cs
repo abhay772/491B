@@ -8,6 +8,42 @@ namespace AA.PMTOGO.IntergrationTest
     public class ServiceManagementIntergrationTest
     {
         [TestMethod]
+        public async Task AddAService_PASS()
+        {
+            // Arrange
+            var dao = new ServiceDAO();
+
+            // Act
+            await dao.AddService("Parking Lot Sweep", "Sweeping", "random description",
+                "mssierra310@gmail.com", "Sierra Harris");
+            Result result = await dao.FindService("Parking Lot Sweep", "Sweeping", "random description");
+            bool actual = result.IsSuccessful;
+
+            //clean up
+            await dao.DeleteService("Parking Lot Sweep", "Sweeping", "mssierra310@gmail.com");
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
+
+
+        }
+
+        [TestMethod]
+        public async Task GetServices_PASS()
+        {
+            // Arrange
+            var dao = new ServiceDAO();
+
+            // Act
+            Result result = await dao.GetServices();
+            bool actual = result.IsSuccessful;
+
+            // Assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
+        }
+        [TestMethod]
         public async Task GetUserServicesPM_PASS()
         {
             // Arrange
@@ -19,7 +55,7 @@ namespace AA.PMTOGO.IntergrationTest
             await dao.AddUserService(service);
             string query = "SELECT * FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
             // Act
-            Result result = await dao.GetUserService(query, "propertyManager@gmail.com");
+            Result result = await dao.GetUserService(query, "propertyManager@gmail.com", "PMRating");
             bool actual = result.IsSuccessful;
 
 
@@ -43,7 +79,7 @@ namespace AA.PMTOGO.IntergrationTest
             await dao.AddUserService(service);
             string query = "SELECT * FROM UserServices WHERE ServiceProviderEmail = @ServiceProviderEmail";
             // Act
-            Result result = await dao.GetUserService(query, "serviceProvider@gmail.com");
+            Result result = await dao.GetUserService(query, "serviceProvider@gmail.com", "SPRating");
             bool actual = result.IsSuccessful;
 
 
@@ -98,7 +134,7 @@ namespace AA.PMTOGO.IntergrationTest
             
             //act
             await service.Rate(id, 4, role);
-            Result result = await dao.CheckRating(id, 4, query);
+            Result result = await dao.CheckRating(id, 4, query, "SPRating");
             bool actual = result.IsSuccessful;
 
             //clean up
@@ -127,7 +163,7 @@ namespace AA.PMTOGO.IntergrationTest
 
             //act
             await service.Rate(id, 4, role);
-            Result result = await dao.CheckRating(id, 4, query);
+            Result result = await dao.CheckRating(id, 4, query, "PMRating");
             bool actual = result.IsSuccessful;
 
             //clean up

@@ -23,7 +23,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM Services";
+                string sqlQuery = "SELECT ServiceProvider, ServiceProviderEmail, ServiceName, ServiceType, ServiceDescription, ServicePrice FROM Services";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -41,6 +41,7 @@ namespace AA.PMTOGO.DAL
                             service.ServiceName = (string)reader["ServiceName"];
                             service.ServiceType = (string)reader["ServiceType"];
                             service.ServiceDescription = (string)reader["ServiceDescription"];
+                            service.ServicePrice = (float)reader["ServicePrice"];
 
 
 

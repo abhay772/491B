@@ -107,7 +107,7 @@ namespace AA.PMTOGO.DAL
         
 
         //user service list
-        public async Task<Result> GetUserService(string sqlQuery, string email) // return all user services
+        public async Task<Result> GetUserService(string sqlQuery, string email, string rating) // return all user services
         {
 
             Result result = new Result();
@@ -134,7 +134,7 @@ namespace AA.PMTOGO.DAL
 
                             UserService service = new UserService((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
                                 (string)reader["ServiceFrequency"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
-                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"], (string)reader["Status"], (int)reader["Rating"]);
+                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"], (string)reader["Status"], (int)reader[rating]);
 
 
                             listOfUserServices.Add(service);
@@ -293,7 +293,7 @@ namespace AA.PMTOGO.DAL
         }
 
         //check rating and frequency functions
-        public async Task<Result> CheckRating(Guid Id, int rating, string sqlQuery)
+        public async Task<Result> CheckRating(Guid Id, int rating, string sqlQuery, string userRate)
         {
             Result result = new Result();
 
@@ -310,7 +310,7 @@ namespace AA.PMTOGO.DAL
                     try
                     {
                         reader.Read();
-                        if ((int)reader["Rating"] == rating)
+                        if ((int)reader[userRate] == rating)
                         {
                             result.IsSuccessful = true;
                             return result;

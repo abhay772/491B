@@ -17,17 +17,20 @@ namespace AA.PMTOGO.Models.Entities
         public string ServiceProvider { get; set; } = string.Empty;
         [Key]
         public string ServiceProviderEmail { get; set; } = string.Empty;
+
+        public float ServicePrice { get; set; }
         
         public Service() { }
 
-        public Service(string name, string description, string type, string serviceProvider, string providerEmail)
+        public Service(string name, string description, string type, string serviceProvider, string providerEmail, float servicePrice )
         {
             ServiceName = name;
             ServiceDescription = description;
             ServiceType = type;
             ServiceProvider = serviceProvider;
             ServiceProviderEmail = providerEmail;
-        }     
+            ServicePrice = servicePrice;
+        }
 
     }
 }
