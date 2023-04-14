@@ -126,6 +126,69 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return BadRequest("Cookie not found");
             
         }
+        [HttpPost]
+        [Route("frequencychange")]
+        public async Task<IActionResult> AcceptFrequencyRequest([FromBody] ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result accept = await _requestManager.AcceptFrequencyChange(service.Id, service.frequency);
+                    if (accept.IsSuccessful)
+                    {
+                        return Ok(accept.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin");
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+
+            }
+            return BadRequest("Cookie not found");
+        }
+
+        [HttpPost]
+        [Route("cancel")]
+        public async Task<IActionResult> AcceptCancellation([FromBody] ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result accept = await _requestManager.AcceptCancel(service.Id);
+                    if (accept.IsSuccessful)
+                    {
+                        return Ok(accept.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin");
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+
+            }
+            return BadRequest("Cookie not found");
+        }
 
     }
 }

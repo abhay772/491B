@@ -12,10 +12,10 @@ namespace AA.PMTOGO.IntergrationTest
         {
             // Arrange
             var dao = new ServiceDAO();
-
+            Service service = new Service("Parking Lot Sweep", "Sweeping", "random description",
+                "mssierra310@gmail.com", "Sierra Harris", 200);
             // Act
-            await dao.AddService("Parking Lot Sweep", "Sweeping", "random description",
-                "mssierra310@gmail.com", "Sierra Harris");
+            await dao.AddService(service);
             Result result = await dao.FindService("Parking Lot Sweep", "Sweeping", "random description");
             bool actual = result.IsSuccessful;
 
@@ -55,7 +55,7 @@ namespace AA.PMTOGO.IntergrationTest
             await dao.AddUserService(service);
             string query = "SELECT * FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
             // Act
-            Result result = await dao.GetUserService(query, "propertyManager@gmail.com", "PMRating");
+            Result result = await dao.GetUserServices(query, "propertyManager@gmail.com", "PMRating");
             bool actual = result.IsSuccessful;
 
 
@@ -79,7 +79,7 @@ namespace AA.PMTOGO.IntergrationTest
             await dao.AddUserService(service);
             string query = "SELECT * FROM UserServices WHERE ServiceProviderEmail = @ServiceProviderEmail";
             // Act
-            Result result = await dao.GetUserService(query, "serviceProvider@gmail.com", "SPRating");
+            Result result = await dao.GetUserServices(query, "serviceProvider@gmail.com", "SPRating");
             bool actual = result.IsSuccessful;
 
 
@@ -210,8 +210,8 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task ChangeUserServiceFrequency_PASS()
         {
             //arrange
-            var service = new UserServiceManagement();
             var dao = new UserServiceDAO();
+            var request = new ServiceRequestManagement();
             Guid id = Guid.NewGuid();
 
 
@@ -220,7 +220,7 @@ namespace AA.PMTOGO.IntergrationTest
             await dao.AddUserService(userService);
 
             //act
-            await service.FrequnecyChange(id, "3x/month");
+            await request.FrequencyChange(id, "3x/month");
             Result result = await dao.CheckFrequency(id, "3x/Month");
             bool actual = result.IsSuccessful;
 
@@ -234,7 +234,6 @@ namespace AA.PMTOGO.IntergrationTest
 
         }
 
-
         //need cancellation test 
 
         [TestMethod]
@@ -243,26 +242,20 @@ namespace AA.PMTOGO.IntergrationTest
             //arrange
             var service = new UserServiceManagement();
             var dao = new UserServiceDAO();
-            var request = new ServiceRequestDAO();
+            var request = new ServiceRequestManagement();
             Guid id = Guid.NewGuid();
             ServiceRequest userService = new ServiceRequest(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
             await dao.AddUserService(userService);
 
             //act
-            Result result = await service.CancelUserService(id);
+            Result result = await request.CancelUserService(id);
             bool actual = result.IsSuccessful;
 
-
-            //clean up
-            //await dao.DeleteUserService(id);
 
             //assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
-
-
-
 
         }
     }

@@ -19,7 +19,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
                 //change select star
-                string sqlQuery = "SELECT * FROM ServiceRequests WHERE ID = @Id";
+                string sqlQuery = "SELECT Id FROM ServiceRequests WHERE ID = @Id";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = id;
@@ -54,7 +54,7 @@ namespace AA.PMTOGO.DAL
 
                 //change select star
 
-                string sqlQuery = "SELECT * FROM ServiceRequests WHERE ID = @Id";
+                string sqlQuery = "SELECT Id, RequestType, ServiceName, ServiceType, ServiceDescription,ServiceFrequncy, Comments, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName FROM ServiceRequests WHERE ID = @Id";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -93,7 +93,7 @@ namespace AA.PMTOGO.DAL
                 connection.Open();
                 //change select star
 
-                string sqlQuery = "SELECT * FROM ServiceRequests WHERE @ServiceProviderEmail = serviceProviderEmail";
+                string sqlQuery = "SELECT Id, RequestType, ServiceName, ServiceType, ServiceDescription,ServiceFrequncy, Comments, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName  WHERE @ServiceProviderEmail = serviceProviderEmail";
 
                 var command = new SqlCommand(sqlQuery, connection);
 

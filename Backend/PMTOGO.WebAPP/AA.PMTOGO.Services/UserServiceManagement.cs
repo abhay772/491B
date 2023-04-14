@@ -5,7 +5,7 @@ using System.Security.Principal;
 
 namespace AA.PMTOGO.Services
 {
-    //input validation, error handling , logging
+    //input validation, logging
     public class UserServiceManagement : IUserServiceManagement
     {
         UserServiceDAO _userServiceDAO = new UserServiceDAO();
@@ -16,29 +16,74 @@ namespace AA.PMTOGO.Services
         private async Task<string> GetUserInfo (string username)
         {
             //get property manager name
-            Result res = await _authNDAO.GetUser(username);
-            User user = (User)res.Payload!;
+            try
+            {
+                Result res = await _authNDAO.GetUser(username);
+                User user = (User)res.Payload!;
 
 
-            //get user info
-            string firstName = user!.FirstName;
-            string lastName = user!.LastName;
-            string propertyManagerName = firstName + " " + lastName;
-
-            return propertyManagerName;
+                //get user info
+                string firstName = user!.FirstName;
+                string lastName = user!.LastName;
+                string propertyManagerName = firstName + " " + lastName;
+                return propertyManagerName;
+            }
+            catch
+            {
+                Result result = new Result();
+                result.ErrorMessage = "Load User Info Unsuccessful. Try Again Later";
+                result.IsSuccessful = false;
+            }
+            return null!;
+            
         }
         //change create request to be used with frequency change.
-        public async Task<Result> CreateRequest(ServiceRequest service, string username)
+        public async  Task<Result> CreateRequest(Guid id, string type, string frequency)
         {
-            //need property manager info
-            string propertyManagerName = await GetUserInfo(username);
+            Result result = new Result();
+            try
+            {
+                Result findService = await _userServiceDAO.FindUserService(id);
+                ServiceRequest service = (ServiceRequest)findService.Payload!;
 
-            Guid serviceRequestId = Guid.NewGuid();
-            
-            ServiceRequest request = new ServiceRequest(serviceRequestId,service.RequestType, service.ServiceName, service.ServiceType, service.ServiceDescription, service.ServiceFrequency, service.Comments, service.ServiceProviderName, service.ServiceProviderEmail,
-                username, propertyManagerName);
+                //create new service request
+                ServiceRequest newRequest = new ServiceRequest(id, type, service.ServiceName, service.ServiceType, service.ServiceDescription, frequency, service.Comments, service.ServiceProviderEmail, service.ServiceProviderName,
+                    service.PropertyManagerEmail, service.PropertyManagerName);
+                
+                result.IsSuccessful = true;
+                result.Payload = newRequest;
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Create Request Unsuccessful. Try Again Later";
 
-            Result result = await _requestDAO.AddServiceRequest(request);
+            }
+            return result;
+        }
+        public async Task<Result> AddRequest(ServiceRequest service, string username)
+        {
+            Result result = new Result();
+            try
+            {
+                //need property manager info
+                string propertyManagerName = await GetUserInfo(username);
+
+                //create id for new services
+                Guid serviceRequestId = Guid.NewGuid();
+
+                ServiceRequest request = new ServiceRequest(serviceRequestId, "New Service", service.ServiceName, service.ServiceType, service.ServiceDescription, service.ServiceFrequency, service.Comments, service.ServiceProviderEmail, service.ServiceProviderName,
+                    username, propertyManagerName);
+
+                result = await _requestDAO.AddServiceRequest(request);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Add Service Request Unsuccessful. Try Again Later";
+            }
             return result;
         }
 
@@ -52,14 +97,14 @@ namespace AA.PMTOGO.Services
                 if (role == "Service Provider")
                 {
                     string query = select + " SPRating FROM UserServices WHERE ServiceProviderEmail = @ServiceProviderEmail";
-                    result = await _userServiceDAO.GetUserService(query, username, "SPRating");
+                    result = await _userServiceDAO.GetUserServices(query, username, "SPRating");
                     return result;
 
                 }
                 if(role == "Property Manager")
                 {
                     string query = select + " PMRating FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
-                    result = await _userServiceDAO.GetUserService(query, username, "PMRating");
+                    result = await _userServiceDAO.GetUserServices(query, username, "PMRating");
                     return result;
 
                 }
@@ -71,9 +116,9 @@ namespace AA.PMTOGO.Services
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Could not be get user services";
-                return result;
+                result.ErrorMessage = "Load User services Unsuccessful. Try Again Later";
             }
+            return result;
         }
 
         public async Task<Result> Rate(Guid id, int rate, string role)
@@ -104,7 +149,7 @@ namespace AA.PMTOGO.Services
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Rate could not be updated";  
+                result.ErrorMessage = "Rate Unsuccessful. Try Again Later";  
             }
             return result;
         }
@@ -124,61 +169,115 @@ namespace AA.PMTOGO.Services
             {
                 result = await _serviceDAO.GetServices();
                 return result;
-
             }
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Could not load Services";
+                result.ErrorMessage = "Load Services Unsuccessful. Try Again Later";
             }
             return result;
         }
 
+        //create service for service providers
         public async Task<Result> CreateService(Service service)
         {
-            Result result = await _serviceDAO.AddService(service.ServiceName, service.ServiceType, service.ServiceDescription,
-                service.ServiceProviderEmail, service.ServiceProvider);
+            Result result = new Result();
+            try
+            {
+               result = await _serviceDAO.AddService(service);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Create Service Unsuccessful. Try Again Later";
+            }
             return result;
         }
-
+        //remove service for service providers
         public async Task<Result> RemoveService(Service service)
         {
-            Result result = await _serviceDAO.DeleteService(service.ServiceName, service.ServiceType, service.ServiceProvider);
+            Result result = new Result();
+            try
+            {
+                result = await _serviceDAO.DeleteService(service.ServiceName, service.ServiceType, service.ServiceProvider);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Remove Service Unsuccessful. Try Again Later";
+            }
+            return result;
+        }
+        
+
+        //new frequency change request is created
+        public async Task<Result> RequestFrequencyChange(Guid id, string frequency, string type)
+        {
+            Result result = new Result();
+            try
+            {
+                //create a frequency change service request using found user service
+                Result findRequest = await CreateRequest(id, type, frequency);
+                ServiceRequest request = (ServiceRequest)findRequest.Payload!;
+
+            
+                //add to service providers request
+                result = await _requestDAO.AddServiceRequest(request);
+
+                //if request successful change user service status to pending
+                if (result.IsSuccessful) { await ChangeStatus(id, "Pending Frequency Change"); }
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Frequency Request Unsuccessful. Try Again Later";
+            }
             return result;
         }
 
-        public async Task<Result> FrequencyChange(Guid id, string frequency, string type)
+        //new cancellation request is created
+        public async Task<Result> CancellationRequest(Guid id, string frequency, string type)
         {
             Result result = new Result();
             try
             {
-                result = await _userServiceDAO.UpdateServiceFrequency(id, frequency);
+                //create a frequency change service request using found user service
+                Result findRequest = await CreateRequest(id, type, frequency);
+                ServiceRequest request = (ServiceRequest)findRequest.Payload!;
+
+                result = await _requestDAO.AddServiceRequest(request);
+
+                //if request successful change user service status to pending
+                if (result.IsSuccessful) { await ChangeStatus(id, "Pending Cancellation"); }
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Frequency could not be updated";
-                return result;
+                result.ErrorMessage = "Cancellation Request Unsuccessful. Try Again Later";
 
             }
+            return result;
         }
 
-        public async Task<Result> CancelUserService(Guid id)
+        public async Task<Result> ChangeStatus(Guid id, string status)
         {
             Result result = new Result();
             try
             {
-                result = await _userServiceDAO.DeleteUserService(id);
+                result = await _userServiceDAO.UpdateStatus(id, status);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "User Service Cancellation Not Successsful";
-                return result;
-
+                result.ErrorMessage = "Service Status Update Unsuccessful. Try Again Later";                
             }
+            return result;
         }
+
     }
 }

@@ -16,5 +16,6 @@ namespace AA.PMTOGO.Managers.Interfaces
 
         Task<Result> AddServiceRequest(ServiceRequest service, string username);//need to get propertyManager info and address
         Task<Result> FrequencyChangeRequest(string id, string frequency);
+        Task<Result> CancelRequest(string id);
     }
 }

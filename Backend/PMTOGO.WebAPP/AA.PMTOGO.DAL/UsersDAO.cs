@@ -18,7 +18,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserAccounts WHERE @Username = username";
+            string sqlQuery = "SELECT PassDigest, Role, Salt FROM UserAccounts WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -72,7 +72,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserProfile WHERE @Username = username";
+            string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role FROM UserProfile WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -126,7 +126,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserProfiles WHERE @Email = email";
+            string sqlQuery = "SELECT Email FROM UserProfiles WHERE @Email = email";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -390,7 +390,7 @@ public class UsersDAO
             connection.Open();
 
 
-            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            var command = new SqlCommand("SELECT Username FROM UserAccounts WHERE @Username = username", connection);
             command.Parameters.AddWithValue("@Username", username);
 
             var reader = await command.ExecuteReaderAsync();
@@ -430,7 +430,7 @@ public class UsersDAO
             connection.Open();
 
 
-            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            var command = new SqlCommand("SELECT Username FROM UserAccounts WHERE @Username = username", connection);
             command.Parameters.AddWithValue("@Username", username);
 
             var reader = await command.ExecuteReaderAsync();

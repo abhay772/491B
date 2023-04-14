@@ -5,7 +5,7 @@ using System.Data;
 
 namespace AA.PMTOGO.Managers
 {
-    //input validation, error handling , logging
+    //input validation, logging
     public class ServiceManager: IServiceManager
     {
         private readonly IUserServiceManagement _userService;
@@ -27,7 +27,7 @@ namespace AA.PMTOGO.Managers
             catch
             {
                 result.IsSuccessful= false;
-                result.ErrorMessage = "Rate Unsuccessful";
+                result.ErrorMessage = "Rate Unsuccessful. Try Again Later";
             }
 
             return result;
@@ -44,7 +44,7 @@ namespace AA.PMTOGO.Managers
             catch
             {
                 result.IsSuccessful= false;
-                result.ErrorMessage = "Load services Unsuccessful";
+                result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
                 
             }
 
@@ -56,13 +56,13 @@ namespace AA.PMTOGO.Managers
             Result result = new Result();
             try
             {
-                result = await _userService.CreateRequest(service, username);
+                result = await _userService.AddRequest(service, username);
                 return result;
             }
             catch
             {
                 result.IsSuccessful= false;
-                result.ErrorMessage = "Add Service Request Unsuccessful";
+                result.ErrorMessage = "Add Service Request Unsuccessful. Try Again Later";
 
             }
             return result;
@@ -80,7 +80,7 @@ namespace AA.PMTOGO.Managers
             catch
             {
                 result.IsSuccessful= false;
-                result.ErrorMessage = "Load User Services Unsuccssful";
+                result.ErrorMessage = "Load User Services Unsuccssful. Try Again Later";
             }
 
             return result;
@@ -92,13 +92,31 @@ namespace AA.PMTOGO.Managers
             Result result = new Result();
             try
             {
-                result = await _userService.FrequencyChange(requestId, frequency, "Frequency Change");
+                result = await _userService.RequestFrequencyChange(requestId, frequency, "Frequency Change");
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Load User Services Unsuccssful";
+                result.ErrorMessage = "Load User Services Unsuccssful. Try again Later";
+            }
+
+            return result;
+        }
+
+        public async Task<Result> CancelRequest(string id)
+        {
+            Guid requestId = new Guid(id);
+            Result result = new Result();
+            try
+            {
+                result = await _userService.CancellationRequest(requestId, "0", "Cancellation");
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Cancel Request Unsuccssful. Try Again Later";
             }
 
             return result;

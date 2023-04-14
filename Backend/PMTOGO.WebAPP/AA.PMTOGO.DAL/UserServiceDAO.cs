@@ -1,5 +1,6 @@
 ﻿using AA.PMTOGO.Models.Entities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -25,7 +26,7 @@ namespace AA.PMTOGO.DAL
                 connection.Open();
 
                 //change select star
-                string sqlQuery = "SELECT * FROM UserServices WHERE ID = @Id";
+                string sqlQuery = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName FROM UserServices WHERE ID = @Id";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = id;
@@ -37,8 +38,13 @@ namespace AA.PMTOGO.DAL
                     {
                         if (id.Equals(reader["ID"]))
                         {
+                            UserService service = new UserService((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
+                                (string)reader["ServiceFrequency"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
+                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
+
                             result.IsSuccessful = true;
                             result.ErrorMessage = "Service Request already exists.";
+                            result.Payload = service;
                             return result;
                         }
                     }
@@ -107,7 +113,7 @@ namespace AA.PMTOGO.DAL
         
 
         //user service list
-        public async Task<Result> GetUserService(string sqlQuery, string email, string rating) // return all user services
+        public async Task<Result> GetUserServices(string sqlQuery, string email, string rating) // return all user services
         {
 
             Result result = new Result();
@@ -116,7 +122,6 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                //change select star ~ is it a service provider or property manager
                 //to return user services for both service provider and property manager
 
                 var command = new SqlCommand(sqlQuery, connection);
@@ -173,7 +178,7 @@ namespace AA.PMTOGO.DAL
                 var command = new SqlCommand(sqlQuery, connection);
 
                 command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = id;
-                command.Parameters.AddWithValue("@ServiceFrequency", SqlDbType.Int).Value = frequency;
+                command.Parameters.AddWithValue("@ServiceFrequency", frequency);
 
                 try
                 {
@@ -381,6 +386,45 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
+        public async Task<Result> UpdateStatus(Guid id, string status)
+        {
+            var result = new Result();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = "UPDATE UserServices SET status = @Status WHERE Id = @ID"; ;
+                var command = new SqlCommand(query, connection);
 
+                command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = id;
+                command.Parameters.AddWithValue("@Status", status);
+
+                try
+                {
+                    var rows = await command.ExecuteNonQueryAsync();
+                    if (rows == 1)
+                    {
+                        result.IsSuccessful = true;
+                        return result;
+                    }
+
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "too many rows affected";
+                        return result;
+                    }
+                }
+
+                catch
+                {
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
+                }
+
+            }
+
+            result.IsSuccessful = false;
+            return result;
+        }
     }
 }

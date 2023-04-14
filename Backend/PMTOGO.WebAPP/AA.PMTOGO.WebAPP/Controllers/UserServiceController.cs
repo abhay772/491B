@@ -169,8 +169,40 @@ namespace AA.PMTOGO.WebAPP.Controllers
             if (result.IsSuccessful)
             {
                 try
-                {//NEED role to correspond with service provider or property manager rating column
+                {
                     Result rating = await _serviceManager.FrequencyChangeRequest(service.Id, service.frequency);
+                    if (rating.IsSuccessful)
+                    {
+                        return Ok(rating.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+            }
+            return BadRequest("Invalid Credentials");
+        }
+
+        [HttpPost]
+        [Route("cancelrequest")]
+        public async Task<IActionResult> CancelService(ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result rating = await _serviceManager.CancelRequest(service.Id);
                     if (rating.IsSuccessful)
                     {
                         return Ok(rating.Payload);

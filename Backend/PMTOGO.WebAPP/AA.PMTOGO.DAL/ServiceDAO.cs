@@ -41,7 +41,7 @@ namespace AA.PMTOGO.DAL
                             service.ServiceName = (string)reader["ServiceName"];
                             service.ServiceType = (string)reader["ServiceType"];
                             service.ServiceDescription = (string)reader["ServiceDescription"];
-                            service.ServicePrice = (float)reader["ServicePrice"];
+                            service.ServicePrice = (double)reader["ServicePrice"];
 
 
 
@@ -75,7 +75,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceProviderEmail = serviceProviderEmail AND @ServiceName = serviceName";
+                string sqlQuery = "SELECT ServiceName, ServiceType, ServiceProviderEmail FROM UserServices WHERE @ServiceProviderEmail = serviceProviderEmail AND @ServiceName = serviceName";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -106,22 +106,22 @@ namespace AA.PMTOGO.DAL
 
         //insert a service
 
-        public async Task<Result> AddService(string serviceName, string serviceType, string serviceDescription,
-                string serviceProviderEmail, string serviceProvider)
+        public async Task<Result> AddService(Service service)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Services VALUES(@ServiceProvider,@ServiceProviderEmail, @ServiceName, @ServiceType, @ServiceDescription)";
+                string sqlQuery = "INSERT into Services VALUES(@Id, @ServiceProvider,@ServiceProviderEmail, @ServiceName, @ServiceType, @ServiceDescription, ServicePrice)";
                 var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@ServiceProvider", serviceProvider);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
-                command.Parameters.AddWithValue("@ServiceName", serviceName);
-                command.Parameters.AddWithValue("@ServiceType", serviceType);
-                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
+                command.Parameters.AddWithValue("@Id", service.Id);
+                command.Parameters.AddWithValue("@ServiceProvider", service.ServiceProvider);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", service.ServiceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
+                command.Parameters.AddWithValue("@ServiceType", service.ServiceType);
+                command.Parameters.AddWithValue("@ServiceDescription", service.ServiceDescription);
+                command.Parameters.AddWithValue("@ServicePrice", service.ServicePrice);
 
 
                 try
