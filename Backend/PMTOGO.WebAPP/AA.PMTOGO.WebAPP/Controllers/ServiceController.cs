@@ -1,11 +1,11 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿
 using AA.PMTOGO.Libary;
-using AA.PMTOGO.Managers;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
+
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -14,18 +14,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
     public class ServiceController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
-        private readonly InputValidation _inputValidation;
-        private readonly ILogger _logger;
+        private readonly ClaimValidation _claims;
 
-        public ServiceController(
-            IServiceManager serviceManager,
-            ILogger logger, 
-            InputValidation inputValidation
-        )
+        public ServiceController(IServiceManager serviceManager, ClaimValidation claims)
         {
             _serviceManager = serviceManager;
-            _logger = logger;
-            _inputValidation = inputValidation;
+            _claims = claims;//uses input validation
         }
 
 #if DEBUG
@@ -44,275 +38,124 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Consumes("application/json", "application/problem+json")]
         public async Task<IActionResult> GetUserService()
         {
-            try
-            {
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
+            Result result = new Result();
+            result = _claims.ClaimsValidation(null!, Request);
+            UserClaims user = (UserClaims)result.Payload!;
 
-                if (!string.IsNullOrEmpty(cookieValue))
+            if (result.IsSuccessful)
+            {
+                try
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
+                    Result userServices = await _serviceManager.GetAllUserServices(user.ClaimUsername);
+                    if (userServices.IsSuccessful)
                     {
-                        return BadRequest("Invalid Claims");
+                        return Ok(userServices.Payload!);
                     }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-
-                    if (usernameClaim != null && roleClaim != null)
+                    else
                     {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
-
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck)
-                        {
-                            Result result = new Result();
-                            try
-                            {
-                                result = await _serviceManager.GetAllUserServices(username);
-                                if (result.IsSuccessful)
-                                {
-                                    return Ok(result.Payload!);
-                                }
-                                else
-                                {
-                                    return BadRequest(new { message = "Retry again or contact system admin." });
-                                }
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-                        }
-                        else
-                        {
-                            return Ok(new { message = "You are not authorized." });
-                        }
+                        return BadRequest(new { message = "Retry again or contact system admin." });
                     }
-
-
                 }
-
-                return BadRequest("Cookie not found");
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
-
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return BadRequest("Cookie not found");
         }
+
         [HttpGet]
         [Route("getservice")]
         [Consumes("application/json", "application/problem+json")]
         public async Task<IActionResult> GetServices()
         {
-            try
-            {
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
+            Result result = new Result();
+            result = _claims.ClaimsValidation(null!, Request);
 
-                if (!string.IsNullOrEmpty(cookieValue))
+            if (result.IsSuccessful)
+            {
+                try
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
+                    Result services = await _serviceManager.GetAllServices();
+                    if (services.IsSuccessful)
                     {
-                        return BadRequest("Invalid Claims");
+                        return Ok(services.Payload!);
                     }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-
-                    if (usernameClaim != null && roleClaim != null)
+                    else
                     {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
-
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck && role == "Property Manager")
-                        {
-                            Result result = new Result();
-                            try
-                            {
-                                result = await _serviceManager.GetAllServices();
-                                if (result.IsSuccessful)
-                                {
-                                    return Ok(result.Payload!);
-                                }
-                                else
-                                {
-                                    return BadRequest(new { message = "Retry again or contact system admin." });
-                                }
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-                        }
+                        return BadRequest(new { message = "Retry again or contact system admin." });
                     }
-
                 }
-
-                return BadRequest("Not Authorized");
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
-
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return BadRequest("Not Authorized");
+            
         }
 
         [HttpPost]
         [Route("addrequests")]
-        public async Task<IActionResult> AddServiceRequest(Service service, string comments, string frequency)
+        public async Task<IActionResult> AddServiceRequest(ServiceRequest service)
         {
-            try
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
+            if (result.IsSuccessful)
             {
-
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
-
-                if (!string.IsNullOrEmpty(cookieValue))
+                try
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
+                    Result insert = await _serviceManager.AddServiceRequest(service, user.ClaimUsername);
+                    if (insert.IsSuccessful)
                     {
-                        return BadRequest("Invalid Claims");
+                        return Ok(new { message = insert.Payload});
                     }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-                    if (usernameClaim != null && roleClaim != null)
+                    else
                     {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
 
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck && role == "Property Manager")
-                        {
-                            try
-                            {
-                                Result result = await _serviceManager.AddServiceRequest(service, username, comments, frequency);
-                                if (result.IsSuccessful)
-                                {
-                                    return Ok(new { message = result.Payload});
-                                }
-                                else
-                                {
-
-                                    return BadRequest(new { message = "Retry again or contact system admin" } );
-                                }
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-
-                            }
-
-                        }
-
+                        return BadRequest(new { message = "Retry again or contact system admin" } );
                     }
                 }
-                    
-                return BadRequest("Cookie not found");
-                   
-            }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
 
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
-
+            return BadRequest("Invalid Credentials");
         }
         
         [HttpPut]
-        [Route("{rate}")]
-        public async Task<IActionResult> RateService([FromBody] UserService service, int rate)
+        [Route("rate")]
+        public async Task<IActionResult> RateService(ServiceInfo service)
         {
-            try
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+
+            if (result.IsSuccessful )
             {
-
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
-
-                if (!string.IsNullOrEmpty(cookieValue))
+                try
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
+                    Result rating = await _serviceManager.RateUserService(service.Id, service.rate);
+                    if (rating.IsSuccessful)
                     {
-                        return BadRequest("Invalid Claims");
+                        return Ok(rating.Payload);
                     }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-                    if (usernameClaim != null && roleClaim != null)
+                    else
                     {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
 
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck && role == "Property Manager")
-                        {
-
-                            try
-                            {
-                                Result result = await _serviceManager.RateUserService(service, rate);
-                                if (result.IsSuccessful)
-                                {
-                                    return Ok(result.Payload);
-                                }
-                                else
-                                {
-
-                                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
-                                }
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-
-
-                        }
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                     }
                 }
-                return BadRequest("Cookie not found");
-                
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
 
+            }
+            return BadRequest("Invalid Credentials");
         }
 
     }

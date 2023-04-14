@@ -1,18 +1,26 @@
 ﻿using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.Infrastructure.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.DAL;
+using System.Net.Mail;
+using System.Net;
+using AA.PMTOGO.Services.Interfaces;
+using AA.PMTOGO.Logging;
 
 namespace AA.PMTOGO.Services
 {
+    //input validation, error handling , logging
     public class UserManagement : IUserManagement
     {
-        //private readonly ILogger? _logger;
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
-        private readonly ILogger? _logger;
+        private readonly ILogger _logger;
+
+        public UserManagement(ILogger logger)
+        {
+            _logger = logger;
+        }
 
 
         //byte[] to string
@@ -33,10 +41,14 @@ namespace AA.PMTOGO.Services
                     await _authNDAO.SaveUserProfile(email, firstname, lastname, role);
 
                     //log account created succesfully  
+                    await _logger!.Log("CreateAccount", 4, LogCategory.Server, result);
+
                     User user = new User(email, email, firstname, lastname, role);
                     result.IsSuccessful = true;
                     result.Payload = user;
                     return result;
+
+
 
                 }
                 else
@@ -67,10 +79,10 @@ namespace AA.PMTOGO.Services
                 {
                     //deactivate user account
 
-                   await _authNDAO.DeleteUserAccount(username);
-                   await _authNDAO.DeleteUserProfile(username);
+                    await _authNDAO.DeleteUserAccount(username);
+                    await _authNDAO.DeleteUserProfile(username);
                     //log account deactivate succesfully
-
+                    await _logger!.Log("DeleteAccount", 4, LogCategory.Server, result);
                     result.IsSuccessful = true;
                     return result;
 
@@ -111,5 +123,59 @@ namespace AA.PMTOGO.Services
             string passDigest = Convert.ToBase64String(encryptedPass);
             return passDigest;
         }
+
+        public async Task<Result> AccountRecovery(string email)
+        {
+            Result result = new Result();
+            result = _authNDAO.FindUser(email).Result;
+            
+            if (result.IsSuccessful) 
+            {
+                EmailOTP(email);
+            }
+            return result;
+        }
+        public async Task<bool> EmailOTP(string userEmail)
+        {
+            string companyEmail = "DemonicKhmer@gmail.com";
+            string companyEmailKey = "Your Email third party application key. 2 factor authN must be activated for the gmail account";
+            string emailSubject = "Account Recovery - OTP";
+            string emailBody = "Your One-Time Password is : ";
+            var otp = "";
+
+            var smtpClient = new SmtpClient("smtp.gmail.com", 587);
+            smtpClient.UseDefaultCredentials = false;
+            smtpClient.Credentials = new NetworkCredential(companyEmail, companyEmailKey);
+            smtpClient.EnableSsl = true;
+
+            string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-@";
+            Random rand = new Random();
+            for (int i = 0; i < 8; i++)
+            {
+                otp += allowedChars[rand.Next(0, allowedChars.Length)];
+                emailBody += allowedChars[rand.Next(0, allowedChars.Length)];
+            }
+
+            var message = new MailMessage(companyEmail, userEmail, emailSubject, emailBody);
+
+            // delete
+            Console.WriteLine(otp);
+            await _authNDAO.SaveOTP(userEmail, otp);
+            return true;
+            //delete
+            try
+            {
+                await _authNDAO.SaveOTP(userEmail, otp);
+                smtpClient.Send(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending email");
+            }
+            return false;
+            
+        }
     }
 }
+

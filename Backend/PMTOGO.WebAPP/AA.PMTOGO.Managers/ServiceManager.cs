@@ -1,22 +1,25 @@
-﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.Infrastructure.Interfaces;
+﻿using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
-
+using AA.PMTOGO.Services.Interfaces;
 
 namespace AA.PMTOGO.Managers
 {
+    //input validation, error handling , logging
     public class ServiceManager: IServiceManager
     {
         private readonly IServiceManagement _service;
+        private readonly IUserServiceManagement _userService;
 
-        public ServiceManager(IServiceManagement service) 
+        public ServiceManager(IServiceManagement service, IUserServiceManagement userService) 
         {
             _service = service;
+            _userService = userService;
         }
         // rate service
-        public async Task<Result> RateUserService(UserService service, int rate)
+        public async Task<Result> RateUserService(string serviceId, int rate)
         {
-            Result result = await _service.RateService(service.ServiceId, rate);
+            Guid id = new Guid(serviceId);
+            Result result = await _userService.RateService(id, rate);
 
             return result;
         }
@@ -28,20 +31,18 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<Result> AddServiceRequest(Service service, string username, string comments, string frequency)
+        public async Task<Result> AddServiceRequest(ServiceRequest service, string username)
         {   
-            Result result = await _service.CreateRequest(service, username, comments , frequency); 
+            Result result = await _userService.CreateRequest(service, username); 
             return result;
 
         }
 
         public async Task<Result> GetAllUserServices(string username)
         {
-            Result result = await _service.GatherUserServices(username);
+            Result result = await _userService.GatherUserServices(username);
 
             return result;
         }
-
-
     }
 }
