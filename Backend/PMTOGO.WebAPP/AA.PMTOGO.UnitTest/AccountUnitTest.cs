@@ -45,6 +45,8 @@ namespace AA.PMTOGO.UnitTest
             Result result1 = await user.CreateAccount("sara2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             bool account2Created = result1.IsSuccessful;
 
+            await user.DeleteAccount("sara2@gmail.com");
+
             // Assert
             Assert.IsNotNull(accountCreated);
             Assert.IsNotNull(account2Created);

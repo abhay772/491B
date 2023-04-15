@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace AA.PMTOGO.Models.Entities
 {
-    internal class Analysis
+    public class Analysis
     {
+
     }
 }

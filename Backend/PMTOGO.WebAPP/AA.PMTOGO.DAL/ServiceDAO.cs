@@ -35,7 +35,7 @@ namespace AA.PMTOGO.DAL
                         while (reader.Read())
                         {
                             Service service = new Service((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"], (string)reader["ServiceProvider"],
-                                (string)reader["ServiceProviderEmail"], (float)reader["ServicePrice"]);
+                                (string)reader["ServiceProviderEmail"], (double)reader["ServicePrice"]);
 
                             listOfservice.Add(service);
 
