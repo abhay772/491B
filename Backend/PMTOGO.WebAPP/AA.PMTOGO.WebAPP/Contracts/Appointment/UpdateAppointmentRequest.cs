@@ -1,9 +1,10 @@
 
 namespace AA.PMTOGO.WebAPP.Contracts.Appointment;
 
-public record UpdateAppointmentRequest()
-{
-    public int UserId;
-    public string? Title;
-    public DateTime AppointmentTime;
-};
+public record UpdateAppointmentRequest
+(
+    int AppointmentId,
+    string Username,
+    string Title,
+    DateTime AppointmentTime
+);

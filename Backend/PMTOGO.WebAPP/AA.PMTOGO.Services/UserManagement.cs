@@ -7,19 +7,21 @@ using System.Net.Mail;
 using System.Net;
 using AA.PMTOGO.Services.Interfaces;
 using AA.PMTOGO.Logging;
+using AA.PMTOGO.DAL.Interfaces;
 
 namespace AA.PMTOGO.Services
 {
     //input validation, error handling , logging
     public class UserManagement : IUserManagement
     {
-        UsersDAO _authNDAO = new UsersDAO();
+        IUsersDAO _authNDAO;
         InputValidation valid = new InputValidation();
         private readonly ILogger _logger;
 
-        public UserManagement(ILogger logger)
+        public UserManagement(ILogger logger, IUsersDAO usersDAO)
         {
             _logger = logger;
+            _authNDAO = usersDAO;
         }
 
 

@@ -17,7 +17,19 @@ namespace AA.PMTOGO.WebAPP.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Appointment>().HasKey();
+            modelBuilder.Entity<User>(entity => 
+            {
+                entity.ToTable("User");
+            });
+
+            modelBuilder.Entity<Appointment>(entity =>
+            {
+                entity.ToTable("Appointment");
+
+                entity.HasOne(e => e.User)
+                    .WithMany(e => e.Appointments)
+                    .HasForeignKey(e => new { e.Username });
+            });
         }
     }
 }

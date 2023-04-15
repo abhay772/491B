@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
 namespace AA.PMTOGO.Models.Entities
 {
+    [Table("User")]
     public class User
     {
         [Key]
@@ -16,6 +18,8 @@ namespace AA.PMTOGO.Models.Entities
         public string Salt { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public int Attempt { get; set; }
+
+        public virtual List<Appointment> Appointments { get; set; }
 
         public User()
         {

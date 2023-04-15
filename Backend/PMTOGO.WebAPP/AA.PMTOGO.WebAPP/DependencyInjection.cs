@@ -1,6 +1,7 @@
 ﻿using AA.PMTOGO.Authentication;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers;
@@ -33,6 +34,9 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<ISqlPropEvalDAO, SqlPropEvalDAO>();
             services.AddTransient<InputValidation>();
             services.AddTransient<ClaimValidation>();
+
+            services.AddTransient<IUsersDAO, UsersDAO>();
+            services.AddScoped<IAppointmentManager, AppointmentManager>();
             return services;
         }
     }

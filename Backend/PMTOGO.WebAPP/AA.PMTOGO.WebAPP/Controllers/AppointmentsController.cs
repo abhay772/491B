@@ -1,30 +1,25 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
+﻿
 using AA.PMTOGO.Libary;
-using AA.PMTOGO.Managers;
-using AA.PMTOGO.Models;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.WebAPP.Contracts.Appointment;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Xml.Linq;
-using ILogger = AA.PMTOGO.Infrastructure.Interfaces.ILogger;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AppointmentsController : ControllerBase
+    public class AppointmentController : ControllerBase
     {
-        private readonly InputValidation _inputValidation;
-        private readonly ILogger _logger;
+        private readonly IAppointmentManager _appointmentManager;
+        private readonly ClaimValidation _claims;
 
-        public AppointmentsController(
-            ILogger logger,
-            InputValidation inputValidation)
+        public AppointmentController(IAppointmentManager appointmentManager, ClaimValidation claims)
         {
-            _logger = logger;
-            _inputValidation = inputValidation;
+            _appointmentManager = appointmentManager;
+            _claims = claims;//uses input validation
         }
 
 #if DEBUG
@@ -38,249 +33,127 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
 #endif
 
-        [HttpGet("appointmentId")]
-        public async Task<IActionResult> GetAppointment(int appointmentId)
-        {
-            try
-            {
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
-
-                if (!string.IsNullOrEmpty(cookieValue))
-                {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
-                    {
-                        return BadRequest("Invalid Claims");
-                    }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-
-                    if (usernameClaim != null && roleClaim != null)
-                    {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
-
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck)
-                        {
-                            Result result = new Result();
-                            try
-                            {
-                                
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-                        }
-                        else
-                        {
-                            return Ok(new { message = "You are not authorized." });
-                        }
-                    }
-                }
-
-                return BadRequest("Cookie not found");
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-        
         [HttpGet]
-        public async Task<IActionResult> GetAllAppointments()
+        [Consumes("application/json", "application/problem+json")]
+        public async Task<IActionResult> GetUserAppointment()
         {
-            try
+            Result result = new Result();
+            result = _claims.ClaimsValidation(null!, Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
+            if (result.IsSuccessful)
             {
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
-
-                if (!string.IsNullOrEmpty(cookieValue))
+                try
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
+                    Result userAppointments = await _appointmentManager.GetUserAppointments(user.ClaimUsername);
+                    if (userAppointments.IsSuccessful)
                     {
-                        return BadRequest("Invalid Claims");
+                        return Ok(userAppointments.Payload!);
                     }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-                    if (usernameClaim != null && roleClaim != null)
+                    else
                     {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
-
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck && role == "Property Manager")
-                        {
-                            Result result = new Result();
-                            try
-                            {
-                                
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-                        }
+                        return BadRequest(new { message = "Retry again or contact system admin." });
                     }
                 }
-
-                return BadRequest("Not Authorized");
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
-
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return BadRequest("Cookie not found");
         }
 
         [HttpPost]
-        public async Task<IActionResult> InsertAppointment([FromBody]InsertAppointmentRequest appointment)
+        public async Task<IActionResult> AddAppointmentRequest(InsertAppointmentRequest appointmentRequest)
         {
-            try
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+            var appointment = new Appointment(appointmentRequest.Title, appointmentRequest.AppointmentTime);
+
+            if (result.IsSuccessful)
             {
-
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
-
-                if (!string.IsNullOrEmpty(cookieValue))
+                try
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
+                    Result insert = await _appointmentManager.InsertAppointment(appointment, user.ClaimUsername);
+                    if (insert.IsSuccessful)
                     {
-                        return BadRequest("Invalid Claims");
+                        return Ok(new { message = insert.Payload});
                     }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-                    if (usernameClaim != null && roleClaim != null)
+                    else
                     {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
 
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck && role == "Property Manager")
-                        {
-                            try
-                            {
-                                Result result = new Result();
-                                try
-                                {
-                                    
-                                }
-                                catch
-                                {
-                                    return StatusCode(StatusCodes.Status500InternalServerError);
-                                }
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-
-                            }
-
-                        }
-
+                        return BadRequest(new { message = "Retry again or contact system admin" } );
                     }
                 }
-                    
-                return BadRequest("Cookie not found");
-                   
-            }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
 
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                }
             }
-
+            return BadRequest("Invalid Credentials");
         }
         
         [HttpPut]
-        public async Task<IActionResult> UpdateAppointment([FromBody]UpdateAppointmentRequest appointment)
+        public async Task<IActionResult> UpdateAppointment(UpdateAppointmentRequest appointmentRequest)
         {
-            try
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+            var appointment = new Appointment(appointmentRequest.AppointmentId, appointmentRequest.Username, appointmentRequest.Title, appointmentRequest.AppointmentTime);
+
+            if (result.IsSuccessful)
             {
-
-                // Loading the cookie from the http request
-                var cookieValue = Request.Cookies["CredentialCookie"];
-
-                if (!string.IsNullOrEmpty(cookieValue))
+                try
                 {
-                    var handler = new JwtSecurityTokenHandler();
-
-                    var jwtToken = handler.ReadJwtToken(cookieValue);
-
-                    if (jwtToken == null)
+                    Result rating = await _appointmentManager.UpdateAppointment(appointment);
+                    if (rating.IsSuccessful)
                     {
-                        return BadRequest("Invalid Claims");
+                        return Ok(rating.Payload);
                     }
-
-                    var claims = jwtToken.Claims.ToList();
-                    Claim usernameClaim = claims[0];
-                    Claim roleClaim = claims[1];
-
-                    if (usernameClaim != null && roleClaim != null)
+                    else
                     {
-                        string username = usernameClaim.Value;
-                        string role = roleClaim.Value;
 
-                        // Check if the role is Property Manager
-                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
-
-                        if (role != null && validationCheck && role == "Property Manager")
-                        {
-
-                            try
-                            {
-                                Result result = new Result();
-                                try
-                                {
-                                    
-                                }
-                                catch
-                                {
-                                    return StatusCode(StatusCodes.Status500InternalServerError);
-                                }
-                            }
-                            catch
-                            {
-                                return StatusCode(StatusCodes.Status500InternalServerError);
-                            }
-                        }
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                     }
                 }
-                return BadRequest("Cookie not found");
-                
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
             }
-            catch
+            return BadRequest("Invalid Credentials");
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> DeleteAppointment(int appointmentId)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+
+            if (result.IsSuccessful )
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                try
+                {
+                    Result rating = await _appointmentManager.DeleteAppointment(appointmentId);
+                    if (rating.IsSuccessful)
+                    {
+                        return Ok(rating.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
             }
+            return BadRequest("Invalid Credentials");
         }
     }
 }

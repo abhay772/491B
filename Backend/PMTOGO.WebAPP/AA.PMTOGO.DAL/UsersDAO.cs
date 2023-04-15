@@ -1,15 +1,19 @@
 ﻿using AA.PMTOGO.Models.Entities;
+using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
-
-
+using AA.PMTOGO.DAL.Interfaces;
 namespace AA.PMTOGO.DAL;
 
-public class UsersDAO
+public class UsersDAO : IUsersDAO
 {
-    private static readonly string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=PMTOGO;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+    private readonly string _connectionString;
     //private readonly ILogger? _logger;
     //logging
-    private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True";
+
+    public UsersDAO(IConfiguration configuration)
+    {
+        _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
+    }
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)

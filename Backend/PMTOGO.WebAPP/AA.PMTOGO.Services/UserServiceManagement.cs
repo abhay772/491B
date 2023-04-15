@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
 
@@ -8,7 +9,13 @@ namespace AA.PMTOGO.Services
     public class UserServiceManagement : IUserServiceManagement
     {
         UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        UsersDAO _authNDAO = new UsersDAO();
+        IUsersDAO _authNDAO;
+
+        public UserServiceManagement(IUsersDAO usersDAO)
+        {
+            _authNDAO = usersDAO;
+        }
+
         public async Task<Result> CreateRequest(ServiceRequest service, string username)
         {
 
