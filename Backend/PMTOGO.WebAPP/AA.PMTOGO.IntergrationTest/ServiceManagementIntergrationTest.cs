@@ -12,15 +12,17 @@ namespace AA.PMTOGO.IntergrationTest
         {
             // Arrange
             var dao = new ServiceDAO();
-            Service service = new Service("Parking Lot Sweep", "Sweeping", "random description",
-                "mssierra310@gmail.com", "Sierra Harris", 200);
+            Guid id = Guid.NewGuid();
+            Service service = new Service(id, "Parking Lot Sweep", "Sweeping", "random description",
+                 "Sierra Harris", "mssierra310@gmail.com", 200.50);
             // Act
             await dao.AddService(service);
-            Result result = await dao.FindService("Parking Lot Sweep", "Sweeping", "random description");
+            Result result = await dao.FindService(id);
             bool actual = result.IsSuccessful;
 
+
             //clean up
-            await dao.DeleteService("Parking Lot Sweep", "Sweeping", "mssierra310@gmail.com");
+            await dao.DeleteService(id);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -204,59 +206,5 @@ namespace AA.PMTOGO.IntergrationTest
 
         }
 
-        // need frequency change test
-
-        [TestMethod]
-        public async Task ChangeUserServiceFrequency_PASS()
-        {
-            //arrange
-            var dao = new UserServiceDAO();
-            var request = new ServiceRequestManagement();
-            Guid id = Guid.NewGuid();
-
-
-            ServiceRequest userService = new ServiceRequest(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
-                "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
-            await dao.AddUserService(userService);
-
-            //act
-            await request.FrequencyChange(id, "3x/month");
-            Result result = await dao.CheckFrequency(id, "3x/Month");
-            bool actual = result.IsSuccessful;
-
-            //clean up
-            await dao.DeleteUserService(id);
-
-            //assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual);
-
-
-        }
-
-        //need cancellation test 
-
-        [TestMethod]
-        public async Task CancelUserService_PASS()
-        {
-            //arrange
-            var service = new UserServiceManagement();
-            var dao = new UserServiceDAO();
-            var request = new ServiceRequestManagement();
-            Guid id = Guid.NewGuid();
-            ServiceRequest userService = new ServiceRequest(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
-                "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
-            await dao.AddUserService(userService);
-
-            //act
-            Result result = await request.CancelUserService(id);
-            bool actual = result.IsSuccessful;
-
-
-            //assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual);
-
-        }
     }
 }

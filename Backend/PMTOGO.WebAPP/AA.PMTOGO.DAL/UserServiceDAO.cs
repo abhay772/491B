@@ -36,7 +36,7 @@ namespace AA.PMTOGO.DAL
                 {
                     while (reader.Read())
                     {
-                        if (id.Equals(reader["ID"]))
+                        if (id.Equals(reader["Id"]))
                         {
                             UserService service = new UserService((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
                                 (string)reader["ServiceFrequency"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
@@ -64,7 +64,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into UserServices VALUES(@Id, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @ServiceProviderEmail, @ServiceProviderName, @PropertyManagerEmail, @PropertyManagerName, @Status, @Rating)";
+                string sqlQuery = "INSERT into UserServices VALUES(@Id, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @ServiceProviderEmail, @ServiceProviderName, @PropertyManagerEmail, @PropertyManagerName, @Status, @SPRating, @PMRating)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -78,7 +78,8 @@ namespace AA.PMTOGO.DAL
                 command.Parameters.AddWithValue("@PropertyManagerEmail", service.PropertyManagerEmail);
                 command.Parameters.AddWithValue("@PropertyManagerName", service.PropertyManagerName);
                 command.Parameters.AddWithValue("@Status", "In-Progress");
-                command.Parameters.AddWithValue("@Rating", 0);
+                command.Parameters.AddWithValue("@SPRating", 0);
+                command.Parameters.AddWithValue("@PMRating", 0);
 
 
                 try
@@ -172,8 +173,8 @@ namespace AA.PMTOGO.DAL
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-
-                string sqlQuery = "UPDATE UserServices SET serviceFrequncy = @ServiceFrequency WHERE Id = @ID";
+                
+                string sqlQuery = "UPDATE UserServices SET ServiceFrequency = @ServiceFrequency WHERE Id = @ID";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -341,14 +342,14 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> CheckFrequency(Guid id, string frequency )
+        public async Task<Result> CheckFrequency(Guid id, string frequency)
         {
             Result result = new Result();
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-
+            
                 string sqlQuery = "SELECT ServiceFrequency FROM UserServices WHERE Id = @ID";
 
                 var command = new SqlCommand(sqlQuery, connection);
@@ -360,7 +361,7 @@ namespace AA.PMTOGO.DAL
                     try
                     {
                         reader.Read();
-                        if ((string)reader["ServiceFreqency"] == frequency)
+                        if ((string)reader["ServiceFrequency"] == frequency)
                         {
                             result.IsSuccessful = true;
                             return result;
@@ -368,7 +369,7 @@ namespace AA.PMTOGO.DAL
                         else
                         {
                             result.IsSuccessful = false;
-                            result.ErrorMessage = "Rate is incorrect";
+                            result.ErrorMessage = "Frequency is incorrect";
                             return result;
                         }
                     }

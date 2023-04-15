@@ -83,11 +83,11 @@ namespace AA.PMTOGO.DAL
                         while (reader.Read())
                         {
 
-                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
+                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["RequestType"],(string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
                                 (string)reader["ServiceFrequency"], (string)reader["Comments"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
-
-
+                            
+                            
                             listOfrequest.Add(request);
 
                         }

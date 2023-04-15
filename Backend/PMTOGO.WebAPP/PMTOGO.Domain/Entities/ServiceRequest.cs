@@ -44,21 +44,5 @@ namespace AA.PMTOGO.Models.Entities
             PropertyManagerName = propertyManagerName;
 
         }
-
-        public ServiceRequest(string requestType, string serviceName, string serviceType, string serviceDescription, string serviceFrequency,
-    string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
-        {
-            RequestType = requestType;
-            ServiceName = serviceName;
-            ServiceType = serviceType;
-            ServiceDescription = serviceDescription;
-            ServiceFrequency = serviceFrequency;
-            Comments = comments;
-            ServiceProviderEmail = serviceProviderEmail;
-            ServiceProviderName = serviceProviderName;
-            PropertyManagerEmail = propertyManagerEmail;
-            PropertyManagerName = propertyManagerName;
-
-        }
     }
 }

@@ -200,7 +200,7 @@ namespace AA.PMTOGO.Services
             Result result = new Result();
             try
             {
-                result = await _serviceDAO.DeleteService(service.ServiceName, service.ServiceType, service.ServiceProvider);
+                result = await _serviceDAO.DeleteService(service.Id);
                 return result;
             }
             catch
