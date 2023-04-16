@@ -33,7 +33,7 @@ namespace AA.PMTOGO.UnitTest
             var logger = new Logger();
             var user = new UserManagement(logger);
             //clean up
-            await user.DeleteAccount("sara2@gmail.com");
+            Result delete = await user.DeleteAccount("sara2@gmail.com");
 
             //username = email
 

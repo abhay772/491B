@@ -20,6 +20,16 @@ namespace AA.PMTOGO.Models.Entities
         public string Operation { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
+
+        public Log() { }
+        public Log(string operation, byte logLevel, string category, string message)
+        {
+            LogLevel = logLevel;
+            Operation = operation;
+            Category = category;
+            Message = message;
+        }
     }
     
+
 }

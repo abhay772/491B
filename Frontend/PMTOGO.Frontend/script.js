@@ -626,7 +626,7 @@ function loadServiceManagementPage(homepageContent) {
       homepageContent.innerHTML = data;
       
       //getrequest();
-      url = api + '/Service/getuserservice';
+      url = api + '/UserService/getuserservice';
       get(url)
         .then(response => response.json())
         .then(response => {
@@ -648,10 +648,10 @@ function loadServiceManagementPage(homepageContent) {
             /*const emailAdmin = document.getElementById("notifyAdmin");
             emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});*/
         })
-        .catch(error => console.log(error));
+        .catch(error => console.error(error));
 
     })   
-    .catch(error => console.log(error));
+    .catch(error => console.error(error));
     
 }
 

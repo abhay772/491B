@@ -1,6 +1,6 @@
 ﻿using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
-
+using System.Text;
 
 namespace AA.PMTOGO.DAL
 {
@@ -15,16 +15,16 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Logs VALUES(@logId, @operation, @logLevel, @logCategory, @message, @timestamp)";
+                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@logId", log.LogId);
-                command.Parameters.AddWithValue("@operation", log.Operation);
-                command.Parameters.AddWithValue("@logLevel", log.LogLevel);
-                command.Parameters.AddWithValue("@logCategory", log.Category);
-                command.Parameters.AddWithValue("@message", log.Message);
-                command.Parameters.AddWithValue("@timestamp", log.Timestamp);
+                
+                command.Parameters.AddWithValue("@LogId", log.LogId);
+                command.Parameters.AddWithValue("@Operation", log.Operation);
+                command.Parameters.AddWithValue("@LogLevel", log.LogLevel);
+                command.Parameters.AddWithValue("@LogCategory", log.Category);
+                command.Parameters.AddWithValue("@Message", log.Message);
+                command.Parameters.AddWithValue("@Timestamp", log.Timestamp);
 
                 try
                 {
@@ -41,12 +41,18 @@ namespace AA.PMTOGO.DAL
                         return result;
                     }
                 }
-                catch (SqlException e)
+                catch (SqlException ex)
                 {
-                    if (e.Number == 208)
+                    StringBuilder errorMessages = new StringBuilder();
+                    for (int i = 0; i < ex.Errors.Count; i++)
                     {
-                        result.ErrorMessage = "Specified table not found";
+                        errorMessages.Append("Index #" + i + "\n" +
+                            "Message: " + ex.Errors[i].Message + "\n" +
+                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                            "Source: " + ex.Errors[i].Source + "\n" +
+                            "Procedure: " + ex.Errors[i].Procedure + "\n");
                     }
+                    Console.WriteLine(errorMessages.ToString());
                 }
 
             }

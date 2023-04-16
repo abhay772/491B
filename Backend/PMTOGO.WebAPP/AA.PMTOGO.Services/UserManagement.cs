@@ -39,7 +39,7 @@ namespace AA.PMTOGO.Services
                     await _authNDAO.SaveUserProfile(email, firstname, lastname, role);
 
                     //log account created succesfully  
-                    await _logger!.Log("CreateAccount", 4, LogCategory.Server, result);
+                    //await _logger!.Log("CreateAccount", 4, LogCategory.Server, result);
 
                     User user = new User(email, email, firstname, lastname, role);
                     result.IsSuccessful = true;
@@ -80,7 +80,7 @@ namespace AA.PMTOGO.Services
                     await _authNDAO.DeleteUserAccount(username);
                     await _authNDAO.DeleteUserProfile(username);
                     //log account deactivate succesfully
-                    await _logger!.Log("DeleteAccount", 4, LogCategory.Server, result);
+                    //await _logger!.Log("DeleteAccount", 4, LogCategory.Server, result);
                     result.IsSuccessful = true;
                     return result;
 

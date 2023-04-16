@@ -1,7 +1,53 @@
-function rateUserService(id, rate){
+function rateUserService(id, homepageContent){
+  fetch("./Views/rateservice.html")
+  .then(response => response.text())
+  .then(data => {
+    // update content div with register page
+    content.innerHTML = data;
+
+    const backBtn = document.getElementById('backServices');
+
+    // add event listeners
+    backBtn.addEventListener('click', loadServiceManagementPage(homepageContent))
+
+    // select register form
+    const rateForm = document.getElementById('rate-form');
+
+    // add event listener to register form submit
+    rateForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const rate = document.querySelector('#rating').value;
+
+
+      // perform registration action
+      url = api + '/UserService/rate';
+      data = {id: id, rate:rate, frequency:frequency}   
+        send(url, data)
+          .then(data => data.json())
+          .then(response => console.log(response))
+      // You can perform your registration API call here
+
+      // after successful registration, load propertyEval.html homePage.html
+      loadServiceManagementPage(homepageContent);
+    });
+  })
+  .catch(error => console.log(error))
+    
+  }
+  function frequencyService(id, frequency){
     const homepageContent = document.getElementsByClassName("homepage-content")[0];
-    url = api + "/Service/rate";
-    data = {id: id, rate: rate}
+    url = api + "/Service/frequencychange";
+    data = {id: id, rate: 0, frequency:frequency}
+    put(url, data)
+    .then(response => console.log(response))
+    .then(loadServiceManagementPage(homepageContent));
+    
+  }
+  function cancelService(id){
+    const homepageContent = document.getElementsByClassName("homepage-content")[0];
+    url = api + "/Service/cancel";
+    data = {id: id}
     put(url, data)
     .then(response => console.log(response))
     .then(loadServiceManagementPage(homepageContent));
@@ -73,7 +119,7 @@ function rateUserService(id, rate){
     let rating = document.createElement('td');
     rating.innerText = `${userservice.rating}`;
   
-    let rateAction = document.createElement('td');
+    /*let rateAction = document.createElement('td');
     let rateForm = document.createElement('form');
     rateForm.id = `${userservice.id}`;
     rateForm.className="rateform"
@@ -89,7 +135,7 @@ function rateUserService(id, rate){
   
     rateAction.append(rateForm);
     rateForm.append(rateInput);
-    rateForm.append(ratebtn);
+    rateForm.append(ratebtn);*/
 
     //frequncy change button for window
     let frequencyAction = document.createElement('td');
@@ -100,13 +146,13 @@ function rateUserService(id, rate){
     
     frequencyAction.append(frequencybtn);
 
-    /*let rateAction = document.createElement('td');
+    let rateAction = document.createElement('td');
     let ratebtn = document.createElement('button');
     ratebtn.innerText = "Rate";
     ratebtn.className="rate";
     ratebtn.id=`${request.id}`; 
     
-    frequencyAction.append(ratebtn);*/
+    frequencyAction.append(ratebtn);
 
      //cancellation button for window
      let cancelAction = document.createElement('td');
@@ -116,13 +162,86 @@ function rateUserService(id, rate){
      cancelbtn.id=`${request.id}`; 
      
      cancelAction.append(cancelbtn);
-
-
   
     userServiceTableBodyRow.append(serviceName,serviceType,serviceDescription,serviceFrequeny,
       serviceProvider,serviceProviderEmail,status,rating, rateAction, frequencyAction, cancelAction);
       //allrequest += requestTableBodyRow;
     UserServiceTable.append(userServiceTableBodyRow);
+  }
+
+  function loadCancelServicePage(id, homepageContent) {
+    // fetch register page html
+    fetch("./Views/cancelService.html")
+      .then(response => response.text())
+      .then(data => {
+        // update content div with register page
+        content.innerHTML = data;
+  
+        const backBtn = document.getElementById('backServices');
+  
+        // add event listeners
+        backBtn.addEventListener('click', loadServiceManagementPage(homepageContent))
+  
+        // select register form
+        const cancelForm = document.getElementById('cancel-form');
+  
+        // add event listener to register form submit
+        cancelForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+  
+          // perform registration action
+          url = api + '/UserService/cancelrequest';
+          data = {id: id }   
+            send(url, data)
+              .then(data => data.json())
+              .then(response => console.log(response))
+          // You can perform your registration API call here
+  
+          // after successful registration, load propertyEval.html homePage.html
+          loadServiceManagementPage(homepageContent);
+        });
+      })
+      .catch(error => console.log(error))
+  }
+  function loadChangeServicePage(id, homepageContent) {
+    // fetch register page html
+    fetch("./Views/frequencyChange.html")
+      .then(response => response.text())
+      .then(data => {
+        // update content div with register page
+        content.innerHTML = data;
+  
+        const backBtn = document.getElementById('backServices');
+  
+        // add event listeners
+        backBtn.addEventListener('click', loadServiceManagementPage(homepageContent))
+  
+        // select register form
+        const changeForm = document.getElementById('fchange-form');
+  
+        // add event listener to register form submit
+        changeForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+
+          const rate = document.querySelector('#times').value;
+          const frequencies = document.querySelector('#frequencies').value;
+          
+          let frequency = rate + frequencies.toString();
+
+  
+          // perform registration action
+          url = api + '/UserService/cancelrequest';
+          data = {id: id, rate:rate, frequency:frequency }   
+            send(url, data)
+              .then(data => data.json())
+              .then(response => console.log(response))
+          // You can perform your registration API call here
+  
+          // after successful registration, load propertyEval.html homePage.html
+          loadServiceManagementPage(homepageContent);
+        });
+      })
+      .catch(error => console.log(error))
   }
   //fucntion to load service Management page
   function loadServiceManagementPage(homepageContent) { 
@@ -144,13 +263,25 @@ function rateUserService(id, rate){
                 appendUserService(userservice, id)
                 id = id + 1;
               })
-              const rateService = Array.from(document.getElementsByClassName("rateform")); 
+              const rateService = Array.from(document.getElementsByClassName("rate")); 
               rateService.forEach((key)=>{
                 key.addEventListener('submit', (event) => {
                   event.preventDefault();   
   
-                  const rate = document.querySelector('#rating').value;
-                  rateUserService(key.id, rate)});
+                  rateUserService(key.id, homepageContent)});
+              })
+              const cancelUserService = Array.from(document.getElementsByClassName("frequency")); 
+              cancelUserService.forEach((key)=>{
+                key.addEventListener('submit', (event) => {
+                  event.preventDefault();   
+
+                  loadCancelServicePage(key.id, homepageContent)});
+              })
+              const changeService = Array.from(document.getElementsByClassName("cancel")); 
+              changeService.forEach((key)=>{
+                key.addEventListener('submit', (event) => {
+                  event.preventDefault();   
+                  loadChangeServicePage(key.id, homepageContent)});
               })
   
               /*const emailAdmin = document.getElementById("notifyAdmin");

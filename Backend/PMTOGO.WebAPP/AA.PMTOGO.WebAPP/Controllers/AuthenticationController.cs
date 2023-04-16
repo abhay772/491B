@@ -58,13 +58,13 @@ public class AuthenticationController : ControllerBase
                 string claims_jwt = CreateJWTToken(loginDTO.claims!);
 
                 SetCookieOptions(claims_jwt);
-                //new { message = "Login successful" } + 
+                //new { message = "Login successful" } 
                 return Ok(result.Payload!);
             }
             else
             {
 
-                return BadRequest(new { message = "Invalid username or password provided. Retry again or contact system admin" });
+                return BadRequest(new { message ="Invalid Username or Password."});
             }
         }
         catch (ArgumentException ex)

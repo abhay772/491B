@@ -111,7 +111,7 @@ namespace AA.PMTOGO.IntergrationTest
             bool actual = result.IsSuccessful;
 
             //clean up
-            await dao.DeleteServiceRequest(id);
+            //await dao.DeleteServiceRequest(id);
 
             // Assert
             Assert.IsNotNull(actual);
