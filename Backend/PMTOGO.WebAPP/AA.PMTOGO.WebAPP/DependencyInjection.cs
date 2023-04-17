@@ -37,6 +37,8 @@ namespace AA.PMTOGO.Infrastructure
 
             services.AddTransient<IUsersDAO, UsersDAO>();
             services.AddScoped<IAppointmentManager, AppointmentManager>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IAppointmentDAO, AppointmentDAO>();
             return services;
         }
     }

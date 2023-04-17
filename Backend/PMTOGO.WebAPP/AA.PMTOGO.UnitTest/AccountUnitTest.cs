@@ -1,4 +1,5 @@
 using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
@@ -10,6 +11,13 @@ namespace AA.PMTOGO.UnitTest
     [TestClass]
     public class AccountUnitTest
     {
+        private IUsersDAO _usersDAO;
+
+        public AccountUnitTest(IUsersDAO usersDAO) 
+        { 
+            _usersDAO = usersDAO;
+        }
+
         [TestMethod]
         public void ShouldCreateInstanceWithDefaultCtor()
         {
@@ -18,7 +26,7 @@ namespace AA.PMTOGO.UnitTest
 
             // Act
             var logger = new Logger();
-            var actual = new UserManagement(logger);
+            var actual = new UserManagement(logger, _usersDAO);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -31,7 +39,7 @@ namespace AA.PMTOGO.UnitTest
         {
             // Arrange
             var logger = new Logger();
-            var user = new UserManagement(logger);
+            var user = new UserManagement(logger, _usersDAO);
             //clean up
             await user.DeleteAccount("sara2@gmail.com");
 
@@ -152,7 +160,7 @@ namespace AA.PMTOGO.UnitTest
             //aranage
 
             var logger = new Logger();
-            var registration = new UserManagement(logger);
+            var registration = new UserManagement(logger, _usersDAO);
 
             //act
             var time = Stopwatch.StartNew();
@@ -195,16 +203,15 @@ namespace AA.PMTOGO.UnitTest
             //aranage
 
             var logger = new Logger();
-            var account = new UserManagement(logger);
-            var dao = new UsersDAO();
+            var account = new UserManagement(logger, _usersDAO);
 
             //act
             await account.CreateAccount("Delete@gmail.com", "randomstring", "John", "Doe", "Property Manager");
-            Result result1 = await dao.DoesUserExist("Delete@gmail.com");
+            Result result1 = await _usersDAO.DoesUserExist("Delete@gmail.com");
             bool found = result1.IsSuccessful;
 
             await account.DeleteAccount("Delete@gmail.com");
-            Result result = await dao.DoesUserExist("Delete@gmail,com");
+            Result result = await _usersDAO.DoesUserExist("Delete@gmail,com");
             bool actual = result.IsSuccessful;
 
             //private info

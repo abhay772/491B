@@ -18,11 +18,11 @@ namespace AA.PMTOGO.Models.Entities
         public virtual User? User { get; set; }
     
         //mapping for InsertAppointmentRequest
-        public Appointment(string title, string username, DateTime appointmentTime)
+        public Appointment(string title, DateTime appointmentTime)
         {   
             this.AppointmentId = 0;
             this.Title = title;
-            this.Username = username;
+            this.Username = "";
             this.AppointmentTime = appointmentTime;
             this.IsActive = true;
         }

@@ -1,4 +1,5 @@
 using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 
@@ -7,6 +8,13 @@ namespace AA.PMTOGO.IntergrationTest
     [TestClass]
     public class ServiceManagementIntergrationTest
     {
+        private IUsersDAO _usersDAO;
+
+        public ServiceManagementIntergrationTest(IUsersDAO usersDAO)
+        {
+            _usersDAO = usersDAO;
+        }
+
         [TestMethod]
         public async Task GetUserServices_PASS()
         {
@@ -60,7 +68,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateAUserService_PASS()
         {
             //arrange
-            var service = new UserServiceManagement();
+            var service = new UserServiceManagement(_usersDAO);
             var dao = new UserServiceDAO();
             var request = new ServiceRequestDAO();
             Guid id = Guid.NewGuid();
@@ -87,7 +95,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateIsNotHigherThan5_FAIL()
         {
             //arrange
-            var service = new UserServiceManagement();
+            var service = new UserServiceManagement(_usersDAO);
             var request = new ServiceRequestDAO();
             var dao = new UserServiceDAO();
             Guid id = Guid.NewGuid();
