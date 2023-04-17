@@ -130,7 +130,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> RateService(ServiceInfo service)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation("Property Manager", Request);
+            result = _claims.ClaimsValidation(null!, Request);
             UserClaims user = (UserClaims)result.Payload!;
 
 
@@ -158,7 +158,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return BadRequest("Invalid Credentials");
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("frequencyrequest")]
         public async Task<IActionResult> ChangeServiceFrequncy(ServiceInfo service)
         {
@@ -170,10 +170,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
-                    Result rating = await _serviceManager.FrequencyChangeRequest(service.Id, service.frequency);
-                    if (rating.IsSuccessful)
+                    Result frequency = await _serviceManager.FrequencyChangeRequest(service.Id, service.frequency);
+                    if (frequency.IsSuccessful)
                     {
-                        return Ok(rating.Payload);
+                        return Ok(frequency.Payload);
                     }
                     else
                     {

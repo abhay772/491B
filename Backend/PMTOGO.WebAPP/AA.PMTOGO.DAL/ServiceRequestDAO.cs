@@ -141,7 +141,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into ServiceRequests VALUES(@Id, @requestType, @serviceName, @serviceType, @serviceDescription, @serviceFrequency, @comments, @serviceProviderEmail, @serviceProviderName, @propertyManagerEmail, @propertyManagerName)";
+                string sqlQuery = "INSERT into ServiceRequests VALUES(@Id, @RequestType, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @Comments, @ServiceProviderEmail, @ServiceProviderName, @PropertyManagerEmail, @PropertyManagerName)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 

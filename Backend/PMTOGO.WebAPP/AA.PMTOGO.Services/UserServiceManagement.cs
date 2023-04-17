@@ -44,10 +44,10 @@ namespace AA.PMTOGO.Services
             try
             {
                 Result findService = await _userServiceDAO.FindUserService(id);
-                ServiceRequest service = (ServiceRequest)findService.Payload!;
+                UserService service = (UserService)findService.Payload!;
 
                 //create new service request
-                ServiceRequest newRequest = new ServiceRequest(id, type, service.ServiceName, service.ServiceType, service.ServiceDescription, frequency, service.Comments, service.ServiceProviderEmail, service.ServiceProviderName,
+                ServiceRequest newRequest = new ServiceRequest(id, type, service.ServiceName, service.ServiceType, service.ServiceDescription, frequency, type, service.ServiceProviderEmail, service.ServiceProviderName,
                     service.PropertyManagerEmail, service.PropertyManagerName);
                 
                 result.IsSuccessful = true;
@@ -93,17 +93,17 @@ namespace AA.PMTOGO.Services
             try
             {
                 //dont use select *
-                string select = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProvider, Status";
+                //string select = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProvider, Status";
                 if (role == "Service Provider")
                 {
-                    string query = select + " SPRating FROM UserServices WHERE ServiceProviderEmail = @ServiceProviderEmail";
+                    string query = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName, Status, SPRating FROM UserServices WHERE ServiceProviderEmail = @ServiceProviderEmail";
                     result = await _userServiceDAO.GetUserServices(query, username, "SPRating");
                     return result;
 
                 }
                 if(role == "Property Manager")
                 {
-                    string query = select + " PMRating FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
+                    string query = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName, Status, PMRating FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
                     result = await _userServiceDAO.GetUserServices(query, username, "PMRating");
                     return result;
 
@@ -124,6 +124,7 @@ namespace AA.PMTOGO.Services
         public async Task<Result> Rate(Guid id, int rate, string role)
         {
             Result result = new Result();
+            Result rating = new Result();
             try
             {
                 if (CheckRate(rate))
@@ -132,14 +133,14 @@ namespace AA.PMTOGO.Services
                     if(role == "Service Provider")
                     {
                         string query = "UPDATE UserServices SET SPRating = @Rating WHERE Id = @ID";
-                        result = await _userServiceDAO.UpdateServiceRate(id, rate, query);
-                        return result;
+                        rating = await _userServiceDAO.UpdateServiceRate(id, rate, query);
+                        return rating;
                     }
                     if (role == "Property Manager")
                     {
                         string query = "UPDATE UserServices SET PMRating = @Rating WHERE Id = @ID";
-                        result = await _userServiceDAO.UpdateServiceRate(id, rate, query);
-                        return result;
+                        rating = await _userServiceDAO.UpdateServiceRate(id, rate, query);
+                        return rating;
                     }
                 }
                 result.IsSuccessful = false;

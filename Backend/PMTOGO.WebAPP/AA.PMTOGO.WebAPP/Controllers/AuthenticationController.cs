@@ -10,7 +10,7 @@ using static System.Net.WebRequestMethods;
 using AA.PMTOGO.Managers.Interfaces;
 using Azure.Core;
 
-namespace AA.PMTOGO_v2.Controllers;
+namespace AA.PMTOGO.WebAPP.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

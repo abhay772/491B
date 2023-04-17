@@ -519,19 +519,85 @@ function loadRequestManagementPage(homepageContent) {
     .catch(error => console.log(error));
     
 }
-function rateUserService(id, rate){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/Service/rate";
-  data = {id: id, rate: rate}
-  put(url, data)
-  .then(response => console.log(response))
-  .then(loadServiceManagementPage(homepageContent));
-  
+function loadFrequencyChangeRequest(id, homepageContent){
+  fetch("./Views/frequencyChange.html")
+    .then(response => response.text())
+    .then(data => {
+      // update content div with rate user page
+      homepageContent.innerHTML = data;
+
+      const backBtn = document.getElementById('BacktoServices');
+      backBtn.addEventListener('click', loadHomePage);
+
+      const fchangeForm = document.getElementById('fchange-form');
+      fchangeForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const time = document.querySelector('#times').value;
+        const frequencies = document.querySelector('#frequencies').value;
+
+        const frequency = time + "/" + frequencies;
+        frequency.toString;
+
+        url = api + '/UserService/frequencyrequest';
+        data = {id: id, frequency:frequency}   
+        put(url, data)
+        .then(response => {
+          if(!response.ok){
+            fetch("./Views/NotAuthorized.html")
+              .then(response => response.text())
+              .then(text => {
+        
+                const homepageContent = document.getElementsByClassName("homepage-content")[0];
+            
+                homepageContent.innerHTML = text;
+              })
+              .catch(error => console.error(error))
+          }
+          else{
+            response.json().then(data => {
+              console.log(data)
+              loadServiceManagementPage(homepageContent)})
+
+          }
+        })
+        .catch(error => console.log(error));
+      })
+    })
+    
+  }
+
+function loadRateUserService(id, homepageContent){
+  fetch("./Views/rateservice.html")
+    .then(response => response.text())
+    .then(data => {
+      // update content div with rate user page
+      homepageContent.innerHTML = data;
+
+      const backBtn = document.getElementById('BacktoServices');
+      backBtn.addEventListener('click', loadHomePage);
+
+      const rateForm = document.getElementById('rate-form');
+      rateForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const rate = document.querySelector('#rating').value;
+
+        url = api + '/UserService/rate';
+        data = {id: id, rate:rate}   
+        put(url, data)
+        .then(response => console.log(response))
+        .then(loadServiceManagementPage(homepageContent))
+        .catch(error => console.log(error))  
+        // You can perform your registration API call here
+      });
+    })
+    .catch(error => console.log(error))  
 }
 const createUserServiceTable = () =>{
   const userservices = document.querySelector("div.userservices");
   let tableHeaders = ["Service Name", "Service Type",  "Service Description", 
-  "Service Frequency", "Service Provider Name", "Service Provider Email", "Status", "Rating", "Rate?", "Frequency Change?"];
+  "Service Frequency", "Service Provider Name", "Service Provider Email", "Status", "Rating", "Rate?", "Frequency Change?", "Cancel?"];
     while (userservices.firstChild) userservices.removeChild(userservices.firstChild)
     let userServiceTable = document.createElement('table');
     userServiceTable.className="userServiceTable";
@@ -562,7 +628,13 @@ const createUserServiceTable = () =>{
 const appendUserService =(userservice, id) => {
   const UserServiceTable = document.querySelector(".userServiceTable");
   const userInfo = document.querySelector(".userInfo");
-  userInfo.innerText= `${userservice.propertyManagerName}`;
+  if(userservice.propertyManagerName){
+    userInfo.innerText= `${userservice.propertyManagerName}`;
+  }
+  else{
+    userInfo.innerText= `${userservice.ServiceProviderName}`;
+  }
+  
 
   let userServiceTableBodyRow = document.createElement('tr');
   userServiceTableBodyRow.className = "userServiceTableBodyRow";
@@ -593,28 +665,68 @@ const appendUserService =(userservice, id) => {
   let rating = document.createElement('td');
   rating.innerText = `${userservice.rating}`;
 
+  let changeAction = document.createElement('td');
+  let changebtn = document.createElement('button');
+  changebtn.innerText = "Change Frequency";
+  changebtn.className="fchange-link";
+  changebtn.id=`${userservice.id}`; 
+  
+  changeAction.append(changebtn);
+
   let rateAction = document.createElement('td');
-  let rateForm = document.createElement('form');
-  rateForm.id = `${userservice.id}`;
-  rateForm.className="rateform"
-  let rateInput = document.createElement('input');
-  rateInput.type ="number";
-  rateInput.placeholder="Enter rating 1-5";
-  rateInput.id ="rating"
-
   let ratebtn = document.createElement('button');
-  ratebtn.className="ratebtn";
-  ratebtn.type="submit"
-  ratebtn.innerText = "Submit";
-
-  rateAction.append(rateForm);
-  rateForm.append(rateInput);
-  rateForm.append(ratebtn);
+  ratebtn.innerText = "Rate";
+  ratebtn.className="rate-link";
+  ratebtn.id=`${userservice.id}`; 
+  
+  rateAction.append(ratebtn);
 
   userServiceTableBodyRow.append(serviceName,serviceType,serviceDescription,serviceFrequeny,
-    serviceProvider,serviceProviderEmail,status,rating, rateAction);
+    serviceProvider,serviceProviderEmail,status,rating, rateAction, changeAction);
     //allrequest += requestTableBodyRow;
   UserServiceTable.append(userServiceTableBodyRow);
+}
+function getUserService(){
+  url = api + '/UserService/getuserservice';
+  get(url)
+  .then(response => {
+    if(!response.ok){
+      fetch("./Views/NotAuthorized.html")
+        .then(response => response.text())
+        .then(text => {
+  
+          const homepageContent = document.getElementsByClassName("homepage-content")[0];
+      
+          homepageContent.innerHTML = text;
+        })
+        .catch(error => console.error(error))
+    } 
+    else{
+      response.json().then(data => {
+        createUserServiceTable();
+        let id = 0;
+        data.forEach((userservice) =>{
+          appendUserService(userservice, id);
+          id = id + 1;
+        })
+        const homepageContent = document.getElementsByClassName("homepage-content")[0];
+        const rateService = Array.from(document.getElementsByClassName("rate-link")); 
+        rateService.forEach((key)=>{
+          key.addEventListener('click', function(){loadRateUserService(key.id, homepageContent)});
+        })
+        const fchangeService = Array.from(document.getElementsByClassName("fchange-link")); 
+        fchangeService.forEach((key)=>{
+          key.addEventListener('click', function(){loadFrequencyChangeRequest(key.id, homepageContent)});
+        })
+
+          /*const emailAdmin = document.getElementById("notifyAdmin");
+          emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});*/
+        })
+        .catch(error => console.error(error))
+      }
+  })
+  .catch(error => console.error(error));
+  
 }
 //fucntion to load service Management page
 function loadServiceManagementPage(homepageContent) { 
@@ -625,35 +737,12 @@ function loadServiceManagementPage(homepageContent) {
       // Handle the response data
       homepageContent.innerHTML = data;
       
-      //getrequest();
-      url = api + '/UserService/getuserservice';
-      get(url)
-        .then(response => response.json())
-        .then(response => {
-            createUserServiceTable();
-            let id = 0;
-            response.forEach((userservice) =>{
-              appendUserService(userservice, id)
-              id = id + 1;
-            })
-            const rateService = Array.from(document.getElementsByClassName("rateform")); 
-            rateService.forEach((key)=>{
-              key.addEventListener('submit', (event) => {
-                event.preventDefault();   
-
-                const rate = document.querySelector('#rating').value;
-                rateUserService(key.id, rate)});
-            })
-
-            /*const emailAdmin = document.getElementById("notifyAdmin");
-            emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});*/
-        })
-        .catch(error => console.error(error));
+      getUserService();
 
     })   
     .catch(error => console.error(error));
     
-}
+} 
 
 function logout(){
   url = api + '/Authentication/Logout';

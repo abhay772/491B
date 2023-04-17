@@ -152,7 +152,7 @@ function rateUserService(id, homepageContent){
     ratebtn.className="rate";
     ratebtn.id=`${request.id}`; 
     
-    frequencyAction.append(ratebtn);
+    rateAction.append(ratebtn);
 
      //cancellation button for window
      let cancelAction = document.createElement('td');

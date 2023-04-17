@@ -83,7 +83,8 @@ namespace AA.PMTOGO.IntergrationTest
             // Act
             Result result = await dao.GetUserServices(query, "serviceProvider@gmail.com", "SPRating");
             bool actual = result.IsSuccessful;
-
+            List<UserService> userservice = (List<UserService>)result.Payload!;
+            Console.WriteLine(userservice[1].Id);
 
             //clean up
             await dao.DeleteUserService(id);
@@ -102,7 +103,7 @@ namespace AA.PMTOGO.IntergrationTest
             Guid id = Guid.NewGuid();
 
             ServiceRequest request = new(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
-               "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+               "mssierra310@gmail.com", "Sara Jade", "sierra.harris01@student.csulb.edu", "Sierra Harris");
 
             // Act
 

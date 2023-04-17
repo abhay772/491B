@@ -2,23 +2,24 @@
     <form class="window-content" id="fchange-form" name="fchange">
       <div class="container">
         <h1>Change Service Frequency</h1>
-        <p>Please enter a rate and frequency</p>
+        <p>Please enter the new frequency</p>
         <br>
         <label for="frequencys"><b>Frequency</b></label>
         <input type="text" id="frequencies" placeholder="Enter Frequency" name="frequencies" list="frequency" required>
           <datalist id="frequency">
-            <option value="day">1</option>
-            <option value="week">2</option>
-            <option value="month">3</option>
-            <option value="quarter">4</option>
-            <option value="year">5</option>       
+            <option value="day"></option>
+            <option value="week"></option>
+            <option value="month"></option>
+            <option value="quarter"></option>
+            <option value="year"></option>       
           </datalist>
           <br>
-        <input type="number" id="frequencies" placeholder="Enter Times" name="times" list="times" required>
+        <label for="times"><b>How many times</b></label>
+        <input type="number" id="times" placeholder="Enter Times" name="times" list="times" required>
   
         <div class="clearfix">
           <button type="submit" class="submit" id="fchangeservice">Change Frequency</button>
-          <button type="button" class="submit" id="backServices">Back</button>
+          <button type="button" class="submit" id="BacktoServices">Back</button>
         </div>
       </div>
     </form>
