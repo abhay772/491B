@@ -9,6 +9,7 @@ public class PropertyEvaluator : IPropertyEvaluator
 {
     private readonly IHistoricalSalesDAO _historicalDAO;
 
+
     public PropertyEvaluator(IHistoricalSalesDAO historicalDAO)
     {
         _historicalDAO = historicalDAO;
