@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AA.PMTOGO.DAL\AA.PMTOGO.DAL.csproj" />
+    <ProjectReference Include="..\AA.PMTOGO.Services\AA.PMTOGO.Services.csproj" />
     <ProjectReference Include="..\PMTOGO.Domain\AA.PMTOGO.Models.csproj" />
-    <ProjectReference Include="..\PMTOGO.Infrastructure\AA.PMTOGO.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

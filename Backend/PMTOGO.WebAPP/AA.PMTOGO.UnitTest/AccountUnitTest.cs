@@ -1,5 +1,6 @@
 using AA.PMTOGO.DAL;
 using AA.PMTOGO.Libary;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 using System.Diagnostics;
@@ -16,7 +17,8 @@ namespace AA.PMTOGO.UnitTest
             var expected = typeof(UserManagement);
 
             // Act
-            var actual = new UserManagement();
+            var logger = new Logger();
+            var actual = new UserManagement(logger);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -28,11 +30,13 @@ namespace AA.PMTOGO.UnitTest
         public async Task ShouldAssignUniqueUsername()
         {
             // Arrange
-            var user = new UserManagement();
-            
+            var logger = new Logger();
+            var user = new UserManagement(logger);
+            //clean up
+            await user.DeleteAccount("sara2@gmail.com");
 
-           //username = email
-            
+            //username = email
+
             Result result = await user.CreateAccount("sara2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             
             bool accountCreated = result.IsSuccessful;
@@ -46,6 +50,9 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsNotNull(account2Created);
             Assert.IsTrue(accountCreated);
             Assert.IsFalse(account2Created);
+
+            
+            
         }
 
         //The user provides a valid email address that belongs to the user.
@@ -144,7 +151,8 @@ namespace AA.PMTOGO.UnitTest
         {
             //aranage
 
-            var registration = new UserManagement();
+            var logger = new Logger();
+            var registration = new UserManagement(logger);
 
             //act
             var time = Stopwatch.StartNew();
@@ -175,6 +183,10 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(OnTime);
             Assert.IsTrue(OverTime);
 
+            //clean up
+            await registration.DeleteAccount("OverTimegmail.com");
+            await registration.DeleteAccount("OnTimegmail.com");
+
         }
 
         [TestMethod]
@@ -182,7 +194,8 @@ namespace AA.PMTOGO.UnitTest
         {
             //aranage
 
-            var account = new UserManagement();
+            var logger = new Logger();
+            var account = new UserManagement(logger);
             var dao = new UsersDAO();
 
             //act

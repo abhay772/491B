@@ -1,12 +1,9 @@
-﻿using AA.PMTOGO.Infrastructure.Interfaces;
-using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mail;
-using System.Net;
-using System.Text.Json;
 using System.Security.Claims;
 using AA.PMTOGO.Libary;
 using System.IdentityModel.Tokens.Jwt;
+using AA.PMTOGO.Managers.Interfaces;
 
 namespace AA.PMTOGO.WebAPP.Controllers;
 
