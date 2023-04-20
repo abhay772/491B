@@ -132,15 +132,16 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             Result result = new Result();
             result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
 
             if (result.IsSuccessful)
             {
                 try
                 {
-                    Result accept = await _requestManager.AcceptFrequencyChange(service.Id, service.frequency);
+                    Result accept = await _requestManager.AcceptFrequencyChange(service.Id, service.frequency, user.ClaimUsername);
                     if (accept.IsSuccessful)
                     {
-                        return Ok(accept.Payload);
+                        return Ok(accept.Payload); //payload is update service requests list
                     }
                     else
                     {
@@ -164,15 +165,16 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             Result result = new Result();
             result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
 
             if (result.IsSuccessful)
             {
                 try
                 {
-                    Result accept = await _requestManager.AcceptCancel(service.Id);
+                    Result accept = await _requestManager.AcceptCancel(service.Id, user.ClaimUsername);
                     if (accept.IsSuccessful)
                     {
-                        return Ok(accept.Payload);
+                        return Ok(accept.Payload);//payload is update service requests list
                     }
                     else
                     {

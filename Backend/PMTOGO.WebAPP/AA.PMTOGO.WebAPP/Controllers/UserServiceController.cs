@@ -146,7 +146,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     else
                     {
 
-                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                        return BadRequest(result.ErrorMessage);
                     }
                 }
                 catch
@@ -178,7 +178,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     else
                     {
 
-                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                        return BadRequest(result.ErrorMessage);
                     }
                 }
                 catch
@@ -190,27 +190,28 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return BadRequest("Invalid Credentials");
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("cancelrequest")]
         public async Task<IActionResult> CancelService(ServiceInfo service)
         {
             Result result = new Result();
             result = _claims.ClaimsValidation("Property Manager", Request);
+ 
 
 
             if (result.IsSuccessful)
             {
                 try
                 {
-                    Result rating = await _serviceManager.CancelRequest(service.Id);
-                    if (rating.IsSuccessful)
+                    Result cancel = await _serviceManager.CancelRequest(service.Id);
+                    if (cancel.IsSuccessful)
                     {
-                        return Ok(rating.Payload);
+                        return Ok(cancel.Payload);
                     }
                     else
                     {
 
-                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                        return BadRequest(result.ErrorMessage);
                     }
                 }
                 catch

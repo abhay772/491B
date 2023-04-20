@@ -82,7 +82,7 @@ button {
   width: 100%;
 }
 
-.loginbtn, .submit, .rate-link{
+.loginbtn, .submit, .rate-link, .servicerequest-link{
   background-color: #04AA6D;
   padding: 14px 20px;
   left: 0;
@@ -116,7 +116,7 @@ button:hover {
 }
 
 /* Extra styles for the cancel button */
-.cancelbtn {
+.cancelbtn, .cancel-link{
   margin: 8px 0; 
   padding: 14px 20px;
   border: none;

@@ -1,6 +1,8 @@
 ﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Channels;
 
 
 namespace AA.PMTOGO.Services
@@ -22,8 +24,7 @@ namespace AA.PMTOGO.Services
 
             if (insert.IsSuccessful == false)
             {
-                result = insert;
-                return result;
+                return insert;
             }
             else
             {
@@ -101,12 +102,18 @@ namespace AA.PMTOGO.Services
 
         }
         //if accepted by service provider frequency is updated
-        public async Task<Result> FrequencyChange(Guid id, string frequency)
+        public async Task<Result> FrequencyChange(Guid id, string frequency, string username)
         {
             Result result = new Result();
             try
             {
                 result = await _serviceDAO.UpdateServiceFrequency(id, frequency);
+                if (result.IsSuccessful) 
+                {
+                    await _serviceDAO.UpdateStatus(id, "In-Progress");
+                    result = await DeclineRequest(id, username); //delete the request from service request list
+
+                }
                 return result;
             }
             catch
@@ -120,12 +127,22 @@ namespace AA.PMTOGO.Services
 
 
         // if cancellation confirmed by service provider
-        public async Task<Result> CancelUserService(Guid id)
+        public async Task<Result> CancelUserService(Guid id, string username)
         {
             Result result = new Result();
             try
             {
-                result = await _serviceDAO.DeleteUserService(id);
+                Result cancel = await _serviceDAO.DeleteUserService(id);
+                //log
+                if (cancel.IsSuccessful == false)
+                {
+                    return cancel;
+                }
+                else
+                {
+                    result = await DeclineRequest(id, username);
+
+                }
                 return result;
             }
             catch

@@ -38,7 +38,7 @@ namespace AA.PMTOGO.Managers
             Result result = new Result();
             try
             {
-                await _userService.GatherServices();
+                result = await _userService.GatherServices();
                 return result;
             }
             catch

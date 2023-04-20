@@ -124,7 +124,7 @@ namespace AA.PMTOGO.IntergrationTest
             await dao.AddUserService(userService);
 
             //act
-            await request.FrequencyChange(id, "3x/month");
+            await request.FrequencyChange(id, "3x/month", "serviceProvider@gmail.com");
             Result result = await dao.CheckFrequency(id, "3x/month");
             bool actual = result.IsSuccessful;
 
@@ -153,7 +153,7 @@ namespace AA.PMTOGO.IntergrationTest
             await dao.AddUserService(userService);
 
             //act
-            Result result = await request.CancelUserService(id);
+            Result result = await request.CancelUserService(id, "serviceProvider@gmail.com");
             bool actual = result.IsSuccessful;
 
 

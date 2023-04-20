@@ -43,7 +43,7 @@ namespace AA.PMTOGO.DAL
                                 (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
 
                             result.IsSuccessful = true;
-                            result.ErrorMessage = "Service Request already exists.";
+                            result.ErrorMessage = "User Service already exists.";
                             result.Payload = service;
                             return result;
                         }

@@ -22,7 +22,7 @@ namespace AA.PMTOGO.Services
                 User user = (User)res.Payload!;
 
 
-                //get user info
+                //get user info combine first and last name
                 string firstName = user!.FirstName;
                 string lastName = user!.LastName;
                 string propertyManagerName = firstName + " " + lastName;

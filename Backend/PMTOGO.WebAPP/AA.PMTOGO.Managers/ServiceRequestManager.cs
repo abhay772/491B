@@ -70,14 +70,14 @@ namespace AA.PMTOGO.Managers
             return result;
         }
         //service provider accepted frequency change
-        public async Task<Result> AcceptFrequencyChange(string requestId, string frequency)
+        public async Task<Result> AcceptFrequencyChange(string requestId, string frequency, string username)
         {
             Result result = new Result();
             Guid id = new Guid(requestId);
             try
             {
                 //update user services
-                result = await _serviceRequest.FrequencyChange(id,frequency);
+                result = await _serviceRequest.FrequencyChange(id,frequency, username);
                 return result;
             }
             catch
@@ -88,14 +88,14 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<Result> AcceptCancel(string requestId)
+        public async Task<Result> AcceptCancel(string requestId, string username)
         {
             Result result = new Result();
             Guid id = new Guid(requestId);
             try
             {
                 //update user services
-                result = await _serviceRequest.CancelUserService(id);
+                result = await _serviceRequest.CancelUserService(id, username);
                 return result;
             }
             catch
