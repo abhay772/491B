@@ -103,7 +103,7 @@ function loadRateUserService(id, homepageContent){
         .then(response => console.log(response))
         .then(loadServiceManagementPage(homepageContent))
         .catch(error => console.log(error))  
-        // You can perform your registration API call here
+
       });
     })
     .catch(error => console.log(error))  

@@ -72,7 +72,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role FROM UserProfile WHERE Username = @Username";
+            string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role FROM UserProfiles WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
 

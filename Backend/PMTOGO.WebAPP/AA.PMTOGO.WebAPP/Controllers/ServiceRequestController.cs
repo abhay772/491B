@@ -146,7 +146,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     else
                     {
 
-                        return BadRequest("Invalid username or password provided. Retry again or contact system admin");
+                        return BadRequest(result.ErrorMessage);
                     }
                 }
                 catch
@@ -179,7 +179,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     else
                     {
 
-                        return BadRequest("Invalid username or password provided. Retry again or contact system admin");
+                        return BadRequest(result.ErrorMessage);
                     }
                 }
                 catch

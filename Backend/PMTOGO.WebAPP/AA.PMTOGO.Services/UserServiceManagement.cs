@@ -23,8 +23,8 @@ namespace AA.PMTOGO.Services
 
 
                 //get user info combine first and last name
-                string firstName = user!.FirstName;
-                string lastName = user!.LastName;
+                string firstName = user.FirstName;
+                string lastName = user.LastName;
                 string propertyManagerName = firstName + " " + lastName;
                 return propertyManagerName;
             }
@@ -37,7 +37,7 @@ namespace AA.PMTOGO.Services
             return null!;
             
         }
-        //change create request to be used with frequency change.
+        //create request for in progress user services
         public async  Task<Result> CreateRequest(Guid id, string type, string frequency)
         {
             Result result = new Result();
@@ -62,7 +62,7 @@ namespace AA.PMTOGO.Services
             }
             return result;
         }
-        public async Task<Result> AddRequest(ServiceRequest service, string username)
+        public async Task<Result> AddRequest(Guid id, string frequency, string comments, string username)
         {
             Result result = new Result();
             try
@@ -70,10 +70,14 @@ namespace AA.PMTOGO.Services
                 //need property manager info
                 string propertyManagerName = await GetUserInfo(username);
 
+                //get service info using service id
+                Result findService = await _serviceDAO.FindService(id);
+                Service service = (Service)findService.Payload!;    
+
                 //create id for new services
                 Guid serviceRequestId = Guid.NewGuid();
 
-                ServiceRequest request = new ServiceRequest(serviceRequestId, "New Service", service.ServiceName, service.ServiceType, service.ServiceDescription, service.ServiceFrequency, service.Comments, service.ServiceProviderEmail, service.ServiceProviderName,
+                ServiceRequest request = new ServiceRequest(serviceRequestId, "New Service", service.ServiceName, service.ServiceType, service.ServiceDescription, frequency, comments, service.ServiceProviderEmail, service.ServiceProvider,
                     username, propertyManagerName);
 
                 result = await _requestDAO.AddServiceRequest(request);

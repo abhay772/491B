@@ -51,17 +51,18 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public async Task<Result> AddServiceRequest(ServiceRequest service, string username)
+        public async Task<Result> AddServiceRequest(string Id, string frequency, string comments, string username)
         {
+            Guid id = new Guid(Id);
             Result result = new Result();
             try
             {
-                result = await _userService.AddRequest(service, username);
-                return result;
+                Result add = await _userService.AddRequest(id, frequency, comments, username);
+                return add;
             }
             catch
             {
-                result.IsSuccessful= false;
+                result.IsSuccessful = false;
                 result.ErrorMessage = "Add Service Request Unsuccessful. Try Again Later";
 
             }

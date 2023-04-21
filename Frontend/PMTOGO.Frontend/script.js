@@ -122,7 +122,7 @@ function loadRegisterPage() {
 const createServicesTable = () =>{
   const services = document.querySelector("div.homepage-content");
   let tableHeaders = ["Service Name", "Service Type",  "Service Description", 
- "Service Provider Name", "Service Provider Email", "Price ($)", "Request Service?"];
+ "Service Provider Name", "Service Provider Email", "Price ($)", "Request Service?", "Add to Project"];
     while (services.firstChild) services.removeChild(services.firstChild)
     let ServiceTable = document.createElement('table');
     ServiceTable.className="ServiceTable";
@@ -168,7 +168,7 @@ const appendServices =(service, id) => {
   serviceDescription.innerText = `${service.serviceDescription}`;
 
   let serviceProvider = document.createElement('td');
-  serviceProvider.innerText = `${service.serviceProviderName}`;
+  serviceProvider.innerText = `${service.serviceProvider}`;
 
   let serviceProviderEmail = document.createElement('td');
   serviceProviderEmail.innerText = `${service.serviceProviderEmail}`;
@@ -180,8 +180,8 @@ const appendServices =(service, id) => {
   let requestbtn = document.createElement('button');
   requestbtn.innerText = "Book Service";
   requestbtn.className="servicerequest-link";
-  requestbtn.id=`${service.id}`; 
-  
+  requestbtn.id=`${service.id}`;
+
   requestAction.append(requestbtn);
 
   ServiceTableBodyRow.append(serviceName,serviceType,serviceDescription,
@@ -189,10 +189,53 @@ const appendServices =(service, id) => {
 
   ServiceTable.append(ServiceTableBodyRow);
 }
-function serviceRequest(id){
-  console.log(id);
+function loadNewRequest(id, userrole, homepageContent){
+  fetch("./Views/newRequest.html")
+  .then(response => response.text())
+  .then(data => {
+    // update content div with rate user page
+    homepageContent.innerHTML = data;
+
+    const backBtn = document.getElementById('BacktoServices');
+    backBtn.addEventListener('click', loadHomePage);
+
+    const requestForm = document.getElementById('newrequest-form');
+    requestForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const time = document.querySelector('#times').value;
+      const frequencies = document.querySelector('#frequencies').value;
+      const comments = document.querySelector('#comments').value;
+
+      const frequency = time + "x/" + frequencies;
+      frequency.toString;
+
+      url = api + "/UserService/addrequests";
+      data = {id:id, frequency: frequency, comments:comments};
+      send(url, data)
+      .then(response => {
+        if(!response.ok){
+          fetch("./Views/NotAuthorized.html")
+            .then(response => response.text())
+            .then(text => {
+      
+              const homepageContent = document.getElementsByClassName("homepage-content")[0];
+          
+              homepageContent.innerHTML = text;
+            })
+            .catch(error => console.error(error))
+        }
+        else{
+          loadHomePage(userrole)
+        }
+      })
+      .catch(error => console.log(error));
+  
+    });
+  })
+  .catch(error => console.log(error)) 
 }
-function loadServices(){     
+function loadServices(userrole){     
   url = api + '/UserService/getservice';
   get(url)
     .then(response => response.json())
@@ -208,7 +251,7 @@ function loadServices(){
       })
       const requestlist = Array.from(document.getElementsByClassName("servicerequest-link")); 
       requestlist.forEach((key)=>{
-        key.addEventListener('click', function() {serviceRequest(key.id)});
+        key.addEventListener('click', function() {loadNewRequest(key.id, userrole, homepageContent)})
       })
   })
   .catch(error => console.error(error));     
@@ -223,7 +266,6 @@ function loadHomePage(userrole) {
       // update content div with property evaluation page html
       content.innerHTML = data;
       
-
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
 
@@ -236,7 +278,7 @@ function loadHomePage(userrole) {
 
     const homepageContent = document.getElementsByClassName("homepage-content")[0];
 
-    loadServices();
+    loadServices(userrole);
     
     //select settings
     const deleteAccount = document.getElementById("settings");
@@ -246,6 +288,8 @@ function loadHomePage(userrole) {
     const requestFeature = document.getElementById('requestManagement');
       //select service Management
     const serviceFeature = document.getElementById('serviceManagement');
+
+    
 
     //add event listeners
     logoutUser.addEventListener('click', () => {

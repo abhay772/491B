@@ -84,6 +84,7 @@ namespace AA.PMTOGO.DAL
 
                             result.IsSuccessful = true;
                             result.ErrorMessage = "Service already exists.";
+                            result.Payload = service;
                             return result;
 
                         }

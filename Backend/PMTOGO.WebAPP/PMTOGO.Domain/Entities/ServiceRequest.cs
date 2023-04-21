@@ -22,9 +22,10 @@ namespace AA.PMTOGO.Models.Entities
         [Key]
         public string ServiceProviderEmail { get; set; } = string.Empty;
         public string ServiceProviderName { get; set; } = string.Empty;
-        public string PropertyManagerName { get; set; } = string.Empty;
+        
         [Required]
         public string PropertyManagerEmail { get; set; } = string.Empty;
+        public string PropertyManagerName { get; set; } = string.Empty;
 
         public ServiceRequest() { }
 
@@ -42,6 +43,21 @@ namespace AA.PMTOGO.Models.Entities
             ServiceProviderName = serviceProviderName;
             PropertyManagerEmail = propertyManagerEmail;
             PropertyManagerName = propertyManagerName;
+
+        }
+
+        public ServiceRequest(Guid id, string requestType, string serviceName, string serviceType, string serviceDescription, string serviceFrequency,
+    string comments, string serviceProviderEmail, string serviceProviderName)
+        {
+            Id = id;
+            RequestType = requestType;
+            ServiceName = serviceName;
+            ServiceType = serviceType;
+            ServiceDescription = serviceDescription;
+            ServiceFrequency = serviceFrequency;
+            Comments = comments;
+            ServiceProviderEmail = serviceProviderEmail;
+            ServiceProviderName = serviceProviderName;
 
         }
     }

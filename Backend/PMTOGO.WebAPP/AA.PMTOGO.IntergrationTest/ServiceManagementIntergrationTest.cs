@@ -206,6 +206,32 @@ namespace AA.PMTOGO.IntergrationTest
 
 
         }
+        [TestMethod]
+        public async Task TestingUserInfo()
+        {
+            //arrange
+
+            var dao = new UsersDAO();
+            Guid id = Guid.NewGuid();
+
+            Result result = await dao.GetUser("sierra.harris01@student.csulb.edu");
+
+
+
+            //act
+            Console.WriteLine(result.Payload);
+            bool actual = result.IsSuccessful;
+
+
+
+
+            //assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
+
+
+        }
+
 
     }
 }

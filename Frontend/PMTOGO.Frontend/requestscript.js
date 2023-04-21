@@ -85,7 +85,7 @@ const appendRequest =(request, id) => {
 
   requestTableBodyRow.append(requestId,requestType,serviceName,serviceType,serviceDescription,serviceFrequeny,
     comments,propertyManager,propertyManagerEmail,acceptAction,declineAction);
-    //allrequest += requestTableBodyRow;
+
   requestsTable.append(requestTableBodyRow);
 }
 function acceptRequest(requestid){
@@ -103,9 +103,23 @@ function acceptFrequencyRequest(requestid, frequency){
   url = api + "/ServiceRequest/frequencychange";
   data = {id: requestid, frequency: frequency}
   send(url, data)
-  .then(data => data.json())
-  .then(response => console.log(response))
-  .then(loadRequestManagementPage(homepageContent));
+  .then(response => {
+    if(!response.ok){
+      fetch("./Views/NotAuthorized.html")
+        .then(response => response.text())
+        .then(text => {
+  
+          const homepageContent = document.getElementsByClassName("homepage-content")[0];
+      
+          homepageContent.innerHTML = text;
+        })
+        .catch(error => console.error(error))
+    }
+    else{
+      loadRequestManagementPage(homepageContent);
+    }
+  })
+  .catch(error => console.error(error))
   
 }
 function acceptCancelRequest(requestid){
@@ -155,11 +169,22 @@ function getrequest(){
           const acceptlist = Array.from(document.getElementsByClassName("accept")); 
           acceptlist.forEach((key)=>{
             key.addEventListener('click', function() { 
-              if (key.name == "New Request")
-                {acceptRequest(key.id)}
-              if (key.name == "Cancellation")
-              {acceptCancelRequest(key.id)}
-              else{acceptFrequencyRequest(key.id, key.value)}
+              var type = key.name;
+              console.log(type)
+              type.toString();
+              if (type === "New Service")
+              { 
+                console.log("new request");
+                acceptRequest(key.id);
+              }
+              if (type === "Cancellation")
+              {
+                acceptCancelRequest(key.id);
+              }
+              if(type === "Frequency Change")
+              {
+                acceptFrequencyRequest(key.id, key.value);
+              }
             })
           })
           const declinelist = Array.from(document.getElementsByClassName("decline")); 

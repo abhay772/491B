@@ -50,7 +50,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     }
                     else
                     {
-                        return BadRequest(new { message = "Retry again or contact system admin." });
+                        return BadRequest(userServices.ErrorMessage);
                     }
                 }
                 catch
@@ -95,7 +95,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("addrequests")]
-        public async Task<IActionResult> ServiceRequest(ServiceRequest service)
+        public async Task<IActionResult> ServiceRequest(ServiceInfo service)
         {
             Result result = new Result();
             result = _claims.ClaimsValidation("Property Manager", Request);
@@ -105,15 +105,15 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
-                    Result insert = await _serviceManager.AddServiceRequest(service, user.ClaimUsername);
+                    Result insert = await _serviceManager.AddServiceRequest(service.Id, service.frequency, service.comments, user.ClaimUsername);
                     if (insert.IsSuccessful)
                     {
-                        return Ok(new { message = insert.Payload});
+                        return Ok(insert.Payload);
                     }
                     else
                     {
 
-                        return BadRequest(new { message = "Retry again or contact system admin" } );
+                        return BadRequest(insert.ErrorMessage );
                     }
                 }
                 catch
