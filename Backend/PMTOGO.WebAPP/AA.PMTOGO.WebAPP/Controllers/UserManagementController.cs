@@ -56,13 +56,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpPost]
-        [Route("AccountRecovery")]
+        [Route("recovery")]
         [ActionName("AccountRecovery")]
         public async Task<ActionResult> AccountRecovery([FromBody] UserRegister user)
         {
             try
             {
-                Result result = await _accManager.RecoverAccount(user.email);
+                Result result = await _accManager.RecoverAccount(user.Email);
                 if (result.IsSuccessful)
                 {
                     return Ok(result.Payload);

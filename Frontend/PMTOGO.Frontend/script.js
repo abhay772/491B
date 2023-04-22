@@ -150,6 +150,43 @@ function loadEnterOTPPage(email) {
 }
 
 function loadUpdatePasswordPage(email) {
+    // fetch update password page html
+    fetch("./Views/updatePassword.html")
+        .then(response => response.text())
+        .then(data => {
+            // update content div with recovery page
+            content.innerHTML = data;
+
+            const passwordInput = document.getElementById('password-input');
+            const submitBtn = document.getElementById('update-password-submit-btn');
+
+            // add event listener to submit button
+            submitBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                // get user otp
+                const newPassword = passwordInput.value;
+
+                // perform otp action
+                const url = api + '/UserManagement/updatePassword';
+                const data = { email: email, password: newPassword };
+
+                send(url, data)
+                    .then(response => {
+                        if (response.ok) {
+                            // after successful otp, load password update page
+                            loadLoginPage();
+                        } else {
+                            throw new Error('failed');
+                        }
+                    })
+                    .catch(error => console.log(error));
+            });
+        })
+        .catch(error => console.log(error))
+}
+
+/*function loadUpdatePasswordPage(email) {
     fetch("./Views/updatePassword.html")
         .then(response => response.text())
         .then(data => {
@@ -178,7 +215,7 @@ function loadUpdatePasswordPage(email) {
             });
         })
         .catch(error => console.log(error));
-}
+}*/
 
 
 function loadRegisterPage() {
