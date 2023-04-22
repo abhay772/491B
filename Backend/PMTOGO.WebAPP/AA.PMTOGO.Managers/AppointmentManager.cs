@@ -47,7 +47,7 @@ public class AppointmentManager : IAppointmentManager
 
     public Task<Result> InsertAppointment(Appointment appointment, string username)
     {
-
+        throw new NotImplementedException();
     }
 
     public Task<Result> UpdateAppointment(Appointment appointment)
