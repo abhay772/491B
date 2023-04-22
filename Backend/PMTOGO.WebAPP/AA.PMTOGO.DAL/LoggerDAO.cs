@@ -6,7 +6,7 @@ namespace AA.PMTOGO.DAL
 {
     public class LoggerDAO
     {
-        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.LogDB;Trusted_Connection=True";
+        private static readonly string _connectionString = @"Server=localhost,1433;Database=master;User Id=sa;Password=Kappa12#;Encrypt=false;TrustServerCertificate=True";
 
         public async Task<Result> InsertLog(Log log)
         {
@@ -15,7 +15,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Logs VALUES(@logId, @operation, @logLevel, @logCategory, @message, @timestamp)";
+                string sqlQuery = "INSERT into Logs VALUES(@logId, @timestamp, @logLevel, @operation, @logCategory, @message)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 

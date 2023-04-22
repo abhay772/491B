@@ -79,7 +79,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserProfile WHERE @Username = username";
+            string sqlQuery = "SELECT * FROM UserProfiles WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -299,16 +299,16 @@ public class UsersDAO : IUsersDAO
             string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @Role, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp, @OTP, @OTPTimestamp, @RecoveryRequest)";
 
             var command = new SqlCommand(sqlQuery, connection);
-
+            var now = DateTime.Now;
             command.Parameters.AddWithValue("@Username", username);
             command.Parameters.AddWithValue("@Role", role);
             command.Parameters.AddWithValue("@PassDigest", passDigest);
             command.Parameters.AddWithValue("@Salt", salt);
             command.Parameters.AddWithValue("@IsActive", 1);
             command.Parameters.AddWithValue("@Attempts", 0);
-            command.Parameters.AddWithValue("@Timestamp", DateTime.Now);
+            command.Parameters.AddWithValue("@Timestamp", now);
             command.Parameters.AddWithValue("@OTP", "Null");
-            command.Parameters.AddWithValue("@OTPTimestamp", DateTime.Now);
+            command.Parameters.AddWithValue("@OTPTimestamp", now);
             command.Parameters.AddWithValue("@RecoveryRequest", 0);
 
             try

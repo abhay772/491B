@@ -126,7 +126,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return BadRequest("Invalid Credentials");
         }
 
-        [HttpPut]
+        [HttpDelete]
         public async Task<IActionResult> DeleteAppointment(int appointmentId)
         {
             Result result = new Result();

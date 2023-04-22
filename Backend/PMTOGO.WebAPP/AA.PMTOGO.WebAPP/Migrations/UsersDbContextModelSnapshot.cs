@@ -50,13 +50,49 @@ namespace AA.PMTOGO.WebAPP.Migrations
                     b.ToTable("Appointment", (string)null);
                 });
 
+            modelBuilder.Entity("AA.PMTOGO.Models.Entities.Log", b =>
+                {
+                    b.Property<Guid>("LogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("logId");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("logCategory");
+
+                    b.Property<byte>("LogLevel")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("logLevel");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("message");
+
+                    b.Property<string>("Operation")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("operation");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("timestamp");
+
+                    b.HasKey("LogId");
+
+                    b.ToTable("Logs", (string)null);
+                });
+
             modelBuilder.Entity("AA.PMTOGO.Models.Entities.User", b =>
                 {
                     b.Property<string>("Username")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Attempt")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Attempts");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -73,9 +109,19 @@ namespace AA.PMTOGO.WebAPP.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("OTP")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OTPTimestamp")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PassDigest")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RecoveryRequest")
+                        .HasColumnType("int");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -85,9 +131,12 @@ namespace AA.PMTOGO.WebAPP.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Username");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("UserProfiles", (string)null);
                 });
 
             modelBuilder.Entity("AA.PMTOGO.Models.Entities.Appointment", b =>

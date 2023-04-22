@@ -12,7 +12,23 @@ namespace AA.PMTOGO.WebAPP.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "Logs",
+                columns: table => new
+                {
+                    logId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    logLevel = table.Column<byte>(type: "tinyint", nullable: false),
+                    operation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    logCategory = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    message = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logs", x => x.logId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfiles",
                 columns: table => new
                 {
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -20,14 +36,30 @@ namespace AA.PMTOGO.WebAPP.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PassDigest = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Salt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    Attempt = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Username);
+                    table.PrimaryKey("PK_UserProfiles", x => x.Username);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAccounts",
+                columns: table => new
+                {
+                    Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PassDigest = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Salt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Attempts = table.Column<int>(type: "int", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OTP = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OTPTimestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RecoveryRequest = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAccounts", x => x.Username);
                 });
 
             migrationBuilder.CreateTable(
@@ -38,15 +70,16 @@ namespace AA.PMTOGO.WebAPP.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AppointmentTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    AppointmentTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Appointment", x => x.AppointmentId);
                     table.ForeignKey(
-                        name: "FK_Appointment_User_Username",
+                        name: "FK_Appointment_UserProfiles_Username",
                         column: x => x.Username,
-                        principalTable: "User",
+                        principalTable: "UserProfiles",
                         principalColumn: "Username",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -64,7 +97,10 @@ namespace AA.PMTOGO.WebAPP.Migrations
                 name: "Appointment");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "Logs");
+
+            migrationBuilder.DropTable(
+                name: "UserProfiles");
         }
     }
 }

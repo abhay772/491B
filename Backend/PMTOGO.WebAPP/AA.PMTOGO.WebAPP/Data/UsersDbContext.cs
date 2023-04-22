@@ -14,12 +14,18 @@ namespace AA.PMTOGO.WebAPP.Data
 
         public DbSet<User> User { get; set; } = null!;
         public DbSet<Appointment> Appointment { get; set; } = null!;
+        public DbSet<Log> Log { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(entity => 
             {
-                entity.ToTable("User");
+                entity.ToTable("UserAccounts");
+            });
+
+            modelBuilder.Entity<User>(entity => 
+            {
+                entity.ToTable("UserProfiles");
             });
 
             modelBuilder.Entity<Appointment>(entity =>
@@ -29,6 +35,12 @@ namespace AA.PMTOGO.WebAPP.Data
                 entity.HasOne(e => e.User)
                     .WithMany(e => e.Appointments)
                     .HasForeignKey(e => new { e.Username });
+            });
+
+            modelBuilder.Entity<Log>(entity => {
+                entity.HasKey(e => e.LogId);
+
+                entity.ToTable("Logs");
             });
         }
     }
