@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS UserProfiles;
+DROP TABLE IF EXISTS UserAccounts;
+
+CREATE TABLE UserProfiles (
+    Username VARCHAR(200) PRIMARY KEY,
+    Email VARCHAR(200) NOT NULL,
+    FirstName VARCHAR(200) NOT NULL,
+    LastName VARCHAR(200) NOT NULL,
+    Role VARCHAR(200) NOT NULL
+);
+
+CREATE TABLE UserAccounts (
+    Username VARCHAR(200) PRIMARY KEY,
+    Role VARCHAR(200) NOT NULL,
+    PassDigest VARCHAR(max) NOT NULL,
+    Salt VARCHAR(max) NOT NULL,
+    IsActive BIT NOT NULL,
+    Attempts INT NOT NULL,
+    Timestamp DATETIME NOT NULL
+);
