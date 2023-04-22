@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace AA.PMTOGO.DAL
 {
+    //logging
     public class UserServiceDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";

@@ -1,11 +1,10 @@
-﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.Infrastructure.Interfaces;
-using AA.PMTOGO.Managers.Interfaces;
+﻿using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
 
 namespace AA.PMTOGO.Managers
 {
+    //input validation, error handling , logging
     public class ServiceManager: IServiceManager
     {
         private readonly IServiceManagement _service;

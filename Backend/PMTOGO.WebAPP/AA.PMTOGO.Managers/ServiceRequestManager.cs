@@ -4,6 +4,7 @@ using AA.PMTOGO.Services.Interfaces;
 
 namespace AA.PMTOGO.Managers
 {
+    //input validation, error handling , logging
     public class ServiceRequestManager : IServiceRequestManager
     {
         //ERROR HANDLING

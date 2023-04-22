@@ -36,7 +36,7 @@ public class AuthenticationController : ControllerBase
             return Ok(false);
         }
 
-        catch (Exception ex) {
+        catch {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
