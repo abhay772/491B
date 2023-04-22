@@ -86,7 +86,7 @@ function loadForgotPasswordPage() {
             content.innerHTML = data;
 
             const emailInput = document.getElementById('email-input');
-            const submitBtn = document.getElementById('submit-btn');
+            const submitBtn = document.getElementById('forgot-password-submit-btn');
 
             // add event listener to submit button
             submitBtn.addEventListener('click', (event) => {
@@ -103,8 +103,8 @@ function loadForgotPasswordPage() {
                     .then(response => {
                         console.log(response);
 
-                        // after successful recovery, load login page
-                        loadEnterOTPPage();
+                        // after successful recovery, load OTP page
+                        loadEnterOTPPage(email);
                     })
                     .catch(error => console.log(error));
             });
@@ -112,7 +112,7 @@ function loadForgotPasswordPage() {
         .catch(error => console.log(error))
 }
 
-function loadEnterOTPPage() {
+function loadEnterOTPPage(email) {
     // fetch otpForm page html
     fetch("./Views/otpForm.html")
         .then(response => response.text())
@@ -120,17 +120,15 @@ function loadEnterOTPPage() {
             // update content div with recovery page
             content.innerHTML = data;
 
-            const emailInput = document.getElementById('email-input');
             const otpInput = document.getElementById('otp-input');
-            const submitBtn = document.getElementById('submit-btn');
+            const submitBtn = document.getElementById('otp-submit-btn');
 
             // add event listener to submit button
             submitBtn.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                // get user otp and username
+                // get user otp
                 const otp = otpInput.value;
-                const email = emailInput.value;
 
                 // perform otp action
                 const url = api + '/UserManagement/otp';
@@ -139,8 +137,8 @@ function loadEnterOTPPage() {
                 send(url, data)
                     .then(response => {
                         if (response.ok) {
-                            // after successful otp, load login page
-                            loadUpdatePasswordPage();
+                            // after successful otp, load password update page
+                            loadUpdatePasswordPage(email);
                         } else {
                             throw new Error('OTP validation failed');
                         }
@@ -151,24 +149,19 @@ function loadEnterOTPPage() {
         .catch(error => console.log(error))
 }
 
-function loadUpdatePasswordPage() {
+function loadUpdatePasswordPage(email) {
     fetch("./Views/updatePassword.html")
         .then(response => response.text())
         .then(data => {
             content.innerHTML = data;
 
-            const emailInput = document.getElementById('email-input');
             const passwordInput = document.getElementById('password-input');
-            const submitBtn = document.getElementById('submit-btn');
-
-            // declare email variable outside event listener
-            let email;
+            const submitBtn = document.getElementById('update-password-submit-btn');
 
             submitBtn.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                // assign email value inside event listener
-                email = emailInput.value;
+                // get password
                 const password = passwordInput.value;
 
                 const url = api + '/UserManagement/updatePassword';
@@ -184,8 +177,9 @@ function loadUpdatePasswordPage() {
                     .catch(error => console.log(error));
             });
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
 }
+
 
 function loadRegisterPage() {
   // fetch register page html
