@@ -8,10 +8,15 @@ namespace AA.PMTOGO.Managers;
 public class AppointmentManager : IAppointmentManager
 {
     private readonly IAppointmentService _appointmentService;
+    private readonly IUserManagement _userService;
 
-    public AppointmentManager(IAppointmentService appointmentService)
+    public AppointmentManager(
+        IAppointmentService appointmentService,
+        IUserManagement userService    
+    )
     {
         _appointmentService = appointmentService;
+        _userService = userService;
     } 
 
     public Task<Result> DeleteAppointment(int appointmentId)
@@ -19,14 +24,30 @@ public class AppointmentManager : IAppointmentManager
         throw new NotImplementedException();
     }
 
-    public Task<Result> GetUserAppointments(string username)
+    public async Task<Result> GetUserAppointments(string username)
     {
-        throw new NotImplementedException();
+        var result = new Result();
+        var user = await _userService.GetUser(username);
+
+        if (user is null)
+        {
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Unable to fetch user.";
+
+            return result;
+        }
+
+        var appointments = _appointmentService.GetAllByUserIdAsync(user.Username);
+
+        result.IsSuccessful = true;
+        result.Payload = appointments;
+
+        return result;
     }
 
     public Task<Result> InsertAppointment(Appointment appointment, string username)
     {
-        throw new NotImplementedException();
+
     }
 
     public Task<Result> UpdateAppointment(Appointment appointment)

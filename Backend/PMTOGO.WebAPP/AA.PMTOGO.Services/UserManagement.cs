@@ -24,6 +24,25 @@ namespace AA.PMTOGO.Services
             _authNDAO = usersDAO;
         }
 
+        public async Task<User?> GetUser(string username)
+        {
+            Result result = new();
+
+            if (valid.ValidateEmail(username).IsSuccessful)
+            {
+                Result origin = await _authNDAO.FindUser(username);
+
+                if (origin.IsSuccessful)
+                {
+                    return origin.Payload as User;
+                }
+                else return null;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         //byte[] to string
         public async Task<Result> CreateAccount(string email,string password, string firstname, string lastname, string role)

@@ -10,6 +10,7 @@ namespace AA.PMTOGO.DAL
 {
     public class AppointmentDAO : IAppointmentDAO
     {
+        private readonly UsersDbContext _dbContext;
         
         public Task<Result> DeleteAsync(int appointmentId)
         {

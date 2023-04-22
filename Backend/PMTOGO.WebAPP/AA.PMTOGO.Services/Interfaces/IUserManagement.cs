@@ -9,6 +9,7 @@ namespace AA.PMTOGO.Services.Interfaces
 {
     public interface IUserManagement
     {
+        public Task<User?> GetUser(string username);
         Task<Result> CreateAccount(string email, string password, string firstname, string lastname, string role); 
         Task<Result> DeleteAccount(string username);
         string GenerateSalt();

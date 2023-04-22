@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace AA.PMTOGO.WebAPP.Data
+namespace AA.PMTOGO.Infrastructure.Data
 {
     public class UsersDbContext: DbContext
     {
