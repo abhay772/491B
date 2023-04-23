@@ -8,6 +8,7 @@ using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Services;
 using AA.PMTOGO.Services.Interfaces;
 using ILogger = AA.PMTOGO.Logging.ILogger;
+using AA.PMTOGO.WebAPP.Controllers;
 
 namespace AA.PMTOGO.Infrastructure
 {
@@ -31,6 +32,7 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IPropertyEvaluator, PropertyEvaluator>();
             services.AddTransient<IPropEvalManager, PropEvalManager>();
             services.AddTransient<ISqlPropEvalDAO, SqlPropEvalDAO>();
+            services.AddTransient<IUsageAnalysisManager, UsageAnalysisManager>();
             services.AddTransient<InputValidation>();
             services.AddTransient<ClaimValidation>();
             return services;

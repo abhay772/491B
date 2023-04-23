@@ -9,7 +9,7 @@ namespace AA.PMTOGO.Logging
         LoggerDAO _loggerDAO = new LoggerDAO();
         public async Task Log(string requestName, byte logLevel, LogCategory logCategory, object result)
         {
-
+/*
             Log log = new()     //create logEntry
             {
                 LogLevel = logLevel,
@@ -20,7 +20,7 @@ namespace AA.PMTOGO.Logging
             };
 
             await _loggerDAO.InsertLog(log);
-
+*/
 
             /*var filePath = string.Format("Logs/{0}.csv", log.LogId);
             using var writer = new StreamWriter(new FileStream(filePath, FileMode.CreateNew, FileAccess.Write));

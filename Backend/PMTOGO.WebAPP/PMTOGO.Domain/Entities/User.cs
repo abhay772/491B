@@ -16,6 +16,10 @@ namespace AA.PMTOGO.Models.Entities
         public string Salt { get; set; } = string.Empty;
         public bool IsActive { get; set; }
         public int Attempt { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string OTP { get; set; } = string.Empty;
+        public DateTime OTPTimestamp { get; set; }
+        public bool RecoveryRequest { get; set; }
 
         public User()
         {
