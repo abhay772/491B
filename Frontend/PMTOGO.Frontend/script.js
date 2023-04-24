@@ -16,7 +16,6 @@ window.addEventListener("load", function() {
   })
 });
 
-
 function loadLoginPage() {
   // fetch login page
   fetch('./Views/login.html')
@@ -31,8 +30,8 @@ function loadLoginPage() {
         const forgotPasswordButton = document.getElementById('forgotPass');
 
       // add event listeners to register link, forgot password button
-      registerLink.addEventListener('click', loadRegisterPage);
-      forgotPasswordButton.addEventListener('click', loadForgotPasswordPage);
+        registerLink.addEventListener('click', loadRegisterPage);
+        forgotPasswordButton.addEventListener('click', loadCrimeMapPage/*loadForgotPasswordPage*/);
 
       // select login form
       const loginForm = document.getElementById('login-form');
@@ -64,6 +63,100 @@ function loadLoginPage() {
       
     })
     .catch(error => console.log(error));
+}
+
+function loadCrimeMapPage() {
+    // fetch crime map page html
+    fetch('./Views/crimeMap.html')
+        .then(response => response.text())
+        .then(data => {
+            // update homepage content div with crime map page html
+            content.innerHTML = data;
+
+            // add image to crime map page
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
+
+            const image = document.createElement('img');
+            image.src = './images/crimemap.png';
+            image.alt = 'Crime map';
+            imageContainer.appendChild(image);
+
+            const crimeMapContent = document.getElementById('crime-map-content');
+            crimeMapContent.appendChild(imageContainer);
+
+            // add styles to image container
+            imageContainer.style.overflow = 'auto';
+            imageContainer.style.width = '750px';
+            imageContainer.style.height = '750px';
+            image.style.transform = 'scale(1)';
+            image.style.transition = 'transform 0.5s';
+
+            // set initial scroll position
+            imageContainer.scrollLeft = 5400;
+            imageContainer.scrollTop = 7300;
+
+            // add event listener to image for panning
+            let isDragging = false;
+            let lastX, lastY;
+            image.addEventListener('mousedown', function (event) {
+                event.preventDefault();
+                isDragging = true;
+                lastX = event.clientX;
+                lastY = event.clientY;
+            });
+            image.addEventListener('mousemove', function (event) {
+                event.preventDefault();
+                if (isDragging) {
+                    const deltaX = event.clientX - lastX;
+                    const deltaY = event.clientY - lastY;
+                    lastX = event.clientX;
+                    lastY = event.clientY;
+                    imageContainer.scrollLeft -= deltaX;
+                    imageContainer.scrollTop -= deltaY;
+                }
+            });
+            image.addEventListener('mouseup', function (event) {
+                event.preventDefault();
+                isDragging = false;
+            });
+
+            // add "Add Crime Alert" button
+            const addCrimeAlertButton = document.createElement('button');
+            addCrimeAlertButton.textContent = 'Add Crime Alert';
+            addCrimeAlertButton.addEventListener('click', function () {
+                // add event listener to image for placing marker
+                imageContainer.addEventListener('click', function (event) {
+                    const marker = document.createElement('div');
+                    marker.classList.add('marker');
+                    marker.style.left = (event.clientX - imageContainer.getBoundingClientRect().left + imageContainer.scrollLeft - 10) + 'px';
+                    marker.style.top = (event.clientY - imageContainer.getBoundingClientRect().top + imageContainer.scrollTop - 10) + 'px';
+                    imageContainer.appendChild(marker);
+
+                    // log location in pixels and send to backend controller
+                    const xLocation = (event.clientX - imageContainer.getBoundingClientRect().left + imageContainer.scrollLeft).toString();
+                    const yLocation = (event.clientY - imageContainer.getBoundingClientRect().top + imageContainer.scrollTop).toString();
+                    console.log(xLocation, yLocation);
+
+                    const url = api + '/CrimeAlert/addAlert';
+                    const data = { x: xLocation, y: yLocation };
+                    send(url, data)
+                        .then(response => {
+                            console.log(response);
+
+                            // after successful recovery, load OTP page
+                            loadCrimeMapPage();
+                        })
+                        .catch(error => console.log(error));
+
+                    // remove event listener after marker is placed
+                    imageContainer.removeEventListener('click', arguments.callee);
+
+                });
+            });
+            crimeMapContent.appendChild(addCrimeAlertButton);
+        })
+        .catch(error => console.log(error));
 }
 
 var role="";
@@ -186,38 +279,6 @@ function loadUpdatePasswordPage(email) {
         .catch(error => console.log(error))
 }
 
-/*function loadUpdatePasswordPage(email) {
-    fetch("./Views/updatePassword.html")
-        .then(response => response.text())
-        .then(data => {
-            content.innerHTML = data;
-
-            const passwordInput = document.getElementById('password-input');
-            const submitBtn = document.getElementById('update-password-submit-btn');
-
-            submitBtn.addEventListener('click', (event) => {
-                event.preventDefault();
-
-                // get password
-                const password = passwordInput.value;
-
-                const url = api + '/UserManagement/updatePassword';
-                const data = { email: email, password: password };
-
-                send(url, data)
-                    .then(data => data.json())
-                    .then(response => {
-                        console.log(response);
-
-                        loadLoginPage();
-                    })
-                    .catch(error => console.log(error));
-            });
-        })
-        .catch(error => console.log(error));
-}*/
-
-
 function loadRegisterPage() {
   // fetch register page html
   fetch("./Views/register.html")
@@ -262,72 +323,108 @@ function loadRegisterPage() {
 
 //function to load homepage
 function loadHomePage(userrole) {
-  // fetch property evaluation page html
-  fetch('./Views/homepage.html')
-    .then(response => response.text())
-    .then(data => {
-      // update content div with property evaluation page html
-      content.innerHTML = data;
-
-      const hamburger = document.getElementById("back");
-      hamburger.addEventListener("click", loadHomePage);
-
-      const userinfo = document.getElementById("userrole");
-      userinfo.innerHTML = userrole;
-    //select log out
-    
-    const logoutUser = document.getElementById("logout");
-
-    const homepageContent = document.getElementsByClassName("homepage-content")[0];
-    //select settings
-    const deleteAccount = document.getElementById("settings");
-   //select propertyEvaluation
-    const propertyEvalFeature = document.getElementById('propertyEvaluation');
-     //select request management
-    const requestFeature = document.getElementById('requestManagement');
-      //select service Management
-    const serviceFeature = document.getElementById('serviceManagement');
-
-    //add event listeners
-    logoutUser.addEventListener('click', () => {
-      url = api + '/Authentication/Logout';
-
-      get(url)
-        .then(response => response.json())
+    // fetch property evaluation page html
+    fetch('./Views/homepage.html')
+        .then(response => response.text())
         .then(data => {
-          if (data === false){
+            // update content div with property evaluation page html
+            content.innerHTML = data;
 
-        alert('Logout was unsuccesful. Try again or contact an administratior.');
-        loadHomePage();
-        }
-        else{
-          loadLoginPage();
-        }
-      })
-    });
-    //add event listener to nav to account delection
+            const hamburger = document.getElementById("back");
+            hamburger.addEventListener("click", loadHomePage);
 
-    deleteAccount.addEventListener('click', () =>{
-      loadAccountDeletionPage(homepageContent);
-    });
-    //add event listener to nav to request management
-    requestFeature.addEventListener('click', () => {
-      loadRequestManagementPage(homepageContent);
-    });  
+            const userinfo = document.getElementById("userrole");
+            userinfo.innerHTML = userrole;
+            //select log out
+            const logoutUser = document.getElementById("logout");
 
-    //add event listener to nav to service management
-    serviceFeature.addEventListener('click', () => {
-      loadServiceManagementPage(homepageContent);
-    });  
+            const homepageContent = document.getElementsByClassName("homepage-content")[0];
+            //select settings
+            const deleteAccount = document.getElementById("settings");
+            //select propertyEvaluation
+            const propertyEvalFeature = document.getElementById('propertyEvaluation');
+            //select request management
+            const requestFeature = document.getElementById('requestManagement');
+            //select service Management
+            const serviceFeature = document.getElementById('serviceManagement');
+            //select crime alert
+            const crimeMapFeature = document.getElementById('crimeMap');
 
-    // add event listeners to nav to property evaluation
-    propertyEvalFeature.addEventListener('click', () => {
-      loadPropertyEvalPage(homepageContent);
-    });
-    })
-    .catch(error => console.log(error));
-  
+            //add event listeners
+            logoutUser.addEventListener('click', () => {
+                url = api + '/Authentication/Logout';
+
+
+
+                get(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data === false) {
+                            alert('Logout was unsuccesful. Try again or contact an administratior.');
+                            loadHomePage();
+                        }
+                        else {
+                            loadLoginPage();
+                        }
+                    })
+            });
+            //add event listener to nav to account delection
+
+            deleteAccount.addEventListener('click', () => {
+                loadAccountDeletionPage(homepageContent);
+            });
+            //add event listener to nav to request management
+            requestFeature.addEventListener('click', () => {
+                loadRequestManagementPage(homepageContent);
+            });
+
+            //add event listener to nav to service management
+            serviceFeature.addEventListener('click', () => {
+                loadServiceManagementPage(homepageContent);
+            });
+
+            //add event listener to nav to crime map
+            crimeMapFeature.addEventListener('click', () => {
+                loadCrimeMapPage(homepageContent);
+            });
+
+            // add event listeners to nav to property evaluation
+            propertyEvalFeature.addEventListener('click', () => {
+                loadPropertyEvalPage(homepageContent);
+            });
+        })
+        .catch(error => console.log(error));
 }
+
+/*function loadCrimeMapPage() {
+    // fetch crime map page html
+    fetch('./Views/crimeMap.html')
+        .then(response => response.text())
+        .then(data => {
+
+            // add image to crime map page
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
+
+            const image = document.createElement('img');
+            image.src = './images/crimemap.png';
+            image.alt = 'Crime map';
+            imageContainer.appendChild(image);
+
+            const crimeMapContent = document.getElementById('crime-map-content');
+            crimeMapContent.appendChild(imageContainer);
+
+            // attach event listener to back button
+            const backButton = document.getElementById('back');
+            if (backButton) {
+                backButton.addEventListener('click', () => {
+                    loadHomePage();
+                });
+            }
+        })
+        .catch(error => console.log(error));
+}*/
+
 
 function loadAccountDeletionPage(homepageContent){
   //fetch account deletion page

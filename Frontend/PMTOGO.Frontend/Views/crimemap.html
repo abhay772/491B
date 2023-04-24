@@ -1,97 +1,29 @@
-<!--Developer, F. (2022, June 2). Sidebar menu using HTML and CSS. DEV Community. Retrieved March 31, 2023, 
-  from https://dev.to/code_mystery/sidebar-menu-using-html-and-css-o49#:~:text=Sidebar%20Menu%20Using%20HTML%20and%20CSS%201%20Step,JavaScript%20code%20to%20activate%20the%20menu%20button%20 -->
-
-
-<!-- Side bar navigation/ Homepage-->
-<div id="homepage" class="wrapper">
-  <button id="logout" class="exit" title="Close Window">Log Out</button>
-    <div class="sidebar">
-      <!--profile image & text-->
-      <div class="profile">
-        <!--<img src="https://i.pinimg.com/564x/6c/74/25/6c74255c82ac875ba9321bb44757407f.jpg">-->
-        <h3>PMTOGO</h3> <!-- from login info/broswer/authN-->
-        <p id="userrole"></p>
-      </div>
-      <!--menu item-->
-      <ul>
-        <li>
-          <a href="#" class="active">
-            <span class="icon"><i class="fas fa-home"></i></span>
-            <span class="item" id="home">Home</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-desktop"></i></span>
-            <span class="item" id="dashboard">My Dashboard</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-user-friends"></i></span>
-            <span class="item" id="propertyEvaluation">Property Evaluation</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-database"></i></span>
-            <span class="item" id="serviceManagement">Service Management</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-database"></i></span>
-            <span class="item" id="requestManagement">Request Management</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-brush"></i></span>
-            <span class="item" id="maintenance">Maintenance & Renonvation</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-database"></i></span>
-            <span class="item" id="diyVideo">DIY Video</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-database"></i></span>
-            <span class="item" id="crimeAlert">Crime Alert</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-database" ></i></span>
-            <span class="item">My Documents</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-user-shield"></i></span>
-            <span class="item">Admin</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <span class="icon"><i class="fas fa-cog"></i></span>
-            <span class="item" id="settings">Settings</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="section">
-      <div class="top_navbar">
-        <div class="hamburger">
-          <button id="back">
-            <i class="fas fa-bars"></i>
-          </button>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crime Map</title>
+    <script src="./script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #crime-map-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Crime Map</h1>
+        <button id="add-alert-button">Add Crime Alert</button>
+    </header>
+    <main>
+        <div class="homepage-content">
+            <!-- Content will be loaded here -->
         </div>
-      </div>
-      <div class="crimemap-content">
-          <img src="California Map V3.png" width="100%" height="auto">
-      </div>
-    </div>
-  </div>
+        <div id="crime-map-content">
+        </div>
+    </main>
+</body>
+</html>

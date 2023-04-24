@@ -411,6 +411,17 @@ table {
   cursor: pointer;
 }
 
+/* Crime Alert Marker */
+.marker {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  box-shadow: 0 0 3px 3px rgba(255, 0, 0, 0.5);
+  cursor: pointer;
+}
+
 /* Hover style for the Evaluate Property button */
 #evaluate-btn:hover {
   background-color: #3e8e41;
