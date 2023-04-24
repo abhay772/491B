@@ -33,7 +33,7 @@ namespace AA.PMTOGO.UnitTest
             var logger = new Logger();
             var user = new UserManagement(logger);
             //clean up
-            await user.DeleteAccount("sara2@gmail.com");
+            Result delete = await user.DeleteAccount("sara2@gmail.com");
 
             //username = email
 
@@ -44,6 +44,8 @@ namespace AA.PMTOGO.UnitTest
             // Act
             Result result1 = await user.CreateAccount("sara2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
             bool account2Created = result1.IsSuccessful;
+
+            await user.DeleteAccount("sara2@gmail.com");
 
             // Assert
             Assert.IsNotNull(accountCreated);
