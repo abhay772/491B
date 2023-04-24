@@ -1,6 +1,6 @@
 ﻿using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
-using System.Text;
+
 
 namespace AA.PMTOGO.DAL
 {
@@ -15,16 +15,16 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
+                string sqlQuery = "INSERT into Logs VALUES(@logId, @operation, @logLevel, @logCategory, @message, @timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
-                
-                command.Parameters.AddWithValue("@LogId", log.LogId);
-                command.Parameters.AddWithValue("@Operation", log.Operation);
-                command.Parameters.AddWithValue("@LogLevel", log.LogLevel);
-                command.Parameters.AddWithValue("@LogCategory", log.Category);
-                command.Parameters.AddWithValue("@Message", log.Message);
-                command.Parameters.AddWithValue("@Timestamp", log.Timestamp);
+
+                command.Parameters.AddWithValue("@logId", log.LogId);
+                command.Parameters.AddWithValue("@operation", log.Operation);
+                command.Parameters.AddWithValue("@logLevel", log.LogLevel);
+                command.Parameters.AddWithValue("@logCategory", log.Category);
+                command.Parameters.AddWithValue("@message", log.Message);
+                command.Parameters.AddWithValue("@timestamp", log.Timestamp);
 
                 try
                 {
@@ -41,18 +41,12 @@ namespace AA.PMTOGO.DAL
                         return result;
                     }
                 }
-                catch (SqlException ex)
+                catch (SqlException e)
                 {
-                    StringBuilder errorMessages = new StringBuilder();
-                    for (int i = 0; i < ex.Errors.Count; i++)
+                    if (e.Number == 208)
                     {
-                        errorMessages.Append("Index #" + i + "\n" +
-                            "Message: " + ex.Errors[i].Message + "\n" +
-                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                            "Source: " + ex.Errors[i].Source + "\n" +
-                            "Procedure: " + ex.Errors[i].Procedure + "\n");
+                        result.ErrorMessage = "Specified table not found";
                     }
-                    Console.WriteLine(errorMessages.ToString());
                 }
 
             }
@@ -89,11 +83,11 @@ namespace AA.PMTOGO.DAL
                         while (reader.Read())
                         {
 
-                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["RequestType"],(string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
+                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
                                 (string)reader["ServiceFrequency"], (string)reader["Comments"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
-                            
-                            
+
+
                             listOfrequest.Add(request);
 
                         }

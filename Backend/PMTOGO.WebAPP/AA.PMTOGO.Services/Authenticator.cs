@@ -14,7 +14,13 @@ public class Authenticator : IAuthenticator
 
     UsersDAO _authNDAO = new UsersDAO();
     InputValidation valid = new InputValidation();
-    Logger _logger = new Logger();
+    private readonly ILogger _logger;
+
+    public Authenticator(ILogger logger)
+    {
+        _logger = logger;
+    }
+
 
     public async Task<Result> Authenticate(string username, string password)
     {
@@ -32,7 +38,6 @@ public class Authenticator : IAuthenticator
                 if (EnteredPassword.Equals(user.PassDigest))
                 {
                     result.IsSuccessful = true;
-                    result.ErrorMessage = "Login Successful";
                     result.Payload = user.Role;
                     await _logger!.Log("Authenticate", 4, LogCategory.Server, result);
                 }
