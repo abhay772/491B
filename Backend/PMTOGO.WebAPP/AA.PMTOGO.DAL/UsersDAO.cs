@@ -64,7 +64,13 @@ public class UsersDAO : IUsersDAO
                     result.IsSuccessful = false;
 
                 }
+                finally
+                {
+                    reader.Close();
+                }
             }
+
+            connection.Close();
         }
         result.IsSuccessful = false;
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
@@ -119,7 +125,13 @@ public class UsersDAO : IUsersDAO
                     result.IsSuccessful = false;
 
                 }
+                finally
+                {
+                    reader.Close();
+                }
             }
+
+            connection.Close();
         }
         result.IsSuccessful = false;
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
@@ -150,8 +162,11 @@ public class UsersDAO : IUsersDAO
                         return result;
                     }
                 }
+
+                reader.Close();
             }
 
+            connection.Close();
             result.IsSuccessful = false;
             return result;
         }
@@ -192,6 +207,10 @@ public class UsersDAO : IUsersDAO
                 {
                     result.ErrorMessage = "Specified table not found";
                 }
+            }
+            finally
+            {
+                connection.Close();
             }
 
         }
@@ -236,7 +255,8 @@ public class UsersDAO : IUsersDAO
                     result.ErrorMessage = "Specified table not found";
                 }
             }
-
+            
+            connection.Close();
         }
 
         result.IsSuccessful = false;
@@ -282,6 +302,7 @@ public class UsersDAO : IUsersDAO
                 }
             }
 
+            connection.Close();
         }
 
         result.IsSuccessful = false;
@@ -337,6 +358,7 @@ public class UsersDAO : IUsersDAO
                 }
             }
 
+            connection.Close();
         }
 
         result.IsSuccessful = false;
@@ -386,7 +408,7 @@ public class UsersDAO : IUsersDAO
                     result.ErrorMessage = "Specified table not found";
                 }
             }
-
+            connection.Close();
         }
 
         result.IsSuccessful = false;
@@ -429,7 +451,7 @@ public class UsersDAO : IUsersDAO
                 //TODO: log username, Ip, timestamp to database
             }
             reader.Close();
-
+            connection.Close();
         }
     }
 
@@ -446,7 +468,12 @@ public class UsersDAO : IUsersDAO
             var reader = await command.ExecuteReaderAsync();
 
             reader.Read();
-            return (int)reader["Attempts"];
+            var attemps = (int)reader["Attempts"];
+
+            reader.Close();
+            connection.Close();
+
+            return attemps;
         }
     }
 
@@ -461,6 +488,7 @@ public class UsersDAO : IUsersDAO
             command.Parameters.AddWithValue("@Username", username);
             await command.ExecuteNonQueryAsync();
 
+            connection.Close();
         }
     }
 
@@ -513,7 +541,13 @@ public class UsersDAO : IUsersDAO
                     //_logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                 }
+                finally
+                {
+                    reader.Close();
+                }
             }
+
+            connection.Close();
         }
         result.IsSuccessful = false;
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
@@ -559,6 +593,7 @@ public class UsersDAO : IUsersDAO
             }
 
             reader.Close();
+            connection.Close();
         }
         return result;
     }
@@ -585,6 +620,8 @@ public class UsersDAO : IUsersDAO
             {
                 result.IsSuccessful = true;
             }
+
+            connection.Close();
         }
         return result;
     }
@@ -612,6 +649,8 @@ public class UsersDAO : IUsersDAO
             {
                 result.IsSuccessful = true;
             }
+
+            connection.Close();
         }
         return result;
     }

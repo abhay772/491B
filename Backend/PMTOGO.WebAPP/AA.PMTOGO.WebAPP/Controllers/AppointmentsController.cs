@@ -4,8 +4,6 @@ using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.WebAPP.Contracts.Appointment;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -34,7 +32,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
 #endif
 
         [HttpGet]
-        [Consumes("application/json", "application/problem+json")]
         public async Task<IActionResult> GetUserAppointment()
         {
             Result result = new Result();
@@ -55,7 +52,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         return BadRequest(new { message = "Retry again or contact system admin." });
                     }
                 }
-                catch
+                catch (Exception e)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
@@ -67,7 +64,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> AddAppointmentRequest(InsertAppointmentRequest appointmentRequest)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation("Property Manager", Request);
+            result = _claims.ClaimsValidation(null!, Request);
             UserClaims user = (UserClaims)result.Payload!;
             var appointment = new Appointment(appointmentRequest.Title, appointmentRequest.AppointmentTime);
 
@@ -99,8 +96,9 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> UpdateAppointment(UpdateAppointmentRequest appointmentRequest)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation("Property Manager", Request);
-            var appointment = new Appointment(appointmentRequest.AppointmentId, appointmentRequest.Username, appointmentRequest.Title, appointmentRequest.AppointmentTime);
+            result = _claims.ClaimsValidation(null!, Request);
+            UserClaims user = (UserClaims)result.Payload!;
+            var appointment = new Appointment(appointmentRequest.AppointmentId, user.ClaimUsername, appointmentRequest.Title, appointmentRequest.AppointmentTime);
 
             if (result.IsSuccessful)
             {
@@ -130,7 +128,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public async Task<IActionResult> DeleteAppointment(int appointmentId)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation("Property Manager", Request);
+            result = _claims.ClaimsValidation(null!, Request);
 
             if (result.IsSuccessful )
             {

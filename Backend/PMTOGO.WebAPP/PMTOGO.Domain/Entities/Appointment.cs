@@ -10,13 +10,18 @@ namespace AA.PMTOGO.Models.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int AppointmentId { get; set; }
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty;
         public string? Title { get; set; } = null!;
         public DateTime AppointmentTime { get; set; }
         public bool IsActive { get; set; }
 
-        public virtual User? User { get; set; }
+        public virtual User? User { get; set; } = null!;
     
+        public Appointment()
+        {
+
+        }
+
         //mapping for InsertAppointmentRequest
         public Appointment(string title, DateTime appointmentTime)
         {   

@@ -1,41 +1,99 @@
 ﻿using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Infrastructure.Data;
 using AA.PMTOGO.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace AA.PMTOGO.DAL
 {
     public class AppointmentDAO : IAppointmentDAO
     {
         private readonly UsersDbContext _dbContext;
+
+        public AppointmentDAO(
+            UsersDbContext dbContext
+        )
+        {
+            _dbContext = dbContext;
+        }
         
-        public Task<Result> DeleteAsync(int appointmentId)
+        public async Task<bool> DeleteAsync(int appointmentId)
         {
-            throw new NotImplementedException();
+            var origin = await _dbContext.Appointment.FindAsync(appointmentId);
+
+            if (origin is null) return false;
+
+            origin.IsActive = false;
+            var result =  _dbContext.Appointment.Update(origin);
+
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
-        public Task<Result> GetAllByUserIdAsync(string username)
+        public async Task<List<Appointment>> GetAllByUserIdAsync(string username)
         {
-            throw new NotImplementedException();
+            var result = await _dbContext.Appointment
+                .Where(x => x.Username == username && x.IsActive == true)
+                .ToListAsync();
+
+            return result;
         }
 
-        public Task<Result> GetAsync(int appointmentId)
+        public async Task<List<Appointment>> GetAllUpcomingByUserIdAsync(string username)
         {
-            throw new NotImplementedException();
+            var result = await _dbContext.Appointment
+                .Where(x => x.Username == username && x.IsActive == true && x.AppointmentTime > DateTime.UtcNow)
+                .ToListAsync();
+
+            return result;
         }
 
-        public Task<Result> InsertAsync(Appointment appointment, string username)
+        public async Task<Appointment?> GetAsync(int appointmentId)
         {
-            throw new NotImplementedException();
+            var result = await _dbContext.Appointment.FindAsync(appointmentId);
+
+            return result;
         }
 
-        public Task<Result> UpdateAsync(Appointment appointment)
+        public async Task<bool> InsertAsync(Appointment appointment)
         {
-            throw new NotImplementedException();
+            appointment.AppointmentId = 0;
+            appointment.IsActive = true;
+
+            _dbContext.Appointment.Add(appointment);
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> UpdateAsync(Appointment appointment)
+        {
+            _dbContext.Appointment.Update(appointment);
+
+            return await _dbContext.SaveChangesAsync() > 0;
+        }
+
+        public async Task<User?> GetUserAsync(string username)
+        {
+            // var result = await _dbContext.Database
+            //     .SqlQuery<User>($"SELECT [u].[Username], [u].[Attempts], [u].[IsActive], [u].[OTP], [u].[OTPTimestamp], [u].[PassDigest], [u].[RecoveryRequest], [u].[Role], [u].[Salt], [u].[Timestamp] FROM [UserAccounts] as [u] WHERE [a].[Username] = {username} AND [a].[IsActive] = CAST(1 AS bit)")
+            //     .FirstAsync();
+
+            var result2 = await _dbContext.User
+                .Where(x => x.Username == username)
+                .Select(x => new User()
+                {
+                    Username = x.Username,
+                    Role = x.Role,
+                    PassDigest = x.PassDigest,
+                    Salt = x.Salt,
+                    IsActive = x.IsActive,
+                    Attempt = x.Attempt,
+                    Timestamp = x.Timestamp,
+                    OTP = x.OTP,
+                    OTPTimestamp = x.OTPTimestamp,
+                    RecoveryRequest = x.RecoveryRequest
+                })
+                .FirstOrDefaultAsync();
+
+            return result2;
         }
     }
 }

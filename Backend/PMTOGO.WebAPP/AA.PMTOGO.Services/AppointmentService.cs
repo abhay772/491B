@@ -18,14 +18,16 @@ namespace AA.PMTOGO.Services
             _appointmentDAO = appointmentDAO;
         }
 
-        public Task<Result> DeleteAsync(int appointmentId) => _appointmentDAO.DeleteAsync(appointmentId);
+        public Task<bool> DeleteAsync(int appointmentId) => _appointmentDAO.DeleteAsync(appointmentId);
 
-        public Task<Result> GetAllByUserIdAsync(string username) => _appointmentDAO.GetAllByUserIdAsync(username);
+        public Task<List<Appointment>> GetAllByUserIdAsync(string username) => _appointmentDAO.GetAllByUserIdAsync(username);
 
-        public Task<Result> GetAsync(int appointmentId) => _appointmentDAO.GetAsync(appointmentId);
+        public Task<Appointment?> GetAsync(int appointmentId) => _appointmentDAO.GetAsync(appointmentId);
 
-        public Task<Result> InsertAsync(Appointment appointment, string username) => _appointmentDAO.InsertAsync(appointment, username);
+        public Task<bool> InsertAsync(Appointment appointment) => _appointmentDAO.InsertAsync(appointment);
 
-        public Task<Result> UpdateAsync(Appointment appointment) => _appointmentDAO.UpdateAsync(appointment);
+        public Task<bool> UpdateAsync(Appointment appointment) => _appointmentDAO.UpdateAsync(appointment);
+
+        public Task<User?> GetUserAsync(string username) => _appointmentDAO.GetUserAsync(username);
     }
 }

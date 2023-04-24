@@ -3,9 +3,10 @@ using AA.PMTOGO.Models.Entities;
 namespace AA.PMTOGO.Services.Interfaces;
 
 public interface IAppointmentService {
-    public Task<Result> GetAsync(int appointmentId);
-    public Task<Result> GetAllByUserIdAsync(string username);
-    public Task<Result> InsertAsync(Appointment appointment, string username);
-    public Task<Result> UpdateAsync(Appointment appointment);
-    public Task<Result> DeleteAsync(int appointmentId);
+    public Task<Appointment?> GetAsync(int appointmentId);
+    public Task<List<Appointment>> GetAllByUserIdAsync(string username);
+    public Task<bool> InsertAsync(Appointment appointment);
+    public Task<bool> UpdateAsync(Appointment appointment);
+    public Task<bool> DeleteAsync(int appointmentId);
+    public Task<User?> GetUserAsync(string username);
 }

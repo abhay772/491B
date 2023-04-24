@@ -23,11 +23,6 @@ namespace AA.PMTOGO.Infrastructure.Data
                 entity.ToTable("UserAccounts");
             });
 
-            modelBuilder.Entity<User>(entity => 
-            {
-                entity.ToTable("UserProfiles");
-            });
-
             modelBuilder.Entity<Appointment>(entity =>
             {
                 entity.ToTable("Appointment");
