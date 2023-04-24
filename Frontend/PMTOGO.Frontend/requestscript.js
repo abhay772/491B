@@ -1,6 +1,6 @@
 const createRequestsTable = () =>{
   const requests = document.querySelector("div.requests");
-  let tableHeaders = ["Request ID","Request Type", "Service Name", "Service Type",  "Service Description", 
+  let tableHeaders = ["Request Type", "Service Name", "Service Type",  "Service Description", 
   "Service Frequency", "Comments", "Property Manager Name", "Property Manager Email", "Accept?", "Decline?"];
     while (requests.firstChild) requests.removeChild(requests.firstChild)
     let requestsTable = document.createElement('table');
@@ -37,10 +37,6 @@ const appendRequest =(request, id) => {
   let requestTableBodyRow = document.createElement('tr');
   requestTableBodyRow.className = "requestTableBodyRow";
   requestTableBodyRow.id= String(id);
-
-  //add the data
-  let requestId = document.createElement('td');
-  requestId.innerText = `${request.id}`;
 
   let requestType = document.createElement('td');
   requestType.innerText = `${request.requestType}`;
@@ -83,7 +79,7 @@ const appendRequest =(request, id) => {
   acceptAction.append(acceptbtn);
   declineAction.append(declinebtn);
 
-  requestTableBodyRow.append(requestId,requestType,serviceName,serviceType,serviceDescription,serviceFrequeny,
+  requestTableBodyRow.append(requestType,serviceName,serviceType,serviceDescription,serviceFrequeny,
     comments,propertyManager,propertyManagerEmail,acceptAction,declineAction);
 
   requestsTable.append(requestTableBodyRow);

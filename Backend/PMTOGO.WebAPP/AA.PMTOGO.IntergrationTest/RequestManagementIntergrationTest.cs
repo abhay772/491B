@@ -144,12 +144,13 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task CancelUserService_PASS()
         {
             //arrange
-            var service = new UserServiceManagement();
+            var service = new ServiceRequestDAO();
             var dao = new UserServiceDAO();
             var request = new ServiceRequestManagement();
             Guid id = Guid.NewGuid();
             ServiceRequest userService = new ServiceRequest(id, "Cancel Example", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
+            await service.AddServiceRequest(userService);
             await dao.AddUserService(userService);
 
             //act

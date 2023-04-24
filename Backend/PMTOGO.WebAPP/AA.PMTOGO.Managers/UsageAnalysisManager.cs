@@ -15,7 +15,17 @@ namespace AA.PMTOGO.Managers
         UsageAnalysisDashboard usageDashboard = new UsageAnalysisDashboard();
         public async Task<Result> GetAnalysis()
         {
-            Result result = await usageDashboard.GenerateAnalysis();
+            Result result = new Result();
+            try
+            {
+                result = await usageDashboard.GenerateAnalysis();
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful= false;
+                result.ErrorMessage = "Load Usage Analysis Dashboard Unsuccessful";
+            }
             return result;
 
         }

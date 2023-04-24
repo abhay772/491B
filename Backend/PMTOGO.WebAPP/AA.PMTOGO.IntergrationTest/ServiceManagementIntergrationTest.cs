@@ -13,8 +13,8 @@ namespace AA.PMTOGO.IntergrationTest
             // Arrange
             var dao = new ServiceDAO();
             Guid id = Guid.NewGuid();
-            Service service = new Service(id, "Parking Lot Sweep", "Sweeping", "random description",
-                 "Sierra Harris", "mssierra310@gmail.com", 200.50);
+            Service service = new Service(id, "Steam Cleaning", "Pressure Wash", "Cleans hard surfaces such as sidewalks, exterior building walls, or walkways",
+                 "Sierra Harris", "mssierra310@gmail.com", 450.50);
             // Act
             await dao.AddService(service);
             Result result = await dao.FindService(id);

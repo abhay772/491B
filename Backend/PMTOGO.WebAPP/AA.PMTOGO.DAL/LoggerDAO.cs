@@ -72,11 +72,11 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT COUNT(*) FROM Logs WHERE Operation = @operation AND (Timestamp BETWEEN @minDate AND @currentDate) GROUP BY  DAY(Timestamp)";
+                //string sqlQuery = "SELECT COUNT(*), Timestamp FROM Logs WHERE Operation = @Operation AND Timestamp BETWEEN @minDate AND @currentDate GROUP BY DAY(Timestamp)";
+                string query = "SELECT COUNT(*) FROM (SELECT Timestamp, convert(date, Timestamp) as the_date, COUNT(*) over (partition by Timestamp) as num_dates FROM Logs WHERE Timestamp >= @minDate AND Timestamp < dateadd(day, 1, @currentDate) AND Operation = @Operation Group By Timestamp, convert(date, Timestamp))Logs WHERE num_dates = datediff(day, @currentDate, @minDate) + 1;";
+                var command = new SqlCommand(query, connection);
 
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@operation", operation);
+                command.Parameters.AddWithValue("@Operation", operation);
                 command.Parameters.AddWithValue("@minDate", minDate);
                 command.Parameters.AddWithValue("@currentDate", currentDate);
 
@@ -85,20 +85,8 @@ namespace AA.PMTOGO.DAL
                     try
                     {
                         //create analysis from query 
-                        List<ServiceRequest> listOfrequest = new List<ServiceRequest>();
-                        while (reader.Read())
-                        {
 
-                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["RequestType"],(string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
-                                (string)reader["ServiceFrequency"], (string)reader["Comments"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
-                               (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
-                            
-                            
-                            listOfrequest.Add(request);
-
-                        }
                         result.IsSuccessful = true;
-                        result.Payload = listOfrequest;
                         return result;
                     }
                     catch
