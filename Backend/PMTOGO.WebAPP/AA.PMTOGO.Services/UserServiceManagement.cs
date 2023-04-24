@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
 using System.Security.Principal;
@@ -12,6 +13,7 @@ namespace AA.PMTOGO.Services
         ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
         ServiceDAO _serviceDAO = new ServiceDAO();
         UsersDAO _authNDAO = new UsersDAO();
+        Logger _logger = new Logger();
 
         private async Task<string> GetUserInfo (string username)
         {
@@ -33,6 +35,7 @@ namespace AA.PMTOGO.Services
                 Result result = new Result();
                 result.ErrorMessage = "Load User Info Unsuccessful. Try Again Later";
                 result.IsSuccessful = false;
+                await _logger!.Log("GetUserInfo", 4, LogCategory.Business, result);
             }
             return null!;
             
@@ -81,12 +84,14 @@ namespace AA.PMTOGO.Services
                     username, propertyManagerName);
 
                 result = await _requestDAO.AddServiceRequest(request);
+                await _logger!.Log("Add Request", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Add Service Request Unsuccessful. Try Again Later";
+                await _logger!.Log("AddRequest", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -102,6 +107,7 @@ namespace AA.PMTOGO.Services
                 {
                     string query = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName, Status, SPRating FROM UserServices WHERE ServiceProviderEmail = @ServiceProviderEmail";
                     result = await _userServiceDAO.GetUserServices(query, username, "SPRating");
+                    await _logger!.Log("GatherUserServices", 4, LogCategory.Business, result);
                     return result;
 
                 }
@@ -109,6 +115,7 @@ namespace AA.PMTOGO.Services
                 {
                     string query = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName, Status, PMRating FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
                     result = await _userServiceDAO.GetUserServices(query, username, "PMRating");
+                    await _logger!.Log("GatherUserServices", 4, LogCategory.Business, result);
                     return result;
 
                 }
@@ -121,6 +128,7 @@ namespace AA.PMTOGO.Services
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Load User services Unsuccessful. Try Again Later";
+                await _logger!.Log("GatherUserServices", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -138,12 +146,14 @@ namespace AA.PMTOGO.Services
                     {
                         string query = "UPDATE UserServices SET SPRating = @Rating WHERE Id = @ID";
                         rating = await _userServiceDAO.UpdateServiceRate(id, rate, query);
+                        await _logger!.Log("Rate", 4, LogCategory.Business, result);
                         return rating;
                     }
                     if (role == "Property Manager")
                     {
                         string query = "UPDATE UserServices SET PMRating = @Rating WHERE Id = @ID";
                         rating = await _userServiceDAO.UpdateServiceRate(id, rate, query);
+                        await _logger!.Log("Rate", 4, LogCategory.Business, result);
                         return rating;
                     }
                 }
@@ -154,7 +164,8 @@ namespace AA.PMTOGO.Services
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Rate Unsuccessful. Try Again Later";  
+                result.ErrorMessage = "Rate Unsuccessful. Try Again Later";
+                await _logger!.Log("Rate", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -173,12 +184,14 @@ namespace AA.PMTOGO.Services
             try
             {
                 result = await _serviceDAO.GetServices();
+                await _logger!.Log("GatherServices", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Load Services Unsuccessful. Try Again Later";
+                await _logger!.Log("GatherServices", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -190,12 +203,14 @@ namespace AA.PMTOGO.Services
             try
             {
                result = await _serviceDAO.AddService(service);
+                await _logger!.Log("CreateService", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Create Service Unsuccessful. Try Again Later";
+                await _logger!.Log("CreateService", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -206,12 +221,14 @@ namespace AA.PMTOGO.Services
             try
             {
                 result = await _serviceDAO.DeleteService(service.Id);
+                await _logger!.Log("RemoveService", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Remove Service Unsuccessful. Try Again Later";
+                await _logger!.Log("RemoveService", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -232,13 +249,17 @@ namespace AA.PMTOGO.Services
                 result = await _requestDAO.AddServiceRequest(request);
 
                 //if request successful change user service status to pending
-                if (result.IsSuccessful) { await ChangeStatus(id, "Pending Frequency Change"); }
+                if (result.IsSuccessful) { 
+                    await ChangeStatus(id, "Pending Frequency Change");
+                    await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
+                }
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Frequency Request Unsuccessful. Try Again Later";
+                await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -256,13 +277,17 @@ namespace AA.PMTOGO.Services
                 result = await _requestDAO.AddServiceRequest(request);
 
                 //if request successful change user service status to pending
-                if (result.IsSuccessful) { await ChangeStatus(id, "Pending Cancellation"); }
+                if (result.IsSuccessful) { 
+                    await ChangeStatus(id, "Pending Cancellation");
+                    await _logger!.Log("CancellationRequest", 4, LogCategory.Business, result);
+                }
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Cancellation Request Unsuccessful. Try Again Later";
+                await _logger!.Log("CancellationRequest", 4, LogCategory.Business, result);
 
             }
             return result;
@@ -274,12 +299,14 @@ namespace AA.PMTOGO.Services
             try
             {
                 result = await _userServiceDAO.UpdateStatus(id, status);
+                await _logger!.Log("ChangeStatus", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
-                result.ErrorMessage = "Service Status Update Unsuccessful. Try Again Later";                
+                result.ErrorMessage = "Service Status Update Unsuccessful. Try Again Later";
+                await _logger!.Log("ChangeStatus", 4, LogCategory.Business, result);
             }
             return result;
         }

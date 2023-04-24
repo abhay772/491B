@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
 using System.Collections.Generic;
@@ -12,23 +13,35 @@ namespace AA.PMTOGO.Services
     {
         ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
         UserServiceDAO _serviceDAO= new UserServiceDAO();
+        Logger _logger = new Logger();
 
         public async Task<Result> AcceptRequest(Guid requestId)
         {
-            //add service request and delete from requested services and return new list of service request
-            ServiceRequest service = await CreateUserService(requestId);
-            
             Result result = new Result();
-         
-            Result insert = await _serviceDAO.AddUserService(service);
+            try
+            {
+                //add service request and delete from requested services and return new list of service request
+                ServiceRequest service = await CreateUserService(requestId);
 
-            if (insert.IsSuccessful == false)
-            {
-                return insert;
+                Result insert = await _serviceDAO.AddUserService(service);
+
+                if (insert.IsSuccessful == false)
+                {
+                    await _logger!.Log("AcceptRequest", 4, LogCategory.Business, result);
+                    return insert;
+                }
+                else
+                {
+                    result = await DeclineRequest(service.Id, service.ServiceProviderEmail);
+                    await _logger!.Log("AcceptRequest", 4, LogCategory.Business, result);
+
+                }
             }
-            else
+            catch
             {
-                result = await DeclineRequest(service.Id, service.ServiceProviderEmail);
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Could not find User Service. Try Again Later";
+                await _logger!.Log("CreateUserService", 4, LogCategory.Business, result);
 
             }
             return result;
@@ -36,17 +49,35 @@ namespace AA.PMTOGO.Services
 
         public async Task<Result> DeclineRequest(Guid id, string username)
         {
-            Result result1 = new Result();
-            Result result = await _requestDAO.DeleteServiceRequest(id);
-            if (result.IsSuccessful == true)
+            Result result = new Result();
+            try
             {
-                result1 = await _requestDAO.GetServiceRequests(username);
+                Result delete = await _requestDAO.DeleteServiceRequest(id);
+
+                if (delete.IsSuccessful == true)
+                {
+                    await _serviceDAO.UpdateStatus(id, "In-Progress");
+                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, result);
+                    result = await _requestDAO.GetServiceRequests(username);
+                    return result;
+
+                }
+                else
+                {
+                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, result);
+                    delete = result;
+                    return result;
+                    
+                }
             }
-            else
+            catch
             {
-                result1 = result;
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Could not find User Service. Try Again Later";
+                await _logger!.Log("DeclineServiceRequest", 4, LogCategory.Business, result);
+
             }
-            return result1;
+            return result;
         }
 
         public async Task<Result> GatherServiceRequests(string username)
@@ -56,12 +87,14 @@ namespace AA.PMTOGO.Services
             try
             {
                 result = await _requestDAO.GetServiceRequests(username);
+                await _logger!.Log("GatherServiceRequests", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Load Service Request Unsuccessful. Try Again Later";
+                await _logger!.Log("GatherServiceRequests", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -74,12 +107,14 @@ namespace AA.PMTOGO.Services
             {
                 result = await _requestDAO.GetAServiceRequest(requestId);
                 ServiceRequest request = (ServiceRequest)result.Payload!;
+                await _logger!.Log("CreateUserService", 4, LogCategory.Business, result);
                 return request;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Could not find User Service. Try Again Later";
+                await _logger!.Log("CreateUserService", 4, LogCategory.Business, result);
             }
             
             return null!;
@@ -91,12 +126,14 @@ namespace AA.PMTOGO.Services
             try
             {
                 result = await _requestDAO.AddServiceRequest(request);
+                await _logger!.Log("AddRequest", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Add Service Request Unsuccessful. Try Again Later";
+                await _logger!.Log("AddRequest", 4, LogCategory.Business, result);
             }
             return result;
 
@@ -111,6 +148,7 @@ namespace AA.PMTOGO.Services
                 if (result.IsSuccessful) 
                 {
                     await _serviceDAO.UpdateStatus(id, "In-Progress");
+                    await _logger!.Log("FrequencyChange", 4, LogCategory.Business, result);
                     result = await DeclineRequest(id, username); //delete the request from service request list
 
                 }
@@ -120,6 +158,7 @@ namespace AA.PMTOGO.Services
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Frequency could not be updated";
+                await _logger!.Log("FrequencyChange", 4, LogCategory.Business, result);
                 return result;
 
             }
@@ -136,10 +175,12 @@ namespace AA.PMTOGO.Services
                 //log
                 if (cancel.IsSuccessful == false)
                 {
+                    await _logger!.Log("CancelUserService", 4, LogCategory.Business, result);
                     return cancel;
                 }
                 else
                 {
+                    await _logger!.Log("CancelUserService", 4, LogCategory.Business, result);
                     result = await DeclineRequest(id, username);
 
                 }
@@ -149,6 +190,7 @@ namespace AA.PMTOGO.Services
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "User Service Cancellation Not Successsful";
+                await _logger!.Log("CancelUserService", 4, LogCategory.Business, result);
                 return result;
 
             }

@@ -14,6 +14,7 @@ namespace AA.PMTOGO.DAL
     public class UserServiceDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";
+        
 
         //find user service
 

@@ -1,3 +1,6 @@
+
+
+
 const createRequestsTable = () =>{
   const requests = document.querySelector("div.requests");
   let tableHeaders = ["Request Type", "Service Name", "Service Type",  "Service Description", 
@@ -192,4 +195,20 @@ function getrequest(){
       }
     })
     .catch(error => console.error(error));
+}
+
+//fucntion to load request Management page
+function loadRequestManagementPage(homepageContent) {
+  // fetch request evaluation page html
+  fetch('./Views/requestMan.html')
+    .then(response => response.text())
+    .then(data => {
+      // Handle the response data
+      homepageContent.innerHTML = data;
+      
+      getrequest();
+
+    })   
+    .catch(error => console.log(error));
+    
 }

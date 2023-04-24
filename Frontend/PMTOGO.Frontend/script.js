@@ -1,5 +1,6 @@
 const content = document.getElementById('content');
-const api = "https://localhost:7135/api"
+const api = "https://localhost:7135/api";
+var userrole = "";
 
 window.addEventListener("load", function() {
   url = api + '/Authentication/IsLoggedIn';
@@ -8,7 +9,7 @@ window.addEventListener("load", function() {
   .then(response => response.json())
   .then(data => {
     if (data === true){
-      loadHomePage();
+      loadHomePage(userrole);
     }
     else{
       loadLoginPage();
@@ -52,6 +53,7 @@ function loadLoginPage() {
         .then((response) => {
           if (response.ok) {
             response.json().then(data => {
+              userrole=`${data.claims[1].value}`;
               loadHomePage(`${data.claims[1].value}`);
             })
           }
@@ -343,7 +345,7 @@ function loadAccountDeletionPage(homepageContent){
       const cancel = document.getElementById("cancel");
       const confirm = document.getElementById("confirm");
 
-      cancel.addEventListener('click', loadHomePage);
+      cancel.addEventListener('click', loadHomePage(userrole));
       confirm.addEventListener('click', ()=>{
         url = api + '/UserManagement/delete';
         del(url)
@@ -506,38 +508,6 @@ function loadEmailPage(homepageContent){
     })   
     .catch(error => console.log(error));
 }
-
-//fucntion to load request Management page
-function loadRequestManagementPage(homepageContent) {
-  // fetch request evaluation page html
-  fetch('./Views/requestMan.html')
-    .then(response => response.text())
-    .then(data => {
-      // Handle the response data
-      homepageContent.innerHTML = data;
-      
-      getrequest();
-
-    })   
-    .catch(error => console.log(error));
-    
-}
-
-//fucntion to load service Management page
-function loadServiceManagementPage(homepageContent) { 
-  // fetch request evaluation page html
-  fetch('./Views/serviceMan.html')
-    .then(response => response.text())
-    .then(data => {
-      // Handle the response data
-      homepageContent.innerHTML = data;
-      
-      getUserService();
-
-    })   
-    .catch(error => console.error(error));
-    
-} 
 
 function logout(){
   url = api + '/Authentication/Logout';

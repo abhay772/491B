@@ -255,3 +255,19 @@ function getUserService(){
   .catch(error => console.error(error));
   
 }
+
+//fucntion to load service Management page
+function loadServiceManagementPage(homepageContent) { 
+  // fetch request evaluation page html
+  fetch('./Views/serviceMan.html')
+    .then(response => response.text())
+    .then(data => {
+      // Handle the response data
+      homepageContent.innerHTML = data;
+      
+      getUserService();
+
+    })   
+    .catch(error => console.error(error));
+    
+} 

@@ -1,4 +1,5 @@
-﻿using AA.PMTOGO.Managers.Interfaces;
+﻿using AA.PMTOGO.Logging;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
 using System.Data;
@@ -9,6 +10,7 @@ namespace AA.PMTOGO.Managers
     public class ServiceManager: IServiceManager
     {
         private readonly IUserServiceManagement _userService;
+        Logger _logger = new Logger();
 
         public ServiceManager(IUserServiceManagement userService) 
         {
@@ -22,12 +24,14 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _userService.Rate(id, rate, role);
+                await _logger!.Log("RateUserService", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful= false;
                 result.ErrorMessage = "Rate Unsuccessful. Try Again Later";
+                await _logger!.Log("RateUserService", 4, LogCategory.Business, result);
             }
 
             return result;
@@ -39,13 +43,15 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _userService.GatherServices();
+                await _logger!.Log("GetAllServices", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful= false;
                 result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
-                
+                await _logger!.Log("GetAllServices", 4, LogCategory.Business, result);
+
             }
 
             return result;
@@ -58,12 +64,14 @@ namespace AA.PMTOGO.Managers
             try
             {
                 Result add = await _userService.AddRequest(id, frequency, comments, username);
+                await _logger!.Log("AddServiceRequest", 4, LogCategory.Business, result);
                 return add;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Add Service Request Unsuccessful. Try Again Later";
+                await _logger!.Log("AddServiceRequest", 4, LogCategory.Business, result);
 
             }
             return result;
@@ -76,12 +84,14 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _userService.GatherUserServices(username, role);
+                await _logger!.Log("GetAllUserServices", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful= false;
                 result.ErrorMessage = "Load User Services Unsuccssful. Try Again Later";
+                await _logger!.Log("GetAllUserServices", 4, LogCategory.Business, result);
             }
 
             return result;
@@ -94,12 +104,14 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _userService.RequestFrequencyChange(requestId, frequency, "Frequency Change");
+                await _logger!.Log("FrequencyChangeRequest", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Load User Services Unsuccssful. Try again Later";
+                await _logger!.Log("FrequencyChangeRequest", 4, LogCategory.Business, result);
             }
 
             return result;
@@ -112,12 +124,14 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _userService.CancellationRequest(requestId, "0", "Cancellation");
+                await _logger!.Log("CancelRequest", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Cancel Request Unsuccssful. Try Again Later";
+                await _logger!.Log("CancelRequest", 4, LogCategory.Business, result);
             }
 
             return result;

@@ -1,4 +1,5 @@
-﻿using AA.PMTOGO.Managers.Interfaces;
+﻿using AA.PMTOGO.Logging;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
 
@@ -9,6 +10,7 @@ namespace AA.PMTOGO.Managers
     {
         //ERROR HANDLING
         private readonly IServiceRequestManagement _serviceRequest;
+        Logger _logger = new Logger();
 
 
         public ServiceRequestManager(IServiceRequestManagement serviceRequest)
@@ -25,12 +27,14 @@ namespace AA.PMTOGO.Managers
             {
                 Guid id = new Guid(requestId);
                 result = await _serviceRequest.AcceptRequest(id);
+                await _logger!.Log("AccpetServiceRequest", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Accept User Request Unsuccessful. Try Again Later";
+                await _logger!.Log("AcceptServiceRequest", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -43,12 +47,14 @@ namespace AA.PMTOGO.Managers
             {
                 Guid id = new Guid(requestId);
                 result = await _serviceRequest.DeclineRequest(id, email);
+                await _logger!.Log("RemoveServiceRequest", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Remove Service Request Unsuccessful. Try Again Later";
+                await _logger!.Log("RemoveServiceRequest", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -60,12 +66,14 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _serviceRequest.GatherServiceRequests(username);
+                await _logger!.Log("GetUserRequests", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Load User Request Unsuccessful. Try Again Later";
+                await _logger!.Log("GetUserRequests", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -78,12 +86,14 @@ namespace AA.PMTOGO.Managers
             {
                 //update user services
                 result = await _serviceRequest.FrequencyChange(id,frequency, username);
+                await _logger!.Log("AcceptFrequencyChange", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Accept Frequency Change Unsuccessful. Try Again Later";
+                await _logger!.Log("AcceptFrequencyChange", 4, LogCategory.Business, result);
             }
             return result;
         }
@@ -96,12 +106,14 @@ namespace AA.PMTOGO.Managers
             {
                 //update user services
                 result = await _serviceRequest.CancelUserService(id, username);
+                await _logger!.Log("AcceptCancel", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Accept Cancellation Unsuccessful. Try Again Later";
+                await _logger!.Log("AcceptCancel", 4, LogCategory.Business, result);
             }
             return result;
         }
