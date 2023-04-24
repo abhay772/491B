@@ -34,7 +34,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             try
             {
-                Result result = await _mapManager.AddCrimeAlert(alert.Name, alert.Description, alert.Time, alert.Date, alert.X, alert.Y);
+                Result result = await _mapManager.AddCrimeAlert(alert.Email, alert.Name, alert.Location, alert.Description, alert.Time, alert.Date, alert.X, alert.Y);
                 if (result.IsSuccessful)
                 {
                     return Ok(new { message = "Crime alert added successfully." });
@@ -58,8 +58,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             try
             {
-                Result result = await _mapManager.ViewCrimeAlert(alert.ID);
-                if (result.IsSuccessful)
+                var crimeAlert = await _mapManager.ViewCrimeAlert(alert.Email, alert.ID);
+                if (crimeAlert is not null)
                 {
                     return Ok(new { message = "Crime alert added successfully." });
                 }
@@ -82,7 +82,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             try
             {
-                Result result = await _mapManager.EditCrimeAlert(alert.ID, alert.Name, alert.Description, alert.Time, alert.Date, alert.X, alert.Y);
+                Result result = await _mapManager.EditCrimeAlert(alert.Email, alert.ID, alert.Name, alert.Location, alert.Description, alert.Time, alert.Date, alert.X, alert.Y);
                 if (result.IsSuccessful)
                 {
                     return Ok(new { message = "Crime alert added successfully." });
@@ -106,7 +106,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             try
             {
-                Result result = await _mapManager.DeleteCrimeAlert(alert.ID);
+                Result result = await _mapManager.DeleteCrimeAlert(alert.Email, alert.ID);
                 if (result.IsSuccessful)
                 {
                     return Ok(new { message = "Crime alert added successfully." });
@@ -130,8 +130,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             try
             {
-                Result result = await _mapManager.GetCrimeAlert();
-                if (result.IsSuccessful)
+                var crimeAlerts = await _mapManager.GetCrimeAlerts();
+                if (crimeAlerts is not null)
                 {
                     return Ok(new { message = "Crime alert added successfully." });
                 }
@@ -149,6 +149,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         public class Alert
         {
+            public string Email { get; set; } = string.Empty;
             public string ID { get; set; } = string.Empty;
             public string Name { get; set; } = string.Empty;
             public string Location { get; set; } = string.Empty;
