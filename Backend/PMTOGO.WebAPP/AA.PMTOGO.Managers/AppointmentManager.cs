@@ -8,13 +8,15 @@ namespace AA.PMTOGO.Managers;
 public class AppointmentManager : IAppointmentManager
 {
     private readonly IAppointmentService _appointmentService;
-    //private readonly IUserManagement _userService;
+    private readonly IUserManagement _userService;
 
     public AppointmentManager(
-        IAppointmentService appointmentService
+        IAppointmentService appointmentService,
+        IUserManagement userService    
     )
     {
         _appointmentService = appointmentService;
+        _userService = userService;
     } 
 
     public async Task<Result> DeleteAppointment(int appointmentId)
@@ -49,7 +51,7 @@ public class AppointmentManager : IAppointmentManager
     public async Task<Result> GetUserAppointments(string username)
     {
         var result = new Result();
-        var user = await _appointmentService.GetUserAsync(username);
+        var user = await _userService.GetUser(username);
 
         if (user is null)
         {
@@ -79,7 +81,7 @@ public class AppointmentManager : IAppointmentManager
             return result;
         }
 
-        var user = await _appointmentService.GetUserAsync(username);
+        var user = await _userService.GetUser(username);
 
         if (user is null)
         {
@@ -133,11 +135,12 @@ public class AppointmentManager : IAppointmentManager
 
             return result;
         }
-
+        
         var appointments = await _appointmentService.GetAllByUserIdAsync(appointment.Username);
+        var origin = appointments.First(x => x.AppointmentId == appointment.AppointmentId);
 
         //validate appointment times
-        foreach (var apmt in appointments)
+        foreach (var apmt in appointments.Where(x => x.AppointmentId != appointment.AppointmentId))
         {
             var isInvalidTime = appointment.AppointmentTime > apmt.AppointmentTime.AddHours(-1) && appointment.AppointmentTime < apmt.AppointmentTime.AddHours(1);
 
@@ -150,7 +153,9 @@ public class AppointmentManager : IAppointmentManager
             }
         }
 
-        var updateResult = await _appointmentService.UpdateAsync(appointment);
+        origin.Title = appointment.Title;
+        origin.AppointmentTime = appointment.AppointmentTime;
+        var updateResult = await _appointmentService.UpdateAsync(origin);
 
         if (updateResult == false)
         {
