@@ -23,13 +23,13 @@ namespace AA.PMTOGO.Managers
             _alert = alert;
         }
 
-        public async Task<Result> AddCrimeAlert(string email, string name, string description, string time, string date, string x, string y)
+        public async Task<Result> AddCrimeAlert(string email, string name, string location, string description, string time, string date, string x, string y)
         {
             _result = await _crimeMapService.CheckAlert(email);
 
             if (_result.IsSuccessful == true)
             {
-                _alert = CreateAlert(email, name, description, time, date, x, y);
+                _alert = CreateAlert(email, name, location, description, time, date, x, y);
                 _result = await _crimeMapService.AddAlert(_alert);
             }
             return _result;
@@ -41,10 +41,10 @@ namespace AA.PMTOGO.Managers
             return _result;
         }
 
-        public async Task<Result> EditCrimeAlert(string email, string id, string name, string description, string time, string date, string x, string y)
+        public async Task<Result> EditCrimeAlert(string email, string id, string name, string location, string description, string time, string date, string x, string y)
         {
-            _alert = CreateAlert(email, id, name, description, time, date, x, y);
-            _result = await _crimeMapService.EditAlert(email, id);
+            _alert = CreateAlert(email, id, name, location, description, time, date, x, y);
+            _result = await _crimeMapService.EditAlert(email, id, _alert);
             return _result;
         }
 
@@ -61,11 +61,12 @@ namespace AA.PMTOGO.Managers
             return crimeAlerts;
         }
 
-        public CrimeAlert CreateAlert(string email, string name, string description, string time, string date, string x, string y)
+        public CrimeAlert CreateAlert(string email, string name, string location, string description, string time, string date, string x, string y)
         {
             //validate here
             _alert.Email = email;
             _alert.Name = name;
+            _alert.Location = location;
             _alert.Description = description;
             _alert.Time = time;
             _alert.Date = date;
@@ -73,7 +74,7 @@ namespace AA.PMTOGO.Managers
             _alert.Y = y;
             return _alert;
         }
-        public CrimeAlert CreateAlert(string email, string id, string name, string description, string time, string date, string x, string y)
+        public CrimeAlert CreateAlert(string email, string id, string name, string location, string description, string time, string date, string x, string y)
         {
             //validate here
             _alert.Email = email;

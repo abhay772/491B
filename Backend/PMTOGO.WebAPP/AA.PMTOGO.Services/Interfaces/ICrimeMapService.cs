@@ -12,7 +12,7 @@ namespace AA.PMTOGO.Services.Interfaces
         Task<Result> AddAlert(CrimeAlert alert);
         Task<Result> CheckAlert(string email);
         Task<Result> DeleteAlert(string email, string id);
-        Task<Result> EditAlert(string email, string id);
+        Task<Result> EditAlert(string email, string id, CrimeAlert alert);
         Task<List<CrimeAlert>> GetAlerts();
         Task<CrimeAlert> ViewAlert(string email, string id);
     }

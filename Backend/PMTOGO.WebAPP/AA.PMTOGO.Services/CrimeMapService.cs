@@ -8,6 +8,7 @@ using System.Net;
 using AA.PMTOGO.Services.Interfaces;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.DAL.Interfaces;
+using System.Collections.Generic;
 
 namespace AA.PMTOGO.Services
 {
@@ -24,10 +25,38 @@ namespace AA.PMTOGO.Services
             _result = result;
         }
 
+        
+        public async Task<Result> AddAlert(CrimeAlert alert)
+        {
+            _result = await _mapDAO.AddAlert(alert);
+            return _result;
+        }
         public async Task<Result> CheckAlert(string email)
         {
-
+            _result = await _mapDAO.CheckAlert(email);
             return _result;
+        }
+        public async Task<Result> DeleteAlert(string email, string id)
+        {
+            _result = await _mapDAO.DeleteAlert(email, id);
+            return _result;
+        }
+        public async Task<Result> EditAlert(string email, string id, CrimeAlert alert)
+        {
+            _result = await _mapDAO.EditAlert(email, id, alert);
+            return _result;
+        }
+        public async Task<List<CrimeAlert>> GetAlerts()
+        {
+            var crimeAlerts = new List<CrimeAlert>();
+            crimeAlerts = await _mapDAO.GetAlerts();
+            return crimeAlerts;
+        }
+        public async Task<CrimeAlert> ViewAlert(string email, string id)
+        {
+            var alert = new CrimeAlert();
+            alert = await _mapDAO.ViewAlert(email, id);
+            return alert;
         }
 
     }
