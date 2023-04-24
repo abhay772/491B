@@ -31,7 +31,7 @@ function loadLoginPage() {
 
       // add event listeners to register link, forgot password button
         registerLink.addEventListener('click', loadRegisterPage);
-        forgotPasswordButton.addEventListener('click', loadCrimeMapPage/*loadForgotPasswordPage*/);
+        forgotPasswordButton.addEventListener('click', /*loadCrimeMapPage*/loadForgotPasswordPage);
 
       // select login form
       const loginForm = document.getElementById('login-form');
@@ -65,7 +65,7 @@ function loadLoginPage() {
     .catch(error => console.log(error));
 }
 
-function loadCrimeMapPage() {
+function loadCrimeMapPage(homepageContent) {
     // fetch crime map page html
     fetch('./Views/crimeMap.html')
         .then(response => response.text())
