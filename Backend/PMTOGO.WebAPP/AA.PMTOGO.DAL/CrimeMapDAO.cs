@@ -7,13 +7,13 @@ namespace AA.PMTOGO.DAL
     public class CrimeMapDAO : ICrimeMapDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.CrimeMapDB;Trusted_Connection=True";
-
+        private CrimeAlert _crimeAlert;
         private Result _result;
-/*        public CrimeMapDAO(CrimeAlert crimeAlert, Result result)
+        public CrimeMapDAO(CrimeAlert crimeAlert, Result result)
         {
             _crimeAlert = crimeAlert;
             _result = result;
-        }*/
+        }
 
         public async Task<Result> AddAlert(CrimeAlert alert)
         {
