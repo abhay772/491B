@@ -11,26 +11,23 @@ namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ServiceController : ControllerBase
+    public class UserServiceController : ControllerBase
     {
         private readonly IServiceManager _serviceManager;
         private readonly ClaimValidation _claims;
 
-        public ServiceController(IServiceManager serviceManager, ClaimValidation claims)
+        public UserServiceController(IServiceManager serviceManager, ClaimValidation claims)
         {
             _serviceManager = serviceManager;
             _claims = claims;//uses input validation
         }
-
 #if DEBUG
-
         [HttpGet]
         [Route("health")]   //make sure controller route works.
         public Task<IActionResult> HealthCheck()
         {
             return Task.FromResult<IActionResult>(Ok("Healthy"));
         }
-
 #endif
 
         [HttpGet]
@@ -46,14 +43,14 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
-                    Result userServices = await _serviceManager.GetAllUserServices(user.ClaimUsername);
+                    Result userServices = await _serviceManager.GetAllUserServices(user.ClaimUsername, user.ClaimRole);
                     if (userServices.IsSuccessful)
                     {
                         return Ok(userServices.Payload!);
                     }
                     else
                     {
-                        return BadRequest(new { message = "Retry again or contact system admin." });
+                        return BadRequest(userServices.ErrorMessage);
                     }
                 }
                 catch
@@ -76,6 +73,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
+                    //get all services service providers provide
                     Result services = await _serviceManager.GetAllServices();
                     if (services.IsSuccessful)
                     {
@@ -92,12 +90,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
             }
             return BadRequest("Not Authorized");
-            
+
         }
 
         [HttpPost]
         [Route("addrequests")]
-        public async Task<IActionResult> AddServiceRequest(ServiceRequest service)
+        public async Task<IActionResult> ServiceRequest(ServiceInfo service)
         {
             Result result = new Result();
             result = _claims.ClaimsValidation("Property Manager", Request);
@@ -107,15 +105,15 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 try
                 {
-                    Result insert = await _serviceManager.AddServiceRequest(service, user.ClaimUsername);
+                    Result insert = await _serviceManager.AddServiceRequest(service.Id, service.frequency, service.comments, user.ClaimUsername);
                     if (insert.IsSuccessful)
                     {
-                        return Ok(new { message = insert.Payload});
+                        return Ok(insert.Payload);
                     }
                     else
                     {
 
-                        return BadRequest(new { message = "Retry again or contact system admin" } );
+                        return BadRequest(insert.ErrorMessage);
                     }
                 }
                 catch
@@ -126,19 +124,21 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
             return BadRequest("Invalid Credentials");
         }
-        
+
         [HttpPut]
         [Route("rate")]
         public async Task<IActionResult> RateService(ServiceInfo service)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation("Property Manager", Request);
+            result = _claims.ClaimsValidation(null!, Request);
+            UserClaims user = (UserClaims)result.Payload!;
 
-            if (result.IsSuccessful )
+
+            if (result.IsSuccessful)
             {
                 try
-                {
-                    Result rating = await _serviceManager.RateUserService(service.Id, service.rate);
+                {//NEED role to correspond with service provider or property manager rating column
+                    Result rating = await _serviceManager.RateUserService(service.Id, service.rate, user.ClaimRole);
                     if (rating.IsSuccessful)
                     {
                         return Ok(rating.Payload);
@@ -146,7 +146,72 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     else
                     {
 
-                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+            }
+            return BadRequest("Invalid Credentials");
+        }
+
+        [HttpPut]
+        [Route("frequencyrequest")]
+        public async Task<IActionResult> ChangeServiceFrequncy(ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result frequency = await _serviceManager.FrequencyChangeRequest(service.Id, service.frequency);
+                    if (frequency.IsSuccessful)
+                    {
+                        return Ok(frequency.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+            }
+            return BadRequest("Invalid Credentials");
+        }
+
+        [HttpPut]
+        [Route("cancelrequest")]
+        public async Task<IActionResult> CancelService(ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Property Manager", Request);
+
+
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result cancel = await _serviceManager.CancelRequest(service.Id);
+                    if (cancel.IsSuccessful)
+                    {
+                        return Ok(cancel.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest(result.ErrorMessage);
                     }
                 }
                 catch

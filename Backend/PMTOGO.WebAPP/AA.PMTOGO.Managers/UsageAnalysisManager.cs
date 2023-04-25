@@ -25,7 +25,7 @@ namespace AA.PMTOGO.Managers
             Result result = new Result();
             try
             {
-                result = await usageDashboard.GenerateAnalysis();
+                result = await _usageDashboard.GenerateAnalysis();
                 return result;
             }
             catch

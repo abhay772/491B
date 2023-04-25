@@ -18,10 +18,12 @@ namespace AA.PMTOGO.Models.Entities
         public string ServiceProvider { get; set; } = string.Empty;
         [Key]
         public string ServiceProviderEmail { get; set; } = string.Empty;
+
+        public double ServicePrice { get; set; }
         
         public Service() { }
 
-        public Service(Guid id, string name, string description, string type, string serviceProvider, string providerEmail)
+        public Service(Guid id, string name, string description, string type, string serviceProvider, string providerEmail, double price)
         {
             Id = id;
             ServiceName = name;
@@ -29,6 +31,8 @@ namespace AA.PMTOGO.Models.Entities
             ServiceType = type;
             ServiceProvider = serviceProvider;
             ServiceProviderEmail = providerEmail;
+            ServicePrice = price;
+
         }     
 
     }

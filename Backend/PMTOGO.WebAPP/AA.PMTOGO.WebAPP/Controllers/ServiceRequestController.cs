@@ -9,12 +9,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ServiceRequestController: ControllerBase
+    public class ServiceRequestController : ControllerBase
     {
         private readonly IServiceRequestManager _requestManager;
         private readonly ClaimValidation _claims;
 
-        public ServiceRequestController(IServiceRequestManager requestManager,ClaimValidation claims)
+        public ServiceRequestController(IServiceRequestManager requestManager, ClaimValidation claims)
         {
             _requestManager = requestManager;
             _claims = claims; //uses input validation
@@ -59,7 +59,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
             }
             return BadRequest("Not Authorized");
-            
+
         }
         [HttpPost]
         [Route("accept")]
@@ -124,9 +124,73 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
             }
             return BadRequest("Cookie not found");
-            
+
+        }
+        [HttpPost]
+        [Route("frequencychange")]
+        public async Task<IActionResult> AcceptFrequencyRequest([FromBody] ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result accept = await _requestManager.AcceptFrequencyChange(service.Id, service.frequency, user.ClaimUsername);
+                    if (accept.IsSuccessful)
+                    {
+                        return Ok(accept.Payload); //payload is update service requests list
+                    }
+                    else
+                    {
+
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+
+            }
+            return BadRequest("Cookie not found");
+        }
+
+        [HttpPost]
+        [Route("cancel")]
+        public async Task<IActionResult> AcceptCancellation([FromBody] ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result accept = await _requestManager.AcceptCancel(service.Id, user.ClaimUsername);
+                    if (accept.IsSuccessful)
+                    {
+                        return Ok(accept.Payload);//payload is update service requests list
+                    }
+                    else
+                    {
+
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+
+            }
+            return BadRequest("Cookie not found");
         }
 
     }
 }
-
