@@ -411,7 +411,69 @@ table {
   cursor: pointer;
 }
 
+
 /* Hover style for the Evaluate Property button */
 #evaluate-btn:hover {
   background-color: #3e8e41;
+}
+
+/* Image container */
+.image-container {
+    position: relative;
+    margin-right: 20px;
+}
+
+/* Marker */
+/* Crime Alert Marker */
+.marker {
+    position: absolute;
+    z-index: 9999;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    box-shadow: 0 0 3px 3px rgba(255, 0, 0, 0.5);
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+}
+
+/* Form container */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+}
+
+/* Form input fields */
+.form-input {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Submit button */
+#submit-button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+    #submit-button:hover {
+        background-color: #3e8e41;
+    }
+
+/* Error message */
+.error-message {
+    color: red;
+    margin-top: 10px;
 }

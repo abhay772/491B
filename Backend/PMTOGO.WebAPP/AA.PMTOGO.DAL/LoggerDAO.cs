@@ -1,7 +1,7 @@
 ﻿using AA.PMTOGO.Models.Entities;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
-
+using System.Text;
 
 namespace AA.PMTOGO.DAL
 {
@@ -24,15 +24,16 @@ namespace AA.PMTOGO.DAL
                 connection.Open();
 
                 string sqlQuery = "INSERT into Logs VALUES(@logId, @timestamp, @logLevel, @operation, @logCategory, @message)";
+                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@logId", log.LogId);
-                command.Parameters.AddWithValue("@operation", log.Operation);
-                command.Parameters.AddWithValue("@logLevel", log.LogLevel);
-                command.Parameters.AddWithValue("@logCategory", log.Category);
-                command.Parameters.AddWithValue("@message", log.Message);
-                command.Parameters.AddWithValue("@timestamp", log.Timestamp);
+                
+                command.Parameters.AddWithValue("@LogId", log.LogId);
+                command.Parameters.AddWithValue("@Operation", log.Operation);
+                command.Parameters.AddWithValue("@LogLevel", log.LogLevel);
+                command.Parameters.AddWithValue("@LogCategory", log.Category);
+                command.Parameters.AddWithValue("@Message", log.Message);
+                command.Parameters.AddWithValue("@Timestamp", log.Timestamp);
 
                 try
                 {
@@ -49,12 +50,18 @@ namespace AA.PMTOGO.DAL
                         return result;
                     }
                 }
-                catch (SqlException e)
+                catch (SqlException ex)
                 {
-                    if (e.Number == 208)
+                    StringBuilder errorMessages = new StringBuilder();
+                    for (int i = 0; i < ex.Errors.Count; i++)
                     {
-                        result.ErrorMessage = "Specified table not found";
+                        errorMessages.Append("Index #" + i + "\n" +
+                            "Message: " + ex.Errors[i].Message + "\n" +
+                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                            "Source: " + ex.Errors[i].Source + "\n" +
+                            "Procedure: " + ex.Errors[i].Procedure + "\n");
                     }
+                    Console.WriteLine(errorMessages.ToString());
                 }
 
             }
@@ -74,11 +81,11 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT COUNT(*) FROM Logs WHERE Operation = @operation AND (Timestamp BETWEEN @minDate AND @currentDate) GROUP BY  DAY(Timestamp)";
+                //string sqlQuery = "SELECT COUNT(*), Timestamp FROM Logs WHERE Operation = @Operation AND Timestamp BETWEEN @minDate AND @currentDate GROUP BY DAY(Timestamp)";
+                string query = "SELECT COUNT(*) FROM (SELECT Timestamp, convert(date, Timestamp) as the_date, COUNT(*) over (partition by Timestamp) as num_dates FROM Logs WHERE Timestamp >= @minDate AND Timestamp < dateadd(day, 1, @currentDate) AND Operation = @Operation Group By Timestamp, convert(date, Timestamp))Logs WHERE num_dates = datediff(day, @currentDate, @minDate) + 1;";
+                var command = new SqlCommand(query, connection);
 
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@operation", operation);
+                command.Parameters.AddWithValue("@Operation", operation);
                 command.Parameters.AddWithValue("@minDate", minDate);
                 command.Parameters.AddWithValue("@currentDate", currentDate);
 
@@ -87,20 +94,8 @@ namespace AA.PMTOGO.DAL
                     try
                     {
                         //create analysis from query 
-                        List<ServiceRequest> listOfrequest = new List<ServiceRequest>();
-                        while (reader.Read())
-                        {
 
-                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
-                                (string)reader["ServiceFrequency"], (string)reader["Comments"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
-                               (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
-
-
-                            listOfrequest.Add(request);
-
-                        }
                         result.IsSuccessful = true;
-                        result.Payload = listOfrequest;
                         return result;
                     }
                     catch

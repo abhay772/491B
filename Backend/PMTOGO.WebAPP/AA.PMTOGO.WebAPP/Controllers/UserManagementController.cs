@@ -57,9 +57,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("recovery")]
-        //[Consumes("application/json")]
         [ActionName("AccountRecovery")]
-        public async Task<IActionResult> AccountRecovery([FromBody] UserRegister user)
+        public async Task<ActionResult> AccountRecovery([FromBody] UserRegister user)
         {
             try
             {
@@ -70,7 +69,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
                 else
                 {
-
                     return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                 }
             }
@@ -82,9 +80,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("otp")]
-        //[Consumes("application/json")]
         [ActionName("ValidateOTP")]
-        public async Task<IActionResult> ValidateOTP([FromBody] UserRegister user)
+        public async Task<ActionResult> ValidateOTP([FromBody] UserRegister user)
         {
             try
             {
@@ -95,7 +92,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
                 else
                 {
-
                     return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                 }
             }
@@ -107,9 +103,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("updatePassword")]
-        //[Consumes("application/json")]
         [ActionName("UpdatePassword")]
-        public async Task<IActionResult> UpdatePassword([FromBody] UserRegister user)
+        public async Task<ActionResult> UpdatePassword([FromBody] UserRegister user)
         {
             try
             {
@@ -120,7 +115,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
                 else
                 {
-
                     return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                 }
             }

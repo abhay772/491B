@@ -19,9 +19,9 @@ namespace AA.PMTOGO.Models.Entities
         [Column("Attempts")]
         public int Attempt { get; set; }
         public DateTime Timestamp { get; set; }
-        public string OTP { get; set; }
+        public string OTP { get; set; } = string.Empty;
         public DateTime OTPTimestamp { get; set; }
-        public int RecoveryRequest { get; set; }
+        public bool RecoveryRequest { get; set; }
 
         public virtual List<Appointment> Appointments { get; set; }
 

@@ -1,5 +1,6 @@
 const content = document.getElementById('content');
-const api = "https://localhost:7135/api"
+const api = "https://localhost:7135/api";
+var userrole = "";
 
 window.addEventListener("load", function() {
   url = api + '/Authentication/IsLoggedIn';
@@ -8,14 +9,13 @@ window.addEventListener("load", function() {
   .then(response => response.json())
   .then(data => {
     if (data === true){
-      loadHomePage();
+      loadHomePage(userrole);
     }
     else{
       loadLoginPage();
     }
   })
 });
-
 
 function loadLoginPage() {
   // fetch login page
@@ -31,8 +31,8 @@ function loadLoginPage() {
         const forgotPasswordButton = document.getElementById('forgotPass');
 
       // add event listeners to register link, forgot password button
-      registerLink.addEventListener('click', loadRegisterPage);
-      forgotPasswordButton.addEventListener('click', loadForgotPasswordPage);
+        registerLink.addEventListener('click', loadRegisterPage);
+        forgotPasswordButton.addEventListener('click', /*loadCrimeMapPage*/loadForgotPasswordPage);
 
       // select login form
       const loginForm = document.getElementById('login-form');
@@ -52,6 +52,7 @@ function loadLoginPage() {
         .then((response) => {
           if (response.ok) {
             response.json().then(data => {
+              userrole=`${data.claims[1].value}`;
               loadHomePage(`${data.claims[1].value}`);
             })
           }
@@ -64,6 +65,235 @@ function loadLoginPage() {
       
     })
     .catch(error => console.log(error));
+}
+
+/*async function updateCrimeMap() {
+    const response = await fetch(api + '/CrimeAlert/getAlerts');
+    const data = await response.json();
+    const markers = [];
+
+    for (const alert of data) {
+        const newMarker = document.createElement('div');
+        newMarker.classList.add('marker');
+        newMarker.style.left = `${alert.X}px`;
+        newMarker.style.top = `${alert.Y}px`;
+        newMarker.addEventListener('click', function () {
+            alert(`Crime Alert: ${alert.description}`);
+        });
+        markers.push(newMarker);
+    }
+
+    return markers;
+}*/
+
+async function updateCrimeMap() {
+    const response = await fetch(api + '/CrimeAlert/getAlerts');
+    const data = await response.json();
+    const markers = [];
+
+    for (const alert of data) {
+        const newMarker = document.createElement('img');
+        newMarker.src = './images/marker.png';
+        newMarker.classList.add('marker');
+        newMarker.style.position = 'absolute';
+        newMarker.style.left = `${alert.X}px`;
+        newMarker.style.top = `${alert.Y}px`;
+        newMarker.setAttribute('data-alert-id', alert.id);
+        newMarker.style.zIndex = 9999; // Add this line to set the z-index
+        markers.push(newMarker);
+    }
+
+    return markers;
+}
+
+function loadCrimeMapPage(homepageContent, username) {
+    // fetch crime map page html
+    fetch('./Views/crimeMap.html')
+        .then(response => response.text())
+        .then(data => {
+            // update homepage content div with crime map page html
+            homepageContent.innerHTML = data;
+
+            // add image to crime map page
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
+
+            const image = document.createElement('img');
+            image.src = './images/crimemap.png';
+            image.alt = 'Crime map';
+            imageContainer.appendChild(image);
+
+            const crimeMapContent = document.getElementById('crime-map-content');
+            crimeMapContent.appendChild(imageContainer);
+
+            // add styles to image container
+            imageContainer.style.overflow = 'auto';
+            imageContainer.style.width = '750px';
+            imageContainer.style.height = '750px';
+            image.style.transform = 'scale(1)';
+            image.style.transition = 'transform 0.5s';
+
+            // set initial scroll position
+            imageContainer.scrollLeft = 5400;
+            imageContainer.scrollTop = 7300;
+
+            // add event listener to image for panning
+            let isDragging = false;
+            let lastX, lastY;
+            image.addEventListener('mousedown', function (event) {
+                event.preventDefault();
+                isDragging = true;
+                lastX = event.clientX;
+                lastY = event.clientY;
+            });
+            image.addEventListener('mousemove', function (event) {
+                event.preventDefault();
+                if (isDragging) {
+                    const deltaX = event.clientX - lastX;
+                    const deltaY = event.clientY - lastY;
+                    lastX = event.clientX;
+                    lastY = event.clientY;
+                    imageContainer.scrollLeft -= deltaX;
+                    imageContainer.scrollTop -= deltaY;
+                }
+            });
+            image.addEventListener('mouseup', function (event) {
+                event.preventDefault();
+                isDragging = false;
+            });
+
+            // add "Add Crime Alert" button
+            const addCrimeAlertButton = document.createElement('button');
+            addCrimeAlertButton.textContent = 'Add Crime Alert';
+            addCrimeAlertButton.addEventListener('click', function () {
+                loadAddAlertPage(homepageContent, username);
+            });
+            crimeMapContent.appendChild(addCrimeAlertButton);
+
+            // call updateCrimeMap to get the markers and add them to the map
+            updateCrimeMap().then(markers => {
+                markers.forEach(marker => {
+                    // insert code here to set the pixel location of the marker
+                    const left = alert.X;
+                    const top = alert.Y;
+                    marker.style.left = `${left}px`;
+                    marker.style.top = `${top}px`;
+
+                    // append the marker to the image container
+                    imageContainer.appendChild(marker);
+
+                    marker.addEventListener('click', function () {
+                        alert(`Crime Alert: ${marker.getAttribute('data-alert-id')}`);
+                    });
+                });
+            });
+        });
+}
+
+/*function updateCrimeMap() {
+    // call controller method to get crime alerts
+    fetch('https://localhost:7135/api/CrimeAlert/getAlerts')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(alerts => {
+            // iterate through alerts and add markers to the map
+            alerts.forEach(alert => {
+                const marker = document.createElement('button');
+                marker.classList.add('marker');
+                marker.style.position = 'absolute';
+                marker.style.left = alert.X + 'px';
+                marker.style.top = alert.Y + 'px';
+                marker.dataset.alert = JSON.stringify(alert);
+                marker.addEventListener('click', function () {
+                });
+                const imageContainer = document.querySelector('.image-container');
+                imageContainer.appendChild(marker);
+            });
+        })
+        .catch(error => console.log(error));
+}*/
+
+function loadAddAlertPage(homepageContent, username) {
+    // fetch add alert page html
+    fetch('./Views/addAlert.html')
+        .then(response => response.text())
+        .then(data => {
+            // update homepage content div with add alert page html
+            homepageContent.innerHTML = data;
+
+            const crimeMapImage = document.createElement('img');
+            crimeMapImage.src = './images/crimemap.png';
+            crimeMapImage.alt = 'Crime map';
+
+            const crimeMapContainer = document.createElement('div');
+            crimeMapContainer.classList.add('image-container');
+            crimeMapContainer.style.overflow = 'auto';
+            crimeMapContainer.style.width = '750px';
+            crimeMapContainer.style.height = '750px';
+            crimeMapContainer.appendChild(crimeMapImage);
+
+            const addAlertContainer = document.getElementById('add-alert-container');
+            addAlertContainer.appendChild(crimeMapContainer);
+
+            const marker = document.createElement('div');
+            marker.classList.add('marker');
+            crimeMapContainer.appendChild(marker);
+
+            let isPlacingMarker = true;
+            let xCoordinate = '';
+            let yCoordinate = '';
+
+            // add event listener to image for placing marker
+            crimeMapImage.addEventListener('click', function addMarker(event) {
+                if (isPlacingMarker) {
+                    marker.style.display = 'block';
+                    marker.style.left = (event.clientX - crimeMapContainer.getBoundingClientRect().left + crimeMapContainer.scrollLeft - 10) + 'px';
+                    marker.style.top = (event.clientY - crimeMapContainer.getBoundingClientRect().top + crimeMapContainer.scrollTop - 10) + 'px';
+
+                    // log location in pixels
+                    xCoordinate = (event.clientX - crimeMapContainer.getBoundingClientRect().left + crimeMapContainer.scrollLeft).toString();
+                    yCoordinate = (event.clientY - crimeMapContainer.getBoundingClientRect().top + crimeMapContainer.scrollTop).toString();
+
+                    isPlacingMarker = false;
+                }
+            });
+
+            const submitButton = document.getElementById('submit-button');
+            submitButton.addEventListener('click', function () {
+                const nameInput = document.getElementById('name-input').value;
+                const locationInput = document.getElementById('location-input').value;
+                const descriptionInput = document.getElementById('description-input').value;
+                const timeInput = document.getElementById('time-input').value;
+                const dateInput = document.getElementById('date-input').value;
+
+                const url = api + '/CrimeAlert/addAlert';
+                const data = {
+                    Email: username,
+                    Name: nameInput,
+                    Location: locationInput,
+                    Description: descriptionInput,
+                    Time: timeInput,
+                    Date: dateInput,
+                    X: xCoordinate,
+                    Y: yCoordinate
+                };
+
+                send(url, data)
+                    .then(response => {
+                        console.log(data);
+                        console.log(response);
+
+                        // after successful submission, load crime map page
+                        loadCrimeMapPage(homepageContent);
+                    })
+                    .catch(error => console.log(error));
+            });
+        })
+        .catch(error => console.log(error));
 }
 
 var role="";
@@ -86,7 +316,7 @@ function loadForgotPasswordPage() {
             content.innerHTML = data;
 
             const emailInput = document.getElementById('email-input');
-            const submitBtn = document.getElementById('submit-btn');
+            const submitBtn = document.getElementById('forgot-password-submit-btn');
 
             // add event listener to submit button
             submitBtn.addEventListener('click', (event) => {
@@ -103,8 +333,8 @@ function loadForgotPasswordPage() {
                     .then(response => {
                         console.log(response);
 
-                        // after successful recovery, load login page
-                        loadEnterOTPPage();
+                        // after successful recovery, load OTP page
+                        loadEnterOTPPage(email);
                     })
                     .catch(error => console.log(error));
             });
@@ -112,7 +342,7 @@ function loadForgotPasswordPage() {
         .catch(error => console.log(error))
 }
 
-function loadEnterOTPPage() {
+function loadEnterOTPPage(email) {
     // fetch otpForm page html
     fetch("./Views/otpForm.html")
         .then(response => response.text())
@@ -120,17 +350,15 @@ function loadEnterOTPPage() {
             // update content div with recovery page
             content.innerHTML = data;
 
-            const emailInput = document.getElementById('email-input');
             const otpInput = document.getElementById('otp-input');
-            const submitBtn = document.getElementById('submit-btn');
+            const submitBtn = document.getElementById('otp-submit-btn');
 
             // add event listener to submit button
             submitBtn.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                // get user otp and username
+                // get user otp
                 const otp = otpInput.value;
-                const email = emailInput.value;
 
                 // perform otp action
                 const url = api + '/UserManagement/otp';
@@ -139,8 +367,8 @@ function loadEnterOTPPage() {
                 send(url, data)
                     .then(response => {
                         if (response.ok) {
-                            // after successful otp, load login page
-                            loadUpdatePasswordPage();
+                            // after successful otp, load password update page
+                            loadUpdatePasswordPage(email);
                         } else {
                             throw new Error('OTP validation failed');
                         }
@@ -151,35 +379,36 @@ function loadEnterOTPPage() {
         .catch(error => console.log(error))
 }
 
-function loadUpdatePasswordPage() {
+function loadUpdatePasswordPage(email) {
+    // fetch update password page html
     fetch("./Views/updatePassword.html")
         .then(response => response.text())
         .then(data => {
+            // update content div with recovery page
             content.innerHTML = data;
 
-            const emailInput = document.getElementById('email-input');
             const passwordInput = document.getElementById('password-input');
-            const submitBtn = document.getElementById('submit-btn');
+            const submitBtn = document.getElementById('update-password-submit-btn');
 
-            // declare email variable outside event listener
-            let email;
-
+            // add event listener to submit button
             submitBtn.addEventListener('click', (event) => {
                 event.preventDefault();
 
-                // assign email value inside event listener
-                email = emailInput.value;
-                const password = passwordInput.value;
+                // get user otp
+                const newPassword = passwordInput.value;
 
+                // perform otp action
                 const url = api + '/UserManagement/updatePassword';
-                const data = { email: email, password: password };
+                const data = { email: email, password: newPassword };
 
                 send(url, data)
-                    .then(data => data.json())
                     .then(response => {
-                        console.log(response);
-
-                        loadLoginPage();
+                        if (response.ok) {
+                            // after successful otp, load password update page
+                            loadLoginPage();
+                        } else {
+                            throw new Error('failed');
+                        }
                     })
                     .catch(error => console.log(error));
             });
@@ -230,73 +459,109 @@ function loadRegisterPage() {
 }
 
 //function to load homepage
-function loadHomePage(userrole) {
-  // fetch property evaluation page html
-  fetch('./Views/homepage.html')
-    .then(response => response.text())
-    .then(data => {
-      // update content div with property evaluation page html
-      content.innerHTML = data;
-
-      const hamburger = document.getElementById("back");
-      hamburger.addEventListener("click", loadHomePage);
-
-      const userinfo = document.getElementById("userrole");
-      userinfo.innerHTML = userrole;
-    //select log out
-    
-    const logoutUser = document.getElementById("logout");
-
-    const homepageContent = document.getElementsByClassName("homepage-content")[0];
-    //select settings
-    const deleteAccount = document.getElementById("settings");
-   //select propertyEvaluation
-    const propertyEvalFeature = document.getElementById('propertyEvaluation');
-     //select request management
-    const requestFeature = document.getElementById('requestManagement');
-      //select service Management
-    const serviceFeature = document.getElementById('serviceManagement');
-
-    //add event listeners
-    logoutUser.addEventListener('click', () => {
-      url = api + '/Authentication/Logout';
-
-      get(url)
-        .then(response => response.json())
+function loadHomePage(userrole, username) {
+    // fetch property evaluation page html
+    fetch('./Views/homepage.html')
+        .then(response => response.text())
         .then(data => {
-          if (data === false){
+            // update content div with property evaluation page html
+            content.innerHTML = data;
 
-        alert('Logout was unsuccesful. Try again or contact an administratior.');
-        loadHomePage();
-        }
-        else{
-          loadLoginPage();
-        }
-      })
-    });
-    //add event listener to nav to account delection
+            const hamburger = document.getElementById("back");
+            hamburger.addEventListener("click", loadHomePage);
 
-    deleteAccount.addEventListener('click', () =>{
-      loadAccountDeletionPage(homepageContent);
-    });
-    //add event listener to nav to request management
-    requestFeature.addEventListener('click', () => {
-      loadRequestManagementPage(homepageContent);
-    });  
+            const userinfo = document.getElementById("userrole");
+            userinfo.innerHTML = userrole;
+            //select log out
+            const logoutUser = document.getElementById("logout");
 
-    //add event listener to nav to service management
-    serviceFeature.addEventListener('click', () => {
-      loadServiceManagementPage(homepageContent);
-    });  
+            const homepageContent = document.getElementsByClassName("homepage-content")[0];
+            //select settings
+            const deleteAccount = document.getElementById("settings");
+            //select propertyEvaluation
+            const propertyEvalFeature = document.getElementById('propertyEvaluation');
+            //select request management
+            const requestFeature = document.getElementById('requestManagement');
+            //select service Management
+            const serviceFeature = document.getElementById('serviceManagement');
+            //select crime alert
+            const crimeMapFeature = document.getElementById('crimemap');
 
-    // add event listeners to nav to property evaluation
-    propertyEvalFeature.addEventListener('click', () => {
-      loadPropertyEvalPage(homepageContent);
-    });
-    })
-    .catch(error => console.log(error));
-  
+            //add event listeners
+            logoutUser.addEventListener('click', () => {
+                url = api + '/Authentication/Logout';
+
+
+
+                get(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data === false) {
+                            alert('Logout was unsuccesful. Try again or contact an administratior.');
+                            loadHomePage();
+                        }
+                        else {
+                            loadLoginPage();
+                        }
+                    })
+            });
+            //add event listener to nav to account delection
+
+            deleteAccount.addEventListener('click', () => {
+                loadAccountDeletionPage(homepageContent);
+            });
+            //add event listener to nav to request management
+            requestFeature.addEventListener('click', () => {
+                loadRequestManagementPage(homepageContent);
+            });
+
+            //add event listener to nav to service management
+            serviceFeature.addEventListener('click', () => {
+                loadServiceManagementPage(homepageContent);
+            });
+
+            //add event listener to nav to crime map
+            crimeMapFeature.addEventListener('click', () => {
+                loadCrimeMapPage(homepageContent, username);
+            });
+
+            // add event listeners to nav to property evaluation
+            propertyEvalFeature.addEventListener('click', () => {
+                loadPropertyEvalPage(homepageContent);
+            });
+        })
+        .catch(error => console.log(error));
 }
+
+/*function loadCrimeMapPage() {
+    // fetch crime map page html
+    fetch('./Views/crimeMap.html')
+        .then(response => response.text())
+        .then(data => {
+
+            // add image to crime map page
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
+
+            const image = document.createElement('img');
+            image.src = './images/crimemap.png';
+            image.alt = 'Crime map';
+            imageContainer.appendChild(image);
+
+            const crimeMapContent = document.getElementById('crime-map-content');
+            crimeMapContent.appendChild(imageContainer);
+
+            // attach event listener to back button
+            const backButton = document.getElementById('back');
+            if (backButton) {
+                backButton.addEventListener('click', () => {
+                    loadHomePage();
+                });
+            }
+        })
+        .catch(error => console.log(error));
+}*/
+
 
 function loadAccountDeletionPage(homepageContent){
   //fetch account deletion page
@@ -309,7 +574,7 @@ function loadAccountDeletionPage(homepageContent){
       const cancel = document.getElementById("cancel");
       const confirm = document.getElementById("confirm");
 
-      cancel.addEventListener('click', loadHomePage);
+      cancel.addEventListener('click', loadHomePage(userrole));
       confirm.addEventListener('click', ()=>{
         url = api + '/UserManagement/delete';
         del(url)
@@ -504,83 +769,6 @@ const appendRequest =(request, id) => {
   let propertyManagerEmail = document.createElement('td');
   propertyManagerEmail.innerText = `${request.propertyManagerEmail}`;
 
-  let acceptAction = document.createElement('td');
-  let acceptbtn = document.createElement('button');
-  acceptbtn.className ="accept"; 
-  acceptbtn.id=`${request.id}`;
-  acceptbtn.innerText = "Accept";
-
-  let declineAction = document.createElement('td');
-  let declinebtn = document.createElement('button');
-  declinebtn.innerText = "Decline";
-  declinebtn.className="decline";
-  declinebtn.id=`${request.id}`; 
-  
-  acceptAction.append(acceptbtn);
-  declineAction.append(declinebtn);
-
-  requestTableBodyRow.append(requestId,serviceName,serviceType,serviceDescription,serviceFrequeny,
-    comments,propertyManager,propertyManagerEmail,acceptAction,declineAction);
-    //allrequest += requestTableBodyRow;
-  requestsTable.append(requestTableBodyRow);
-}
-function acceptRequest(requestid){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/ServiceRequest/accept";
-  data = {id: requestid}
-  send(url, data)
-  .then(data => data.json())
-  .then(response => console.log(response))
-  .then(loadRequestManagementPage(homepageContent));
-  
-}
-function declineRequest(requestid){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/ServiceRequest/decline";
-  data = {id: requestid}
-  send(url, data)
-    .then(data => data.json())
-    .then(response => console.log(response))
-    .then(loadRequestManagementPage(homepageContent));
-}
-function getrequest(){
-  url = api + '/ServiceRequest/getrequest';
-  get(url)
-    .then(response => {
-      if(!response.ok){
-        fetch("./Views/NotAuthorized.html")
-          .then(response => response.text())
-          .then(text => {
-    
-            const homepageContent = document.getElementsByClassName("homepage-content")[0];
-        
-            homepageContent.innerHTML = text;
-          })
-          .catch(error => console.error(error))
-  
-      } 
-      else {
-        response.json().then(data => {
-          createRequestsTable();
-          let id = 0;
-          data.forEach((request) => {         
-            appendRequest(request, id)
-            id = id + 1;
-          })
-          const acceptlist = Array.from(document.getElementsByClassName("accept")); 
-          acceptlist.forEach((key)=>{
-            key.addEventListener('click', function() { acceptRequest(key.id)});
-          })
-          const declinelist = Array.from(document.getElementsByClassName("decline")); 
-          declinelist.forEach((key)=>{
-            key.addEventListener('click', function() {declineRequest(key.id)});
-          })
-        })
-        .catch(error => console.error(error));
-      }
-    })
-    .catch(error => console.error(error));
-}
 function loadEmailPage(homepageContent){
   fetch('./Views/Email.html')
     .then(response => response.text())
@@ -612,157 +800,6 @@ function loadEmailPage(homepageContent){
 
     })   
     .catch(error => console.log(error));
-}
-
-//fucntion to load request Management page
-function loadRequestManagementPage(homepageContent) {
-  // fetch request evaluation page html
-  fetch('./Views/requestMan.html')
-    .then(response => response.text())
-    .then(data => {
-      // Handle the response data
-      homepageContent.innerHTML = data;
-      
-      getrequest();
-
-    })   
-    .catch(error => console.log(error));
-    
-}
-function rateUserService(id, rate){
-  const homepageContent = document.getElementsByClassName("homepage-content")[0];
-  url = api + "/Service/rate";
-  data = {id: id, rate: rate}
-  put(url, data)
-  .then(response => console.log(response))
-  .then(loadServiceManagementPage(homepageContent));
-  
-}
-const createUserServiceTable = () =>{
-  const userservices = document.querySelector("div.userservices");
-  let tableHeaders = ["Service Name", "Service Type",  "Service Description", 
-  "Service Frequency", "Service Provider Name", "Service Provider Email", "Status", "Rating", "Rate?", "Frequency Change?"];
-    while (userservices.firstChild) userservices.removeChild(userservices.firstChild)
-    let userServiceTable = document.createElement('table');
-    userServiceTable.className="userServiceTable";
-    userServiceTable.id="userServiceTable";
-
-    let userServiceTableHead = document.createElement("thead");
-    userServiceTableHead.className="userServiceTableHead";
-
-    let userServiceTableHeaderRow= document.createElement('tr')
-    userServiceTableHeaderRow.className= "userServiceHeaderRow";
-
-    tableHeaders.forEach(header =>{
-      let userServiceHeader = document.createElement('th');
-      userServiceHeader.innerText = header;
-      userServiceTableHeaderRow.append(userServiceHeader);
-    })
-
-    userServiceTableHead.append(userServiceTableHeaderRow);
-    userServiceTable.append(userServiceTableHead);
-
-    let userServiceTableBody = document.createElement('tbody');
-    userServiceTableBody.className="userServiceTableBody"
-    userServiceTable.append(userServiceTableBody);
-
-    userservices.append(userServiceTable);
-}
-
-const appendUserService =(userservice, id) => {
-  const UserServiceTable = document.querySelector(".userServiceTable");
-  const userInfo = document.querySelector(".userInfo");
-  userInfo.innerText= `${userservice.propertyManagerName}`;
-
-  let userServiceTableBodyRow = document.createElement('tr');
-  userServiceTableBodyRow.className = "userServiceTableBodyRow";
-  userServiceTableBodyRow.id= String(id);
-
-  //add the data
-  let serviceName = document.createElement('td');
-  serviceName.innerText = `${userservice.serviceName}`;
-
-  let serviceType = document.createElement('td');
-  serviceType.innerText = `${userservice.serviceType}`;
-
-  let serviceDescription = document.createElement('td');
-  serviceDescription.innerText = `${userservice.serviceDescription}`;
-
-  let serviceFrequeny = document.createElement('td');
-  serviceFrequeny.innerText = `${userservice.serviceFrequency}`;
-
-  let serviceProvider = document.createElement('td');
-  serviceProvider.innerText = `${userservice.serviceProviderName}`;
-
-  let serviceProviderEmail = document.createElement('td');
-  serviceProviderEmail.innerText = `${userservice.serviceProviderEmail}`;
-
-  let status = document.createElement('td');
-  status.innerText = `${userservice.status}`;
-
-  let rating = document.createElement('td');
-  rating.innerText = `${userservice.rating}`;
-
-  let rateAction = document.createElement('td');
-  let rateForm = document.createElement('form');
-  rateForm.id = `${userservice.id}`;
-  rateForm.className="rateform"
-  let rateInput = document.createElement('input');
-  rateInput.type ="number";
-  rateInput.placeholder="Enter rating 1-5";
-  rateInput.id ="rating"
-
-  let ratebtn = document.createElement('button');
-  ratebtn.className="ratebtn";
-  ratebtn.type="submit"
-  ratebtn.innerText = "Submit";
-
-  rateAction.append(rateForm);
-  rateForm.append(rateInput);
-  rateForm.append(ratebtn);
-
-  userServiceTableBodyRow.append(serviceName,serviceType,serviceDescription,serviceFrequeny,
-    serviceProvider,serviceProviderEmail,status,rating, rateAction);
-    //allrequest += requestTableBodyRow;
-  UserServiceTable.append(userServiceTableBodyRow);
-}
-//fucntion to load service Management page
-function loadServiceManagementPage(homepageContent) { 
-  // fetch request evaluation page html
-  fetch('./Views/serviceMan.html')
-    .then(response => response.text())
-    .then(data => {
-      // Handle the response data
-      homepageContent.innerHTML = data;
-      
-      //getrequest();
-      url = api + '/Service/getuserservice';
-      get(url)
-        .then(response => response.json())
-        .then(response => {
-            createUserServiceTable();
-            let id = 0;
-            response.forEach((userservice) =>{
-              appendUserService(userservice, id)
-              id = id + 1;
-            })
-            const rateService = Array.from(document.getElementsByClassName("rateform")); 
-            rateService.forEach((key)=>{
-              key.addEventListener('submit', (event) => {
-                event.preventDefault();   
-
-                const rate = document.querySelector('#rating').value;
-                rateUserService(key.id, rate)});
-            })
-
-            /*const emailAdmin = document.getElementById("notifyAdmin");
-            emailAdmin.addEventListener('click', function() {loadEmailPage(homepageContent)});*/
-        })
-        .catch(error => console.log(error));
-
-    })   
-    .catch(error => console.log(error));
-    
 }
 
 function logout(){

@@ -22,7 +22,17 @@ namespace AA.PMTOGO.Managers
 
         public async Task<Result> GetAnalysis()
         {
-            Result result = await _usageDashboard.GenerateAnalysis();
+            Result result = new Result();
+            try
+            {
+                result = await usageDashboard.GenerateAnalysis();
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful= false;
+                result.ErrorMessage = "Load Usage Analysis Dashboard Unsuccessful";
+            }
             return result;
 
         }
