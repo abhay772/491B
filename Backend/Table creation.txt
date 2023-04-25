@@ -34,3 +34,35 @@ CREATE TABLE UserAccounts (
     OTPTimestamp DATETIME NULL,
     RecoveryRequest BIT NULL
 );
+
+
+
+
+
+
+
+
+USE master;
+GO
+
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'AA.CrimeMapDB')
+BEGIN
+    CREATE DATABASE [AA.CrimeMapDB]
+END
+GO
+
+USE [AA.CrimeMapDB];
+GO
+
+CREATE TABLE CrimeAlerts (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    Email VARCHAR(255) NOT NULL,
+    Name VARCHAR(255) NOT NULL,
+    Location VARCHAR(255) NOT NULL,
+    Description VARCHAR(255) NOT NULL,
+    Time VARCHAR(255) NOT NULL,
+    Date VARCHAR(255) NOT NULL,
+    X VARCHAR(255) NOT NULL,
+    Y VARCHAR(255) NOT NULL
+);
+GO

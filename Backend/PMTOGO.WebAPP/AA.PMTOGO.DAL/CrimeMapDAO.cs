@@ -21,12 +21,11 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT INTO CrimeAlerts (Email, ID, Name, Location, Description, Time, Date, X, Y) VALUES (@Email, @ID, @Name, @Location, @Description, @Time, @Date, @X, @Y)";
+                string sqlQuery = "INSERT INTO CrimeAlerts (Email, Name, Location, Description, Time, Date, X, Y) VALUES (@Email, @Name, @Location, @Description, @Time, @Date, @X, @Y); SELECT SCOPE_IDENTITY();";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
                 command.Parameters.AddWithValue("@Email", alert.Email);
-                command.Parameters.AddWithValue("@ID", alert.ID);
                 command.Parameters.AddWithValue("@Name", alert.Name);
                 command.Parameters.AddWithValue("@Location", alert.Location);
                 command.Parameters.AddWithValue("@Description", alert.Description);
@@ -35,38 +34,20 @@ namespace AA.PMTOGO.DAL
                 command.Parameters.AddWithValue("@X", alert.X);
                 command.Parameters.AddWithValue("@Y", alert.Y);
 
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                try
                 {
-                    try
-                    {
-                        var rows = await command.ExecuteNonQueryAsync();
+                    int insertedId = Convert.ToInt32(await command.ExecuteScalarAsync());
 
-                        if (rows == 1)
-                        {
-                            _result.IsSuccessful = true;
-                            return _result;
-                        }
-                        else
-                        {
-                            _result.IsSuccessful = false;
-                            _result.ErrorMessage = "too many rows affected";
-                            return _result;
-                        }
-                    }
-
-                    catch (SqlException e)
-                    {
-                        if (e.Number == 208)
-                        {
-                            _result.IsSuccessful = false;
-                            _result.ErrorMessage = "Specified table not found";
-                        }
-                    }
+                    _result.IsSuccessful = true;
+                    return _result;
+                }
+                catch (SqlException e)
+                {
+                    _result.IsSuccessful = false;
+                    _result.ErrorMessage = e.Message;
+                    return _result;
                 }
             }
-            _result.IsSuccessful = false;
-            _result.ErrorMessage = "Error";
-            return _result;
         }
 
         public async Task<Result> CheckAlert(string email)
@@ -195,7 +176,7 @@ namespace AA.PMTOGO.DAL
                 connection.Open();
 
                 string sqlQuery = "SELECT * FROM CrimeAlerts";
-
+                Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 var command = new SqlCommand(sqlQuery, connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
@@ -206,7 +187,7 @@ namespace AA.PMTOGO.DAL
                         {
                             var alert = new CrimeAlert();
                             alert.Email = (string)reader["Email"];
-                            alert.ID = (string)reader["ID"];
+                            //alert.ID = (string)reader["ID"];
                             alert.Name = (string)reader["Name"];
                             alert.Location = (string)reader["Location"];
                             alert.Description = (string)reader["Description"];
@@ -216,6 +197,8 @@ namespace AA.PMTOGO.DAL
                             alert.Y = (string)reader["Y"];
 
                             alerts.Add(alert);
+                            Console.WriteLine(alert.Date);
+                            Console.WriteLine(alert.Description);
                         }
                     }
                     catch { }

@@ -51,7 +51,7 @@ function loadLoginPage() {
         .then((response) => {
           if (response.ok) {
             response.json().then(data => {
-              loadHomePage(`${data.claims[1].value}`);
+              loadHomePage(`${data.claims[1].value}`, username);
             })
           }
         })
@@ -65,13 +65,52 @@ function loadLoginPage() {
     .catch(error => console.log(error));
 }
 
-function loadCrimeMapPage(homepageContent) {
+/*async function updateCrimeMap() {
+    const response = await fetch(api + '/CrimeAlert/getAlerts');
+    const data = await response.json();
+    const markers = [];
+
+    for (const alert of data) {
+        const newMarker = document.createElement('div');
+        newMarker.classList.add('marker');
+        newMarker.style.left = `${alert.X}px`;
+        newMarker.style.top = `${alert.Y}px`;
+        newMarker.addEventListener('click', function () {
+            alert(`Crime Alert: ${alert.description}`);
+        });
+        markers.push(newMarker);
+    }
+
+    return markers;
+}*/
+
+async function updateCrimeMap() {
+    const response = await fetch(api + '/CrimeAlert/getAlerts');
+    const data = await response.json();
+    const markers = [];
+
+    for (const alert of data) {
+        const newMarker = document.createElement('img');
+        newMarker.src = './images/marker.png';
+        newMarker.classList.add('marker');
+        newMarker.style.position = 'absolute';
+        newMarker.style.left = `${alert.X}px`;
+        newMarker.style.top = `${alert.Y}px`;
+        newMarker.setAttribute('data-alert-id', alert.id);
+        newMarker.style.zIndex = 9999; // Add this line to set the z-index
+        markers.push(newMarker);
+    }
+
+    return markers;
+}
+
+function loadCrimeMapPage(homepageContent, username) {
     // fetch crime map page html
     fetch('./Views/crimeMap.html')
         .then(response => response.text())
         .then(data => {
             // update homepage content div with crime map page html
-            content.innerHTML = data;
+            homepageContent.innerHTML = data;
 
             // add image to crime map page
             const imageContainer = document.createElement('div');
@@ -125,36 +164,132 @@ function loadCrimeMapPage(homepageContent) {
             const addCrimeAlertButton = document.createElement('button');
             addCrimeAlertButton.textContent = 'Add Crime Alert';
             addCrimeAlertButton.addEventListener('click', function () {
-                // add event listener to image for placing marker
-                imageContainer.addEventListener('click', function (event) {
-                    const marker = document.createElement('div');
-                    marker.classList.add('marker');
-                    marker.style.left = (event.clientX - imageContainer.getBoundingClientRect().left + imageContainer.scrollLeft - 10) + 'px';
-                    marker.style.top = (event.clientY - imageContainer.getBoundingClientRect().top + imageContainer.scrollTop - 10) + 'px';
-                    imageContainer.appendChild(marker);
-
-                    // log location in pixels and send to backend controller
-                    const xLocation = (event.clientX - imageContainer.getBoundingClientRect().left + imageContainer.scrollLeft).toString();
-                    const yLocation = (event.clientY - imageContainer.getBoundingClientRect().top + imageContainer.scrollTop).toString();
-                    console.log(xLocation, yLocation);
-
-                    const url = api + '/CrimeAlert/addAlert';
-                    const data = { x: xLocation, y: yLocation };
-                    send(url, data)
-                        .then(response => {
-                            console.log(response);
-
-                            // after successful recovery, load OTP page
-                            loadCrimeMapPage();
-                        })
-                        .catch(error => console.log(error));
-
-                    // remove event listener after marker is placed
-                    imageContainer.removeEventListener('click', arguments.callee);
-
-                });
+                loadAddAlertPage(homepageContent, username);
             });
             crimeMapContent.appendChild(addCrimeAlertButton);
+
+            // call updateCrimeMap to get the markers and add them to the map
+            updateCrimeMap().then(markers => {
+                markers.forEach(marker => {
+                    // insert code here to set the pixel location of the marker
+                    const left = alert.X;
+                    const top = alert.Y;
+                    marker.style.left = `${left}px`;
+                    marker.style.top = `${top}px`;
+
+                    // append the marker to the image container
+                    imageContainer.appendChild(marker);
+
+                    marker.addEventListener('click', function () {
+                        alert(`Crime Alert: ${marker.getAttribute('data-alert-id')}`);
+                    });
+                });
+            });
+        });
+}
+
+/*function updateCrimeMap() {
+    // call controller method to get crime alerts
+    fetch('https://localhost:7135/api/CrimeAlert/getAlerts')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(alerts => {
+            // iterate through alerts and add markers to the map
+            alerts.forEach(alert => {
+                const marker = document.createElement('button');
+                marker.classList.add('marker');
+                marker.style.position = 'absolute';
+                marker.style.left = alert.X + 'px';
+                marker.style.top = alert.Y + 'px';
+                marker.dataset.alert = JSON.stringify(alert);
+                marker.addEventListener('click', function () {
+                });
+                const imageContainer = document.querySelector('.image-container');
+                imageContainer.appendChild(marker);
+            });
+        })
+        .catch(error => console.log(error));
+}*/
+
+function loadAddAlertPage(homepageContent, username) {
+    // fetch add alert page html
+    fetch('./Views/addAlert.html')
+        .then(response => response.text())
+        .then(data => {
+            // update homepage content div with add alert page html
+            homepageContent.innerHTML = data;
+
+            const crimeMapImage = document.createElement('img');
+            crimeMapImage.src = './images/crimemap.png';
+            crimeMapImage.alt = 'Crime map';
+
+            const crimeMapContainer = document.createElement('div');
+            crimeMapContainer.classList.add('image-container');
+            crimeMapContainer.style.overflow = 'auto';
+            crimeMapContainer.style.width = '750px';
+            crimeMapContainer.style.height = '750px';
+            crimeMapContainer.appendChild(crimeMapImage);
+
+            const addAlertContainer = document.getElementById('add-alert-container');
+            addAlertContainer.appendChild(crimeMapContainer);
+
+            const marker = document.createElement('div');
+            marker.classList.add('marker');
+            crimeMapContainer.appendChild(marker);
+
+            let isPlacingMarker = true;
+            let xCoordinate = '';
+            let yCoordinate = '';
+
+            // add event listener to image for placing marker
+            crimeMapImage.addEventListener('click', function addMarker(event) {
+                if (isPlacingMarker) {
+                    marker.style.display = 'block';
+                    marker.style.left = (event.clientX - crimeMapContainer.getBoundingClientRect().left + crimeMapContainer.scrollLeft - 10) + 'px';
+                    marker.style.top = (event.clientY - crimeMapContainer.getBoundingClientRect().top + crimeMapContainer.scrollTop - 10) + 'px';
+
+                    // log location in pixels
+                    xCoordinate = (event.clientX - crimeMapContainer.getBoundingClientRect().left + crimeMapContainer.scrollLeft).toString();
+                    yCoordinate = (event.clientY - crimeMapContainer.getBoundingClientRect().top + crimeMapContainer.scrollTop).toString();
+
+                    isPlacingMarker = false;
+                }
+            });
+
+            const submitButton = document.getElementById('submit-button');
+            submitButton.addEventListener('click', function () {
+                const nameInput = document.getElementById('name-input').value;
+                const locationInput = document.getElementById('location-input').value;
+                const descriptionInput = document.getElementById('description-input').value;
+                const timeInput = document.getElementById('time-input').value;
+                const dateInput = document.getElementById('date-input').value;
+
+                const url = api + '/CrimeAlert/addAlert';
+                const data = {
+                    Email: username,
+                    Name: nameInput,
+                    Location: locationInput,
+                    Description: descriptionInput,
+                    Time: timeInput,
+                    Date: dateInput,
+                    X: xCoordinate,
+                    Y: yCoordinate
+                };
+
+                send(url, data)
+                    .then(response => {
+                        console.log(data);
+                        console.log(response);
+
+                        // after successful submission, load crime map page
+                        loadCrimeMapPage(homepageContent);
+                    })
+                    .catch(error => console.log(error));
+            });
         })
         .catch(error => console.log(error));
 }
@@ -322,7 +457,7 @@ function loadRegisterPage() {
 }
 
 //function to load homepage
-function loadHomePage(userrole) {
+function loadHomePage(userrole, username) {
     // fetch property evaluation page html
     fetch('./Views/homepage.html')
         .then(response => response.text())
@@ -348,7 +483,7 @@ function loadHomePage(userrole) {
             //select service Management
             const serviceFeature = document.getElementById('serviceManagement');
             //select crime alert
-            const crimeMapFeature = document.getElementById('crimeMap');
+            const crimeMapFeature = document.getElementById('crimemap');
 
             //add event listeners
             logoutUser.addEventListener('click', () => {
@@ -385,7 +520,7 @@ function loadHomePage(userrole) {
 
             //add event listener to nav to crime map
             crimeMapFeature.addEventListener('click', () => {
-                loadCrimeMapPage(homepageContent);
+                loadCrimeMapPage(homepageContent, username);
             });
 
             // add event listeners to nav to property evaluation

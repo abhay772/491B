@@ -124,7 +124,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpGet]
-        [Route("getAlert")]
+        [Route("getAlerts")]
         [ActionName("GetCrimeAlert")]
         public async Task<IActionResult> GetCrimeAlert()
         {
@@ -133,11 +133,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 var crimeAlerts = await _mapManager.GetCrimeAlerts();
                 if (crimeAlerts is not null)
                 {
-                    return Ok(new { message = "Crime alert added successfully." });
+                    return Ok(crimeAlerts);
                 }
                 else
                 {
-
                     return BadRequest("Error");
                 }
             }
