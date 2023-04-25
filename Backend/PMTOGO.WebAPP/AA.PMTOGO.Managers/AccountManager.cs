@@ -1,3 +1,4 @@
+using AA.PMTOGO.DAL;
 ﻿using AA.PMTOGO.Logging;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
@@ -46,6 +47,24 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
+        public async Task<Result> RecoverAccount(string username)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _account.AccountRecovery(username);
+                await _logger!.Log("AccountRecovery", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Account Recovery Unsuccessful. Try Again Later";
+                await _logger!.Log("AccountRecovery", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
+
         public async Task<Result> DeleteUserAccount(string username)
         {
             Result result = new Result();
@@ -59,9 +78,23 @@ namespace AA.PMTOGO.Managers
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Delete Account Unsuccessful. Try Again Later";
-                await _logger!.Log("RateUserService", 4, LogCategory.Business, result);
+                await _logger!.Log("DeleteUserAccount", 4, LogCategory.Business, result);
             }
+            return result;
+        }
 
+        public async Task<Result> OTPValidation(string username, string otp)
+        {
+            var dao = new UsersDAO();
+            Result result = await dao.ValidateOTP(username, otp);
+            return result;
+        }
+        public async Task<Result> UpdatePassword(string username, string password)
+        {
+            var dao = new UsersDAO();
+            string salt = _account.GenerateSalt();
+            string passDigest = _account.EncryptPassword(password, salt);
+            Result result = await dao.UpdatePassword(username, passDigest, salt);
             return result;
         }
     }

@@ -53,8 +53,83 @@ namespace AA.PMTOGO.WebAPP.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
         }
+
+        [HttpPost]
+        [Route("recovery")]
+        //[Consumes("application/json")]
+        [ActionName("AccountRecovery")]
+        public async Task<IActionResult> AccountRecovery([FromBody] UserRegister user)
+        {
+            try
+            {
+                Result result = await _accManager.RecoverAccount(user.Email);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result.Payload);
+                }
+                else
+                {
+
+                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("otp")]
+        //[Consumes("application/json")]
+        [ActionName("ValidateOTP")]
+        public async Task<IActionResult> ValidateOTP([FromBody] UserRegister user)
+        {
+            try
+            {
+                Result result = await _accManager.OTPValidation(user.Email, user.OTP);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result.Payload);
+                }
+                else
+                {
+
+                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("updatePassword")]
+        //[Consumes("application/json")]
+        [ActionName("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UserRegister user)
+        {
+            try
+            {
+                Result result = await _accManager.UpdatePassword(user.Email, user.Password);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result.Payload);
+                }
+                else
+                {
+
+                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                }
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
         [HttpDelete]
         [Route("delete")]
         [Consumes("application/json")]
@@ -95,6 +170,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             public string LastName { get; set; } = string.Empty;
             public string Password { get; set; } = string.Empty;
             public string Role { get; set; } = string.Empty;
+            public string OTP { get; set; } = string.Empty;
         }
     }
 }

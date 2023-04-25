@@ -13,5 +13,6 @@ namespace AA.PMTOGO.Services.Interfaces
         Task<Result> DeleteAccount(string username);
         string GenerateSalt();
         string EncryptPassword(string password, string salt);
+        Task<Result> AccountRecovery(string email);
     }
 }
