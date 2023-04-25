@@ -53,7 +53,7 @@ namespace AA.PMTOGO.IntergrationTest
         {
             // Arrange
 
-            var serviceRequest = new ServiceRequestManagement(_serviceDAO,_userServiceDAO, _logger!);
+            var serviceRequest = new ServiceRequestManagement(_logger!);
 
             Guid id = Guid.NewGuid();
 
@@ -132,7 +132,7 @@ namespace AA.PMTOGO.IntergrationTest
         {
             //arrange
             var dao = new UserServiceDAO();
-            var request = new ServiceRequestManagement(_serviceDAO, _userServiceDAO, _logger!);
+            var request = new ServiceRequestManagement(_logger!);
             Guid id = Guid.NewGuid();
 
             ServiceRequest userService = new ServiceRequest(id, "Frequency Example", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -162,7 +162,7 @@ namespace AA.PMTOGO.IntergrationTest
             //arrange
             var service = new ServiceRequestDAO();
             var dao = new UserServiceDAO();
-            var request = new ServiceRequestManagement(_serviceDAO, _userServiceDAO, _logger!);
+            var request = new ServiceRequestManagement(_logger!);
             Guid id = Guid.NewGuid();
             ServiceRequest userService = new ServiceRequest(id, "Cancel Example", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");

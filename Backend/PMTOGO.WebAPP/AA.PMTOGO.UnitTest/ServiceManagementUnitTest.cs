@@ -1,5 +1,6 @@
 ﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.DAL.Interfaces;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 
@@ -11,10 +12,12 @@ namespace AA.PMTOGO.UnitTest
     public class ServiceManagementUnitTest
     {
         private IUsersDAO _usersDAO;
+        private readonly ILogger? _logger;
 
-        public ServiceManagementUnitTest(IUsersDAO usersDAO)
+        public ServiceManagementUnitTest(IUsersDAO usersDAO, ILogger? logger)
         {
             _usersDAO = usersDAO;
+            _logger = logger;
         }
 
         [TestMethod]
@@ -25,7 +28,7 @@ namespace AA.PMTOGO.UnitTest
             var expected = typeof(UserServiceManagement);
 
             // Act
-            var actual = new UserServiceManagement(_usersDAO);
+            var actual = new UserServiceManagement(_usersDAO, _logger!);
 
             // Assert
             Assert.IsNotNull(actual);

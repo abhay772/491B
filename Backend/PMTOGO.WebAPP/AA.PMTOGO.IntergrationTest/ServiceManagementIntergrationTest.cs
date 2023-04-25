@@ -141,7 +141,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateAUserServiceSP_PASS()
         {
             //arrange
-            var service = new UserServiceManagement();
+            var service = new UserServiceManagement(_usersDAO,_logger!);
             var dao = new UserServiceDAO();
 
             Guid id = Guid.NewGuid();
@@ -170,7 +170,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateAUserServicePM_PASS()
         {
             //arrange
-            var userserviceM = new UserServiceManagement(_usersDAO);
+            var userserviceM = new UserServiceManagement(_usersDAO, _logger!);
             var dao = new UserServiceDAO();
 
             Guid id = Guid.NewGuid();
@@ -199,7 +199,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateIsNotHigherThan5_FAIL()
         {
             //arrange
-            var service = new UserServiceManagement(_usersDAO);
+            var service = new UserServiceManagement(_usersDAO, _logger!);
             var request = new ServiceRequestDAO();
             var dao = new UserServiceDAO();
             Guid id = Guid.NewGuid();
@@ -221,25 +221,6 @@ namespace AA.PMTOGO.IntergrationTest
             Assert.IsNotNull(actual);
             Assert.IsFalse(actual);
 
-
-        }
-        [TestMethod]
-        public async Task TestingUserInfo()
-        {
-            //arrange
-
-            var dao = new UsersDAO();
-            Guid id = Guid.NewGuid();
-
-            Result result = await dao.GetUser("sierra.harris01@student.csulb.edu");
-
-            //act
-            Console.WriteLine(result.Payload);
-            bool actual = result.IsSuccessful;
-
-            //assert
-            Assert.IsNotNull(actual);
-            Assert.IsTrue(actual);
 
         }
 
