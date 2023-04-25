@@ -16,11 +16,11 @@ namespace AA.PMTOGO.Services
         private readonly ILogger? _logger;
 
         ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
-        public UserServiceManagement(IUsersDAO usersDAO, ServiceDAO serviceDAO, UserServiceDAO userServiceDAO, ILogger logger)
+        public UserServiceManagement(IUsersDAO usersDAO, ILogger logger)
         {
             _authNDAO = usersDAO;
-            _serviceDAO = serviceDAO;
-            _userServiceDAO = userServiceDAO;
+            _serviceDAO = new ServiceDAO();
+            _userServiceDAO = new UserServiceDAO();
             _logger = logger;
         }
 
