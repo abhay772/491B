@@ -15,12 +15,7 @@ namespace AA.PMTOGO.Services
     {
         UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
-        private readonly ILogger _logger;
-
-        public UserManagement(ILogger logger)
-        {
-            _logger = logger;
-        }
+        Logger _logger = new Logger();
 
 
         //byte[] to string
@@ -47,8 +42,6 @@ namespace AA.PMTOGO.Services
                     result.IsSuccessful = true;
                     result.Payload = user;
                     return result;
-
-
 
                 }
                 else

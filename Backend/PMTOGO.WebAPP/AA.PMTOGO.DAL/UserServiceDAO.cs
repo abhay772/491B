@@ -1,5 +1,6 @@
 ﻿using AA.PMTOGO.Models.Entities;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -13,6 +14,7 @@ namespace AA.PMTOGO.DAL
     public class UserServiceDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";
+        
 
         //find user service
 
@@ -24,7 +26,8 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM UserServices WHERE ID = @Id";
+                //change select star
+                string sqlQuery = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName FROM UserServices WHERE ID = @Id";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = id;
@@ -34,10 +37,15 @@ namespace AA.PMTOGO.DAL
                 {
                     while (reader.Read())
                     {
-                        if (id.Equals(reader["ID"]))
+                        if (id.Equals(reader["Id"]))
                         {
+                            UserService service = new UserService((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
+                                (string)reader["ServiceFrequency"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
+                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
+
                             result.IsSuccessful = true;
-                            result.ErrorMessage = "Service Request already exists.";
+                            result.ErrorMessage = "User Service already exists.";
+                            result.Payload = service;
                             return result;
                         }
                     }
@@ -48,30 +56,31 @@ namespace AA.PMTOGO.DAL
 
         }
 
-        //insert service request
+        //insert user service
 
-        public async Task<Result> AddServiceRequest(Guid Id, string serviceName, string serviceType, string serviceDescription,
-         string serviceFrequency, string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
+        public async Task<Result> AddUserService(ServiceRequest service)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into ServiceRequests VALUES(@Id, @serviceName, @serviceType, @serviceDescription, @serviceFrequency, @comments, @serviceProviderEmail, @serviceProviderName, @propertyManagerEmail, @propertyManagerName)";
+                string sqlQuery = "INSERT into UserServices VALUES(@Id, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @ServiceProviderEmail, @ServiceProviderName, @PropertyManagerEmail, @PropertyManagerName, @Status, @SPRating, @PMRating)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@Id", Id);
-                command.Parameters.AddWithValue("@ServiceName", serviceName);
-                command.Parameters.AddWithValue("@ServiceType", serviceType);
-                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
-                command.Parameters.AddWithValue("@ServiceFrequency", serviceFrequency);
-                command.Parameters.AddWithValue("@Comments", comments);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
-                command.Parameters.AddWithValue("@ServiceProviderName", serviceProviderName);
-                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
-                command.Parameters.AddWithValue("@PropertyManagerName", propertyManagerName);
+                command.Parameters.AddWithValue("@Id", service.Id);
+                command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
+                command.Parameters.AddWithValue("@ServiceType", service.ServiceType);
+                command.Parameters.AddWithValue("@ServiceDescription", service.ServiceDescription);
+                command.Parameters.AddWithValue("@ServiceFrequency", service.ServiceFrequency);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", service.ServiceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceProviderName", service.ServiceProviderName);
+                command.Parameters.AddWithValue("@PropertyManagerEmail", service.PropertyManagerEmail);
+                command.Parameters.AddWithValue("@PropertyManagerName", service.PropertyManagerName);
+                command.Parameters.AddWithValue("@Status", "In-Progress");
+                command.Parameters.AddWithValue("@SPRating", 0);
+                command.Parameters.AddWithValue("@PMRating", 0);
 
 
                 try
@@ -103,8 +112,10 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
+        
+
         //user service list
-        public async Task<Result> GetUserService(string serviceProviderEmail, string propertyManagerEmail) // return all user services
+        public async Task<Result> GetUserServices(string sqlQuery, string email, string rating) // return all user services
         {
 
             Result result = new Result();
@@ -113,12 +124,12 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM UserServices WHERE @PropertyManagerEmail = propertyManagerEmail OR @ServiceProviderEmail = serviceProviderEmail";
+                //to return user services for both service provider and property manager
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@PropertyManagerEmail", propertyManagerEmail);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@PropertyManagerEmail", email);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", email);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
@@ -130,7 +141,7 @@ namespace AA.PMTOGO.DAL
 
                             UserService service = new UserService((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
                                 (string)reader["ServiceFrequency"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
-                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"], (string)reader["Status"], (int)reader["Rating"]);
+                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"], (string)reader["Status"], (int)reader[rating]);
 
 
                             listOfUserServices.Add(service);
@@ -155,9 +166,52 @@ namespace AA.PMTOGO.DAL
         }
 
 
-        //frequency change
+        //frequency change if accepted by service provider
 
-        //cancellation ~ delete user service
+        public async Task<Result> UpdateServiceFrequency(Guid id, string frequency)
+        {
+            var result = new Result();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                
+                string sqlQuery = "UPDATE UserServices SET ServiceFrequency = @ServiceFrequency WHERE Id = @ID";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = id;
+                command.Parameters.AddWithValue("@ServiceFrequency", frequency);
+
+                try
+                {
+                    var rows = await command.ExecuteNonQueryAsync();
+                    if (rows == 1)
+                    {
+                        result.IsSuccessful = true;
+                        return result;
+                    }
+
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "too many rows affected";
+                        return result;
+                    }
+                }
+
+                catch 
+                {
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
+                }
+
+            }
+
+            result.IsSuccessful = false;
+            return result;
+        }
+
+        //cancellation ~ delete user service if confirmed by service provider
 
         public async Task<Result> DeleteUserService(Guid requestId)
         {
@@ -204,18 +258,16 @@ namespace AA.PMTOGO.DAL
         }
 
         //Rating
-        public async Task<Result> RateUserServices(Guid serviceId, int rating)
+        public async Task<Result> UpdateServiceRate(Guid Id, int rating, string query)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "UPDATE UserServices SET rating = @Rating WHERE Id = @ID";
+                var command = new SqlCommand(query, connection);
 
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = serviceId;
+                command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = Id;
                 command.Parameters.AddWithValue("@Rating", SqlDbType.Int).Value= rating;
 
                 try
@@ -235,18 +287,10 @@ namespace AA.PMTOGO.DAL
                     }
                 }
 
-                catch (SqlException ex)
+                catch 
                 {
-                    StringBuilder errorMessages = new StringBuilder();
-                    for (int i = 0; i < ex.Errors.Count; i++)
-                    {
-                        errorMessages.Append("Index #" + i + "\n" +
-                            "Message: " + ex.Errors[i].Message + "\n" +
-                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
-                            "Source: " + ex.Errors[i].Source + "\n" +
-                            "Procedure: " + ex.Errors[i].Procedure + "\n");
-                    }
-                    Console.WriteLine(errorMessages.ToString());
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
                 }
 
             }
@@ -255,7 +299,8 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        public async Task<Result> CheckRating(Guid serviceId, int rating)
+        //check rating and frequency functions
+        public async Task<Result> CheckRating(Guid Id, int rating, string sqlQuery, string userRate)
         {
             Result result = new Result();
 
@@ -263,18 +308,16 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT Rating FROM UserServices WHERE @serviceId = ID";
-
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@serviceId", serviceId);
+                command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = Id;
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
                     try
                     {
                         reader.Read();
-                        if ((int)reader["Rating"] == rating)
+                        if ((int)reader[userRate] == rating)
                         {
                             result.IsSuccessful = true;
                             return result;
@@ -297,6 +340,92 @@ namespace AA.PMTOGO.DAL
             }
             result.IsSuccessful = false;
             result.ErrorMessage = "Invalid Service ID or Property Manager Email. Please try again later.";
+            return result;
+        }
+
+        public async Task<Result> CheckFrequency(Guid id, string frequency)
+        {
+            Result result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+            
+                string sqlQuery = "SELECT ServiceFrequency FROM UserServices WHERE Id = @ID";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = id;
+
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    try
+                    {
+                        reader.Read();
+                        if ((string)reader["ServiceFrequency"] == frequency)
+                        {
+                            result.IsSuccessful = true;
+                            return result;
+                        }
+                        else
+                        {
+                            result.IsSuccessful = false;
+                            result.ErrorMessage = "Frequency is incorrect";
+                            return result;
+                        }
+                    }
+                    catch
+                    {
+
+                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        result.IsSuccessful = false;
+
+                    }
+                }
+            }
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Invalid Service ID or Property Manager Email. Please try again later.";
+            return result;
+        }
+
+        public async Task<Result> UpdateStatus(Guid id, string status)
+        {
+            var result = new Result();
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = "UPDATE UserServices SET status = @Status WHERE Id = @ID"; ;
+                var command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = id;
+                command.Parameters.AddWithValue("@Status", status);
+
+                try
+                {
+                    var rows = await command.ExecuteNonQueryAsync();
+                    if (rows == 1)
+                    {
+                        result.IsSuccessful = true;
+                        return result;
+                    }
+
+                    else
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "too many rows affected";
+                        return result;
+                    }
+                }
+
+                catch
+                {
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
+                }
+
+            }
+
+            result.IsSuccessful = false;
             return result;
         }
     }
