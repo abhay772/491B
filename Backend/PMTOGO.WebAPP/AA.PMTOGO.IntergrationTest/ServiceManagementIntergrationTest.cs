@@ -83,8 +83,6 @@ namespace AA.PMTOGO.IntergrationTest
             // Act
             Result result = await dao.GetUserServices(query, "serviceProvider@gmail.com", "SPRating");
             bool actual = result.IsSuccessful;
-            List<UserService> userservice = (List<UserService>)result.Payload!;
-            Console.WriteLine(userservice[1].Id);
 
             //clean up
             await dao.DeleteUserService(id);
@@ -112,7 +110,7 @@ namespace AA.PMTOGO.IntergrationTest
             bool actual = result.IsSuccessful;
 
             //clean up
-            //await dao.DeleteServiceRequest(id);
+            await dao.DeleteServiceRequest(id);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -216,19 +214,13 @@ namespace AA.PMTOGO.IntergrationTest
 
             Result result = await dao.GetUser("sierra.harris01@student.csulb.edu");
 
-
-
             //act
             Console.WriteLine(result.Payload);
             bool actual = result.IsSuccessful;
 
-
-
-
             //assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
-
 
         }
 

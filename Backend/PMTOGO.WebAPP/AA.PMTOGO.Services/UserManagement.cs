@@ -120,11 +120,11 @@ namespace AA.PMTOGO.Services
         public async Task<Result> AccountRecovery(string email)
         {
             Result result = new Result();
-            result = _authNDAO.FindUser(email).Result;
+            result = await _authNDAO.FindUser(email);
             
             if (result.IsSuccessful) 
             {
-                EmailOTP(email);
+                await EmailOTP(email);
             }
             return result;
         }
