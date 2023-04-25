@@ -10,19 +10,19 @@ namespace AA.PMTOGO.Services
     //input validation, logging
     public class UserServiceManagement : IUserServiceManagement
     {
-        UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        IUsersDAO _authNDAO;
+        private readonly IUsersDAO _authNDAO;
+        private readonly ServiceDAO _serviceDAO;
+        private readonly UserServiceDAO _userServiceDAO;
+        private readonly ILogger? _logger;
 
-        public UserServiceManagement(IUsersDAO usersDAO)
+        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
+        public UserServiceManagement(IUsersDAO usersDAO, ServiceDAO serviceDAO, UserServiceDAO userServiceDAO, ILogger logger)
         {
             _authNDAO = usersDAO;
+            _serviceDAO = serviceDAO;
+            _userServiceDAO = userServiceDAO;
+            _logger = logger;
         }
-
-        public async Task<Result> CreateRequest(ServiceRequest service, string username)
-        {
-        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
-        ServiceDAO _serviceDAO = new ServiceDAO();
-        Logger _logger = new Logger();
 
         private async Task<string> GetUserInfo (string username)
         {

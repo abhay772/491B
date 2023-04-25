@@ -10,6 +10,7 @@ namespace AA.PMTOGO.Models.Entities
     public class Service
     {
         [Key]
+        public Guid Id { get; set; }
         public string ServiceName { get; set; } = string.Empty;
         public string ServiceDescription { get; set; } = string.Empty;
         [Key]
@@ -20,8 +21,9 @@ namespace AA.PMTOGO.Models.Entities
         
         public Service() { }
 
-        public Service(string name, string description, string type, string serviceProvider, string providerEmail)
+        public Service(Guid id, string name, string description, string type, string serviceProvider, string providerEmail)
         {
+            Id = id;
             ServiceName = name;
             ServiceDescription = description;
             ServiceType = type;

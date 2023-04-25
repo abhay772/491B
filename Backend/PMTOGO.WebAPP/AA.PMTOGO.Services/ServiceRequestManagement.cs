@@ -11,9 +11,16 @@ namespace AA.PMTOGO.Services
     //input validation, logging
     public class ServiceRequestManagement : IServiceRequestManagement
     {
-        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
-        UserServiceDAO _serviceDAO= new UserServiceDAO();
-        Logger _logger = new Logger();
+        private readonly ServiceRequestDAO _requestDAO;
+        private readonly UserServiceDAO _serviceDAO;
+        private readonly ILogger? _logger;
+        public ServiceRequestManagement(ServiceRequestDAO request, UserServiceDAO serviceDAO, ILogger logger)
+        {
+            _requestDAO = request;
+            _serviceDAO = serviceDAO;
+            _logger = logger;
+
+        }
 
         public async Task<Result> AcceptRequest(Guid requestId)
         {
