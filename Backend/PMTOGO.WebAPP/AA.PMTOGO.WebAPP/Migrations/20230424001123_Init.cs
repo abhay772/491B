@@ -15,16 +15,16 @@ namespace AA.PMTOGO.WebAPP.Migrations
                 name: "Logs",
                 columns: table => new
                 {
-                    logId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    logLevel = table.Column<byte>(type: "tinyint", nullable: false),
-                    operation = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    logCategory = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    message = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    LogId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LogLevel = table.Column<byte>(type: "tinyint", nullable: false),
+                    Operation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LogCategory = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Logs", x => x.logId);
+                    table.PrimaryKey("PK_Logs", x => x.LogId);
                 });
 
             migrationBuilder.CreateTable(
