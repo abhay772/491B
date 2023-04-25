@@ -1,12 +1,20 @@
 ﻿using AA.PMTOGO.Models.Entities;
+using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 
 
 namespace AA.PMTOGO.DAL
 {
-    public class LoggerDAO
+    public class LoggerDAO : ILoggerDAO
     {
-        private static readonly string _connectionString = @"Server=localhost,1433;Database=master;User Id=sa;Password=Kappa12#;Encrypt=false;TrustServerCertificate=True";
+        private readonly string _connectionString;
+        //private readonly ILogger? _logger;
+        //logging
+
+        public LoggerDAO(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
+        }
 
         public async Task<Result> InsertLog(Log log)
         {

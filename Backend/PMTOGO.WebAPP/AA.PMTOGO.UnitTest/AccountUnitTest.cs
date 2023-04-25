@@ -11,11 +11,13 @@ namespace AA.PMTOGO.UnitTest
     [TestClass]
     public class AccountUnitTest
     {
-        private IUsersDAO _usersDAO;
+        private readonly IUsersDAO _usersDAO;
+        private readonly ILogger _logger;
 
-        public AccountUnitTest(IUsersDAO usersDAO) 
-        { 
+        public AccountUnitTest(IUsersDAO usersDAO, ILogger logger)
+        {
             _usersDAO = usersDAO;
+            _logger = logger;
         }
 
         [TestMethod]
@@ -25,8 +27,7 @@ namespace AA.PMTOGO.UnitTest
             var expected = typeof(UserManagement);
 
             // Act
-            var logger = new Logger();
-            var actual = new UserManagement(logger, _usersDAO);
+            var actual = new UserManagement(_logger, _usersDAO);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -38,8 +39,7 @@ namespace AA.PMTOGO.UnitTest
         public async Task ShouldAssignUniqueUsername()
         {
             // Arrange
-            var logger = new Logger();
-            var user = new UserManagement(logger, _usersDAO);
+            var user = new UserManagement(_logger, _usersDAO);
             //clean up
             await user.DeleteAccount("sara2@gmail.com");
 
@@ -159,8 +159,7 @@ namespace AA.PMTOGO.UnitTest
         {
             //aranage
 
-            var logger = new Logger();
-            var registration = new UserManagement(logger, _usersDAO);
+            var registration = new UserManagement(_logger, _usersDAO);
 
             //act
             var time = Stopwatch.StartNew();
@@ -202,8 +201,7 @@ namespace AA.PMTOGO.UnitTest
         {
             //aranage
 
-            var logger = new Logger();
-            var account = new UserManagement(logger, _usersDAO);
+            var account = new UserManagement(_logger, _usersDAO);
 
             //act
             await account.CreateAccount("Delete@gmail.com", "randomstring", "John", "Doe", "Property Manager");

@@ -6,7 +6,13 @@ namespace AA.PMTOGO.Logging
 {
     public class Logger : ILogger
     {
-        LoggerDAO _loggerDAO = new LoggerDAO();
+        private readonly ILoggerDAO _loggerDAO;
+
+        public Logger(ILoggerDAO loggerDAO)
+        {
+            _loggerDAO = loggerDAO;
+        }
+
         public async Task Log(string requestName, byte logLevel, LogCategory logCategory, object result)
         {
 

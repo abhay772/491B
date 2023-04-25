@@ -32,9 +32,11 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IPropertyEvaluator, PropertyEvaluator>();
             services.AddTransient<IPropEvalManager, PropEvalManager>();
             services.AddTransient<ISqlPropEvalDAO, SqlPropEvalDAO>();
+            services.AddTransient<IUsageAnalysisDashboard, UsageAnalysisDashboard>();
             services.AddTransient<InputValidation>();
             services.AddTransient<ClaimValidation>();
 
+            services.AddTransient<ILoggerDAO, LoggerDAO>();
             services.AddTransient<IUsersDAO, UsersDAO>();
             services.AddScoped<IAppointmentManager, AppointmentManager>();
             services.AddScoped<IAppointmentService, AppointmentService>();
