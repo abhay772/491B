@@ -20,10 +20,7 @@ namespace AA.PMTOGO.Models.Entities
         public string ServiceProviderEmail { get; set; } = string.Empty;
         public string ServiceProviderName { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
-
-        public int Rating { get; set; } 
-        public int SPRating { get; set; }
-        public int PMRating { get; set; }
+        public int Rating { get; set; }
 
         public UserService() { }
 

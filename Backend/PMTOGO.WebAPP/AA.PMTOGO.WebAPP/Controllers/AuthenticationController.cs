@@ -10,7 +10,7 @@ using static System.Net.WebRequestMethods;
 using AA.PMTOGO.Managers.Interfaces;
 using Azure.Core;
 
-namespace AA.PMTOGO.WebAPP.Controllers;
+namespace AA.PMTOGO_v2.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -58,13 +58,13 @@ public class AuthenticationController : ControllerBase
                 string claims_jwt = CreateJWTToken(loginDTO.claims!);
 
                 SetCookieOptions(claims_jwt);
-                //new { message = "Login successful" } 
+                //new { message = "Login successful" } + 
                 return Ok(result.Payload!);
             }
             else
             {
 
-                return BadRequest(new { message ="Invalid Username or Password."});
+                return BadRequest(new { message = "Invalid username or password provided. Retry again or contact system admin" });
             }
         }
         catch (ArgumentException ex)

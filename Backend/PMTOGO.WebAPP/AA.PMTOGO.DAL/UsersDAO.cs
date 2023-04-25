@@ -18,7 +18,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT Username, PassDigest, Salt, IsActive, Attempts, Role FROM UserAccounts WHERE Username = @Username";
+            string sqlQuery = "SELECT * FROM UserAccounts WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -73,7 +73,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role FROM UserProfiles WHERE Username = @Username";
+            string sqlQuery = "SELECT * FROM UserProfile WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -127,7 +127,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT Email FROM UserProfiles WHERE Email = @Email";
+            string sqlQuery = "SELECT * FROM UserProfiles WHERE @Email = email";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -158,7 +158,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "DELETE FROM UserAccounts WHERE Username = @Username";
+            string sqlQuery = "DELETE FROM UserAccounts WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
@@ -201,7 +201,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "DELETE FROM UserProfiles WHERE Username = @Username";
+            string sqlQuery = "DELETE FROM UserProfiles WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
@@ -244,7 +244,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE Username = @Username";
+            string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE @Username = username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
@@ -394,7 +394,7 @@ public class UsersDAO
             connection.Open();
 
 
-            var command = new SqlCommand("SELECT Username, Attempts FROM UserAccounts WHERE Username = @Username", connection);
+            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
             command.Parameters.AddWithValue("@Username", username);
 
             var reader = await command.ExecuteReaderAsync();
@@ -434,16 +434,13 @@ public class UsersDAO
             connection.Open();
 
 
-            var command = new SqlCommand("SELECT Username, Attempts FROM UserAccounts WHERE Username = @Username", connection);
+            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
             command.Parameters.AddWithValue("@Username", username);
 
             var reader = await command.ExecuteReaderAsync();
 
-            int Attempt;
             reader.Read();
-            Attempt = (int)reader["Attempts"];
-            return Attempt;
-
+            return (int)reader["Attempts"];
         }
     }
 
@@ -454,7 +451,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE Username = @Username", connection);
+            var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
             command.Parameters.AddWithValue("@Username", username);
             await command.ExecuteNonQueryAsync();
 

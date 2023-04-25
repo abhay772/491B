@@ -23,7 +23,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT Id, ServiceProvider, ServiceProviderEmail, ServiceName, ServiceType, ServiceDescription, ServicePrice FROM Services";
+                string sqlQuery = "SELECT * FROM Services";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -34,8 +34,15 @@ namespace AA.PMTOGO.DAL
                         List<Object> listOfservice = new List<Object>();
                         while (reader.Read())
                         {
-                            Service service = new Service((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"], (string)reader["ServiceProvider"],
-                                (string)reader["ServiceProviderEmail"], (double)reader["ServicePrice"]);
+                            Service service = new Service();
+
+                            service.ServiceProvider = (string)reader["ServiceProvider"];
+                            service.ServiceProviderEmail = (string)reader["ServiceProviderEmail"];
+                            service.ServiceName = (string)reader["ServiceName"];
+                            service.ServiceType = (string)reader["ServiceType"];
+                            service.ServiceDescription = (string)reader["ServiceDescription"];
+
+
 
                             listOfservice.Add(service);
 
@@ -59,7 +66,7 @@ namespace AA.PMTOGO.DAL
         }
 
         //single service
-        public async Task<Result> FindService(Guid id)
+        public async Task<Result> FindService(string serviceName, string serviceProviderEmail, string serviceType)
         {
             var result = new Result();
 
@@ -67,24 +74,22 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT Id, ServiceProvider, ServiceProviderEmail, ServiceName, ServiceType, ServiceDescription, ServicePrice FROM Services WHERE Id = @ID";
+                string sqlQuery = "SELECT * FROM UserServices WHERE @ServiceProviderEmail = serviceProviderEmail AND @ServiceName = serviceName";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@ID", id);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceName", serviceName);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
                     while (reader.Read())
                     {
-                        if (id.Equals(reader["Id"]))
+                        if (serviceProviderEmail.Equals(reader["ServiceProviderEmail"]) && serviceName.Equals(reader["ServiceName"]) && serviceType.Equals(reader["ServiceType"]))
                         {
-                            Service service = new Service((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"], (string)reader["ServiceProvider"],
-                                (string)reader["ServiceProviderEmail"], (double)reader["ServicePrice"]);
 
                             result.IsSuccessful = true;
                             result.ErrorMessage = "Service already exists.";
-                            result.Payload = service;
                             return result;
 
                         }
@@ -100,23 +105,22 @@ namespace AA.PMTOGO.DAL
 
         //insert a service
 
-        public async Task<Result> AddService(Service service)
+        public async Task<Result> AddService(string serviceName, string serviceType, string serviceDescription,
+                string serviceProviderEmail, string serviceProvider)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Services VALUES(@Id, @ServiceProvider,@ServiceProviderEmail, @ServiceName, @ServiceType, @ServiceDescription, @ServicePrice)";
+                string sqlQuery = "INSERT into Services VALUES(@ServiceProvider,@ServiceProviderEmail, @ServiceName, @ServiceType, @ServiceDescription)";
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@Id", service.Id);
-                command.Parameters.AddWithValue("@ServiceProvider", service.ServiceProvider);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", service.ServiceProviderEmail);
-                command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
-                command.Parameters.AddWithValue("@ServiceType", service.ServiceType);
-                command.Parameters.AddWithValue("@ServiceDescription", service.ServiceDescription);
-                command.Parameters.AddWithValue("@ServicePrice", service.ServicePrice);
+                command.Parameters.AddWithValue("@ServiceProvider", serviceProvider);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", serviceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceName", serviceName);
+                command.Parameters.AddWithValue("@ServiceType", serviceType);
+                command.Parameters.AddWithValue("@ServiceDescription", serviceDescription);
 
 
                 try
@@ -150,46 +154,55 @@ namespace AA.PMTOGO.DAL
 
         //delete a service
 
-        public async Task<Result> DeleteService(Guid id)
+        public async Task<Result> DeleteService(string serviceName, string serviceType, string serviceProviderEmail)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                var command = new SqlCommand("DELETE FROM Services WHERE Id = @ID", connection);
+                var command = new SqlCommand("DELETE FROM Services WHERE ServiceName = @serviceName AND ServiceProviderEmail = @serviceProviderEmail", connection);
 
-                command.Parameters.AddWithValue("@ID", id);
+                command.Parameters.AddWithValue("@serviceName", serviceName);
+                command.Parameters.AddWithValue("@serviceProviderEmail", serviceProviderEmail);
 
-                try
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
                 {
-                    var rows = await command.ExecuteNonQueryAsync();
-
-                    if (rows == 1)
+                    while (reader.Read())
                     {
-                        result.IsSuccessful = true;
-                        return result;
-                    }
+                        if (serviceType.Equals(reader["ServiceType"]))
+                        {
+                            try
+                            {
+                                var rows = await command.ExecuteNonQueryAsync();
 
-                    else
-                    {
-                        result.IsSuccessful = false;
-                        result.ErrorMessage = "too many rows affected";
-                        return result;
-                    }
+                                if (rows == 1)
+                                {
+                                    result.IsSuccessful = true;
+                                    return result;
+                                }
 
+                                else
+                                {
+                                    result.IsSuccessful = false;
+                                    result.ErrorMessage = "too many rows affected";
+                                    return result;
+                                }
+
+                            }
+                            catch (SqlException e)
+                            {
+                                if (e.Number == 208)
+                                {
+                                    result.ErrorMessage = "Specified table not found";
+
+                                }
+                            }
+                        }
+                    }
                 }
-                catch (SqlException e)
-                {
-                    if (e.Number == 208)
-                    {
-                        result.ErrorMessage = "Specified table not found";
-
-                    }
-                }        
-                    
-                
             }
+
             result.IsSuccessful = false;
             return result;
         }
