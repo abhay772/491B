@@ -1,4 +1,6 @@
 ﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 
@@ -7,6 +9,19 @@ namespace AA.PMTOGO.IntergrationTest
     [TestClass]
     public class RequestManagementIntergrationTest // RequestDAO only test
     {
+        private readonly IUsersDAO _authNDAO;
+        private readonly ServiceRequestDAO _serviceDAO;
+        private readonly UserServiceDAO _userServiceDAO;
+        private readonly ILogger? _logger;
+
+        public RequestManagementIntergrationTest(IUsersDAO usersDAO, ServiceRequestDAO serviceDAO, UserServiceDAO userserviceDAO, ILogger logger)
+        {
+            _authNDAO = usersDAO;
+            _serviceDAO = serviceDAO;
+            _userServiceDAO = userserviceDAO;
+            _logger = logger;
+
+        }
         [TestMethod]
         public async Task GetServiceRequest()
         {
@@ -14,7 +29,7 @@ namespace AA.PMTOGO.IntergrationTest
             var dao = new ServiceRequestDAO();
             var service = new UserServiceDAO();
             Guid id = Guid.NewGuid();
-            ServiceRequest request = new ServiceRequest(id, "Get Service","Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
+            ServiceRequest request = new ServiceRequest(id, "Get Service", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
             await dao.AddServiceRequest(request);
 
@@ -37,17 +52,18 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task AcceptServiceRequest_Pass()
         {
             // Arrange
-            var dao = new ServiceRequestDAO();
-            var serviceRequest = new ServiceRequestManagement();
+
+            var serviceRequest = new ServiceRequestManagement(_serviceDAO,_userServiceDAO, _logger!);
+
             Guid id = Guid.NewGuid();
 
             ServiceRequest request = new ServiceRequest(id, "Accept Service", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
-            await dao.AddServiceRequest(request);
+            await _serviceDAO.AddServiceRequest(request);
 
             // Act
             await serviceRequest.AcceptRequest(id);
-            Result result = await dao.FindServiceRequest(id);
+            Result result = await _serviceDAO.FindServiceRequest(id);
             bool actual = result.IsSuccessful;
 
             //clean up
@@ -82,7 +98,7 @@ namespace AA.PMTOGO.IntergrationTest
             Assert.IsFalse(actual);
         }
 
-        
+
         [TestMethod]
         public async Task AddAUserService_Pass()
         {
@@ -93,7 +109,7 @@ namespace AA.PMTOGO.IntergrationTest
             Guid id = Guid.NewGuid();
 
             // Act
-            ServiceRequest service = new ServiceRequest(id,"Add Service", "Landscape", "material delivery", "soil installation ", "1x/month","random comment",
+            ServiceRequest service = new ServiceRequest(id, "Add Service", "Landscape", "material delivery", "soil installation ", "1x/month", "random comment",
                 "mssierra310@gmail.com", "Sara Jade", "sierra.harris01@student.csulb.edu", "Sierra Harris");
             await userService.AddUserService(service);
             Result result = await userService.FindUserService(id);
@@ -116,7 +132,7 @@ namespace AA.PMTOGO.IntergrationTest
         {
             //arrange
             var dao = new UserServiceDAO();
-            var request = new ServiceRequestManagement();
+            var request = new ServiceRequestManagement(_serviceDAO, _userServiceDAO, _logger!);
             Guid id = Guid.NewGuid();
 
             ServiceRequest userService = new ServiceRequest(id, "Frequency Example", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -146,7 +162,7 @@ namespace AA.PMTOGO.IntergrationTest
             //arrange
             var service = new ServiceRequestDAO();
             var dao = new UserServiceDAO();
-            var request = new ServiceRequestManagement();
+            var request = new ServiceRequestManagement(_serviceDAO, _userServiceDAO, _logger!);
             Guid id = Guid.NewGuid();
             ServiceRequest userService = new ServiceRequest(id, "Cancel Example", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");

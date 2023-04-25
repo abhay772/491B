@@ -1,5 +1,6 @@
 using AA.PMTOGO.DAL;
 using AA.PMTOGO.DAL.Interfaces;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 
@@ -9,11 +10,20 @@ namespace AA.PMTOGO.IntergrationTest
     public class ServiceManagementIntergrationTest
     {
         private IUsersDAO _usersDAO;
+        private readonly IUsersDAO _authNDAO;
+        private readonly ServiceDAO _serviceDAO;
+        private readonly UserServiceDAO _userServiceDAO;
+        private readonly ILogger? _logger;
 
-        public ServiceManagementIntergrationTest(IUsersDAO usersDAO)
+        public ServiceManagementIntergrationTest(IUsersDAO usersDAO, ServiceDAO serviceDAO, UserServiceDAO userServiceDAO, ILogger logger)
         {
             _usersDAO = usersDAO;
+            _authNDAO = usersDAO;
+            _serviceDAO = serviceDAO;
+            _userServiceDAO = userServiceDAO;
+            _logger = logger;
         }
+
 
         [TestMethod]
         public async Task AddAService_PASS()
@@ -160,7 +170,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateAUserServicePM_PASS()
         {
             //arrange
-            var service = new UserServiceManagement(_usersDAO);
+            var userserviceM = new UserServiceManagement(_usersDAO);
             var dao = new UserServiceDAO();
 
             Guid id = Guid.NewGuid();
@@ -171,7 +181,7 @@ namespace AA.PMTOGO.IntergrationTest
             string query = "SELECT PMRating FROM UserServices WHERE Id = @ID";
 
             //act
-            await service.Rate(id, 4, role);
+            await userserviceM.Rate(id, 4, role);
             Result result = await dao.CheckRating(id, 4, query, "PMRating");
             bool actual = result.IsSuccessful;
 
