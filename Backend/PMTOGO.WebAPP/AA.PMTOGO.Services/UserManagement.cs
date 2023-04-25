@@ -177,7 +177,9 @@ namespace AA.PMTOGO.Services
 
             var message = new MailMessage(companyEmail, userEmail, emailSubject, emailBody);
 
-            // delete
+            return false;
+
+           /* // delete
             Console.WriteLine(otp);
             await _authNDAO.SaveOTP(userEmail, otp);
             return true;
@@ -192,7 +194,7 @@ namespace AA.PMTOGO.Services
             {
                 Console.WriteLine("Error sending email");
             }
-            return false;
+            return false;*/
             
         }
     }

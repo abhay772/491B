@@ -52,7 +52,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         return BadRequest(new { message = "Retry again or contact system admin." });
                     }
                 }
-                catch (Exception e)
+                catch 
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
@@ -115,7 +115,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                     }
                 }
-                catch (Exception e)
+                catch 
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }

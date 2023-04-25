@@ -20,10 +20,10 @@ namespace AA.PMTOGO.IntergrationTest
         {
             _logger = logger;
         }
-        [TestMethod]
+        /*[TestMethod]
         public async Task GetData_PASS()
         {
-          /*  //arrange
+           //arrange
 
 
             //act
@@ -33,9 +33,9 @@ namespace AA.PMTOGO.IntergrationTest
             bool actual = result.IsSuccessful;
 
             Assert.IsNotNull(result);
-            Assert.IsTrue(actual);*/
+            Assert.IsTrue(actual);
 
 
-        }
+        }*/
     }
 }

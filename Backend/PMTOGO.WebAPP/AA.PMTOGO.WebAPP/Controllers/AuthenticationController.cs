@@ -69,7 +69,6 @@ public class AuthenticationController : ControllerBase
         }
         catch (ArgumentException ex)
         {
-
             return BadRequest(new { message = "Already logged in." });
         }
         catch

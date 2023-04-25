@@ -23,7 +23,7 @@ namespace AA.PMTOGO.Models.Entities
         public DateTime OTPTimestamp { get; set; }
         public bool RecoveryRequest { get; set; }
 
-        public virtual List<Appointment> Appointments { get; set; }
+        public virtual List<Appointment>? Appointments { get; set; }
 
         public User()
         {

@@ -26,7 +26,7 @@ namespace AA.PMTOGO.UnitTest
             var expected = typeof(ServiceRequestManagement);
 
             // Act
-            var actual = new ServiceRequestManagement(_logger);
+            var actual = new ServiceRequestManagement(_logger!);
 
             // Assert
             Assert.IsNotNull(actual);

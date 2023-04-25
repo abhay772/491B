@@ -246,7 +246,7 @@ namespace AA.PMTOGO.DAL
                 }
             }
 
-            return null;
+            return null!;
         }
     }
 }
