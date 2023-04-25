@@ -13,7 +13,12 @@ namespace AA.PMTOGO.Services
     {
         ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
         UserServiceDAO _serviceDAO= new UserServiceDAO();
-        Logger _logger = new Logger();
+        private readonly ILogger _logger;
+
+        public ServiceRequestManagement(ILogger logger)
+        {
+            _logger = logger;
+        }
 
         public async Task<Result> AcceptRequest(Guid requestId)
         {

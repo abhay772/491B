@@ -23,8 +23,8 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Logs VALUES(@logId, @timestamp, @logLevel, @operation, @logCategory, @message)";
-                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
+                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Timestamp, @LogLevel, @Operation, @LogCategory, @Message)";
+                //string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 
