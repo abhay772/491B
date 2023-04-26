@@ -7,13 +7,14 @@ namespace AA.PMTOGO.DAL;
 public class UsersDAO : IUsersDAO
 {
     private readonly string _connectionString;
-    //private readonly ILogger? _logger;
     //logging
 
     public UsersDAO(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
     }
+
+    //private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True";
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)
@@ -24,7 +25,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserAccounts WHERE @Username = username";
+            string sqlQuery = "SELECT Username, PassDigest, Salt, IsActive, Attempts, Role FROM UserAccounts WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -64,19 +65,13 @@ public class UsersDAO : IUsersDAO
                     result.IsSuccessful = false;
 
                 }
-                finally
-                {
-                    reader.Close();
-                }
             }
-
-            connection.Close();
         }
         result.IsSuccessful = false;
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
-    
+
     public async Task<Result> GetUser(string username)
     {
         Result result = new Result();
@@ -85,7 +80,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserProfiles WHERE @Username = username";
+            string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role FROM UserProfiles WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -125,13 +120,7 @@ public class UsersDAO : IUsersDAO
                     result.IsSuccessful = false;
 
                 }
-                finally
-                {
-                    reader.Close();
-                }
             }
-
-            connection.Close();
         }
         result.IsSuccessful = false;
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
@@ -145,7 +134,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserProfiles WHERE @Email = email";
+            string sqlQuery = "SELECT Email FROM UserProfiles WHERE Email = @Email";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -162,11 +151,8 @@ public class UsersDAO : IUsersDAO
                         return result;
                     }
                 }
-
-                reader.Close();
             }
 
-            connection.Close();
             result.IsSuccessful = false;
             return result;
         }
@@ -179,7 +165,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "DELETE FROM UserAccounts WHERE @Username = username";
+            string sqlQuery = "DELETE FROM UserAccounts WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
@@ -207,10 +193,6 @@ public class UsersDAO : IUsersDAO
                 {
                     result.ErrorMessage = "Specified table not found";
                 }
-            }
-            finally
-            {
-                connection.Close();
             }
 
         }
@@ -226,7 +208,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "DELETE FROM UserProfiles WHERE @Username = username";
+            string sqlQuery = "DELETE FROM UserProfiles WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
@@ -255,8 +237,7 @@ public class UsersDAO : IUsersDAO
                     result.ErrorMessage = "Specified table not found";
                 }
             }
-            
-            connection.Close();
+
         }
 
         result.IsSuccessful = false;
@@ -270,7 +251,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE @Username = username";
+            string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
@@ -302,7 +283,6 @@ public class UsersDAO : IUsersDAO
                 }
             }
 
-            connection.Close();
         }
 
         result.IsSuccessful = false;
@@ -320,16 +300,16 @@ public class UsersDAO : IUsersDAO
             string sqlQuery = "INSERT into UserAccounts VALUES(@Username, @Role, @PassDigest, @Salt, @IsActive, @Attempts, @Timestamp, @OTP, @OTPTimestamp, @RecoveryRequest)";
 
             var command = new SqlCommand(sqlQuery, connection);
-            var now = DateTime.Now;
+
             command.Parameters.AddWithValue("@Username", username);
             command.Parameters.AddWithValue("@Role", role);
             command.Parameters.AddWithValue("@PassDigest", passDigest);
             command.Parameters.AddWithValue("@Salt", salt);
             command.Parameters.AddWithValue("@IsActive", 1);
             command.Parameters.AddWithValue("@Attempts", 0);
-            command.Parameters.AddWithValue("@Timestamp", now);
+            command.Parameters.AddWithValue("@Timestamp", DateTime.Now);
             command.Parameters.AddWithValue("@OTP", "Null");
-            command.Parameters.AddWithValue("@OTPTimestamp", now);
+            command.Parameters.AddWithValue("@OTPTimestamp", DateTime.Now);
             command.Parameters.AddWithValue("@RecoveryRequest", 0);
 
             try
@@ -358,7 +338,6 @@ public class UsersDAO : IUsersDAO
                 }
             }
 
-            connection.Close();
         }
 
         result.IsSuccessful = false;
@@ -408,7 +387,7 @@ public class UsersDAO : IUsersDAO
                     result.ErrorMessage = "Specified table not found";
                 }
             }
-            connection.Close();
+
         }
 
         result.IsSuccessful = false;
@@ -422,7 +401,7 @@ public class UsersDAO : IUsersDAO
             connection.Open();
 
 
-            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            var command = new SqlCommand("SELECT Username, Attempts FROM UserAccounts WHERE Username = @Username", connection);
             command.Parameters.AddWithValue("@Username", username);
 
             var reader = await command.ExecuteReaderAsync();
@@ -451,7 +430,7 @@ public class UsersDAO : IUsersDAO
                 //TODO: log username, Ip, timestamp to database
             }
             reader.Close();
-            connection.Close();
+
         }
     }
 
@@ -462,18 +441,16 @@ public class UsersDAO : IUsersDAO
             connection.Open();
 
 
-            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            var command = new SqlCommand("SELECT Username, Attempts FROM UserAccounts WHERE Username = @Username", connection);
             command.Parameters.AddWithValue("@Username", username);
 
             var reader = await command.ExecuteReaderAsync();
 
+            int Attempt;
             reader.Read();
-            var attemps = (int)reader["Attempts"];
+            Attempt = (int)reader["Attempts"];
+            return Attempt;
 
-            reader.Close();
-            connection.Close();
-
-            return attemps;
         }
     }
 
@@ -484,11 +461,10 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-            var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
+            var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE Username = @Username", connection);
             command.Parameters.AddWithValue("@Username", username);
             await command.ExecuteNonQueryAsync();
 
-            connection.Close();
         }
     }
 
@@ -541,13 +517,7 @@ public class UsersDAO : IUsersDAO
                     //_logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                 }
-                finally
-                {
-                    reader.Close();
-                }
             }
-
-            connection.Close();
         }
         result.IsSuccessful = false;
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
@@ -574,9 +544,9 @@ public class UsersDAO : IUsersDAO
                     if ((DateTime.Now - otpTimestamp).TotalHours <= 24)
                     {
                         // Update the RecoveryRequest column to 1 if OTP validation is successful
-                       // command = new SqlCommand("UPDATE UserAccounts SET RecoveryRequest = 1 WHERE username = @Username", connection);
+                        // command = new SqlCommand("UPDATE UserAccounts SET RecoveryRequest = 1 WHERE username = @Username", connection);
                         //command.ExecuteNonQuery();
-                        
+
                         result.IsSuccessful = true;
                     }
                     else
@@ -593,7 +563,6 @@ public class UsersDAO : IUsersDAO
             }
 
             reader.Close();
-            connection.Close();
         }
         return result;
     }
@@ -620,8 +589,6 @@ public class UsersDAO : IUsersDAO
             {
                 result.IsSuccessful = true;
             }
-
-            connection.Close();
         }
         return result;
     }
@@ -649,8 +616,6 @@ public class UsersDAO : IUsersDAO
             {
                 result.IsSuccessful = true;
             }
-
-            connection.Close();
         }
         return result;
     }

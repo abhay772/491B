@@ -58,7 +58,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }
-            return BadRequest("Cookie not found");
+            return BadRequest("Invalid Credentials");
         }
 
         [HttpGet]
@@ -112,7 +112,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     }
                     else
                     {
-
                         return BadRequest(insert.ErrorMessage);
                     }
                 }

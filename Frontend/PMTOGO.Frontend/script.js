@@ -53,7 +53,7 @@ function loadLoginPage() {
           if (response.ok) {
             response.json().then(data => {
               userrole=`${data.claims[1].value}`;
-              loadHomePage(`${data.claims[1].value}`);
+              loadHomePage(userrole);
             })
           }
         })
@@ -374,11 +374,13 @@ function loadHomePage(userrole, username) {
         // update content div with property evaluation page html
       content.innerHTML = data;
 
+      const userinfo = document.getElementById("userrole");
+      userinfo.innerHTML = userrole;
+
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
 
-      const userinfo = document.getElementById("userrole");
-      userinfo.innerHTML = userrole;
+      loadServices(userrole);
       //select log out
       const logoutUser = document.getElementById("logout");
 
@@ -433,6 +435,7 @@ function loadHomePage(userrole, username) {
         propertyEvalFeature.addEventListener('click', () => {
             loadPropertyEvalPage(homepageContent);
         });
+
     })
     .catch(error => console.log(error));
 }
@@ -577,8 +580,6 @@ function extractData(fieldset){
   console.log(data)
   return data;
 }
-
-
 
 function loadEmailPage(homepageContent){
   fetch('./Views/Email.html')

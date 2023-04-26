@@ -3,7 +3,7 @@ using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
-
+using Microsoft.Extensions.Configuration;
 
 namespace AA.PMTOGO.UnitTest
 {
@@ -12,12 +12,20 @@ namespace AA.PMTOGO.UnitTest
     public class ServiceManagementUnitTest
     {
         private IUsersDAO _usersDAO;
+        private readonly IServiceDAO _serviceDAO;
+        private readonly IUserServiceDAO _userServiceDAO;
+        private readonly IServiceRequestDAO _serviceRequestDAO;
         private readonly ILogger? _logger;
-
-        public ServiceManagementUnitTest(IUsersDAO usersDAO, ILogger? logger)
+        private readonly string _connectionString;
+        private readonly IConfiguration? _configuration;
+        public ServiceManagementUnitTest(IUsersDAO usersDAO, IServiceDAO serviceDAO, IServiceRequestDAO servicerequestDAO, IUserServiceDAO userServiceDAO, ILogger logger, IConfiguration _configuration)
         {
             _usersDAO = usersDAO;
+            _serviceDAO = serviceDAO;
+            _serviceRequestDAO = servicerequestDAO;
+            _userServiceDAO = userServiceDAO;
             _logger = logger;
+            _connectionString = _configuration!.GetConnectionString("ServiceDbConnectionString")!;
         }
 
         [TestMethod]
@@ -28,7 +36,7 @@ namespace AA.PMTOGO.UnitTest
             var expected = typeof(UserServiceManagement);
 
             // Act
-            var actual = new UserServiceManagement(_usersDAO, _logger!);
+            var actual = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
 
             // Assert
             Assert.IsNotNull(actual);

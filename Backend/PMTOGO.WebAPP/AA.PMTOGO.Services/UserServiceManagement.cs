@@ -11,16 +11,17 @@ namespace AA.PMTOGO.Services
     public class UserServiceManagement : IUserServiceManagement
     {
         private readonly IUsersDAO _authNDAO;
-        private readonly ServiceDAO _serviceDAO;
-        private readonly UserServiceDAO _userServiceDAO;
+        private readonly IServiceDAO _serviceDAO;
+        private readonly IUserServiceDAO _userServiceDAO;
+        private readonly IServiceRequestDAO _serviceRequestDAO;
         private readonly ILogger? _logger;
 
-        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
-        public UserServiceManagement(IUsersDAO usersDAO, ILogger logger)
+        public UserServiceManagement(IUsersDAO usersDAO, IServiceDAO serviceDAO, IUserServiceDAO userserviceDAO, IServiceRequestDAO servicerequestDAO, ILogger logger)
         {
             _authNDAO = usersDAO;
-            _serviceDAO = new ServiceDAO();
-            _userServiceDAO = new UserServiceDAO();
+            _serviceDAO = serviceDAO;
+            _serviceRequestDAO = servicerequestDAO;
+            _userServiceDAO = userserviceDAO;
             _logger = logger;
         }
 
@@ -92,7 +93,7 @@ namespace AA.PMTOGO.Services
                 ServiceRequest request = new ServiceRequest(serviceRequestId, "New Service", service.ServiceName, service.ServiceType, service.ServiceDescription, frequency, comments, service.ServiceProviderEmail, service.ServiceProvider,
                     username, propertyManagerName);
 
-                result = await _requestDAO.AddServiceRequest(request);
+                result = await _serviceRequestDAO.AddServiceRequest(request);
                 await _logger!.Log("Add Request", 4, LogCategory.Business, result);
                 return result;
             }
@@ -255,7 +256,7 @@ namespace AA.PMTOGO.Services
 
             
                 //add to service providers request
-                result = await _requestDAO.AddServiceRequest(request);
+                result = await _serviceRequestDAO.AddServiceRequest(request);
 
                 //if request successful change user service status to pending
                 if (result.IsSuccessful) { 
@@ -283,7 +284,7 @@ namespace AA.PMTOGO.Services
                 Result findRequest = await CreateRequest(id, type, frequency);
                 ServiceRequest request = (ServiceRequest)findRequest.Payload!;
 
-                result = await _requestDAO.AddServiceRequest(request);
+                result = await _serviceRequestDAO.AddServiceRequest(request);
 
                 //if request successful change user service status to pending
                 if (result.IsSuccessful) { 
