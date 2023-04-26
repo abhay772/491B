@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="1"
+            failures="1"
+            tests="1">
+
+  <testsuite name="with-page-objects.google"
+    errors="1" failures="1" hostname="" id="" package="with-page-objects" skipped="0"
+    tests="1" time="6.702" timestamp="">
+  
+    <testcase name="should find nightwatch.js in results" classname="with-page-objects.google" time="6.702" assertions="1">  <failure message="Timed out while waiting for element &lt;input[value=&#34;Google Search&#34;]&gt; to be visible for 1000 milliseconds. - expected &#34;visible&#34; but got: &#34;not visible&#34; (1223ms)">    at Page.submit (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\nightwatch\page-objects\google\search.js:17:10)
+    at DescribeInstance.&lt;anonymous&gt; (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\nightwatch\examples\with-page-objects\google.js:20:14)</failure>
+
+    
+    <error message="Timed out while waiting for element &lt;input[value=&#34;Google Search&#34;]&gt; to be visible for 1000 milliseconds. - expected [0;32m&#34;visible&#34;[0m but got: [0;31m&#34;not visible&#34;[0m [0;90m(1223ms)[0m" type="error"><![CDATA[
+    Error
+    at Command.executeCommand (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\node_modules\nightwatch\lib\page-object\command-wrapper.js:246:22)
+    at Page.waitForElementVisible (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\node_modules\nightwatch\lib\page-object\command-wrapper.js:80:27)
+    at Page.submit (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\nightwatch\page-objects\google\search.js:17:10)
+    at DescribeInstance.&lt;anonymous&gt; (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\nightwatch\examples\with-page-objects\google.js:20:14)
+    at Context.call (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\node_modules\nightwatch\lib\testsuite\context.js:478:35)
+    at TestCase.run (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\node_modules\nightwatch\lib\testsuite\testcase.js:58:31)
+    at Runnable.__runFn (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\node_modules\nightwatch\lib\testsuite\index.js:759:80)
+    at Runnable.run (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\node_modules\nightwatch\lib\testsuite\runnable.js:126:21)
+    at TestSuite.executeRunnable (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\node_modules\nightwatch\lib\testsuite\index.js:912:49)
+    at TestSuite.handleRunnable (C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\node_modules\nightwatch\lib\testsuite\index.js:927:33)
+    ]]></error>
+    
+    </testcase>
+  
+
+  
+    <system-err>
+       NoSuchElementError
+   An element could not be located on the page using the given search parameters.
+
+    Try fixing by :
+    1. Please inspect the html before the step
+    2. Verify if an element with the mentioned selector is present in the DOM tree
+
+    Error location:
+    C:\Users\mssie_fu6p4ih\491B\Frontend\nightwatch_tests\nightwatch\examples\with-page-objects\google.js:
+    –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+     17 | 
+     18 |   it(&#39;should find nightwatch.js in results&#39;, function(browser) {
+     19 |     homePage.setValue(&#39;@searchBar&#39;, &#39;Nightwatch.js&#39;); 
+     20 |     homePage.submit();
+     21 | 
+    –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+    </system-err>
+  
+
+    
+
+  
+  </testsuite>
+</testsuites>
