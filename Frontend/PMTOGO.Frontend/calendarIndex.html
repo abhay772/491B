@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>PMTOGO</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico.png">
+
+    </head>
+
+    <body>
+        <div id="signup" class="window">
+            <form class="window-content" id="register-form" name="register">
+                <div class="container">
+                    <h1>Sign Up</h1>
+                    <p>Please fill out this form to create an account.</p>
+                    <hr>
+                    <label for="first"><b>First Name</b></label>
+                    <input type="text" id="firstName" placeholder="Enter First Name" name="firstName" required>
+            
+                    <label for="last"><b>Last Name</b></label>
+                    <input type="text" id="lastName" placeholder="Enter Last Name" name="lastname" required>
+            
+                    <label for="age"><b>Birthday</b></label>
+                    <input type="text" id="bday" placeholder="Enter Birthday" name="age" required>
+            
+                    <label for="email"><b>Email</b></label>
+                    <input type="text" id="email" placeholder="Enter Email" name="email" required>
+            
+                    <h4>Choose an account type</h4>
+            
+                    <label>
+                    <input type="checkbox" name="SP" id="SP" style="margin-bottom:15px"> Service Provider</label>
+            
+                    <label>
+                    <input type="checkbox" name="PM" id="PM" style="margin-bottom:15px"> Property Manager</label><br>
+            
+                    <label for="pass"><b>Password</b></label>
+                    <input type="password" id="pass" placeholder="Enter Password" name="pass" required>
+            
+                    <label for="repeatpass"><b>Repeat Password</b></label>
+                    <input type="password" id="repass" placeholder="Repeat Password" name="repeatpass" required>
+            
+                    <div class="clearfix">
+                        <button type="button" class="cancelbtn"
+                            id="cancel">Cancel</button>
+                        <button type="submit" class="submit" id="register">Register</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="loginpage" class="window">
+            <form class="window-content" id="login-form" name="login">
+                <div class="container">
+                    <h1>Login</h1>
+                    <p>Please enter your login credentials</p>
+                    <hr>
+                    <label for="email"><b>Email</b></label>
+                    <input type="text" id="logemail" placeholder="Enter Email" name="email" required>
+            
+                    <label for="password"><b>Password</b></label>
+                    <input type="password" id="logpassword" placeholder="Enter Password" name="password" required>
+            
+                    <div class="clearfix">
+                        <button type="button" id="forgotPass" class="forgetbtn">Forgot Password?</button>
+                        <button type="submit" class="loginbtn">Log In</button>
+                        <button type="button" id="register-link" class="registrationbtn">Sign Up</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <script>
+            const url = "https://localhost:7135";
+
+            const registerForm = document.getElementById('register-form');
+            
+            registerForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                // perform registration action
+                const email = document.querySelector('#email').value;
+                const password = document.querySelector('#pass').value;
+                const firstName = document.querySelector('#firstName').value;
+                const lastName = document.querySelector('#lastName').value; 
+                const role = "role";
+        
+                data = {email: email, firstName: firstName, lastName: lastName, password: password, role: role}
+
+                const response = fetch(url + "/api/UserManagement/register", {
+                    method: "POST",
+                    redirect: "follow",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                });
+            });
+            
+            const loginForm = document.getElementById('login-form');
+
+            // add event listener to login form submit
+            loginForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
+                // perform login
+                const username = document.querySelector('#logemail').value;
+                const password = document.querySelector('#logpassword').value;
+
+                data = {username: username, password: password}
+                console.log(data)
+                const response = fetch(url + "/api/Authentication/Login", {
+                    method: "POST",
+                    redirect: "follow",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                });
+            });
+        </script>
+    </body>
+</html>
