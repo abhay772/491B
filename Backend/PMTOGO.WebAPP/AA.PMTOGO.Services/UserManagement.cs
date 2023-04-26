@@ -7,42 +7,16 @@ using System.Net.Mail;
 using System.Net;
 using AA.PMTOGO.Services.Interfaces;
 using AA.PMTOGO.Logging;
-using AA.PMTOGO.DAL.Interfaces;
 
 namespace AA.PMTOGO.Services
 {
     //input validation, error handling , logging
     public class UserManagement : IUserManagement
     {
-        IUsersDAO _authNDAO;
+        UsersDAO _authNDAO = new UsersDAO();
         InputValidation valid = new InputValidation();
-        private readonly ILogger _logger;
+        Logger _logger = new Logger();
 
-        public UserManagement(ILogger logger, IUsersDAO usersDAO)
-        {
-            _logger = logger;
-            _authNDAO = usersDAO;
-        }
-
-        public async Task<User?> GetUser(string username)
-        {
-            Result result = new();
-
-            if (valid.ValidateEmail(username).IsSuccessful)
-            {
-                Result origin = await _authNDAO.FindUser(username);
-
-                if (origin.IsSuccessful)
-                {
-                    return origin.Payload as User;
-                }
-                else return null;
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         //byte[] to string
         public async Task<Result> CreateAccount(string email,string password, string firstname, string lastname, string role)
@@ -146,11 +120,11 @@ namespace AA.PMTOGO.Services
         public async Task<Result> AccountRecovery(string email)
         {
             Result result = new Result();
-            result = await _authNDAO.FindUser(email);
+            result = _authNDAO.FindUser(email).Result;
             
             if (result.IsSuccessful) 
             {
-                await EmailOTP(email);
+                EmailOTP(email);
             }
             return result;
         }
@@ -177,9 +151,7 @@ namespace AA.PMTOGO.Services
 
             var message = new MailMessage(companyEmail, userEmail, emailSubject, emailBody);
 
-            return false;
-
-           /* // delete
+            // delete
             Console.WriteLine(otp);
             await _authNDAO.SaveOTP(userEmail, otp);
             return true;
@@ -194,7 +166,7 @@ namespace AA.PMTOGO.Services
             {
                 Console.WriteLine("Error sending email");
             }
-            return false;*/
+            return false;
             
         }
     }

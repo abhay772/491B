@@ -1,6 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AA.PMTOGO.DAL;
+using Microsoft.EntityFrameworkCore;
 
-namespace AA.PMTOGO.Infrastructure.Data
+namespace AA.PMTOGO.WebAPP.Data
 {
     public class ServiceDbContext:DbContext
     {
@@ -8,6 +9,6 @@ namespace AA.PMTOGO.Infrastructure.Data
         {
 
         }
-        //public DbSet<RequestDAO> Request { get; set; }
+        public DbSet<ServiceRequestDAO> Request { get; set; }
     }
 }

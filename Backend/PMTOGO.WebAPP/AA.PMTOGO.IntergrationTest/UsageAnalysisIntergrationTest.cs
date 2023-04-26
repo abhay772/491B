@@ -1,6 +1,4 @@
 ﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.DAL.Interfaces;
-using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,22 +11,15 @@ namespace AA.PMTOGO.IntergrationTest
     [TestClass]
     public class UsageAnalysisIntergrationTest
     {
-
-        private readonly ILogger? _logger;
-
-        public UsageAnalysisIntergrationTest( ILogger? logger)
-        {
-            _logger = logger;
-        }
-        /*[TestMethod]
+        [TestMethod]
         public async Task GetData_PASS()
         {
-           //arrange
-
+            //arrange
+            var dao = new LoggerDAO();
 
             //act
 
-            Result result = await _logger.GetAnalysisLogs("Authenticate");
+            Result result = await dao.GetAnalysisLogs("Authenticate");
             Console.WriteLine(result.Payload);
             bool actual = result.IsSuccessful;
 
@@ -36,6 +27,6 @@ namespace AA.PMTOGO.IntergrationTest
             Assert.IsTrue(actual);
 
 
-        }*/
+        }
     }
 }

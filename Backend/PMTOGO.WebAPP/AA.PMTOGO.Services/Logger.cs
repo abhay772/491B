@@ -6,16 +6,10 @@ namespace AA.PMTOGO.Logging
 {
     public class Logger : ILogger
     {
-        private readonly ILoggerDAO _loggerDAO;
-
-        public Logger(ILoggerDAO loggerDAO)
-        {
-            _loggerDAO = loggerDAO;
-        }
-
+        LoggerDAO _loggerDAO = new LoggerDAO();
         public async Task Log(string requestName, byte logLevel, LogCategory logCategory, object result)
         {
-
+/*
             Log log = new()     //create logEntry
             {
                 LogLevel = logLevel,
@@ -26,7 +20,19 @@ namespace AA.PMTOGO.Logging
             };
 
             await _loggerDAO.InsertLog(log);
+*/
 
+            /*var filePath = string.Format("Logs/{0}.csv", log.LogId);
+            using var writer = new StreamWriter(new FileStream(filePath, FileMode.CreateNew, FileAccess.Write));
+            var logObjectProperties = typeof(Log).GetProperties();
+
+            //write to the filestream
+            await writer.WriteLineAsync("sep=,");
+            await writer.WriteLineAsync(string.Join(", ", logObjectProperties.Select(x => x.Name)));
+            await writer.WriteLineAsync(string.Join(", ", logObjectProperties.Select(x => x.GetValue(log, null))));
+
+            //set the new log file as ReadOnly
+            File.SetAttributes(filePath, FileAttributes.ReadOnly);*/
         }
     }
 }

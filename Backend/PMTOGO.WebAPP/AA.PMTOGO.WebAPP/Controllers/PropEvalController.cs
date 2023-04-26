@@ -198,7 +198,7 @@ public class PropEvalController : ControllerBase
                             return Ok("00000.00");
                         }
 
-                        string evalPrice = result.Payload!.ToString()!;
+                        string evalPrice = result.Payload.ToString();
 
                         if (result.IsSuccessful)
                         {

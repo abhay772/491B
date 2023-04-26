@@ -7,13 +7,7 @@ namespace AA.PMTOGO.Services
     //input validation, error handling , logging
     public class UsageAnalysisDashboard : IUsageAnalysisDashboard
     {
-        private readonly ILoggerDAO _logger;
-
-        public UsageAnalysisDashboard(ILoggerDAO loggerDAO)
-        {
-            _logger = loggerDAO;
-        }
-
+        LoggerDAO _logger = new LoggerDAO();
         public async Task<Result> GenerateAnalysis()
         {
             Result analysis = new Result();

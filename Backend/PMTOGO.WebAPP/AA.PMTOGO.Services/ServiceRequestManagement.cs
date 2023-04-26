@@ -1,5 +1,4 @@
 ﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
@@ -12,16 +11,9 @@ namespace AA.PMTOGO.Services
     //input validation, logging
     public class ServiceRequestManagement : IServiceRequestManagement
     {
-        private readonly IServiceRequestDAO _requestDAO;
-        private readonly IUserServiceDAO _serviceDAO;
-        private readonly ILogger? _logger;
-        public ServiceRequestManagement(ILogger logger, IServiceRequestDAO serviceRequestDAO, IUserServiceDAO userserviceDAO)
-        {
-            _requestDAO = serviceRequestDAO;
-            _serviceDAO = userserviceDAO;
-            _logger = logger;
-
-        }
+        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
+        UserServiceDAO _serviceDAO= new UserServiceDAO();
+        Logger _logger = new Logger();
 
         public async Task<Result> AcceptRequest(Guid requestId)
         {

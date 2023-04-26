@@ -7,7 +7,7 @@ namespace AA.PMTOGO.Services
 {
     public class DIYService : IDIYService
     {
-        private readonly DIYDAO? _diyDao;
+        private readonly DIYDAO _diyDao;
         public async Task<bool> UploadVideo(string email, string name, IFormFile videoFile)
         {
             // Convert IFormFile to byte[]
@@ -21,7 +21,7 @@ namespace AA.PMTOGO.Services
                 }
             }
 
-            return await _diyDao!.UploadVideo(email, name, videoBytes);
+            return await _diyDao.UploadVideo(email, name, videoBytes);
         }
         public List<DIYObject> SearchDIY(string name)
         {

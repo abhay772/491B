@@ -74,15 +74,8 @@ button {
   font-weight: bold;
   width: 60%;
 }
-.fchange-link{
-  background-color: #0d49c9;
-  padding: 14px 20px;
-  left: 0;
-  margin: 8px 0;
-  width: 100%;
-}
 
-.loginbtn, .submit, .rate-link, .servicerequest-link{
+.loginbtn, .submit{
   background-color: #04AA6D;
   padding: 14px 20px;
   left: 0;
@@ -116,7 +109,7 @@ button:hover {
 }
 
 /* Extra styles for the cancel button */
-.cancelbtn, .cancel-link{
+.cancelbtn {
   margin: 8px 0; 
   padding: 14px 20px;
   border: none;
@@ -417,6 +410,7 @@ table {
   border-radius: 5px;
   cursor: pointer;
 }
+
 
 /* Hover style for the Evaluate Property button */
 #evaluate-btn:hover {

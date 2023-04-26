@@ -1,7 +1,7 @@
+using AA.PMTOGO.WebAPP.Data;
 using AA.PMTOGO.Infrastructure;
-using AA.PMTOGO.Infrastructure.Data;
-using AA.PMTOGO.Infrastructure.NewFolder;
 using Microsoft.EntityFrameworkCore;
+using AA.PMTOGO.Infrastructure.NewFolder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,14 +14,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure();
 
-builder.Services.AddDbContext<UsersDbContext>(options => 
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("UsersDbConnectionString"),
-        b => b.MigrationsAssembly("AA.PMTOGO.WebAPP")
-    )
-);
+builder.Services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDbConnectionString")));
 builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceDbConnectionString")));
-
 
 var app = builder.Build();
 

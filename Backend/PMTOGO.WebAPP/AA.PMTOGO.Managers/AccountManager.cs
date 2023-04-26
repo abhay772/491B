@@ -1,6 +1,4 @@
 using AA.PMTOGO.DAL;
-using AA.PMTOGO.DAL.Interfaces;
-using AA.PMTOGO.Infrastructure.Interfaces;
 ﻿using AA.PMTOGO.Logging;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
@@ -15,13 +13,11 @@ namespace AA.PMTOGO.Managers
     {
         private readonly IUserManagement _account;
         private readonly ILogger? _logger;
-        private readonly IUsersDAO _usersDAO;
 
-        public AccountManager(IUserManagement account, ILogger logger, IUsersDAO usersDAO)
+        public AccountManager(IUserManagement account, ILogger logger)
         {
             _account = account;
             _logger = logger;
-            _usersDAO = usersDAO;
         }
 
         public async Task<Result> RegisterUser(string email, string password, string firstname, string lastname, string role)
@@ -89,14 +85,16 @@ namespace AA.PMTOGO.Managers
 
         public async Task<Result> OTPValidation(string username, string otp)
         {
-            Result result = await _usersDAO.ValidateOTP(username, otp);
+            var dao = new UsersDAO();
+            Result result = await dao.ValidateOTP(username, otp);
             return result;
         }
         public async Task<Result> UpdatePassword(string username, string password)
         {
+            var dao = new UsersDAO();
             string salt = _account.GenerateSalt();
             string passDigest = _account.EncryptPassword(password, salt);
-            Result result = await _usersDAO.UpdatePassword(username, passDigest, salt);
+            Result result = await dao.UpdatePassword(username, passDigest, salt);
             return result;
         }
     }

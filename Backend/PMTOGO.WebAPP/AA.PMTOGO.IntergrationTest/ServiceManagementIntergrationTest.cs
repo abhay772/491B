@@ -1,38 +1,17 @@
 using AA.PMTOGO.DAL;
-using AA.PMTOGO.DAL.Interfaces;
-using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
-using Microsoft.Extensions.Configuration;
 
 namespace AA.PMTOGO.IntergrationTest
 {
     [TestClass]
     public class ServiceManagementIntergrationTest
     {
-        private IUsersDAO _usersDAO;
-        private readonly IServiceDAO _serviceDAO;
-        private readonly IUserServiceDAO _userServiceDAO;
-        private readonly IServiceRequestDAO _serviceRequestDAO;
-        private readonly ILogger? _logger;
-        private readonly string _connectionString;
-        private readonly IConfiguration? _configuration;
-        public ServiceManagementIntergrationTest(IUsersDAO usersDAO, IServiceDAO serviceDAO,IServiceRequestDAO servicerequestDAO, IUserServiceDAO userServiceDAO, ILogger logger, IConfiguration _configuration)
-        {
-            _usersDAO = usersDAO;
-            _serviceDAO = serviceDAO;
-            _serviceRequestDAO = servicerequestDAO;
-            _userServiceDAO = userServiceDAO;
-            _logger = logger;
-            _connectionString = _configuration!.GetConnectionString("ServiceDbConnectionString")!;
-        }
-
-
         [TestMethod]
         public async Task AddAService_PASS()
         {
             // Arrange
-            var dao = new ServiceDAO(_configuration!);
+            var dao = new ServiceDAO();
             Guid id = Guid.NewGuid();
             Service service = new Service(id, "Steam Cleaning", "Pressure Wash", "Cleans hard surfaces such as sidewalks, exterior building walls, or walkways",
                  "Sierra Harris", "mssierra310@gmail.com", 450.50);
@@ -56,7 +35,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task GetServices_PASS()
         {
             // Arrange
-            var dao = new ServiceDAO(_configuration!);
+            var dao = new ServiceDAO();
 
             // Act
             Result result = await dao.GetServices();
@@ -70,7 +49,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task GetUserServicesPM_PASS()
         {
             // Arrange
-            var dao = new UserServiceDAO(_configuration!);
+            var dao = new UserServiceDAO();
 
             Guid id = Guid.NewGuid();
             ServiceRequest service = new (id,"New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -94,7 +73,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task GetUserServicesSP_PASS()
         {
             // Arrange
-            var dao = new UserServiceDAO(_configuration!);
+            var dao = new UserServiceDAO();
 
             Guid id = Guid.NewGuid();
             ServiceRequest service = new(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -104,6 +83,8 @@ namespace AA.PMTOGO.IntergrationTest
             // Act
             Result result = await dao.GetUserServices(query, "serviceProvider@gmail.com", "SPRating");
             bool actual = result.IsSuccessful;
+            List<UserService> userservice = (List<UserService>)result.Payload!;
+            Console.WriteLine(userservice[1].Id);
 
             //clean up
             await dao.DeleteUserService(id);
@@ -118,7 +99,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task AddServiceRequest_PASS()
         {
             // Arrange
-            var dao = new ServiceRequestDAO(_configuration!);
+            var dao = new ServiceRequestDAO();
             Guid id = Guid.NewGuid();
 
             ServiceRequest request = new(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -131,7 +112,7 @@ namespace AA.PMTOGO.IntergrationTest
             bool actual = result.IsSuccessful;
 
             //clean up
-            await dao.DeleteServiceRequest(id);
+            //await dao.DeleteServiceRequest(id);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -144,8 +125,8 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateAUserServiceSP_PASS()
         {
             //arrange
-            var service = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
-            var dao = new UserServiceDAO(_configuration!);
+            var service = new UserServiceManagement();
+            var dao = new UserServiceDAO();
 
             Guid id = Guid.NewGuid();
             ServiceRequest userService = new ServiceRequest(id,"New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -173,8 +154,8 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateAUserServicePM_PASS()
         {
             //arrange
-            var userserviceM = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
-            var dao = new UserServiceDAO(_configuration!);
+            var service = new UserServiceManagement();
+            var dao = new UserServiceDAO();
 
             Guid id = Guid.NewGuid();
             ServiceRequest userService = new ServiceRequest(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -184,7 +165,7 @@ namespace AA.PMTOGO.IntergrationTest
             string query = "SELECT PMRating FROM UserServices WHERE Id = @ID";
 
             //act
-            await userserviceM.Rate(id, 4, role);
+            await service.Rate(id, 4, role);
             Result result = await dao.CheckRating(id, 4, query, "PMRating");
             bool actual = result.IsSuccessful;
 
@@ -202,9 +183,8 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateIsNotHigherThan5_FAIL()
         {
             //arrange
-            var service = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
-            var request = new ServiceRequestDAO(_configuration!);
-            var dao = new UserServiceDAO(_configuration!);
+            var service = new UserServiceManagement();
+            var dao = new UserServiceDAO();
             Guid id = Guid.NewGuid();
 
             ServiceRequest userService = new ServiceRequest(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -223,6 +203,31 @@ namespace AA.PMTOGO.IntergrationTest
             //assert
             Assert.IsNotNull(actual);
             Assert.IsFalse(actual);
+
+
+        }
+        [TestMethod]
+        public async Task TestingUserInfo()
+        {
+            //arrange
+
+            var dao = new UsersDAO();
+            Guid id = Guid.NewGuid();
+
+            Result result = await dao.GetUser("sierra.harris01@student.csulb.edu");
+
+
+
+            //act
+            Console.WriteLine(result.Payload);
+            bool actual = result.IsSuccessful;
+
+
+
+
+            //assert
+            Assert.IsNotNull(actual);
+            Assert.IsTrue(actual);
 
 
         }

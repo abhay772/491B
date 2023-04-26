@@ -1,23 +1,13 @@
-﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.DAL.Interfaces;
-using AA.PMTOGO.Models.Entities;
-using Microsoft.Extensions.Configuration;
+﻿using AA.PMTOGO.Models.Entities;
 using System.Data;
-
 using System.Data.SqlClient;
 
 namespace AA.PMTOGO.DAL
 {
     //logging
-    public class ServiceRequestDAO: IServiceRequestDAO
+    public class ServiceRequestDAO
     {
-        private readonly string _connectionString;
-        //logging
-
-        public ServiceRequestDAO(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
-        }
+        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";
 
         //Find request or userservice
 
@@ -28,8 +18,8 @@ namespace AA.PMTOGO.DAL
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                //change select star
-                string sqlQuery = "SELECT Id FROM ServiceRequests WHERE ID = @Id";
+
+                string sqlQuery = "SELECT * FROM ServiceRequests WHERE ID = @Id";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 command.Parameters.Add("@Id", SqlDbType.UniqueIdentifier).Value = id;
@@ -53,7 +43,7 @@ namespace AA.PMTOGO.DAL
 
         }
 
-
+       
         public async Task<Result> GetAServiceRequest(Guid requestId) // return single request
         {
             var result = new Result();
@@ -62,9 +52,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                //change select star
-
-                string sqlQuery = "SELECT Id, RequestType, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, Comments, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName FROM ServiceRequests WHERE ID = @Id";
+                string sqlQuery = "SELECT * FROM ServiceRequests WHERE ID = @Id";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -76,7 +64,7 @@ namespace AA.PMTOGO.DAL
                     {
                         if (requestId.Equals(reader["Id"]))
                         {
-                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["RequestType"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
+                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
                                 (string)reader["ServiceFrequency"], (string)reader["Comments"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
 
@@ -101,9 +89,8 @@ namespace AA.PMTOGO.DAL
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                //change select star
 
-                string sqlQuery = "SELECT Id, RequestType, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, Comments, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName FROM ServiceRequests WHERE @ServiceProviderEmail = serviceProviderEmail";
+                string sqlQuery = "SELECT * FROM ServiceRequests WHERE @ServiceProviderEmail = serviceProviderEmail";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
@@ -117,7 +104,7 @@ namespace AA.PMTOGO.DAL
                         while (reader.Read())
                         {
 
-                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["RequestType"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
+                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
                                 (string)reader["ServiceFrequency"], (string)reader["Comments"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
                                (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
 
@@ -142,30 +129,31 @@ namespace AA.PMTOGO.DAL
             result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
             return result;
         }
-        //insert service request
 
-        public async Task<Result> AddServiceRequest(ServiceRequest request)
+        //insert user service
+
+        public async Task<Result> AddUserService(ServiceRequest service)
         {
             var result = new Result();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into ServiceRequests VALUES(@Id, @RequestType, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @Comments, @ServiceProviderEmail, @ServiceProviderName, @PropertyManagerEmail, @PropertyManagerName)";
+                string sqlQuery = "INSERT into UserServices VALUES(@Id, @ServiceName, @ServiceType, @ServiceDescription, @ServiceFrequency, @ServiceProviderEmail, @ServiceProviderName, @PropertyManagerEmail, @PropertyManagerName, @Status, @Rating)";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@Id", request.Id);
-                command.Parameters.AddWithValue("@RequestType", request.RequestType);
-                command.Parameters.AddWithValue("@ServiceName", request.ServiceName);
-                command.Parameters.AddWithValue("@ServiceType", request.ServiceType);
-                command.Parameters.AddWithValue("@ServiceDescription", request.ServiceDescription);
-                command.Parameters.AddWithValue("@ServiceFrequency", request.ServiceFrequency);
-                command.Parameters.AddWithValue("@Comments", request.Comments);
-                command.Parameters.AddWithValue("@ServiceProviderEmail", request.ServiceProviderEmail);
-                command.Parameters.AddWithValue("@ServiceProviderName", request.ServiceProviderName);
-                command.Parameters.AddWithValue("@PropertyManagerEmail", request.PropertyManagerEmail);
-                command.Parameters.AddWithValue("@PropertyManagerName", request.PropertyManagerName);
+                command.Parameters.AddWithValue("@Id", service.Id);
+                command.Parameters.AddWithValue("@ServiceName", service.ServiceName);
+                command.Parameters.AddWithValue("@ServiceType", service.ServiceType);
+                command.Parameters.AddWithValue("@ServiceDescription", service.ServiceDescription);
+                command.Parameters.AddWithValue("@ServiceFrequency", service.ServiceFrequency);
+                command.Parameters.AddWithValue("@ServiceProviderEmail", service.ServiceProviderEmail);
+                command.Parameters.AddWithValue("@ServiceProviderName", service.ServiceProviderName);
+                command.Parameters.AddWithValue("@PropertyManagerEmail", service.PropertyManagerEmail);
+                command.Parameters.AddWithValue("@PropertyManagerName", service.PropertyManagerName);
+                command.Parameters.AddWithValue("@Status", "In-Progress");
+                command.Parameters.AddWithValue("@Rating", 0);
 
 
                 try

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace AA.PMTOGO.Models.Entities
 {
     public enum LogCategory
@@ -12,10 +10,8 @@ namespace AA.PMTOGO.Models.Entities
         DataStore,
     }
 
-    [Table("Logs")]
     public class Log
     {
-        [Key]
         public Guid LogId { get; } = Guid.NewGuid();
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         //LogLevel is type byte due to its limited enumerations.

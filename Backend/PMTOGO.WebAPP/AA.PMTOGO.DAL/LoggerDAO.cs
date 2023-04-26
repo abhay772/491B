@@ -1,20 +1,12 @@
 ﻿using AA.PMTOGO.Models.Entities;
-using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Text;
 
 namespace AA.PMTOGO.DAL
 {
-    public class LoggerDAO : ILoggerDAO
+    public class LoggerDAO
     {
-        private readonly string _connectionString;
-        //private readonly ILogger? _logger;
-        //logging
-
-        public LoggerDAO(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
-        }
+        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.LogDB;Trusted_Connection=True";
 
         public async Task<Result> InsertLog(Log log)
         {
@@ -23,8 +15,7 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Timestamp, @LogLevel, @Operation, @LogCategory, @Message)";
-                //string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
+                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
                 
