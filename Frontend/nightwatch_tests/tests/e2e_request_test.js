@@ -1,12 +1,10 @@
 const {client} = require('nightwatch');
-//from v-vong/csulb github
-describe('Login Success', function() {
-    before(browser => browser.navigateTo('http://localhost:8080'));
 
-    it('Login with test user', function(browser){
-        let duration;
-
-        browser
+module.exports = {
+    'rate service test': function(client) {
+        client
+            .url("http://localhost:8080/")
+            .waitForElementVisible('#content',5000)
             .setValue('input[type=text]', 'mssierra310@gmail.com')
             .setValue('input[type=password', 'randomstring')
             .pause()
@@ -31,10 +29,8 @@ describe('Login Success', function() {
             .assert.notEqual(browser.getText('div.userservices'),'00000.00') 
             .end();
             
-    });
+    }
+}
 
-    after(browser => browser.end());
-
-});
 
 
