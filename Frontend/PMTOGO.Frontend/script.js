@@ -177,7 +177,7 @@ function loadCrimeMapPage(homepageContent, username) {
 
                     // add input fields to form
                     const nameLabel = document.createElement('label');
-                    nameLabel.innerHTML = 'Name:' + alert.name;
+                    nameLabel.innerHTML = 'Name:';
                     const nameInput = document.createElement('input');
                     nameInput.type = 'text';
                     form.appendChild(nameLabel);
