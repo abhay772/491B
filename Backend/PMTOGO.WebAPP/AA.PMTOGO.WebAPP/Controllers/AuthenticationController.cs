@@ -45,6 +45,7 @@ public class AuthenticationController : ControllerBase
     [Consumes("application/json", "application/problem+json")]
     public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
     {
+        return Ok("hello");
         try
         {
             Result result = await _authManager.Login(userCredentials.Username, userCredentials.Password);
