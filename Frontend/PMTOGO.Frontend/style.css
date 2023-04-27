@@ -66,6 +66,7 @@ button {
   cursor: pointer;
   opacity: 0.9;
 }
+
  .registrationbtn{
   background-color: #0d49c9;
   padding: 14px 20px;
@@ -83,6 +84,13 @@ button {
   width: 100%;
 }
 
+addbtn {
+    background-color: #04AA6D;
+    padding: 14px 20px;
+    left: 0;
+    margin: 8px 0;
+    width: 25%;
+}
 
 .forgetbtn{
   background-color: #fefefe;
@@ -476,4 +484,12 @@ table {
 .error-message {
     color: red;
     margin-top: 10px;
+}
+
+.alert-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
 }

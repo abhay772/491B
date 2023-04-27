@@ -65,50 +65,11 @@ function loadLoginPage() {
     .catch(error => console.log(error));
 }
 
-/*async function updateCrimeMap() {
-    const response = await fetch(api + '/CrimeAlert/getAlerts');
-    const data = await response.json();
-    const markers = [];
-
-    for (const alert of data) {
-        const newMarker = document.createElement('div');
-        newMarker.classList.add('marker');
-        newMarker.style.left = `${alert.X}px`;
-        newMarker.style.top = `${alert.Y}px`;
-        newMarker.addEventListener('click', function () {
-            alert(`Crime Alert: ${alert.description}`);
-        });
-        markers.push(newMarker);
-    }
-
-    return markers;
-}*/
-
-async function updateCrimeMap() {
-    const response = await fetch(api + '/CrimeAlert/getAlerts');
-    const data = await response.json();
-    const markers = [];
-
-    for (const alert of data) {
-        const newMarker = document.createElement('img');
-        newMarker.src = './images/marker.png';
-        newMarker.classList.add('marker');
-        newMarker.style.position = 'absolute';
-        newMarker.style.left = `${alert.X}px`;
-        newMarker.style.top = `${alert.Y}px`;
-        newMarker.setAttribute('data-alert-id', alert.id);
-        newMarker.style.zIndex = 9999; // Add this line to set the z-index
-        markers.push(newMarker);
-    }
-
-    return markers;
-}
-
 function loadCrimeMapPage(homepageContent, username) {
     // fetch crime map page html
     fetch('./Views/crimeMap.html')
         .then(response => response.text())
-        .then(data => {
+        .then(async (data) => {
             // update homepage content div with crime map page html
             homepageContent.innerHTML = data;
 
@@ -126,8 +87,8 @@ function loadCrimeMapPage(homepageContent, username) {
 
             // add styles to image container
             imageContainer.style.overflow = 'auto';
-            imageContainer.style.width = '750px';
-            imageContainer.style.height = '750px';
+            imageContainer.style.width = '1000px';
+            imageContainer.style.height = '1000px';
             image.style.transform = 'scale(1)';
             image.style.transition = 'transform 0.5s';
 
@@ -161,59 +122,101 @@ function loadCrimeMapPage(homepageContent, username) {
             });
 
             // add "Add Crime Alert" button
-            const addCrimeAlertButton = document.createElement('button');
+            const addCrimeAlertButton = document.createElement('addbtn');
             addCrimeAlertButton.textContent = 'Add Crime Alert';
             addCrimeAlertButton.addEventListener('click', function () {
                 loadAddAlertPage(homepageContent, username);
             });
             crimeMapContent.appendChild(addCrimeAlertButton);
 
-            // call updateCrimeMap to get the markers and add them to the map
-            updateCrimeMap().then(markers => {
-                markers.forEach(marker => {
-                    // insert code here to set the pixel location of the marker
-                    const left = alert.X;
-                    const top = alert.Y;
-                    marker.style.left = `${left}px`;
-                    marker.style.top = `${top}px`;
+            // get alerts and mark on map
+            const alerts = await getAlerts();
+            alerts.forEach(alert => {
+                const button = document.createElement('button');
+                button.classList.add('dot');
+                button.style.position = 'absolute';
+                button.style.width = '10px';
+                button.style.height = '10px';
+                button.style.backgroundColor = 'red';
+                button.style.borderRadius = '50%';
+                button.style.left = `${alert.x}px`;
+                button.style.top = `${alert.y}px`;
+                imageContainer.appendChild(button);
+                console.log(`Marked alert: ${alert.ID}`);
 
-                    // append the marker to the image container
-                    imageContainer.appendChild(marker);
+                // add click event listener to button
+                button.addEventListener('click', () => {
+                    // create popup
+                    const popup = document.createElement('div');
+                    popup.style.position = 'absolute';
+                    popup.style.top = '50%';
+                    popup.style.left = '50%';
+                    popup.style.transform = 'translate(-50%, -50%)';
+                    popup.style.backgroundColor = 'white';
+                    popup.style.padding = '20px';
+                    popup.style.borderRadius = '10px';
+                    popup.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+                    popup.style.zIndex = '1';
 
-                    marker.addEventListener('click', function () {
-                        alert(`Crime Alert: ${marker.getAttribute('data-alert-id')}`);
+                    // add close button to popup
+                    const closeButton = document.createElement('button');
+                    closeButton.innerHTML = 'X';
+                    closeButton.style.position = 'absolute';
+                    closeButton.style.top = '5px';
+                    closeButton.style.right = '5px';
+                    closeButton.addEventListener('click', () => {
+                        popup.remove();
                     });
+                    popup.appendChild(closeButton);
+
+                    // add form to popup
+                    const form = document.createElement('form');
+                    form.style.display = 'flex';
+                    form.style.flexDirection = 'column';
+                    form.style.gap = '10px';
+
+                    // add input fields to form
+                    const nameLabel = document.createElement('label');
+                    nameLabel.innerHTML = 'Name:';
+                    const nameInput = document.createElement('input');
+                    nameInput.type = 'text';
+                    form.appendChild(nameLabel);
+                    form.appendChild(nameInput);
+
+                    const descriptionLabel = document.createElement('label');
+                    descriptionLabel.innerHTML = 'Description:';
+                    const descriptionInput = document.createElement('textarea');
+                    descriptionInput.rows = '5';
+                    form.appendChild(descriptionLabel);
+                    form.appendChild(descriptionInput);
+
+                    // add save button to form
+                    const saveButton = document.createElement('button');
+                    saveButton.innerHTML = 'Save';
+                    saveButton.type = 'submit';
+                    form.appendChild(saveButton);
+
+                    popup.appendChild(form);
+                    document.body.appendChild(popup);
                 });
             });
         });
 }
 
-/*function updateCrimeMap() {
-    // call controller method to get crime alerts
-    fetch('https://localhost:7135/api/CrimeAlert/getAlerts')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(alerts => {
-            // iterate through alerts and add markers to the map
-            alerts.forEach(alert => {
-                const marker = document.createElement('button');
-                marker.classList.add('marker');
-                marker.style.position = 'absolute';
-                marker.style.left = alert.X + 'px';
-                marker.style.top = alert.Y + 'px';
-                marker.dataset.alert = JSON.stringify(alert);
-                marker.addEventListener('click', function () {
-                });
-                const imageContainer = document.querySelector('.image-container');
-                imageContainer.appendChild(marker);
-            });
-        })
-        .catch(error => console.log(error));
-}*/
+
+async function getAlerts() {
+    try {
+        const response = await fetch(api+'/CrimeAlert/getAlerts');
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw new Error('Error');
+        }
+    } catch {
+        throw new Error('Error');
+    }
+}
 
 function loadAddAlertPage(homepageContent, username) {
     // fetch add alert page html
@@ -285,7 +288,6 @@ function loadAddAlertPage(homepageContent, username) {
                         console.log(data);
                         console.log(response);
 
-                        // after successful submission, load crime map page
                         loadCrimeMapPage(homepageContent);
                     })
                     .catch(error => console.log(error));

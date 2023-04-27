@@ -155,8 +155,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
             public string Description { get; set; } = string.Empty;
             public string Time { get; set; } = string.Empty;
             public string Date { get; set; } = string.Empty;
-            public string X { get; set; } = string.Empty;
-            public string Y { get; set; } = string.Empty;
+            public float X { get; set; }
+            public float Y { get; set; }
         }
     }
 }

@@ -13,8 +13,8 @@ namespace AA.PMTOGO.Models.Entities
         public string Description { get; set; } = string.Empty;
         public string Time { get; set; } = string.Empty;
         public string Date { get; set; } = string.Empty;
-        public string X { get; set; } = string.Empty;
-        public string Y { get; set; } = string.Empty;
+        public double X { get; set; }
+        public double Y { get; set; }
 
         public CrimeAlert() { }
     }

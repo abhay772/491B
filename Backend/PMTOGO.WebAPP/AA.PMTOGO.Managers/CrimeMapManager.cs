@@ -23,7 +23,7 @@ namespace AA.PMTOGO.Managers
             _alert = alert;
         }
 
-        public async Task<Result> AddCrimeAlert(string email, string name, string location, string description, string time, string date, string x, string y)
+        public async Task<Result> AddCrimeAlert(string email, string name, string location, string description, string time, string date, float x, float y)
         {
             _result = await _crimeMapService.CheckAlert(email);
 
@@ -41,7 +41,7 @@ namespace AA.PMTOGO.Managers
             return _result;
         }
 
-        public async Task<Result> EditCrimeAlert(string email, string id, string name, string location, string description, string time, string date, string x, string y)
+        public async Task<Result> EditCrimeAlert(string email, string id, string name, string location, string description, string time, string date, float x, float y)
         {
             _alert = CreateAlert(email, id, name, location, description, time, date, x, y);
             _result = await _crimeMapService.EditAlert(email, id, _alert);
@@ -61,7 +61,7 @@ namespace AA.PMTOGO.Managers
             return crimeAlerts;
         }
 
-        public CrimeAlert CreateAlert(string email, string name, string location, string description, string time, string date, string x, string y)
+        public CrimeAlert CreateAlert(string email, string name, string location, string description, string time, string date, float x, float y)
         {
             //validate here
             _alert.Email = email;
@@ -74,7 +74,7 @@ namespace AA.PMTOGO.Managers
             _alert.Y = y;
             return _alert;
         }
-        public CrimeAlert CreateAlert(string email, string id, string name, string location, string description, string time, string date, string x, string y)
+        public CrimeAlert CreateAlert(string email, string id, string name, string location, string description, string time, string date, float x, float y)
         {
             //validate here
             _alert.Email = email;

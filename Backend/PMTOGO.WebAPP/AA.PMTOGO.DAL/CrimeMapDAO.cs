@@ -193,8 +193,8 @@ namespace AA.PMTOGO.DAL
                             alert.Description = (string)reader["Description"];
                             alert.Time = (string)reader["Time"];
                             alert.Date = (string)reader["Date"];
-                            alert.X = (string)reader["X"];
-                            alert.Y = (string)reader["Y"];
+                            alert.X = (double)reader["X"];
+                            alert.Y = (double)reader["Y"];
 
                             alerts.Add(alert);
                             Console.WriteLine(alert.Date);
@@ -235,8 +235,8 @@ namespace AA.PMTOGO.DAL
                             alert.Description = (string)reader["Description"];
                             alert.Time = (string)reader["Time"];
                             alert.Date = (string)reader["Date"];
-                            alert.X = (string)reader["X"];
-                            alert.Y = (string)reader["Y"];
+                            alert.X = (double)reader["X"];
+                            alert.Y = (double)reader["Y"];
 
                             return alert;
                         }
