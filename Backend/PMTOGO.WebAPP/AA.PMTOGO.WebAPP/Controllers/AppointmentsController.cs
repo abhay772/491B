@@ -32,10 +32,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
 #endif
 
         [HttpGet]
-        public async Task<IActionResult> GetUserAppointment()
+        public async Task<IActionResult> GetUserAppointment([FromQuery]string jwt)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation(null!, Request);
+            result = _claims.ClaimsValidation(null!, jwt);
             UserClaims user = (UserClaims)result.Payload!;
 
             if (result.IsSuccessful)
@@ -61,10 +61,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAppointmentRequest(InsertAppointmentRequest appointmentRequest)
+        public async Task<IActionResult> AddAppointmentRequest(InsertAppointmentRequest appointmentRequest, [FromQuery]string jwt)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation(null!, Request);
+            result = _claims.ClaimsValidation(null!, jwt);
             UserClaims user = (UserClaims)result.Payload!;
             var appointment = new Appointment(appointmentRequest.Title, appointmentRequest.AppointmentTime);
 
@@ -93,10 +93,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
         
         [HttpPut]
-        public async Task<IActionResult> UpdateAppointment(UpdateAppointmentRequest appointmentRequest)
+        public async Task<IActionResult> UpdateAppointment(UpdateAppointmentRequest appointmentRequest, [FromQuery]string jwt)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation(null!, Request);
+            result = _claims.ClaimsValidation(null!, jwt);
             UserClaims user = (UserClaims)result.Payload!;
             var appointment = new Appointment(appointmentRequest.AppointmentId, user.ClaimUsername, appointmentRequest.Title, appointmentRequest.AppointmentTime);
 
@@ -125,10 +125,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteAppointment(int appointmentId)
+        public async Task<IActionResult> DeleteAppointment(int appointmentId, [FromQuery]string jwt)
         {
             Result result = new Result();
-            result = _claims.ClaimsValidation(null!, Request);
+            result = _claims.ClaimsValidation(null!, jwt);
 
             if (result.IsSuccessful )
             {

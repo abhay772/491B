@@ -72,8 +72,15 @@
             </form>
         </div>
 
+        <div id="calendar-container">
+            <ul id="appointments-list">
+
+            </ul>
+        </div>
+
         <script>
             const url = "https://localhost:7135";
+            const appointments = document.getElementById("appointments-list");
 
             const registerForm = document.getElementById('register-form');
             
@@ -110,15 +117,41 @@
                 const password = document.querySelector('#logpassword').value;
 
                 data = {username: username, password: password}
-                console.log(data)
+
                 const response = fetch(url + "/api/Authentication/Login", {
                     method: "POST",
                     redirect: "follow",
+                    credentials: "same-origin",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(data),
                 });
+
+                response
+                    .then(response => response.json())
+                    .then(async data => {
+                        document.cookie = data.jwt;
+
+                        const fetchUserAppointments = await fetch(url + "/api/Appointment" + "?jwt=" + data.jwt, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Access-Control-Allow-Origin": "*"
+                            },
+                        })
+                            .then(response => response.json());
+
+                        console.log(fetchUserAppointments);
+
+                        fetchUserAppointments.forEach(x => {
+                            let li = document.createElement("li");
+                            li.style
+                            li.innerText = x.title + " @ " + new Date(x.appointmentTime);
+
+                            appointments.appendChild(li);
+                        })
+                    });
             });
         </script>
     </body>

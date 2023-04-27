@@ -56,10 +56,15 @@ public class AuthenticationController : ControllerBase
                 //var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
 
                 string claims_jwt = CreateJWTToken(loginDTO.claims!);
-
+                
                 SetCookieOptions(claims_jwt);
                 //new { message = "Login successful" } + 
-                return Ok(result.Payload!);
+                return Ok(new
+                {
+                    otp = loginDTO.Otp,
+                    claims = loginDTO.claims,
+                    jwt = claims_jwt
+                });
             }
             else
             {
