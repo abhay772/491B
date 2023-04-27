@@ -177,11 +177,18 @@ function loadCrimeMapPage(homepageContent, username) {
 
                     // add input fields to form
                     const nameLabel = document.createElement('label');
-                    nameLabel.innerHTML = 'Name:';
+                    nameLabel.innerHTML = 'Name:' + alert.name;
                     const nameInput = document.createElement('input');
                     nameInput.type = 'text';
                     form.appendChild(nameLabel);
                     form.appendChild(nameInput);
+
+                    const locationLabel = document.createElement('label');
+                    locationLabel.innerHTML = 'Location:';
+                    const locationInput = document.createElement('input');
+                    locationInput.type = 'text';
+                    form.appendChild(locationLabel);
+                    form.appendChild(locationInput);
 
                     const descriptionLabel = document.createElement('label');
                     descriptionLabel.innerHTML = 'Description:';
@@ -190,14 +197,40 @@ function loadCrimeMapPage(homepageContent, username) {
                     form.appendChild(descriptionLabel);
                     form.appendChild(descriptionInput);
 
+                    const timeLabel = document.createElement('label');
+                    timeLabel.innerHTML = 'Time:';
+                    const timeInput = document.createElement('input');
+                    timeInput.type = 'text';
+                    form.appendChild(timeLabel);
+                    form.appendChild(timeInput);
+
+                    const dateLabel = document.createElement('label');
+                    dateLabel.innerHTML = 'Date:';
+                    const dateInput = document.createElement('input');
+                    dateInput.type = 'date';
+                    form.appendChild(dateLabel);
+                    form.appendChild(dateInput);
+
                     // add save button to form
                     const saveButton = document.createElement('button');
                     saveButton.innerHTML = 'Save';
                     saveButton.type = 'submit';
                     form.appendChild(saveButton);
+                    
 
                     popup.appendChild(form);
                     document.body.appendChild(popup);
+
+                    // add submit event listener to form
+                    form.addEventListener('submit', async event => {
+                        event.preventDefault();
+                        const name = nameInput.value;
+                        const location = locationInput.value;
+                        const description = descriptionInput.value;
+                        const time = timeInput.value;
+                        const date = dateInput.value;
+                      
+                    });
                 });
             });
         });
