@@ -63,5 +63,56 @@ namespace AA.PMTOGO.Libary
             result.IsSuccessful = false;
             return result;
         }
+
+        public Result ClaimsValidation(string role, string jwt)
+        {
+            Result result = new Result();
+            try
+            {
+                if (!string.IsNullOrEmpty(jwt))
+                {
+                    var handler = new JwtSecurityTokenHandler();
+
+                    var jwtToken = handler.ReadJwtToken(jwt);
+
+                    if (jwtToken == null)
+                    {
+                        result.IsSuccessful = false;
+                        result.ErrorMessage = "Invalid Claims";
+                        return result;
+                    }
+
+                    var claims = jwtToken.Claims.ToList();
+                    Claim usernameClaim = claims[0];
+                    Claim roleClaim = claims[1];
+
+                    if (usernameClaim != null && roleClaim != null)
+                    {
+                        string username = usernameClaim.Value;
+                        string userrole = roleClaim.Value;
+
+                        // Check if the role is Property Manager
+                        bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+                        if (validationCheck && userrole == role || role == null)
+                        {
+                            UserClaims user = new UserClaims(username, role!);
+
+                            result.IsSuccessful = true;
+                            result.Payload = user;
+                            return result;
+                        }
+                    }
+                    return result;
+                }
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Invalid Claims";
+                return result;
+            }
+            result.IsSuccessful = false;
+            return result;
+        }
     }
 }
