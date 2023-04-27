@@ -42,10 +42,11 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("Login")]
-    [Consumes("application/json", "application/problem+json")]
-    public async Task<IActionResult> Login([FromBody] UserCredentials userCredentials)
+    //[Consumes("application/json", "application/problem+json")]
+    public IActionResult Login(/*[FromBody] UserCredentials userCredentials*/)
     {
-        try
+        return Ok();
+        /*try
         {
             Result result = await _authManager.Login(userCredentials.Username, userCredentials.Password);
 
@@ -76,7 +77,7 @@ public class AuthenticationController : ControllerBase
         {
 
             return StatusCode(StatusCodes.Status500InternalServerError);
-        }
+        }*/
     }
 
     [HttpGet("Logout")]
