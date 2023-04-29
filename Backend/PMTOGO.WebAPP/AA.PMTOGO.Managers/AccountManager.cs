@@ -99,5 +99,41 @@ namespace AA.PMTOGO.Managers
             Result result = await _usersDAO.UpdatePassword(username, passDigest, salt);
             return result;
         }
+
+        public async Task<Result> DisableUserAccount(string username)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _account.DisableAccount(username, false);
+                await _logger!.Log("DisableUserAccount", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Disable Account Unsuccessful. Try Again Later";
+                await _logger!.Log("DisableUserAccount", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
+
+        public async Task<Result> EnableUserAccount(string username)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _account.EnableAccount(username, true);
+                await _logger!.Log("EnableUserAccount", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Enable Account Unsuccessful. Try Again Later";
+                await _logger!.Log("EnableUserAccount", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
     }
 }

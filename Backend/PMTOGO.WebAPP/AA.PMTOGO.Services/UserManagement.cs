@@ -122,6 +122,78 @@ namespace AA.PMTOGO.Services
 
             return result;
         }
+
+        public async Task<Result> DisableAccount(string username, bool active)
+        {
+            Result result = new Result();
+            if (valid.ValidateEmail(username).IsSuccessful)
+            {
+                Result result1 = new Result();
+                result1 = await _authNDAO.FindUser(username);
+                if (result1.IsSuccessful == true)
+                {
+                    //deactivate user account
+
+                    await _authNDAO.UpdateUserActivation(username, active);
+
+                    //log account deactivate succesfully
+                    await _logger!.Log("DisableAccount", 4, LogCategory.Server, result);
+                    result.IsSuccessful = true;
+                    return result;
+
+                }
+                else
+                {
+                    result.ErrorMessage = "User account does not exists.";
+                    result.IsSuccessful = false;
+                    return result;
+
+                }
+            }
+            else
+            {
+                result.ErrorMessage = "Unable to disable account. Try again later.";
+                result.IsSuccessful = false;
+            }
+
+            return result;
+        }
+
+        public async Task<Result> EnableAccount(string username, bool active)
+        {
+            Result result = new Result();
+            if (valid.ValidateEmail(username).IsSuccessful)
+            {
+                Result result1 = new Result();
+                result1 = await _authNDAO.FindUser(username);
+                if (result1.IsSuccessful == true)
+                {
+                    //deactivate user account
+
+                    await _authNDAO.UpdateUserActivation(username,active);
+                    
+                    //log account activate succesfully
+                    await _logger!.Log("EnableAccount", 4, LogCategory.Server, result);
+                    result.IsSuccessful = true;
+                    return result;
+
+                }
+                else
+                {
+                    result.ErrorMessage = "User account does not exists.";
+                    result.IsSuccessful = false;
+                    return result;
+
+                }
+            }
+            else
+            {
+                result.ErrorMessage = "Unable to enable account. Try again later";
+                result.IsSuccessful = false;
+            }
+
+            return result;
+        }
         public string GenerateSalt()
         {
             string salt = "";

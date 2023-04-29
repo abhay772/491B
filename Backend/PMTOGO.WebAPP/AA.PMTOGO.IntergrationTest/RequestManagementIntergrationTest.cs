@@ -4,18 +4,21 @@ using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestPlatform.Common;
 
 namespace AA.PMTOGO.IntergrationTest
 {
     [TestClass]
     public class RequestManagementIntergrationTest // RequestDAO only test
     {
+        
         private readonly IUsersDAO _authNDAO;
         private readonly IServiceRequestDAO _requestDAO;
         private readonly IUserServiceDAO _userServiceDAO;
         private readonly string _connectionString;
         private readonly ILogger? _logger;
-        private readonly IConfiguration? _configuration; 
+        private readonly IConfiguration? _configuration;
+
 
         public RequestManagementIntergrationTest(IUsersDAO usersDAO, IServiceRequestDAO requestDAO, IUserServiceDAO userserviceDAO,  ILogger logger, IConfiguration configuration)
         {
@@ -25,6 +28,7 @@ namespace AA.PMTOGO.IntergrationTest
             _logger = logger;
             _connectionString = _configuration!.GetConnectionString("ServiceDbConnectionString")!;
         }
+
         [TestMethod]
         public async Task GetServiceRequest()
         {

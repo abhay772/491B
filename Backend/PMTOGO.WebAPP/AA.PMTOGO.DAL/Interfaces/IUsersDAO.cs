@@ -13,7 +13,7 @@ namespace AA.PMTOGO.DAL.Interfaces
 
         public Task<Result> DeleteUserProfile(string username);
 
-        public Task<Result> ActivateUser(string username);
+        public Task<Result> UpdateUserActivation(string username, bool active);
         //non-sensitive info
         public Task<Result> SaveUserProfile(string email, string firstName, string lastName, string role);
         public Task<Result> SaveUserAccount(string username, string passDigest, string salt, string role);

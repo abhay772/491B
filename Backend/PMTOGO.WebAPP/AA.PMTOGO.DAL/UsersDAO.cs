@@ -14,7 +14,7 @@ public class UsersDAO : IUsersDAO
         _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
     }
 
-    //private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True";
+ 
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)
@@ -244,17 +244,18 @@ public class UsersDAO : IUsersDAO
         return result;
     }
 
-    public async Task<Result> ActivateUser(string username)
+    public async Task<Result> UpdateUserActivation(string username, bool active)
     {
         var result = new Result();
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
 
-            string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE Username = @Username";
+            string sqlQuery = "UPDATE UserAccounts SET IsActive = @IsActive WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@IsActive", active);
 
             try
             {

@@ -1,7 +1,23 @@
 const content = document.getElementById('content');
 const api = "https://localhost:7135/api";
 var userrole = "";
+function loadUnAuthPage(){
+    // fetch login page
+    fetch('./Views/unauthUser.html')
+    .then(response => response.text())
+    .then(data => {
+      // update content div with login page
+      content.innerHTML = data;
 
+      // select register link
+      const loginLink = document.getElementById('login');
+      loginLink.addEventListener('click', loadLoginPage);
+
+      loadServices("Unauthorized User","unauth-content");
+      // select forgot password button
+    })
+
+}
 window.addEventListener("load", function() {
   url = api + '/Authentication/IsLoggedIn';
 
@@ -12,7 +28,8 @@ window.addEventListener("load", function() {
       loadHomePage(userrole);
     }
     else{
-      loadLoginPage();
+      loadUnAuthPage();
+      //loadLoginPage();
     }
   })
 });
@@ -228,8 +245,9 @@ function loadRegisterPage() {
     })
     .catch(error => console.log(error))
 }
-const createServicesTable = () =>{
-  const services = document.querySelector("div.homepage-content");
+const createServicesTable = (page) =>{
+  const contentpage = "div." + page;
+  const services = document.querySelector(contentpage);
   let tableHeaders = ["Service Name", "Service Type",  "Service Description", 
  "Service Provider Name", "Service Provider Email", "Price ($)", "Request Service?", "Add to Project"];
     while (services.firstChild) services.removeChild(services.firstChild)
@@ -299,60 +317,65 @@ const appendServices =(service, id) => {
   ServiceTable.append(ServiceTableBodyRow);
 }
 function loadNewRequest(id, userrole, homepageContent){
-  fetch("./Views/newRequest.html")
-  .then(response => response.text())
-  .then(data => {
-    // update content div with rate user page
-    homepageContent.innerHTML = data;
+  if(userrole === "Unauthorized User"){
+    loadLoginPage;
+  }
+  else{
+    fetch("./Views/newRequest.html")
+    .then(response => response.text())
+    .then(data => {
+      // update content div with rate user page
+      homepageContent.innerHTML = data;
 
-    const backBtn = document.getElementById('BacktoServices');
-    backBtn.addEventListener('click', loadHomePage);
+      const backBtn = document.getElementById('BacktoServices');
+      backBtn.addEventListener('click', loadHomePage);
 
-    const requestForm = document.getElementById('newrequest-form');
-    requestForm.addEventListener('submit', (event) => {
-      event.preventDefault();
+      const requestForm = document.getElementById('newrequest-form');
+      requestForm.addEventListener('submit', (event) => {
+        event.preventDefault();
 
-      const time = document.querySelector('#times').value;
-      const frequencies = document.querySelector('#frequencies').value;
-      const comments = document.querySelector('#comments').value;
+        const time = document.querySelector('#times').value;
+        const frequencies = document.querySelector('#frequencies').value;
+        const comments = document.querySelector('#comments').value;
 
-      const frequency = time + "x/" + frequencies;
-      frequency.toString;
+        const frequency = time + "x/" + frequencies;
+        frequency.toString;
 
-      url = api + "/UserService/addrequests";
-      data = {id:id, frequency: frequency, comments:comments};
-      send(url, data)
-      .then(response => {
-        if(!response.ok){
-          fetch("./Views/NotAuthorized.html")
-            .then(response => response.text())
-            .then(text => {
-      
-              const homepageContent = document.getElementsByClassName("homepage-content")[0];
-          
-              homepageContent.innerHTML = text;
-            })
-            .catch(error => console.error(error))
-        }
-        else{
-          loadHomePage(userrole)
-        }
-      })
-      .catch(error => console.log(error));
-  
-    });
-  })
-  .catch(error => console.log(error)) 
+        url = api + "/UserService/addrequests";
+        data = {id:id, frequency: frequency, comments:comments};
+        send(url, data)
+        .then(response => {
+          if(!response.ok){
+            fetch("./Views/NotAuthorized.html")
+              .then(response => response.text())
+              .then(text => {
+        
+                const homepageContent = document.getElementsByClassName("homepage-content")[0];
+            
+                homepageContent.innerHTML = text;
+              })
+              .catch(error => console.error(error))
+          }
+          else{
+            loadHomePage(userrole)
+          }
+        })
+        .catch(error => console.log(error));
+    
+      });
+    })
+    .catch(error => console.log(error)) 
+  }
 }
-function loadServices(userrole){     
+function loadServices(userrole, page){     
   url = api + '/UserService/getservice';
   get(url)
     .then(response => response.json())
     .then(data => {
-      const homepageContent = document.getElementsByClassName("homepage-content")[0]; 
-      homepageContent.innerHTML = data;
+      const Content = document.getElementsByClassName(page)[0]; 
+      Content.innerHTML = data;
 
-      createServicesTable();
+      createServicesTable(page);
       let id = 0;
       data.forEach((service) => {         
         appendServices(service, id)
@@ -360,7 +383,13 @@ function loadServices(userrole){
       })
       const requestlist = Array.from(document.getElementsByClassName("servicerequest-link")); 
       requestlist.forEach((key)=>{
-        key.addEventListener('click', function() {loadNewRequest(key.id, userrole, homepageContent)})
+        key.addEventListener('click', function() 
+        {
+          if(userrole === "Unauthorized User"){
+            loadLoginPage();
+          }
+          loadNewRequest(key.id, userrole, Content)
+        })
       })
   })
   .catch(error => console.error(error));     
@@ -380,7 +409,7 @@ function loadHomePage(userrole, username) {
       const hamburger = document.getElementById("back");
       hamburger.addEventListener("click", loadHomePage);
 
-      loadServices(userrole);
+      loadServices(userrole, "homepage-content");
       //select log out
       const logoutUser = document.getElementById("logout");
 
@@ -462,123 +491,6 @@ function loadAccountDeletionPage(homepageContent){
 
     })
     .catch(error => console.log(error));
-}
-
-// function to load property evaluation page
-function loadPropertyEvalPage(homepageContent) {
-
-  // fetch property evaluation page html
-  fetch('./Views/propEval.html')
-    .then(response => response.text())
-    .then(data => {
-      // update content div with property evaluation page html
-      homepageContent.innerHTML = data;
-
-      LoadProfile();
-      updateEvaluation();
-
-      const evaluateForm = document.getElementById("PropertyProfile");
-
-      evaluateForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        SaveProfile();
-        updateEvaluation();
-    });
-    
-      
-    })
-    .catch(error => console.log(error));
-
-}
-
-function updateEvaluation(){
-  // Update the evaluation
-  url = api + '/PropEval/evaluate';
-
-  get(url)
-  .then((response) => {
-    if (response.ok) {
-      return response.text();
-    }
-  })
-  .then(data => {
-    document.getElementById("property-evaluation").innerHTML = `Property Evaluation: ${data}`;
-  })
-  .catch(error => console.error(error));
-}
-
-async function LoadProfile(){
-  // Auto loading the Property Profile if available
-  url = api + '/PropEval/loadProfile';
-
-  get(url)
-  .then(response => {
-
-    if(!response.ok){
-
-      fetch("./Views/NotAuthorized.html")
-      .then(response => response.text())
-      .then(text => {
-
-        const homepageContent = document.getElementsByClassName("homepage-content")[0];
-    
-        homepageContent.innerHTML = text;
-      })
-
-    } else {
-
-      response.json().then(data => {
-        const fieldset = document.querySelector('#PropertyProfile fieldset');
-        assignData(fieldset,data);
-      }).catch(error => console.error(error));
-
-    }
-  })
-  .catch(error => console.error(error.text));
-}
-
-async function SaveProfile(){
-
-  // Saving the Property Profile
-  url = api + '/PropEval/saveProfile';
-
-  const fieldset = document.querySelector('#PropertyProfile fieldset');
-
-  let data = extractData(fieldset);
-  console.log(data);
-  await put(url,data)
-  .catch(error => console.error(error));
-}
-
-function assignData(fieldset, data){
-  const inputs = fieldset.querySelectorAll('input, textarea');
-  inputs.forEach(input => {
-
-    // Lower casing the first letter of the inout field
-    // to match the property name in data
-    const key = input.name.charAt(0).toLowerCase() + input.name.slice(1);
-
-    if(data.hasOwnProperty(key)){
-      if(data[key] !== 'string' && data[key] !== 0)
-      {
-        //console.log(data[key]);
-        input.setAttribute('value',data[key]);
-      }
-    }
-  });
-}
-
-function extractData(fieldset){
-  const inputs = fieldset.querySelectorAll('input, textarea');
-  let data = {};
-
-  inputs.forEach(input => {
-    const key = input.name.charAt(0).toLowerCase() + input.name.slice(1);
-    data[key] = input.value;
-  })
-  console.log(data)
-  return data;
 }
 
 function loadEmailPage(homepageContent){

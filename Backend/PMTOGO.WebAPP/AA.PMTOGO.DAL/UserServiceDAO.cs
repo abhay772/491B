@@ -16,12 +16,13 @@ namespace AA.PMTOGO.DAL
     public class UserServiceDAO : IUserServiceDAO
     {
         private readonly string _connectionString;
-        //logging
+         //logging
 
-        public UserServiceDAO(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
-        }
+         public UserServiceDAO(IConfiguration configuration)
+         {
+             _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
+         }
+
 
         public async Task<Result> FindUserService(Guid id) //single request
         {

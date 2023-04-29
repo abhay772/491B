@@ -10,7 +10,7 @@ using static System.Net.WebRequestMethods;
 using AA.PMTOGO.Managers.Interfaces;
 using Azure.Core;
 
-namespace AA.PMTOGO_v2.Controllers;
+namespace AA.PMTOGO.WebAPP.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -24,7 +24,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpGet("IsLoggedIn")]
-    public  IActionResult IsLoggedIn()
+    public IActionResult IsLoggedIn()
     {
         try
         {
@@ -36,7 +36,8 @@ public class AuthenticationController : ControllerBase
             return Ok(false);
         }
 
-        catch {
+        catch
+        {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -56,24 +57,20 @@ public class AuthenticationController : ControllerBase
                 //var sendingOtpResult = await SendOTPtoEmailAsync(loginDTO.otp, userCredentials.Username);
 
                 string claims_jwt = CreateJWTToken(loginDTO.claims!);
-                
+
                 SetCookieOptions(claims_jwt);
-                //new { message = "Login successful" } + 
-                return Ok(new
-                {
-                    otp = loginDTO.Otp,
-                    claims = loginDTO.claims,
-                    jwt = claims_jwt
-                });
+                //new { message = "Login successful" } 
+                return Ok(result.Payload!);
             }
             else
             {
 
-                return BadRequest(new { message = "Invalid username or password provided. Retry again or contact system admin" });
+                return BadRequest(new { message = "Invalid Username or Password." });
             }
         }
         catch (ArgumentException ex)
         {
+
             return BadRequest(new { message = "Already logged in." });
         }
         catch
@@ -130,7 +127,7 @@ public class AuthenticationController : ControllerBase
         Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
         {
             Domain = "localhost",
-            Path= "/",
+            Path = "/",
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,

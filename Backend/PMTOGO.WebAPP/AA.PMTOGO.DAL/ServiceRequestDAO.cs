@@ -11,13 +11,14 @@ namespace AA.PMTOGO.DAL
     //logging
     public class ServiceRequestDAO: IServiceRequestDAO
     {
-        private readonly string _connectionString;
-        //logging
+         private readonly string _connectionString;
+         //logging
 
-        public ServiceRequestDAO(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
-        }
+         public ServiceRequestDAO(IConfiguration configuration)
+         {
+             _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
+         }
+       
 
         //Find request or userservice
 
