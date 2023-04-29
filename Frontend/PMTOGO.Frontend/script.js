@@ -49,12 +49,10 @@ function loadLoginPage() {
 
         send(url, data)
         .then((response) => {
-            if (response.ok) {
-                loadForgotPasswordPage();
-            /*response.json().then(data => {
+          if (response.ok) {
+            response.json().then(data => {
               loadHomePage(`${data.claims[1].value}`, username);
             })
-*/
           }
         })
         .catch(error => {
