@@ -54,7 +54,7 @@ public class AuthManager : IAuthManager
         string otp = _authenticator.GenerateOTP();
 
         var claims = new List<Claim>();
-       
+
         claims.Add(new Claim(ClaimTypes.Email, username));
         claims.Add(new Claim(ClaimTypes.Role, role));
 

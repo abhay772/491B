@@ -11,6 +11,10 @@ namespace AA.PMTOGO.Services.Interfaces
     {
         Task<Result> CreateAccount(string email, string password, string firstname, string lastname, string role); 
         Task<Result> DeleteAccount(string username);
+
+        Task<Result> EnableAccount(string username, bool active);
+
+        Task<Result> DisableAccount(string username, bool active);
         string GenerateSalt();
         string EncryptPassword(string password, string salt);
         Task<Result> AccountRecovery(string email);

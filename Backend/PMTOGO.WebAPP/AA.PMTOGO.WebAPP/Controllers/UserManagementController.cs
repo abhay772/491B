@@ -156,7 +156,75 @@ namespace AA.PMTOGO.WebAPP.Controllers
              return BadRequest("Cookie not found");
             
         }
+        //update user
+        //disable
 
+
+        //admin
+        [HttpPut]
+        [Route("disable")]
+        //[Consumes("application/json")]
+        [ActionName("DisableUser")]
+        public async Task<IActionResult> DisableUser([FromBody] UserRegister useracc)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Admin", Request);
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result disable = await _accManager.DisableUserAccount(useracc.Email);
+                    if (disable.IsSuccessful)
+                    {
+                        return Ok(result.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+            return BadRequest("Not Authorized");
+        }
+        //enable
+        [HttpPut]
+        [Route("enable")]
+        //[Consumes("application/json")]
+        [ActionName("EnableUser")]
+        public async Task<IActionResult> EnableUser([FromBody] UserRegister useracc)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Admin", Request);
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result disable = await _accManager.EnableUserAccount(useracc.Email);
+                    if (disable.IsSuccessful)
+                    {
+                        return Ok(result.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+            return BadRequest("Not Authorized");
+        }
+        
         public class UserRegister
         {
             public string Email { get; set; } = string.Empty;
