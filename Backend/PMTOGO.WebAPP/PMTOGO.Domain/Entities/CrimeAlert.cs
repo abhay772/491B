@@ -7,7 +7,7 @@ namespace AA.PMTOGO.Models.Entities
         [Key]
         public string Email { get; set; } = string.Empty;
         [Required]
-        public string ID { get; set; } = string.Empty;
+        public int ID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

@@ -14,7 +14,7 @@ async function loadCrimeMapPage(homepageContent, username) {
         const imageContainer = await loadImageContainer(crimeMapContent, username);
 
         // add "Add Crime Alert" button
-        const addCrimeAlertButton = document.createElement("addbtn");
+        const addCrimeAlertButton = document.createElement("registrationbtn");
         addCrimeAlertButton.textContent = "Add Crime Alert";
         addCrimeAlertButton.addEventListener("click", function () {
             loadAddAlertPage(homepageContent, username);

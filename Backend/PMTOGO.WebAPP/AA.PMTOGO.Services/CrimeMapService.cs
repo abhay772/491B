@@ -36,12 +36,12 @@ namespace AA.PMTOGO.Services
             _result = await _mapDAO.CheckAlert(email);
             return _result;
         }
-        public async Task<Result> DeleteAlert(string email, string id)
+        public async Task<Result> DeleteAlert(string email, int id)
         {
             _result = await _mapDAO.DeleteAlert(email, id);
             return _result;
         }
-        public async Task<Result> EditAlert(string email, string id, CrimeAlert alert)
+        public async Task<Result> EditAlert(string email, int id, CrimeAlert alert)
         {
             _result = await _mapDAO.EditAlert(email, id, alert);
             return _result;
@@ -52,7 +52,7 @@ namespace AA.PMTOGO.Services
             crimeAlerts = await _mapDAO.GetAlerts();
             return crimeAlerts;
         }
-        public async Task<CrimeAlert> ViewAlert(string email, string id)
+        public async Task<CrimeAlert> ViewAlert(string email, int id)
         {
             var alert = new CrimeAlert();
             alert = await _mapDAO.ViewAlert(email, id);

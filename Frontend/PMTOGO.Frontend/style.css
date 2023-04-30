@@ -89,7 +89,8 @@ addbtn {
     padding: 14px 20px;
     left: 0;
     margin: 8px 0;
-    width: 25%;
+    text-align:center;
+    width: 100%;
 }
 
 .forgetbtn{

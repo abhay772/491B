@@ -7,11 +7,11 @@ namespace AA.PMTOGO.DAL
     public class CrimeMapDAO : ICrimeMapDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.CrimeMapDB;Trusted_Connection=True";
-        private CrimeAlert _crimeAlert;
+        private CrimeAlert _alert;
         private Result _result;
         public CrimeMapDAO(CrimeAlert crimeAlert, Result result)
         {
-            _crimeAlert = crimeAlert;
+            _alert = crimeAlert;
             _result = result;
         }
 
@@ -80,7 +80,7 @@ namespace AA.PMTOGO.DAL
             }
         }
 
-        public async Task<Result> DeleteAlert(string email, string id)
+        public async Task<Result> DeleteAlert(string email, int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -111,7 +111,7 @@ namespace AA.PMTOGO.DAL
             }
         }
 
-        public async Task<Result> EditAlert(string email, string id, CrimeAlert alert)
+        public async Task<Result> EditAlert(string email, int id, CrimeAlert alert)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -176,7 +176,6 @@ namespace AA.PMTOGO.DAL
                 connection.Open();
 
                 string sqlQuery = "SELECT * FROM CrimeAlerts";
-                Console.WriteLine("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 var command = new SqlCommand(sqlQuery, connection);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())
@@ -187,7 +186,7 @@ namespace AA.PMTOGO.DAL
                         {
                             var alert = new CrimeAlert();
                             alert.Email = (string)reader["Email"];
-                            alert.ID = (string)reader["ID"];
+                            alert.ID = (int)reader["ID"];
                             alert.Name = (string)reader["Name"];
                             alert.Location = (string)reader["Location"];
                             alert.Description = (string)reader["Description"];
@@ -197,8 +196,6 @@ namespace AA.PMTOGO.DAL
                             alert.Y = (double)reader["Y"];
 
                             alerts.Add(alert);
-                            Console.WriteLine(alert.Date);
-                            Console.WriteLine(alert.Description);
                         }
                     }
                     catch { }
@@ -208,7 +205,7 @@ namespace AA.PMTOGO.DAL
             return alerts;
         }
 
-        public async Task<CrimeAlert> ViewAlert(string email, string id)
+        public async Task<CrimeAlert> ViewAlert(string email, int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -229,7 +226,7 @@ namespace AA.PMTOGO.DAL
                         {
                             var alert = new CrimeAlert();
                             alert.Email = (string)reader["Email"];
-                            alert.ID = (string)reader["ID"];
+                            alert.ID = (int)reader["ID"];
                             alert.Name = (string)reader["Name"];
                             alert.Location = (string)reader["Location"];
                             alert.Description = (string)reader["Description"];
@@ -241,11 +238,9 @@ namespace AA.PMTOGO.DAL
                             return alert;
                         }
                     }
-                    catch { }
-                    
+                    catch { } 
                 }
             }
-
             return null;
         }
     }

@@ -35,20 +35,20 @@ namespace AA.PMTOGO.Managers
             return _result;
         }
 
-        public async Task<Result> DeleteCrimeAlert(string email, string id)
+        public async Task<Result> DeleteCrimeAlert(string email, int id)
         {
             _result = await _crimeMapService.DeleteAlert(email, id);
             return _result;
         }
 
-        public async Task<Result> EditCrimeAlert(string email, string id, string name, string location, string description, string time, string date, float x, float y)
+        public async Task<Result> EditCrimeAlert(string email, int id, string name, string location, string description, string time, string date, float x, float y)
         {
             _alert = CreateAlert(email, id, name, location, description, time, date, x, y);
             _result = await _crimeMapService.EditAlert(email, id, _alert);
             return _result;
         }
 
-        public async Task<CrimeAlert> ViewCrimeAlert(string email, string id) 
+        public async Task<CrimeAlert> ViewCrimeAlert(string email, int id) 
         {
             _alert = await _crimeMapService.ViewAlert(email, id);
             return _alert;
@@ -74,11 +74,12 @@ namespace AA.PMTOGO.Managers
             _alert.Y = y;
             return _alert;
         }
-        public CrimeAlert CreateAlert(string email, string id, string name, string location, string description, string time, string date, float x, float y)
+        public CrimeAlert CreateAlert(string email, int id, string name, string location, string description, string time, string date, float x, float y)
         {
             //validate here
             _alert.Email = email;
             _alert.Name = name;
+            _alert.Location=location;
             _alert.Description = description;
             _alert.Time = time;
             _alert.Date = date;
