@@ -11,7 +11,7 @@ async function loadCrimeMapPage(homepageContent, username) {
         const crimeMapContent = document.getElementById("crime-map-content");
 
         // add crime map 
-        const imageContainer = await loadImageContainer(crimeMapContent);
+        const imageContainer = await loadImageContainer(crimeMapContent, username);
 
         // add "Add Crime Alert" button
         const addCrimeAlertButton = document.createElement("addbtn");
@@ -21,12 +21,11 @@ async function loadCrimeMapPage(homepageContent, username) {
         });
         crimeMapContent.appendChild(addCrimeAlertButton);
 
-        // mark alerts on map
-        markAlertsOnMap(imageContainer);
+        
     });
 }
 
-async function loadImageContainer(crimeMapContent) {
+async function loadImageContainer(crimeMapContent, username) {
     const imageContainer = document.createElement("div");
     imageContainer.classList.add("image-container");
 
@@ -69,6 +68,9 @@ async function loadImageContainer(crimeMapContent) {
 
     crimeMapContent.appendChild(imageContainer);
 
+    // mark alerts on map
+    markAlertsOnMap(imageContainer, username);
+
     return imageContainer;
 }
 
@@ -87,7 +89,7 @@ async function getAlerts() {
     }
 }
 
-async function markAlertsOnMap(imageContainer) {
+async function markAlertsOnMap(imageContainer, username) {
     // get alerts from API
     const alerts = await getAlerts();
 
@@ -103,7 +105,7 @@ async function markAlertsOnMap(imageContainer) {
         button.style.left = `${alert.x}px`;
         button.style.top = `${alert.y}px`;
         imageContainer.appendChild(button);
-        console.log(`Marked alert: ${alert.ID}`);
+        console.log(`Marked alert: ${alert.id}`);
 
         // add click event listener to button
         button.addEventListener('click', () => {
@@ -176,21 +178,49 @@ async function markAlertsOnMap(imageContainer) {
             // add save button to form
             const saveButton = document.createElement('addbtn');
             saveButton.innerHTML = 'Save';
-            saveButton.type = 'submit';
+            saveButton.type = 'button'; // change to button type
             form.appendChild(saveButton);
-
 
             popup.appendChild(form);
             document.body.appendChild(popup);
 
-            form.addEventListener('submit', async event => {
-                event.preventDefault();
+            saveButton.addEventListener('click', async () => {
                 const name = nameInput.value;
                 const location = locationInput.value;
                 const description = descriptionInput.value;
                 const time = timeInput.value;
                 const date = dateInput.value;
 
+                const newAlert = {
+                    Email: username,
+                    ID: alert.id,
+                    Name: name,
+                    Location: location,
+                    Description: description,
+                    Time: time,
+                    Date: date,
+                    X: alert.x,
+                    Y: alert.y,
+                };
+
+                try {
+                    const response = await fetch(api + '/CrimeAlert/editAlert', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newAlert),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error');
+                    }
+
+                    const data = await response.json();
+                    console.log(data.message);
+                } catch (error) {
+                    console.error(error);
+                }
             });
         });
     });
@@ -266,7 +296,7 @@ function loadAddAlertPage(homepageContent, username) {
                         console.log(data);
                         console.log(response);
 
-                        loadCrimeMapPage(homepageContent);
+                        loadCrimeMapPage(homepageContent, username);
                     })
                     .catch(error => console.log(error));
             });

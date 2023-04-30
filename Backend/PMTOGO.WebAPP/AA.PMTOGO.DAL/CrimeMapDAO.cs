@@ -187,7 +187,7 @@ namespace AA.PMTOGO.DAL
                         {
                             var alert = new CrimeAlert();
                             alert.Email = (string)reader["Email"];
-                            //alert.ID = (string)reader["ID"];
+                            alert.ID = (string)reader["ID"];
                             alert.Name = (string)reader["Name"];
                             alert.Location = (string)reader["Location"];
                             alert.Description = (string)reader["Description"];
