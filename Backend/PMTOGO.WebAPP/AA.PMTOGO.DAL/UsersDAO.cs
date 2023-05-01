@@ -6,15 +6,15 @@ namespace AA.PMTOGO.DAL;
 
 public class UsersDAO : IUsersDAO
 {
-    private readonly string _connectionString;
-    //logging
+     private readonly string _connectionString;
+     //logging
 
-    public UsersDAO(IConfiguration configuration)
-    {
-        _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
-    }
-
- 
+     public UsersDAO(IConfiguration configuration)
+     {
+         _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
+     }
+    
+    //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)
@@ -72,6 +72,50 @@ public class UsersDAO : IUsersDAO
         return result;
     }
 
+    public async Task<Result> GetUserAccounts()
+    {
+        Result result = new Result();
+
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+           // string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role, IsActive FROM UserAccounts";
+
+            string query = "SELECT Username, FirstName, LastName, IsActive FROM UserProfiles INNER JOIN UserAccounts ON UserProfiles.Username = UserAccounts.Username";
+
+            var command = new SqlCommand(query, connection);
+
+
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            {
+                try
+                {
+                    List<User> listOfusers = new List<User>();
+                    while (reader.Read())
+                    {
+                        User user = new User((string)reader["Username"], (string)reader["Email"], (string)reader["FirstName"], (string)reader["LastName"],
+                            (string)reader["Role"], (bool)reader["IsActive"]);
+                        listOfusers.Add(user);
+                        
+                    }
+                    result.IsSuccessful = true;
+                    result.Payload = listOfusers;
+                    return result;
+                }
+                catch
+                {
+
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
+
+                }
+            }
+        }
+        result.IsSuccessful = false;
+        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+        return result;
+    }
     public async Task<Result> GetUser(string username)
     {
         Result result = new Result();
@@ -244,7 +288,7 @@ public class UsersDAO : IUsersDAO
         return result;
     }
 
-    public async Task<Result> UpdateUserActivation(string username, bool active)
+    public async Task<Result> UpdateUserActivation(string username, int active)
     {
         var result = new Result();
         using (var connection = new SqlConnection(_connectionString))

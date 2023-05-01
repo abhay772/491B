@@ -4,6 +4,7 @@ using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 namespace AA.PMTOGO.UnitTest
@@ -175,6 +176,7 @@ namespace AA.PMTOGO.UnitTest
             var timer = Stopwatch.StartNew();
             Thread.Sleep(6000);
             Result result1 = await registration.CreateAccount("OverTimegmail.com", "randomstring", "John", "Doe", "Property Manager");
+            
             bool OverTime = result1.IsSuccessful;
             timer.Stop();
             var seconds = timer.ElapsedMilliseconds / 1000;
@@ -219,6 +221,6 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(found);
             Assert.IsFalse(actual);
 
-        }
+        } 
     }
 }

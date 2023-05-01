@@ -23,6 +23,24 @@ namespace AA.PMTOGO.Managers
             _logger = logger;
             _usersDAO = usersDAO;
         }
+        public async Task<Result> GetAllUsers()
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _account.GatherUsers();
+                await _logger!.Log("GetAllUsers", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Get All Users Unsuccessful. Try Again Later";
+                await _logger!.Log("GetAllUsers", 4, LogCategory.Business, result);
+            }
+            return result;
+
+        }
 
         public async Task<Result> RegisterUser(string email, string password, string firstname, string lastname, string role)
         {
@@ -105,7 +123,7 @@ namespace AA.PMTOGO.Managers
             Result result = new Result();
             try
             {
-                result = await _account.DisableAccount(username, false);
+                result = await _account.DisableAccount(username, 0);
                 await _logger!.Log("DisableUserAccount", 4, LogCategory.Business, result);
                 return result;
             }
@@ -123,7 +141,7 @@ namespace AA.PMTOGO.Managers
             Result result = new Result();
             try
             {
-                result = await _account.EnableAccount(username, true);
+                result = await _account.EnableAccount(username, 1);
                 await _logger!.Log("EnableUserAccount", 4, LogCategory.Business, result);
                 return result;
             }

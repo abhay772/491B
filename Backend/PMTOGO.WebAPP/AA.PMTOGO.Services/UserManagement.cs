@@ -15,8 +15,9 @@ namespace AA.PMTOGO.Services
     public class UserManagement : IUserManagement
     {
         IUsersDAO _authNDAO;
+
         InputValidation valid = new InputValidation();
-        private readonly ILogger _logger;
+        private readonly ILogger? _logger;
 
         public UserManagement(ILogger logger, IUsersDAO usersDAO)
         {
@@ -24,6 +25,23 @@ namespace AA.PMTOGO.Services
             _authNDAO = usersDAO;
         }
 
+        public async Task<Result> GatherUsers()
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _authNDAO.GetUserAccounts();
+                await _logger!.Log("GetUserAccounts", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Get User Accounts Unsuccessful. Try Again Later";
+                await _logger!.Log("GetUserAccounts", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
         public async Task<User?> GetUser(string username)
         {
             Result result = new();
@@ -123,7 +141,7 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> DisableAccount(string username, bool active)
+        public async Task<Result> DisableAccount(string username, int active)
         {
             Result result = new Result();
             if (valid.ValidateEmail(username).IsSuccessful)
@@ -159,13 +177,13 @@ namespace AA.PMTOGO.Services
             return result;
         }
 
-        public async Task<Result> EnableAccount(string username, bool active)
+        public async Task<Result> EnableAccount(string username, int active)
         {
             Result result = new Result();
             if (valid.ValidateEmail(username).IsSuccessful)
             {
                 Result result1 = new Result();
-                result1 = await _authNDAO.FindUser(username);
+                result1 = await _authNDAO.GetUser(username);
                 if (result1.IsSuccessful == true)
                 {
                     //deactivate user account

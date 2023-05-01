@@ -311,8 +311,17 @@ const appendServices =(service, id) => {
 
   requestAction.append(requestbtn);
 
+  let projectAction = document.createElement('td');
+  let projectbtn = document.createElement('button');
+  projectbtn.innerText = "Add to Project";
+  projectbtn.className="addproject-link";
+  //may change id
+  projectbtn.id=`${service.id}`;
+
+  projectAction.append(projectbtn);
+
   ServiceTableBodyRow.append(serviceName,serviceType,serviceDescription,
-    serviceProvider,serviceProviderEmail,price, requestAction);
+    serviceProvider,serviceProviderEmail,price, requestAction, projectAction);
 
   ServiceTable.append(ServiceTableBodyRow);
 }
@@ -391,6 +400,17 @@ function loadServices(userrole, page){
           loadNewRequest(key.id, userrole, Content)
         })
       })
+      const projectlist = Array.from(document.getElementsByClassName("addproject-link")); 
+      projectlist.forEach((key)=>{
+        key.addEventListener('click', function() 
+        {
+          if(userrole === "Unauthorized User"){
+            loadLoginPage();
+          }
+          //to be changed
+          loadNewRequest(key.id, userrole, Content)
+        })
+      })
   })
   .catch(error => console.error(error));     
 }
@@ -424,6 +444,8 @@ function loadHomePage(userrole, username) {
       const serviceFeature = document.getElementById('serviceManagement');
       //select crime alert
       const crimeMapFeature = document.getElementById('crimemap');
+
+      const adminFeature = document.getElementById('admin');
 
         //add event listeners
       logoutUser.addEventListener('click', () => {
@@ -463,6 +485,11 @@ function loadHomePage(userrole, username) {
         // add event listeners to nav to property evaluation
         propertyEvalFeature.addEventListener('click', () => {
             loadPropertyEvalPage(homepageContent);
+        });
+
+         // add event listeners to nav to admin
+        adminFeature.addEventListener('click', () => {
+          loadAdminPage(homepageContent);
         });
 
     })

@@ -129,7 +129,7 @@ namespace AA.PMTOGO.Libary
 
             var today = DateTime.Now;
 
-            if (role == "Property Manager" || role == "Service Provider")
+            if (role == "Property Manager" || role == "Service Provider" || role == "Admin")
             {
                 result.IsSuccessful = true;
                 return result;

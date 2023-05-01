@@ -72,12 +72,15 @@ button {
   width: 100%;
 }
 
-.loginbtn, .submit, .rate-link, .servicerequest-link{
+.loginbtn, .submit, .rate-link, .servicerequest-link, .addproject-link{
   background-color: #04AA6D;
   padding: 14px 20px;
   left: 0;
   margin: 8px 0;
   width: 100%;
+}
+.addproject-link{
+  background-color: grey;
 }
 
 
