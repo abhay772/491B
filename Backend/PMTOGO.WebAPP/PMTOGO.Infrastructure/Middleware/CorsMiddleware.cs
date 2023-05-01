@@ -14,7 +14,7 @@ namespace AA.PMTOGO.Infrastructure.NewFolder
 
         public async Task InvokeAsync(HttpContext context)
         {
-            
+
             context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:8080");
             context.Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
             context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");

@@ -39,7 +39,7 @@ namespace AA.PMTOGO.IntergrationTest
             var dao = new ServiceRequestDAO();
             var service = new UserServiceDAO();
             Guid id = Guid.NewGuid();
-            await service.AddServiceRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month","random comment",
+            await service.AddServiceRequest(id, "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
                 "serviceProvider@gmail.com", "Sara Jade", "propertyManager@gmail.com", "Sierra Harris");
 
             // Act
@@ -77,7 +77,7 @@ namespace AA.PMTOGO.IntergrationTest
             Assert.IsFalse(actual);
         }
 
-        
+
         [TestMethod]
         public async Task AddAUserService_Pass()
         {
@@ -88,7 +88,7 @@ namespace AA.PMTOGO.IntergrationTest
             Guid id = Guid.NewGuid();
 
             // Act
-            ServiceRequest service = new ServiceRequest(id, "Landscape", "material delivery", "soil installation ", "1x/month","random comment",
+            ServiceRequest service = new ServiceRequest(id, "Landscape", "material delivery", "soil installation ", "1x/month", "random comment",
                 "mssierra310@gmail.com", "Sara Jade", "sierra.harris01@student.csulb.edu", "Sierra Harris");
             await request.AddUserService(service);
             Result result = await userService.FindUserService(id);
@@ -104,7 +104,7 @@ namespace AA.PMTOGO.IntergrationTest
 
 
         }
-      
+
 
     }
 }

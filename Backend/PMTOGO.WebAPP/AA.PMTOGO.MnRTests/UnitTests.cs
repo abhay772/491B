@@ -1,8 +1,7 @@
-using AA.PMTOGO.DAL;
-using AA.PMTOGO.Managers;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.Services;
+using AA.PMTOGO.Services.Interfaces;
 using Moq;
 
 namespace AA.PMTOGO.MnRTests;
@@ -27,7 +26,7 @@ public class UnitTests
         var projectDetail = new ProjectDetail
         {
             ProjectName = "Tranquil Haven: Mindful Living",
-            ServiceID = 0,
+            ServiceIDs = new List<int> { 0 },
             StartDate = new DateOnly(2023, 06, 11),
             EndDate = new DateOnly(2023, 08, 11),
             ServiceTime = new TimeOnly(16, 30),
@@ -74,13 +73,13 @@ public class UnitTests
         int evalChange = 0;
         int OEval = 0;
 
-        var projectDetail = new ProjectDetail 
-        { 
+        var projectDetail = new ProjectDetail
+        {
             ProjectName = "Tranquil Haven: Mindful Living",
             ServiceID = 0,
-            StartDate = new DateOnly(2023,06,11),
-            EndDate = new DateOnly(2023,08,11),
-            ServiceTime = new TimeOnly(16,30),
+            StartDate = new DateOnly(2023, 06, 11),
+            EndDate = new DateOnly(2023, 08, 11),
+            ServiceTime = new TimeOnly(16, 30),
             Budget = 10_000,
         };
 
@@ -108,8 +107,8 @@ public class UnitTests
         // Assert
         Assert.IsFalse(result.IsSuccessful);
 
-        mockServiceProjectDAO.Verify(mock => 
-        mock.SaveProfile(username,evalChange,OEval,projectDetail), Times.Once());
+        mockServiceProjectDAO.Verify(mock =>
+        mock.SaveProfile(username, evalChange, OEval, projectDetail), Times.Once());
     }
 
     [TestMethod]

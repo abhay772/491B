@@ -1,12 +1,12 @@
-﻿using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.Libary;
+using AA.PMTOGO.Logging;
+using AA.PMTOGO.Models.Entities;
+using AA.PMTOGO.Services.Interfaces;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
-using AA.PMTOGO.Libary;
-using AA.PMTOGO.DAL;
-using System.Net.Mail;
-using System.Net;
-using AA.PMTOGO.Services.Interfaces;
-using AA.PMTOGO.Logging;
 
 namespace AA.PMTOGO.Services
 {
@@ -24,12 +24,12 @@ namespace AA.PMTOGO.Services
 
 
         //byte[] to string
-        public async Task<Result> CreateAccount(string email,string password, string firstname, string lastname, string role)
+        public async Task<Result> CreateAccount(string email, string password, string firstname, string lastname, string role)
         {
             Result result = new Result();
             if (valid.ValidateEmail(email).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
             {
-                Result result1= new Result();
+                Result result1 = new Result();
                 result1 = await _authNDAO.FindUser(email);
                 if (result1.IsSuccessful == false)//user doesnt exist so procceed
                 {
@@ -62,7 +62,7 @@ namespace AA.PMTOGO.Services
             {
                 result.ErrorMessage = "Invalid email provided.Retry again or contact system administrator";
                 result.IsSuccessful = false;
-                
+
             }
             result.IsSuccessful = false;
             return result;
@@ -128,8 +128,8 @@ namespace AA.PMTOGO.Services
         {
             Result result = new Result();
             result = _authNDAO.FindUser(email).Result;
-            
-            if (result.IsSuccessful) 
+
+            if (result.IsSuccessful)
             {
                 EmailOTP(email);
             }
@@ -174,7 +174,7 @@ namespace AA.PMTOGO.Services
                 Console.WriteLine("Error sending email");
             }
             return false;
-            
+
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿using AA.PMTOGO.Models.Entities;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using AA.PMTOGO.Libary;
-using System.IdentityModel.Tokens.Jwt;
+﻿using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers.Interfaces;
+using AA.PMTOGO.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace AA.PMTOGO.WebAPP.Controllers;
 
@@ -20,7 +20,7 @@ public class PropEvalController : ControllerBase
         _inputValidation = new InputValidation();
     }
 
-    [HttpGet("loadProfile")]
+    [HttpGet("LoadProfile")]
     [Consumes("application/json")]
     public async Task<IActionResult> LoadProfile()
     {
@@ -43,7 +43,7 @@ public class PropEvalController : ControllerBase
                 var claims = jwtToken.Claims.ToList();
                 Claim usernameClaim = claims[0];
                 Claim roleClaim = claims[1];
-                
+
 
                 if (usernameClaim != null && roleClaim != null)
                 {
@@ -76,7 +76,7 @@ public class PropEvalController : ControllerBase
 
             }
 
-           return BadRequest("Not Authorized"); 
+            return BadRequest("Not Authorized");
         }
 
         catch
@@ -85,7 +85,7 @@ public class PropEvalController : ControllerBase
         }
     }
 
-    [HttpPut("saveProfile")]
+    [HttpPut("SaveProfile")]
     [Consumes("application/json")]
     public async Task<IActionResult> SaveProfile(PropertyProfile propertyProfile)
     {
@@ -140,14 +140,14 @@ public class PropEvalController : ControllerBase
             return BadRequest("Cookie not found");
         }
 
-        catch 
+        catch
         {
             // no useful error information
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 
-    [HttpGet("evaluate")]
+    [HttpGet("Evaluate")]
     public async Task<IActionResult> Evaluate()
     {
         try
@@ -184,7 +184,7 @@ public class PropEvalController : ControllerBase
                         Result result = await _propEvalManager.loadProfileAsync(username);
 
                         if (result.IsSuccessful == false)
-                        { 
+                        {
                             return BadRequest(result.ErrorMessage);
                         }
 
@@ -218,7 +218,7 @@ public class PropEvalController : ControllerBase
             return BadRequest("Not Authorized");
         }
 
-        catch 
+        catch
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }

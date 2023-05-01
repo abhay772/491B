@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Web.Mvc;
 
 namespace AA.PMTOGO.Libary
 {
@@ -32,6 +31,12 @@ namespace AA.PMTOGO.Libary
                     }
 
                     var claims = jwtToken.Claims.ToList();
+
+                    //Claim usernameClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+                    //Claim roleClaim = claims.FirstOrDefault(c => c.Type == ClaimTypes.Role);
+
+                    //Console.WriteLine(usernameClaim.ToString(),roleClaim.ToString());
+
                     Claim usernameClaim = claims[0];
                     Claim roleClaim = claims[1];
 
@@ -42,6 +47,7 @@ namespace AA.PMTOGO.Libary
 
                         // Check if the role is Property Manager
                         bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
+
                         if (validationCheck && userrole == role || role == null)
                         {
                             UserClaims user = new UserClaims(username, role!);
@@ -51,7 +57,6 @@ namespace AA.PMTOGO.Libary
                             return result;
                         }
                     }
-                    return result;
                 }
             }
             catch

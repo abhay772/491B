@@ -4,6 +4,9 @@ namespace AA.PMTOGO.Services.Interfaces
 {
     public interface IPropertyEvaluator
     {
-        Task<Result> evaluate(PropertyProfile propertyProfile);
+        Task<Result> Evaluate(PropertyProfile propertyProfile);
+        Task<Result> LoadProfileAsync(string username);
+        Task<Result> SaveProfileAsync(string username, PropertyProfile propertyProfile);
+
     }
 }

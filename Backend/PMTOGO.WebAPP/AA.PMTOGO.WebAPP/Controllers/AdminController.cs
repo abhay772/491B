@@ -2,14 +2,12 @@
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AdminController: ControllerBase
+    public class AdminController : ControllerBase
     {
         private readonly IUsageAnalysisManager _analysisManager;
         private readonly ClaimValidation _claims;
@@ -59,7 +57,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return BadRequest("Not Authorized");
 
         }
-        
+
 
     }
 }

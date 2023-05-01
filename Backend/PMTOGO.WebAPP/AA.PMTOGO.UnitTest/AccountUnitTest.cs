@@ -38,7 +38,7 @@ namespace AA.PMTOGO.UnitTest
             //username = email
 
             Result result = await user.CreateAccount("sara2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
-            
+
             bool accountCreated = result.IsSuccessful;
 
             // Act
@@ -51,8 +51,8 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(accountCreated);
             Assert.IsFalse(account2Created);
 
-            
-            
+
+
         }
 
         //The user provides a valid email address that belongs to the user.
@@ -175,9 +175,9 @@ namespace AA.PMTOGO.UnitTest
             {
                 OverTime = true;
             }
-                //private info
+            //private info
 
-                //assert
+            //assert
             Assert.IsNotNull(OnTime);
             Assert.IsNotNull(OverTime);
             Assert.IsTrue(OnTime);

@@ -17,9 +17,9 @@ namespace AA.PMTOGO.Services
 
 
             //get user info
-            string firstName =  user!.FirstName;
+            string firstName = user!.FirstName;
             string lastName = user!.LastName;
-            string propertyManagerName = firstName+ " " + lastName;
+            string propertyManagerName = firstName + " " + lastName;
 
             Guid serviceRequestId = Guid.NewGuid();
             //need property manager info
@@ -33,7 +33,7 @@ namespace AA.PMTOGO.Services
         {
             Result result = await _userServiceDAO.AddServiceRequest(request.Id, request.ServiceName, request.ServiceType, request.ServiceDescription,
                 request.ServiceFrequency, request.Comments, request.ServiceProviderEmail, request.ServiceProviderName, request.PropertyManagerEmail, request.PropertyManagerName);
-            return result;  
+            return result;
 
         }
         public async Task<Result> GatherUserServices(string username)

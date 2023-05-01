@@ -2,8 +2,6 @@
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -11,10 +9,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
     [Route("api/[controller]")]
     public class UserManagementController : ControllerBase
     {
-        
+
         private readonly IAccountManager _accManager;
         private readonly ClaimValidation _claims;
-            
+
 
         public UserManagementController(IAccountManager accManager, ClaimValidation claims)
         {
@@ -159,8 +157,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }
-             return BadRequest("Cookie not found");
-            
+            return BadRequest("Cookie not found");
+
         }
 
         public class UserRegister

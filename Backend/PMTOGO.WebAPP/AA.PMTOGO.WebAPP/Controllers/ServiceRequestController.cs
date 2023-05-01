@@ -1,20 +1,18 @@
 ﻿using AA.PMTOGO.Libary;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using AA.PMTOGO.Managers.Interfaces;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ServiceRequestController: ControllerBase
+    public class ServiceRequestController : ControllerBase
     {
         private readonly IServiceRequestManager _requestManager;
         private readonly ClaimValidation _claims;
 
-        public ServiceRequestController(IServiceRequestManager requestManager,ClaimValidation claims)
+        public ServiceRequestController(IServiceRequestManager requestManager, ClaimValidation claims)
         {
             _requestManager = requestManager;
             _claims = claims; //uses input validation
@@ -59,7 +57,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
             }
             return BadRequest("Not Authorized");
-            
+
         }
         [HttpPost]
         [Route("accept")]
@@ -124,7 +122,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
             }
             return BadRequest("Cookie not found");
-            
+
         }
 
     }

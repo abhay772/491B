@@ -3,8 +3,6 @@ using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 
 namespace AA.PMTOGO.WebAPP.Controllers
@@ -89,7 +87,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
             }
             return BadRequest("Not Authorized");
-            
+
         }
 
         [HttpPost]
@@ -107,12 +105,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result insert = await _serviceManager.AddServiceRequest(service, user.ClaimUsername);
                     if (insert.IsSuccessful)
                     {
-                        return Ok(new { message = insert.Payload});
+                        return Ok(new { message = insert.Payload });
                     }
                     else
                     {
 
-                        return BadRequest(new { message = "Retry again or contact system admin" } );
+                        return BadRequest(new { message = "Retry again or contact system admin" });
                     }
                 }
                 catch
@@ -123,7 +121,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
             return BadRequest("Invalid Credentials");
         }
-        
+
         [HttpPut]
         [Route("rate")]
         public async Task<IActionResult> RateService(ServiceInfo service)
@@ -131,7 +129,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             Result result = new Result();
             result = _claims.ClaimsValidation("Property Manager", Request);
 
-            if (result.IsSuccessful )
+            if (result.IsSuccessful)
             {
                 try
                 {

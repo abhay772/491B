@@ -64,7 +64,7 @@ public class UsersDAO
         result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
-    
+
     public async Task<Result> GetUser(string username)
     {
         Result result = new Result();
@@ -534,9 +534,9 @@ public class UsersDAO
                     if ((DateTime.Now - otpTimestamp).TotalHours <= 24)
                     {
                         // Update the RecoveryRequest column to 1 if OTP validation is successful
-                       // command = new SqlCommand("UPDATE UserAccounts SET RecoveryRequest = 1 WHERE username = @Username", connection);
+                        // command = new SqlCommand("UPDATE UserAccounts SET RecoveryRequest = 1 WHERE username = @Username", connection);
                         //command.ExecuteNonQuery();
-                        
+
                         result.IsSuccessful = true;
                     }
                     else

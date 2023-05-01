@@ -1,11 +1,8 @@
 ﻿using AA.PMTOGO.Models.Entities;
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AA.PMTOGO.DAL
 {
@@ -216,7 +213,7 @@ namespace AA.PMTOGO.DAL
                 var command = new SqlCommand(sqlQuery, connection);
 
                 command.Parameters.AddWithValue("@ID", SqlDbType.UniqueIdentifier).Value = serviceId;
-                command.Parameters.AddWithValue("@Rating", SqlDbType.Int).Value= rating;
+                command.Parameters.AddWithValue("@Rating", SqlDbType.Int).Value = rating;
 
                 try
                 {

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using AA.PMTOGO.DAL;
-using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Infrastructure.Interfaces;
+using AA.PMTOGO.Models.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace AA.PMTOGO.Services
 {

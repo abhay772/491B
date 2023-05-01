@@ -1,6 +1,4 @@
-﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.Services;
+﻿using AA.PMTOGO.Services;
 
 
 namespace AA.PMTOGO.UnitTest

@@ -5,12 +5,12 @@ using AA.PMTOGO.Services.Interfaces;
 namespace AA.PMTOGO.Managers
 {
     //input validation, error handling , logging
-    public class ServiceManager: IServiceManager
+    public class ServiceManager : IServiceManager
     {
         private readonly IServiceManagement _service;
         private readonly IUserServiceManagement _userService;
 
-        public ServiceManager(IServiceManagement service, IUserServiceManagement userService) 
+        public ServiceManager(IServiceManagement service, IUserServiceManagement userService)
         {
             _service = service;
             _userService = userService;
@@ -32,8 +32,8 @@ namespace AA.PMTOGO.Managers
         }
 
         public async Task<Result> AddServiceRequest(ServiceRequest service, string username)
-        {   
-            Result result = await _userService.CreateRequest(service, username); 
+        {
+            Result result = await _userService.CreateRequest(service, username);
             return result;
 
         }

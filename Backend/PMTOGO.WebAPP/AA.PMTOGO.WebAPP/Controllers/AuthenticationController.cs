@@ -1,14 +1,11 @@
 ﻿
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mail;
-using System.Net;
-using System.Text.Json;
-using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using static System.Net.WebRequestMethods;
-using AA.PMTOGO.Managers.Interfaces;
-using Azure.Core;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Claims;
 
 namespace AA.PMTOGO_v2.Controllers;
 
@@ -24,7 +21,7 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpGet("IsLoggedIn")]
-    public  IActionResult IsLoggedIn()
+    public IActionResult IsLoggedIn()
     {
         try
         {
@@ -36,7 +33,8 @@ public class AuthenticationController : ControllerBase
             return Ok(false);
         }
 
-        catch {
+        catch
+        {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
@@ -126,7 +124,7 @@ public class AuthenticationController : ControllerBase
         Response.Cookies.Append("CredentialCookie", principalString, new CookieOptions
         {
             Domain = "localhost",
-            Path= "/",
+            Path = "/",
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.None,

@@ -13,9 +13,9 @@ namespace AA.PMTOGO.Services
         public async Task<Result> AcceptRequest(Guid requestId)
         {//add service request and delete from requested service and return new list of service request
             ServiceRequest service = await CreateUserService(requestId);
-            
+
             Result result = new Result();
-         
+
             Result insert = await _requestDAO.AddUserService(service);
 
             if (insert.IsSuccessful == false)
@@ -48,7 +48,7 @@ namespace AA.PMTOGO.Services
 
         public async Task<Result> GatherServiceRequests(string username)
         {
-            
+
             Result result = await _requestDAO.GetServiceRequests(username);
             return result;
         }
@@ -63,5 +63,5 @@ namespace AA.PMTOGO.Services
         }
 
     }
-    
+
 }

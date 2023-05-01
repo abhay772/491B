@@ -30,13 +30,13 @@ namespace AA.PMTOGO.Managers
         // update decline
         public async Task<Result> RemoveServiceRequest(string requestId, string email)
         {
-            Guid id= new Guid(requestId);
+            Guid id = new Guid(requestId);
             Result result = await _serviceRequest.DeclineRequest(id, email);
 
 
             return result;
         }
-        
+
         //get all request for service provider user    
         public async Task<Result> GetUserRequests(string username)
         {

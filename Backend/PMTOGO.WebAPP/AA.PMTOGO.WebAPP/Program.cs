@@ -1,7 +1,8 @@
-using AA.PMTOGO.WebAPP.Data;
 using AA.PMTOGO.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+using AA.PMTOGO.Infrastructure.JSONConverters;
 using AA.PMTOGO.Infrastructure.NewFolder;
+using AA.PMTOGO.WebAPP.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,9 +18,13 @@ builder.Services.AddInfrastructure();
 builder.Services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDbConnectionString")));
 builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceDbConnectionString")));
 
+builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new TimeOnlyConverter());
+        });
+
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
