@@ -52,10 +52,10 @@ namespace AA.PMTOGO.Services
             crimeAlerts = await _mapDAO.GetAlerts();
             return crimeAlerts;
         }
-        public async Task<CrimeAlert> ViewAlert(string email, int id)
+        public async Task<CrimeAlert> ViewAlert(int id)
         {
             var alert = new CrimeAlert();
-            alert = await _mapDAO.ViewAlert(email, id);
+            alert = await _mapDAO.ViewAlert(id);
             return alert;
         }
 

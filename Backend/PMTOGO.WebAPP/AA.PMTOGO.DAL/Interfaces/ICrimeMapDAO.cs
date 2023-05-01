@@ -14,6 +14,6 @@ namespace AA.PMTOGO.DAL.Interfaces
         Task<Result> DeleteAlert(string email, int id);
         Task<Result> EditAlert(string email, int id, CrimeAlert alert);
         Task<List<CrimeAlert>> GetAlerts();
-        Task<CrimeAlert> ViewAlert(string email, int id);
+        Task<CrimeAlert> ViewAlert(int id);
     }
 }

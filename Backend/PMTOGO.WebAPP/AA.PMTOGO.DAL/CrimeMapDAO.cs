@@ -201,21 +201,19 @@ namespace AA.PMTOGO.DAL
                     catch { }
                 }
             }
-
             return alerts;
         }
 
-        public async Task<CrimeAlert> ViewAlert(string email, int id)
+        public async Task<CrimeAlert> ViewAlert(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM CrimeAlerts WHERE Email = @Email AND ID = @ID";
+                string sqlQuery = "SELECT * FROM CrimeAlerts WHERE ID = @ID";
 
                 var command = new SqlCommand(sqlQuery, connection);
 
-                command.Parameters.AddWithValue("@Email", email);
                 command.Parameters.AddWithValue("@ID", id);
 
                 using (SqlDataReader reader = await command.ExecuteReaderAsync())

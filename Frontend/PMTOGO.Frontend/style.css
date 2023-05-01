@@ -84,6 +84,26 @@ button {
   width: 100%;
 }
 
+#addAlertButton{
+    background-color: #04AA6D;
+    padding: 14px 20px;
+    right: 0;
+    top: 0;
+    margin: 8px 0;
+    text-align: center;
+    width: 200px;
+}
+
+#backButton {
+    background-color: #04AA6D;
+    padding: 14px 20px;
+    right: 0;
+    top: 0;
+    margin: 8px 0;
+    text-align: center;
+    width: 200px;
+}
+
 addbtn {
     background-color: #04AA6D;
     padding: 14px 20px;

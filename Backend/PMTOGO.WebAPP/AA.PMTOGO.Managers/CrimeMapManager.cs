@@ -48,9 +48,9 @@ namespace AA.PMTOGO.Managers
             return _result;
         }
 
-        public async Task<CrimeAlert> ViewCrimeAlert(string email, int id) 
+        public async Task<CrimeAlert> ViewCrimeAlert(int id) 
         {
-            _alert = await _crimeMapService.ViewAlert(email, id);
+            _alert = await _crimeMapService.ViewAlert(id);
             return _alert;
         }
 

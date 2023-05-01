@@ -42,7 +42,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 else
                 {
 
-                    return BadRequest("Error");
+                    return BadRequest("Error: Unable to add alert.");
                 }
             }
             catch
@@ -58,15 +58,15 @@ namespace AA.PMTOGO.WebAPP.Controllers
         {
             try
             {
-                var crimeAlert = await _mapManager.ViewCrimeAlert(alert.Email, alert.ID);
+                var crimeAlert = await _mapManager.ViewCrimeAlert(alert.ID);
                 if (crimeAlert is not null)
                 {
-                    return Ok(new { message = "Crime alert added successfully." });
+                    return Ok(new { message = "Crime alert recived successfully." });
                 }
                 else
                 {
 
-                    return BadRequest("Error");
+                    return BadRequest("Error: Unable to receive alert.");
                 }
             }
             catch
@@ -85,12 +85,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 Result result = await _mapManager.EditCrimeAlert(alert.Email, alert.ID, alert.Name, alert.Location, alert.Description, alert.Time, alert.Date, alert.X, alert.Y);
                 if (result.IsSuccessful)
                 {
-                    return Ok(new { message = "Crime alert added successfully." });
+                    return Ok(new { message = "Crime alert edited successfully." });
                 }
                 else
                 {
 
-                    return BadRequest("Error");
+                    return BadRequest("Error: Unable to edit alert.");
                 }
             }
             catch
@@ -109,12 +109,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 Result result = await _mapManager.DeleteCrimeAlert(alert.Email, alert.ID);
                 if (result.IsSuccessful)
                 {
-                    return Ok(new { message = "Crime alert added successfully." });
+                    return Ok(new { message = "Crime alert deleted successfully." });
                 }
                 else
                 {
 
-                    return BadRequest("Error");
+                    return BadRequest("Error: Unable to delete.");
                 }
             }
             catch
