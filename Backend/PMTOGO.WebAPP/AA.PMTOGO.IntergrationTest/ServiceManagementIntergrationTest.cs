@@ -3,6 +3,7 @@ using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace AA.PMTOGO.IntergrationTest
 {
@@ -10,18 +11,20 @@ namespace AA.PMTOGO.IntergrationTest
     public class ServiceManagementIntergrationTest
     {
         private IUsersDAO _usersDAO;
-        private readonly IUsersDAO _authNDAO;
-        private readonly ServiceDAO _serviceDAO;
-        private readonly UserServiceDAO _userServiceDAO;
+        private readonly IServiceDAO _serviceDAO;
+        private readonly IUserServiceDAO _userServiceDAO;
+        private readonly IServiceRequestDAO _serviceRequestDAO;
         private readonly ILogger? _logger;
-
-        public ServiceManagementIntergrationTest(IUsersDAO usersDAO, ServiceDAO serviceDAO, UserServiceDAO userServiceDAO, ILogger logger)
+        private readonly string _connectionString;
+        private readonly IConfiguration? _configuration;
+        public ServiceManagementIntergrationTest(IUsersDAO usersDAO, IServiceDAO serviceDAO,IServiceRequestDAO servicerequestDAO, IUserServiceDAO userServiceDAO, ILogger logger, IConfiguration _configuration)
         {
             _usersDAO = usersDAO;
-            _authNDAO = usersDAO;
             _serviceDAO = serviceDAO;
+            _serviceRequestDAO = servicerequestDAO;
             _userServiceDAO = userServiceDAO;
             _logger = logger;
+            _connectionString = _configuration!.GetConnectionString("ServiceDbConnectionString")!;
         }
 
 
@@ -29,7 +32,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task AddAService_PASS()
         {
             // Arrange
-            var dao = new ServiceDAO();
+            var dao = new ServiceDAO(_configuration!);
             Guid id = Guid.NewGuid();
             Service service = new Service(id, "Steam Cleaning", "Pressure Wash", "Cleans hard surfaces such as sidewalks, exterior building walls, or walkways",
                  "Sierra Harris", "mssierra310@gmail.com", 450.50);
@@ -53,7 +56,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task GetServices_PASS()
         {
             // Arrange
-            var dao = new ServiceDAO();
+            var dao = new ServiceDAO(_configuration!);
 
             // Act
             Result result = await dao.GetServices();
@@ -67,7 +70,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task GetUserServicesPM_PASS()
         {
             // Arrange
-            var dao = new UserServiceDAO();
+            var dao = new UserServiceDAO(_configuration!);
 
             Guid id = Guid.NewGuid();
             ServiceRequest service = new (id,"New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -91,7 +94,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task GetUserServicesSP_PASS()
         {
             // Arrange
-            var dao = new UserServiceDAO();
+            var dao = new UserServiceDAO(_configuration!);
 
             Guid id = Guid.NewGuid();
             ServiceRequest service = new(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -115,7 +118,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task AddServiceRequest_PASS()
         {
             // Arrange
-            var dao = new ServiceRequestDAO();
+            var dao = new ServiceRequestDAO(_configuration!);
             Guid id = Guid.NewGuid();
 
             ServiceRequest request = new(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -141,8 +144,8 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateAUserServiceSP_PASS()
         {
             //arrange
-            var service = new UserServiceManagement(_usersDAO,_logger!);
-            var dao = new UserServiceDAO();
+            var service = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
+            var dao = new UserServiceDAO(_configuration!);
 
             Guid id = Guid.NewGuid();
             ServiceRequest userService = new ServiceRequest(id,"New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -170,8 +173,8 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateAUserServicePM_PASS()
         {
             //arrange
-            var userserviceM = new UserServiceManagement(_usersDAO, _logger!);
-            var dao = new UserServiceDAO();
+            var userserviceM = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
+            var dao = new UserServiceDAO(_configuration!);
 
             Guid id = Guid.NewGuid();
             ServiceRequest userService = new ServiceRequest(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -199,9 +202,9 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task RateIsNotHigherThan5_FAIL()
         {
             //arrange
-            var service = new UserServiceManagement(_usersDAO, _logger!);
-            var request = new ServiceRequestDAO();
-            var dao = new UserServiceDAO();
+            var service = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
+            var request = new ServiceRequestDAO(_configuration!);
+            var dao = new UserServiceDAO(_configuration!);
             Guid id = Guid.NewGuid();
 
             ServiceRequest userService = new ServiceRequest(id, "New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",

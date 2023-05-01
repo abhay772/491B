@@ -28,22 +28,6 @@ namespace AA.PMTOGO.Models.Entities
 
         public ServiceRequest() { }
 
-        public ServiceRequest(Guid id, string serviceName, string serviceType, string serviceDescription, string serviceFrequency,
-            string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
-        {
-            Id = id;
-            ServiceName = serviceName;
-            ServiceType = serviceType;
-            ServiceDescription = serviceDescription;
-            ServiceFrequency = serviceFrequency;
-            Comments = comments;
-            ServiceProviderEmail = serviceProviderEmail;
-            ServiceProviderName = serviceProviderName;
-            PropertyManagerEmail = propertyManagerEmail;
-            PropertyManagerName = propertyManagerName;
-
-        }
-
         public ServiceRequest(Guid id, string requestType, string serviceName, string serviceType, string serviceDescription, string serviceFrequency,
     string comments, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
         {

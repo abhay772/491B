@@ -1,15 +1,23 @@
 ﻿
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Models.Entities;
-
+using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 
 
 namespace AA.PMTOGO.DAL
 {
     //logging
-    public class ServiceDAO
+    public class ServiceDAO: IServiceDAO
     {
-        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";
+        private readonly string _connectionString;
+        //logging
+
+        public ServiceDAO(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
+        }
+        
         // Service Provider - Services DAO
         public async Task<Result> GetServices() //list of services
         {
@@ -28,7 +36,7 @@ namespace AA.PMTOGO.DAL
                 {
                     try
                     {
-                        List<Object> listOfservice = new List<Object>();
+                        List<Service> listOfservice = new List<Service>();
                         while (reader.Read())
                         {
                             Service service = new Service((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"], (string)reader["ServiceProvider"],

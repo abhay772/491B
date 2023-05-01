@@ -58,7 +58,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
 
             }
-            return BadRequest("Not Authorized");
+            return BadRequest("Invalid Credentials");
 
         }
         [HttpPost]
@@ -90,7 +90,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
 
             }
-            return BadRequest("Cookie not found");
+            return BadRequest("Invalid Credentials");
         }
         [HttpPost]
         [Route("decline")]
@@ -122,8 +122,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
                 }
 
-            }
-            return BadRequest("Cookie not found");
+            }  
+            return BadRequest("Invalid Credentials");
 
         }
         [HttpPost]
@@ -145,7 +145,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     }
                     else
                     {
-
                         return BadRequest(result.ErrorMessage);
                     }
                 }
@@ -156,7 +155,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
 
             }
-            return BadRequest("Cookie not found");
+            return BadRequest("Invalid Credentials");
         }
 
         [HttpPost]
@@ -189,7 +188,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
 
             }
-            return BadRequest("Cookie not found");
+            return BadRequest("Invalid Credentials");
         }
 
     }

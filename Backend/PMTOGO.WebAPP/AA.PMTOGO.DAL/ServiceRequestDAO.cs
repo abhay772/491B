@@ -1,5 +1,7 @@
 ﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Models.Entities;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 
 using System.Data.SqlClient;
@@ -7,9 +9,16 @@ using System.Data.SqlClient;
 namespace AA.PMTOGO.DAL
 {
     //logging
-    public class ServiceRequestDAO
+    public class ServiceRequestDAO: IServiceRequestDAO
     {
-        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";
+         private readonly string _connectionString;
+         //logging
+
+         public ServiceRequestDAO(IConfiguration configuration)
+         {
+             _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
+         }
+       
 
         //Find request or userservice
 

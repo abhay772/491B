@@ -9,9 +9,6 @@ using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Services;
 using AA.PMTOGO.Services.Interfaces;
 using ILogger = AA.PMTOGO.Logging.ILogger;
-using AA.PMTOGO.Models;
-using AA.PMTOGO.WebAPP.Controllers;
-using AA.PMTOGO.DAL.Interfaces;
 
 namespace AA.PMTOGO.Infrastructure
 {
@@ -28,6 +25,9 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IServiceRequestManagement, ServiceRequestManagement>();
             services.AddTransient<IServiceRequestManager, ServiceRequestManager>();
             services.AddTransient<IUserServiceManagement, UserServiceManagement>();
+            services.AddTransient<IUserServiceDAO, UserServiceDAO>();
+            services.AddTransient<IServiceRequestDAO, ServiceRequestDAO>();
+            services.AddTransient<IServiceDAO, ServiceDAO>();
             services.AddSingleton<IAuthenticator, Authenticator>();
             services.AddTransient<IAuthManager, AuthManager>();
             services.AddTransient<IDIYManager, DIYManager>();

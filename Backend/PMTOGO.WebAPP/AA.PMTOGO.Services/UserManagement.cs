@@ -15,8 +15,9 @@ namespace AA.PMTOGO.Services
     public class UserManagement : IUserManagement
     {
         IUsersDAO _authNDAO;
+
         InputValidation valid = new InputValidation();
-        private readonly ILogger _logger;
+        private readonly ILogger? _logger;
 
         public UserManagement(ILogger logger, IUsersDAO usersDAO)
         {
@@ -24,6 +25,23 @@ namespace AA.PMTOGO.Services
             _authNDAO = usersDAO;
         }
 
+        public async Task<Result> GatherUsers()
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _authNDAO.GetUserAccounts();
+                await _logger!.Log("GetUserAccounts", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Get User Accounts Unsuccessful. Try Again Later";
+                await _logger!.Log("GetUserAccounts", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
         public async Task<User?> GetUser(string username)
         {
             Result result = new();
@@ -117,6 +135,78 @@ namespace AA.PMTOGO.Services
             else
             {
                 result.ErrorMessage = "Unable to delete account. Try again later or contact system administrator.";
+                result.IsSuccessful = false;
+            }
+
+            return result;
+        }
+
+        public async Task<Result> DisableAccount(string username, int active)
+        {
+            Result result = new Result();
+            if (valid.ValidateEmail(username).IsSuccessful)
+            {
+                Result result1 = new Result();
+                result1 = await _authNDAO.FindUser(username);
+                if (result1.IsSuccessful == true)
+                {
+                    //deactivate user account
+
+                    await _authNDAO.UpdateUserActivation(username, active);
+
+                    //log account deactivate succesfully
+                    await _logger!.Log("DisableAccount", 4, LogCategory.Server, result);
+                    result.IsSuccessful = true;
+                    return result;
+
+                }
+                else
+                {
+                    result.ErrorMessage = "User account does not exists.";
+                    result.IsSuccessful = false;
+                    return result;
+
+                }
+            }
+            else
+            {
+                result.ErrorMessage = "Unable to disable account. Try again later.";
+                result.IsSuccessful = false;
+            }
+
+            return result;
+        }
+
+        public async Task<Result> EnableAccount(string username, int active)
+        {
+            Result result = new Result();
+            if (valid.ValidateEmail(username).IsSuccessful)
+            {
+                Result result1 = new Result();
+                result1 = await _authNDAO.GetUser(username);
+                if (result1.IsSuccessful == true)
+                {
+                    //deactivate user account
+
+                    await _authNDAO.UpdateUserActivation(username,active);
+                    
+                    //log account activate succesfully
+                    await _logger!.Log("EnableAccount", 4, LogCategory.Server, result);
+                    result.IsSuccessful = true;
+                    return result;
+
+                }
+                else
+                {
+                    result.ErrorMessage = "User account does not exists.";
+                    result.IsSuccessful = false;
+                    return result;
+
+                }
+            }
+            else
+            {
+                result.ErrorMessage = "Unable to enable account. Try again later";
                 result.IsSuccessful = false;
             }
 

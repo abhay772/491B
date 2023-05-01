@@ -1,4 +1,6 @@
-﻿using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.DAL.Interfaces;
+using AA.PMTOGO.Models.Entities;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,12 +13,16 @@ using System.Threading.Tasks;
 namespace AA.PMTOGO.DAL
 {
     //logging
-    public class UserServiceDAO
+    public class UserServiceDAO : IUserServiceDAO
     {
-        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True";
-        
+        private readonly string _connectionString;
+         //logging
 
-        //find user service
+         public UserServiceDAO(IConfiguration configuration)
+         {
+             _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
+         }
+
 
         public async Task<Result> FindUserService(Guid id) //single request
         {

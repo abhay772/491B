@@ -23,6 +23,24 @@ namespace AA.PMTOGO.Managers
             _logger = logger;
             _usersDAO = usersDAO;
         }
+        public async Task<Result> GetAllUsers()
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _account.GatherUsers();
+                await _logger!.Log("GetAllUsers", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Get All Users Unsuccessful. Try Again Later";
+                await _logger!.Log("GetAllUsers", 4, LogCategory.Business, result);
+            }
+            return result;
+
+        }
 
         public async Task<Result> RegisterUser(string email, string password, string firstname, string lastname, string role)
         {
@@ -97,6 +115,42 @@ namespace AA.PMTOGO.Managers
             string salt = _account.GenerateSalt();
             string passDigest = _account.EncryptPassword(password, salt);
             Result result = await _usersDAO.UpdatePassword(username, passDigest, salt);
+            return result;
+        }
+
+        public async Task<Result> DisableUserAccount(string username)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _account.DisableAccount(username, 0);
+                await _logger!.Log("DisableUserAccount", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Disable Account Unsuccessful. Try Again Later";
+                await _logger!.Log("DisableUserAccount", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
+
+        public async Task<Result> EnableUserAccount(string username)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _account.EnableAccount(username, 1);
+                await _logger!.Log("EnableUserAccount", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Enable Account Unsuccessful. Try Again Later";
+                await _logger!.Log("EnableUserAccount", 4, LogCategory.Business, result);
+            }
             return result;
         }
     }

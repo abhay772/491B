@@ -40,6 +40,17 @@ namespace AA.PMTOGO.Models.Entities
             Role = role;
 
         }
+        public User(string username, string email, string firstName, string lastName, string role, bool isActive)
+        {
+
+            Username = username;
+            Email = email;
+            FirstName = firstName;
+            LastName = lastName;
+            Role = role;
+            IsActive = isActive;
+
+        }
         public User(string username, string role, string passDigest, string salt, bool isActive, int attempt)
         {
             Username = username;

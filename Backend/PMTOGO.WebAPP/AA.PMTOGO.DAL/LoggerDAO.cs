@@ -1,21 +1,26 @@
 ﻿using AA.PMTOGO.Models.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace AA.PMTOGO.DAL
 {
     public class LoggerDAO : ILoggerDAO
     {
+  
+
         private readonly string _connectionString;
-        //private readonly ILogger? _logger;
+
         //logging
 
         public LoggerDAO(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
         }
-
+        
         public async Task<Result> InsertLog(Log log)
         {
             var result = new Result();
@@ -73,39 +78,44 @@ namespace AA.PMTOGO.DAL
         public async Task<Result> GetAnalysisLogs(string operation)
         {
             var result = new Result();
-
             var currentDate = DateTime.Now;
             var minDate = DateTime.Now.AddMonths(-3);
-
-            using (var connection = new SqlConnection(_connectionString))
+            try 
             {
-                connection.Open();
+                IDictionary<DateTime, int> data = new Dictionary<DateTime, int>();
+                DateTime date;
 
-                //string sqlQuery = "SELECT COUNT(*), Timestamp FROM Logs WHERE Operation = @Operation AND Timestamp BETWEEN @minDate AND @currentDate GROUP BY DAY(Timestamp)";
-                string query = "SELECT COUNT(*) FROM (SELECT Timestamp, convert(date, Timestamp) as the_date, COUNT(*) over (partition by Timestamp) as num_dates FROM Logs WHERE Timestamp >= @minDate AND Timestamp < dateadd(day, 1, @currentDate) AND Operation = @Operation Group By Timestamp, convert(date, Timestamp))Logs WHERE num_dates = datediff(day, @currentDate, @minDate) + 1;";
-                var command = new SqlCommand(query, connection);
-
-                command.Parameters.AddWithValue("@Operation", operation);
-                command.Parameters.AddWithValue("@minDate", minDate);
-                command.Parameters.AddWithValue("@currentDate", currentDate);
-
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                using (var connection = new SqlConnection(_connectionString))
                 {
-                    try
+                    connection.Open();
+                    string query = "SELECT Timestamp, COUNT(@Operation) FROM Logs WHERE Timestamp Between @minDate and @currentDate GROUP BY DAY(Timestamp)";
+                    using (var command = new SqlCommand(query, connection))
                     {
-                        //create analysis from query 
+                        command.Parameters.AddWithValue("@Operation", operation);
+                        command.Parameters.AddWithValue("@minDate", minDate);
+                        command.Parameters.AddWithValue("@currentDate", currentDate);
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        { 
+        
+                            date = (DateTime)reader["Timestamp"];
 
+                        }
+                        int count = (int)await command.ExecuteScalarAsync()!;
+
+                        data.Add(date, count);
                         result.IsSuccessful = true;
+                        result.Payload = data;
                         return result;
-                    }
-                    catch
-                    {
-
-                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
-                        result.IsSuccessful = false;
 
                     }
                 }
+            }
+            catch
+            {
+
+                result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                result.IsSuccessful = false;
+
             }
             result.IsSuccessful = false;
             result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";

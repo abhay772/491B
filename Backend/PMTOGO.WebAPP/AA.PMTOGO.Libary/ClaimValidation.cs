@@ -44,7 +44,7 @@ namespace AA.PMTOGO.Libary
                         bool validationCheck = _inputValidation.ValidateEmail(username).IsSuccessful && _inputValidation.ValidateRole(role).IsSuccessful;
                         if (validationCheck && userrole == role || role == null)
                         {
-                            UserClaims user = new UserClaims(username, role!);
+                            UserClaims user = new UserClaims(username, userrole);
 
                             result.IsSuccessful = true;
                             result.Payload = user;

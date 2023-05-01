@@ -58,7 +58,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
             }
-            return BadRequest("Cookie not found");
+            return BadRequest("Invalid Credentials");
         }
 
         [HttpGet]
@@ -66,11 +66,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Consumes("application/json", "application/problem+json")]
         public async Task<IActionResult> GetServices()
         {
-            Result result = new Result();
-            result = _claims.ClaimsValidation(null!, Request);
-
-            if (result.IsSuccessful)
-            {
                 try
                 {
                     //get all services service providers provide
@@ -88,8 +83,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
-            }
-            return BadRequest("Not Authorized");
 
         }
 
@@ -112,7 +105,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     }
                     else
                     {
-
                         return BadRequest(insert.ErrorMessage);
                     }
                 }
