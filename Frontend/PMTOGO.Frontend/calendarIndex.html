@@ -105,7 +105,7 @@
         </div>
         
         <script>
-            const url = "https://localhost:7135";
+            const url = "http://44.230.245.97:8796";
             var jwt = undefined;
             var isLoggedIn = undefined;
 
@@ -194,7 +194,7 @@
                 updateAppointmentForm.style.display = "flex";
 
                 document.querySelector("#updateAppointmentTitle").value = data.title;
-                document.querySelector("#updateAppointmentDate").value = data.appointmentTime;
+                document.querySelector("#updateAppointmentDate").value = data.appointmentTime.substring(0, 16);
                 
                 updateAppointmentForm.addEventListener("submit", async event => {
                     event.preventDefault();
