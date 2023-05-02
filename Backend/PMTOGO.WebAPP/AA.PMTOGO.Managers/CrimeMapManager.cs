@@ -48,12 +48,6 @@ namespace AA.PMTOGO.Managers
             return _result;
         }
 
-        public async Task<CrimeAlert> ViewCrimeAlert(int id) 
-        {
-            _alert = await _crimeMapService.ViewAlert(id);
-            return _alert;
-        }
-
         public async Task<List<CrimeAlert>> GetCrimeAlerts()
         {
             var crimeAlerts = new List<CrimeAlert>();
@@ -63,7 +57,7 @@ namespace AA.PMTOGO.Managers
 
         public CrimeAlert CreateAlert(string email, string name, string location, string description, string time, string date, float x, float y)
         {
-            //validate here
+            //validate here and log if failed
             _alert.Email = email;
             _alert.Name = name;
             _alert.Location = location;
@@ -76,7 +70,7 @@ namespace AA.PMTOGO.Managers
         }
         public CrimeAlert CreateAlert(string email, int id, string name, string location, string description, string time, string date, float x, float y)
         {
-            //validate here
+            //validate here and log if failed
             _alert.Email = email;
             _alert.Name = name;
             _alert.Location=location;

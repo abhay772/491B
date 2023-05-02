@@ -13,6 +13,6 @@
   "license": "ISC",
   "devDependencies": {
     "chromedriver": "^111.0.0",
-    "nightwatch": "^2.6.19"
+    "nightwatch": "^2.6.20"
   }
 }

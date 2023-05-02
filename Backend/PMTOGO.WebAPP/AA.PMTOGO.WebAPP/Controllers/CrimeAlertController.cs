@@ -1,9 +1,7 @@
-﻿using AA.PMTOGO.Libary;
-using AA.PMTOGO.Managers.Interfaces;
+﻿using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -12,12 +10,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
     public class CrimeAlertController : ControllerBase
     {
         private readonly ICrimeMapManager _mapManager;
-        private readonly ClaimValidation _claims;
-        public CrimeAlertController(ICrimeMapManager mapManager, ClaimValidation claims)
+        public CrimeAlertController(ICrimeMapManager mapManager)
         {
             _mapManager = mapManager;
-            _claims = claims;
         }
+
 #if DEBUG
         [HttpGet]
         [Route("health")]   //make sure controller route works.
@@ -43,30 +40,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 {
 
                     return BadRequest("Error: Unable to add alert.");
-                }
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpGet]
-        [Route("viewAlert")]
-        [ActionName("ViewCrimeAlert")]
-        public async Task<IActionResult> ViewCrimeAlert([FromBody] Alert alert)
-        {
-            try
-            {
-                var crimeAlert = await _mapManager.ViewCrimeAlert(alert.ID);
-                if (crimeAlert is not null)
-                {
-                    return Ok(new { message = "Crime alert recived successfully." });
-                }
-                else
-                {
-
-                    return BadRequest("Error: Unable to receive alert.");
                 }
             }
             catch
@@ -148,6 +121,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         public class Alert
         {
+            [Required]
+            [EmailAddress]
             public string Email { get; set; } = string.Empty;
             public int ID { get; set; }
             public string Name { get; set; } = string.Empty;

@@ -14,6 +14,5 @@ namespace AA.PMTOGO.Services.Interfaces
         Task<Result> DeleteAlert(string email, int id);
         Task<Result> EditAlert(string email, int id, CrimeAlert alert);
         Task<List<CrimeAlert>> GetAlerts();
-        Task<CrimeAlert> ViewAlert(int id);
     }
 }

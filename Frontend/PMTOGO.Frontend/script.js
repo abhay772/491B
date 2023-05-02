@@ -51,7 +51,7 @@ function loadLoginPage() {
         .then((response) => {
           if (response.ok) {
             response.json().then(data => {
-              loadHomePage(`${data.claims[1].value}`, username);
+                loadHomePage(`${data.claims[1].value}`, username);
             })
           }
         })
@@ -292,7 +292,7 @@ function loadHomePage(userrole, username) {
 
             //add event listener to nav to crime map
             crimeMapFeature.addEventListener('click', () => {
-                loadCrimeMapPage(homepageContent, username);
+                loadCrimeMapPage(homepageContent, username, userrole);
             });
 
             // add event listeners to nav to property evaluation

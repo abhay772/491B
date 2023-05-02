@@ -7,16 +7,19 @@ namespace AA.PMTOGO.DAL
     public class CrimeMapDAO : ICrimeMapDAO
     {
         private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.CrimeMapDB;Trusted_Connection=True";
-        private CrimeAlert _alert;
         private Result _result;
-        public CrimeMapDAO(CrimeAlert crimeAlert, Result result)
+        public CrimeMapDAO(Result result)
         {
-            _alert = crimeAlert;
             _result = result;
         }
 
         public async Task<Result> AddAlert(CrimeAlert alert)
         {
+            if(!CheckAlert(alert.Email).Result.IsSuccessful)
+            {
+                _result.IsSuccessful = false;
+                return _result;
+            }
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -46,12 +49,17 @@ namespace AA.PMTOGO.DAL
                     _result.IsSuccessful = false;
                     _result.ErrorMessage = e.Message;
                     return _result;
-                }
+                }     
             }
         }
 
         public async Task<Result> CheckAlert(string email)
         {
+            if(email == "")
+            {
+                _result.IsSuccessful = false;
+                return _result;
+            }
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -67,7 +75,7 @@ namespace AA.PMTOGO.DAL
                     int rowCount = (int)await command.ExecuteScalarAsync();
 
                     _result.IsSuccessful = rowCount <= 1;
-
+                    Console.WriteLine(rowCount);
                     return _result;
                 }
                 catch (SqlException e)
@@ -78,6 +86,8 @@ namespace AA.PMTOGO.DAL
                     return _result;
                 }
             }
+            _result.IsSuccessful = false;
+            return _result;
         }
 
         public async Task<Result> DeleteAlert(string email, int id)
@@ -109,6 +119,8 @@ namespace AA.PMTOGO.DAL
                     return _result;
                 }
             }
+            _result.IsSuccessful = false;
+            return _result;
         }
 
         public async Task<Result> EditAlert(string email, int id, CrimeAlert alert)
@@ -202,44 +214,6 @@ namespace AA.PMTOGO.DAL
                 }
             }
             return alerts;
-        }
-
-        public async Task<CrimeAlert> ViewAlert(int id)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-
-                string sqlQuery = "SELECT * FROM CrimeAlerts WHERE ID = @ID";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@ID", id);
-
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
-                {
-                    try 
-                    { 
-                        if (await reader.ReadAsync())
-                        {
-                            var alert = new CrimeAlert();
-                            alert.Email = (string)reader["Email"];
-                            alert.ID = (int)reader["ID"];
-                            alert.Name = (string)reader["Name"];
-                            alert.Location = (string)reader["Location"];
-                            alert.Description = (string)reader["Description"];
-                            alert.Time = (string)reader["Time"];
-                            alert.Date = (string)reader["Date"];
-                            alert.X = (double)reader["X"];
-                            alert.Y = (double)reader["Y"];
-
-                            return alert;
-                        }
-                    }
-                    catch { } 
-                }
-            }
-            return null;
         }
     }
 }
