@@ -2,32 +2,30 @@
 {
     public class Service
     {
-        private string name;
-        private string type;
-        private string description;
-        private decimal price;
-
-        public int ID { get; set; }
+        [Key]
+        public Guid Id { get; set; }
         public string ServiceName { get; set; } = string.Empty;
         public string ServiceDescription { get; set; } = string.Empty;
-    
+
         public string ServiceType { get; set; } = string.Empty;
         public string ServiceProvider { get; set; } = string.Empty;
-  
+
         public string ServiceProviderEmail { get; set; } = string.Empty;
 
         public double ServicePrice { get; set; }
+
         public Service() { }
 
-        public Service(int id, string name, string description, string type, string serviceProvider, string providerEmail, double price)
+        public Service(Guid id, string name, string type, string description, string serviceProvider, string providerEmail, double price)
         {
-            ID = id;
+            Id = id;
             ServiceName = name;
             ServiceDescription = description;
             ServiceType = type;
             ServiceProvider = serviceProvider;
             ServiceProviderEmail = providerEmail;
             ServicePrice = price;
+
         }
 
         public Service(int id, string name, string type, string description, decimal price)

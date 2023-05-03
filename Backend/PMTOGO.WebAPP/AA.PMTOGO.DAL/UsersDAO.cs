@@ -1,13 +1,20 @@
 ﻿using AA.PMTOGO.Models.Entities;
+using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
-
-
+using AA.PMTOGO.DAL.Interfaces;
 namespace AA.PMTOGO.DAL;
 
-public class UsersDAO
+public class UsersDAO : IUsersDAO
 {
-    //logging
-    private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True";
+     private readonly string _connectionString;
+     //logging
+
+     public UsersDAO(IConfiguration configuration)
+     {
+         _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
+     }
+
+    //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)
@@ -18,7 +25,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserAccounts WHERE @Username = username";
+            string sqlQuery = "SELECT Username, PassDigest, Salt, IsActive, Attempts, Role FROM UserAccounts WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -65,6 +72,50 @@ public class UsersDAO
         return result;
     }
 
+    public async Task<Result> GetUserAccounts()
+    {
+        Result result = new Result();
+
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+           // string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role, IsActive FROM UserAccounts";
+
+            string query = "SELECT Username, FirstName, LastName, IsActive FROM UserProfiles INNER JOIN UserAccounts ON UserProfiles.Username = UserAccounts.Username";
+
+            var command = new SqlCommand(query, connection);
+
+
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            {
+                try
+                {
+                    List<User> listOfusers = new List<User>();
+                    while (reader.Read())
+                    {
+                        User user = new User((string)reader["Username"], (string)reader["Email"], (string)reader["FirstName"], (string)reader["LastName"],
+                            (string)reader["Role"], (bool)reader["IsActive"]);
+                        listOfusers.Add(user);
+
+                    }
+                    result.IsSuccessful = true;
+                    result.Payload = listOfusers;
+                    return result;
+                }
+                catch
+                {
+
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
+
+                }
+            }
+        }
+        result.IsSuccessful = false;
+        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+        return result;
+    }
     public async Task<Result> GetUser(string username)
     {
         Result result = new Result();
@@ -73,7 +124,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserProfile WHERE @Username = username";
+            string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role FROM UserProfiles WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -127,7 +178,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "SELECT * FROM UserProfiles WHERE @Email = email";
+            string sqlQuery = "SELECT Email FROM UserProfiles WHERE Email = @Email";
 
             var command = new SqlCommand(sqlQuery, connection);
 
@@ -158,7 +209,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "DELETE FROM UserAccounts WHERE @Username = username";
+            string sqlQuery = "DELETE FROM UserAccounts WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
@@ -201,7 +252,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            string sqlQuery = "DELETE FROM UserProfiles WHERE @Username = username";
+            string sqlQuery = "DELETE FROM UserProfiles WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
@@ -237,17 +288,18 @@ public class UsersDAO
         return result;
     }
 
-    public async Task<Result> ActivateUser(string username)
+    public async Task<Result> UpdateUserActivation(string username, int active)
     {
         var result = new Result();
         using (var connection = new SqlConnection(_connectionString))
         {
             connection.Open();
 
-            string sqlQuery = "UPDATE UserAccounts SET IsActive = 1 WHERE @Username = username";
+            string sqlQuery = "UPDATE UserAccounts SET IsActive = @IsActive WHERE Username = @Username";
 
             var command = new SqlCommand(sqlQuery, connection);
             command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@IsActive", active);
 
             try
             {
@@ -394,7 +446,7 @@ public class UsersDAO
             connection.Open();
 
 
-            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            var command = new SqlCommand("SELECT Username, Attempts FROM UserAccounts WHERE Username = @Username", connection);
             command.Parameters.AddWithValue("@Username", username);
 
             var reader = await command.ExecuteReaderAsync();
@@ -434,13 +486,16 @@ public class UsersDAO
             connection.Open();
 
 
-            var command = new SqlCommand("SELECT * FROM UserAccounts WHERE @Username = username", connection);
+            var command = new SqlCommand("SELECT Username, Attempts FROM UserAccounts WHERE Username = @Username", connection);
             command.Parameters.AddWithValue("@Username", username);
 
             var reader = await command.ExecuteReaderAsync();
 
+            int Attempt;
             reader.Read();
-            return (int)reader["Attempts"];
+            Attempt = (int)reader["Attempts"];
+            return Attempt;
+
         }
     }
 
@@ -451,7 +506,7 @@ public class UsersDAO
         {
             connection.Open();
 
-            var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE @Username = username", connection);
+            var command = new SqlCommand("UPDATE UserAccounts SET Attempts = 0 WHERE Username = @Username", connection);
             command.Parameters.AddWithValue("@Username", username);
             await command.ExecuteNonQueryAsync();
 

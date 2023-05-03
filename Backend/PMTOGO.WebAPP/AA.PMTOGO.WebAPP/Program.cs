@@ -15,7 +15,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure();
 
-builder.Services.AddDbContext<UsersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("UsersDbConnectionString")));
+builder.Services.AddDbContext<UsersDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("UsersDbConnectionString"),
+        b => b.MigrationsAssembly("AA.PMTOGO.WebAPP")
+    )
+);
 builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceDbConnectionString")));
 
 builder.Services.AddControllers()

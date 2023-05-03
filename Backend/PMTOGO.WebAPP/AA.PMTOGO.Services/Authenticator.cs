@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
@@ -12,13 +13,14 @@ namespace AA.PMTOGO.Authentication;
 public class Authenticator : IAuthenticator
 {
 
-    UsersDAO _authNDAO = new UsersDAO();
+    IUsersDAO _authNDAO;
     InputValidation valid = new InputValidation();
     private readonly ILogger _logger;
 
-    public Authenticator(ILogger logger)
+    public Authenticator(ILogger logger, IUsersDAO usersDAO)
     {
         _logger = logger;
+        _authNDAO = usersDAO;
     }
 
 

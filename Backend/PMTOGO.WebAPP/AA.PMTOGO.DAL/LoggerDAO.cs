@@ -1,13 +1,26 @@
 ﻿using AA.PMTOGO.Models.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
-
+using System.Reflection.PortableExecutable;
+using System.Text;
 
 namespace AA.PMTOGO.DAL
 {
-    public class LoggerDAO
+    public class LoggerDAO : ILoggerDAO
     {
-        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.LogDB;Trusted_Connection=True";
+  
 
+        private readonly string _connectionString;
+
+        //logging
+
+        public LoggerDAO(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
+        }
+        
         public async Task<Result> InsertLog(Log log)
         {
             var result = new Result();
@@ -15,16 +28,17 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Logs VALUES(@logId, @operation, @logLevel, @logCategory, @message, @timestamp)";
+                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Timestamp, @LogLevel, @Operation, @LogCategory, @Message)";
+                //string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
 
                 var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@logId", log.LogId);
-                command.Parameters.AddWithValue("@operation", log.Operation);
-                command.Parameters.AddWithValue("@logLevel", log.LogLevel);
-                command.Parameters.AddWithValue("@logCategory", log.Category);
-                command.Parameters.AddWithValue("@message", log.Message);
-                command.Parameters.AddWithValue("@timestamp", log.Timestamp);
+                
+                command.Parameters.AddWithValue("@LogId", log.LogId);
+                command.Parameters.AddWithValue("@Operation", log.Operation);
+                command.Parameters.AddWithValue("@LogLevel", log.LogLevel);
+                command.Parameters.AddWithValue("@LogCategory", log.Category);
+                command.Parameters.AddWithValue("@Message", log.Message);
+                command.Parameters.AddWithValue("@Timestamp", log.Timestamp);
 
                 try
                 {
@@ -41,12 +55,18 @@ namespace AA.PMTOGO.DAL
                         return result;
                     }
                 }
-                catch (SqlException e)
+                catch (SqlException ex)
                 {
-                    if (e.Number == 208)
+                    StringBuilder errorMessages = new StringBuilder();
+                    for (int i = 0; i < ex.Errors.Count; i++)
                     {
-                        result.ErrorMessage = "Specified table not found";
+                        errorMessages.Append("Index #" + i + "\n" +
+                            "Message: " + ex.Errors[i].Message + "\n" +
+                            "LineNumber: " + ex.Errors[i].LineNumber + "\n" +
+                            "Source: " + ex.Errors[i].Source + "\n" +
+                            "Procedure: " + ex.Errors[i].Procedure + "\n");
                     }
+                    Console.WriteLine(errorMessages.ToString());
                 }
 
             }
@@ -58,51 +78,44 @@ namespace AA.PMTOGO.DAL
         public async Task<Result> GetAnalysisLogs(string operation)
         {
             var result = new Result();
-
             var currentDate = DateTime.Now;
             var minDate = DateTime.Now.AddMonths(-3);
-
-            using (var connection = new SqlConnection(_connectionString))
+            try 
             {
-                connection.Open();
+                IDictionary<DateTime, int> data = new Dictionary<DateTime, int>();
+                DateTime date;
 
-                string sqlQuery = "SELECT COUNT(*) FROM Logs WHERE Operation = @operation AND (Timestamp BETWEEN @minDate AND @currentDate) GROUP BY  DAY(Timestamp)";
-
-                var command = new SqlCommand(sqlQuery, connection);
-
-                command.Parameters.AddWithValue("@operation", operation);
-                command.Parameters.AddWithValue("@minDate", minDate);
-                command.Parameters.AddWithValue("@currentDate", currentDate);
-
-                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                using (var connection = new SqlConnection(_connectionString))
                 {
-                    try
+                    connection.Open();
+                    string query = "SELECT Timestamp, COUNT(@Operation) FROM Logs WHERE Timestamp Between @minDate and @currentDate GROUP BY DAY(Timestamp)";
+                    using (var command = new SqlCommand(query, connection))
                     {
-                        //create analysis from query 
-                        List<ServiceRequest> listOfrequest = new List<ServiceRequest>();
-                        while (reader.Read())
-                        {
-
-                            ServiceRequest request = new ServiceRequest((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"],
-                                (string)reader["ServiceFrequency"], (string)reader["Comments"], (string)reader["ServiceProviderEmail"], (string)reader["ServiceProviderName"],
-                               (string)reader["PropertyManagerEmail"], (string)reader["PropertyManagerName"]);
-
-
-                            listOfrequest.Add(request);
+                        command.Parameters.AddWithValue("@Operation", operation);
+                        command.Parameters.AddWithValue("@minDate", minDate);
+                        command.Parameters.AddWithValue("@currentDate", currentDate);
+                        using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                        { 
+        
+                            date = (DateTime)reader["Timestamp"];
 
                         }
-                        result.IsSuccessful = true;
-                        result.Payload = listOfrequest;
-                        return result;
-                    }
-                    catch
-                    {
+                        int count = (int)await command.ExecuteScalarAsync()!;
 
-                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
-                        result.IsSuccessful = false;
+                        data.Add(date, count);
+                        result.IsSuccessful = true;
+                        result.Payload = data;
+                        return result;
 
                     }
                 }
+            }
+            catch
+            {
+
+                result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                result.IsSuccessful = false;
+
             }
             result.IsSuccessful = false;
             result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";

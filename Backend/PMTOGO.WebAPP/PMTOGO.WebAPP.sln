@@ -25,7 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.PropertyEvalTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AA.PMTOGO.IntergrationTest", "AA.PMTOGO.IntergrationTest\AA.PMTOGO.IntergrationTest.csproj", "{302DC309-662C-4F76-B8B5-0E37D189C696}"
 EndProject
+
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AA.PMTOGO.MnRTests", "AA.PMTOGO.MnRTests\AA.PMTOGO.MnRTests.csproj", "{BD3DEA93-FA0D-4266-87B5-F86B2BC8CEC9}"
+
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AA.PMTOGO.Calendar.Tests", "AA.PMTOGO.Calendar.Tests\AA.PMTOGO.Calendar.Tests.csproj", "{29E592CD-A261-4E3C-9DD1-7B610F409F49}"
+
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

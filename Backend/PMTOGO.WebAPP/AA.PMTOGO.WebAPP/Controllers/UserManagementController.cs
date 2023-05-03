@@ -55,9 +55,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("recovery")]
-        //[Consumes("application/json")]
         [ActionName("AccountRecovery")]
-        public async Task<IActionResult> AccountRecovery([FromBody] UserRegister user)
+        public async Task<ActionResult> AccountRecovery([FromBody] UserRegister user)
         {
             try
             {
@@ -68,7 +67,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
                 else
                 {
-
                     return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                 }
             }
@@ -80,9 +78,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("otp")]
-        //[Consumes("application/json")]
         [ActionName("ValidateOTP")]
-        public async Task<IActionResult> ValidateOTP([FromBody] UserRegister user)
+        public async Task<ActionResult> ValidateOTP([FromBody] UserRegister user)
         {
             try
             {
@@ -93,7 +90,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
                 else
                 {
-
                     return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                 }
             }
@@ -105,9 +101,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("updatePassword")]
-        //[Consumes("application/json")]
         [ActionName("UpdatePassword")]
-        public async Task<IActionResult> UpdatePassword([FromBody] UserRegister user)
+        public async Task<ActionResult> UpdatePassword([FromBody] UserRegister user)
         {
             try
             {
@@ -118,8 +113,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
                 else
                 {
-
-                    return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
+                    return BadRequest(result.ErrorMessage);
                 }
             }
             catch
@@ -160,7 +154,107 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return BadRequest("Cookie not found");
 
         }
+        //update user
+        //disable
 
+
+        //admin
+        [HttpPut]
+        [Route("disable")]
+        //[Consumes("application/json")]
+        [ActionName("DisableUser")]
+        public async Task<IActionResult> DisableUser([FromBody] string username)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Admin", Request);
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result disable = await _accManager.DisableUserAccount(username);
+                    if (disable.IsSuccessful)
+                    {
+                        return Ok(result.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+            return BadRequest("Not Authorized");
+        }
+        //enable
+        [HttpPut]
+        [Route("enable")]
+        //[Consumes("application/json")]
+        [ActionName("EnableUser")]
+        public async Task<IActionResult> EnableUser([FromBody] string username)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Admin", Request);
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result enable = await _accManager.EnableUserAccount(username);
+                    if (enable.IsSuccessful)
+                    {
+                        return Ok(result.Payload);
+                    }
+                    else
+                    {
+
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+            return BadRequest("Not Authorized");
+        }
+
+        [HttpGet]
+        [Route("getusers")]
+        [Consumes("application/json", "application/problem+json")]
+        public async Task<IActionResult> GetUsers()
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Admin", Request);
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result analysis = await _accManager.GetAllUsers();
+                    if (analysis.IsSuccessful)
+                    {
+                        return Ok(analysis.Payload!);
+                    }
+                    else
+                    {
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+
+            }
+            return BadRequest("Not Authorized");
+
+        }
         public class UserRegister
         {
             public string Email { get; set; } = string.Empty;

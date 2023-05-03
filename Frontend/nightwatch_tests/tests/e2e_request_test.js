@@ -1,56 +1,36 @@
 const {client} = require('nightwatch');
-//from v-vong/csulb github
-describe('Login Success', function() {
-    before(browser => browser.navigateTo('http://localhost:8080'));
 
-    it('Login with test user', function(browser){
-        let duration;
-
-        browser
+module.exports = {
+    'rate service test': function(client) {
+        client
+            .url("http://localhost:8080/")
+            .waitForElementVisible('#content',5000)
             .setValue('input[type=text]', 'mssierra310@gmail.com')
             .setValue('input[type=password', 'randomstring')
             .pause()
             .click('button[class="loginbtn"]')
+            .waitForElementVisible('button[type="submit"]', 5000)
+            .click('button[type="submit"]')
+            .click('.servicerequest-linkc div:nth-child(2) button')
+            .waitForElementVisible('#NewRequest', 10000)
+            .setValue('input[name="frequencies"]', "month")
+            .setValue('input[name="times"]', 3)
+            .setValue('input[name="comments"]', "e2e new request test")
+            .click('#requestservice')
+            .waitForElementVisible('#homepage',5000)
 
-            .perform(function () {
-                duration = Date.now();
-            })
-            .waitForElementVisible('homepage', function() {
-                duration = (Date.now() - duration)/1000;
-            })
-            .perform(function() {
-                if(duration > 5){
-                    throw new Error('NFR failed')
-                }
-            })
-            .assert.urlContains("/homepage.html")
-    });
-
-    after(browser => browser.end());
-
-});
-
-module.exports = {
-    'Accept request test': function(browser) {
-        browser
-        .url("http://localhost:6000/")
-        .waitForElementVisible('form',5000)
-        .click('button[type="submit"]')
-        .waitForElementVisible('#property-profile', 5000) 
-        .setValue('input[name="noOfBedrooms"]', 1)
-        .setValue('input[name="noOfBathrooms"]', 1)
-        .setValue('input[name="sqFeet"]', 1)
-        .setValue('input[name="Address1"]', "Somewhere somehow")
-        .setValue('input[name="Address2"]', "#491")
-        .setValue('input[name="City"]', "Long Beach")
-        .setValue('input[name="State"]', "CA")
-        .setValue('input[name="Zip"]', "90815")
-        .setValue('input[name="Desciption"]', 
-        "Just testing the description.")
-        .click('#evaluate-property-btn')
-        .waitForElementVisible('#property-evaluation',5000)
-        .assert.notEqual(browser.getText('#property-evaluation'),'00000.00') 
-        .end();
+            .click('#serviceManagement')
+            .waitForElementVisible('div.userservices', 10000)
+            .click('.rate-linkc div:nth-child(1) button')
+            .waitForElementVisible('#rate-form', 10000)
+            .setValue('input[name="rating"]', 4)
+            .click('#rateservice')
+            .waitForElementVisible('div.userservices',5000)
+            .assert.notEqual(browser.getText('div.userservices'),'00000.00') 
+            .end();
+            
     }
 }
+
+
 

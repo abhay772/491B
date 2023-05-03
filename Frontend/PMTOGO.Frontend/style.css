@@ -50,16 +50,6 @@ input[type="password"] {
   padding: 40px;
 }
 
-/*button {
-  padding: 10px;
-  margin: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-}*/
 button {  
   color: white;
   border: none;
@@ -74,13 +64,23 @@ button {
   font-weight: bold;
   width: 60%;
 }
+.fchange-link{
+  background-color: #0d49c9;
+  padding: 14px 20px;
+  left: 0;
+  margin: 8px 0;
+  width: 100%;
+}
 
-.loginbtn, .submit{
+.loginbtn, .submit, .rate-link, .servicerequest-link, .addproject-link{
   background-color: #04AA6D;
   padding: 14px 20px;
   left: 0;
   margin: 8px 0;
   width: 100%;
+}
+.addproject-link{
+  background-color: grey;
 }
 
 
@@ -109,7 +109,7 @@ button:hover {
 }
 
 /* Extra styles for the cancel button */
-.cancelbtn {
+.cancelbtn, .cancel-link{
   margin: 8px 0; 
   padding: 14px 20px;
   border: none;
@@ -321,7 +321,7 @@ table {
   transition: all 0.5s ease;
 }
 
-.wrapper .section .top_navbar, .wrapper .featuresection .top_navbar {
+.wrapper .section .top_navbar, .wrapper .featuresection .top_navbar, .wrapper .unauthsection .navbar{
   background: rgb(7, 105, 185);
   height: 50px;
   display: flex;
@@ -345,7 +345,7 @@ table {
   background-color: rgb(7, 105, 185);
 }
 
-.homepage-content{
+.homepage-content, .unauth-content{
   background-color: white;
 }
 
@@ -414,4 +414,65 @@ table {
 /* Hover style for the Evaluate Property button */
 #evaluate-btn:hover {
   background-color: #3e8e41;
+}
+
+/* Image container */
+.image-container {
+    position: relative;
+    margin-right: 20px;
+}
+
+/* Marker */
+/* Crime Alert Marker */
+.marker {
+    position: absolute;
+    z-index: 9999;
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50%;
+    box-shadow: 0 0 3px 3px rgba(255, 0, 0, 0.5);
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+}
+
+/* Form container */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+}
+
+/* Form input fields */
+.form-input {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Submit button */
+#submit-button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+    #submit-button:hover {
+        background-color: #3e8e41;
+    }
+
+/* Error message */
+.error-message {
+    color: red;
+    margin-top: 10px;
 }

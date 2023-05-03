@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Claims;
 
-namespace AA.PMTOGO_v2.Controllers;
+namespace AA.PMTOGO.WebAPP.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -56,13 +56,18 @@ public class AuthenticationController : ControllerBase
                 string claims_jwt = CreateJWTToken(loginDTO.claims!);
 
                 SetCookieOptions(claims_jwt);
-                //new { message = "Login successful" } + 
-                return Ok(result.Payload!);
+                //new { message = "Login successful" } 
+                return Ok(new
+                {
+                    otp = loginDTO.Otp,
+                    claims = loginDTO.claims,
+                    jwt = claims_jwt
+                });
             }
             else
             {
 
-                return BadRequest(new { message = "Invalid username or password provided. Retry again or contact system admin" });
+                return BadRequest(new { message = "Invalid Username or Password." });
             }
         }
         catch (ArgumentException ex)
