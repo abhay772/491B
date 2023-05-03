@@ -136,11 +136,11 @@ namespace AA.PMTOGO.DAL
                 {
                     while (reader.Read())
                     {
-                        int id = (int)reader["Id"];
+                        Guid id = (Guid)reader["Id"];
                         string name = (string)reader["ServiceName"];
                         string type = (string)reader["ServiceType"];
                         string description = (string)reader["ServiceDescription"];
-                        decimal price = (decimal)reader["ServicePrice"];
+                        double price = (double)reader["ServicePrice"];
 
                         Service service = new Service(id, name, type, description, price);
                         services.Add(service);

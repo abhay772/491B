@@ -1,4 +1,6 @@
-﻿namespace AA.PMTOGO.Models.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AA.PMTOGO.Models.Entities
 {
     public class Service
     {
@@ -28,13 +30,13 @@
 
         }
 
-        public Service(int id, string name, string type, string description, decimal price)
+        public Service(Guid id, string name, string type, string description, double price)
         {
-            ID = id;
-            this.name = name;
-            this.type = type;
-            this.description = description;
-            this.price = price;
+            this.Id = id;
+            this.ServiceName = name;
+            this.ServiceType = type;
+            this.ServiceDescription = description;
+            this.ServicePrice = price;
         }
     }
 }
