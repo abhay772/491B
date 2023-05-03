@@ -60,7 +60,12 @@ public class AuthenticationController : ControllerBase
 
                 SetCookieOptions(claims_jwt);
                 //new { message = "Login successful" } 
-                return Ok(result.Payload!);
+                return Ok(new
+                {
+                    otp = loginDTO.Otp,
+                    claims = loginDTO.claims,
+                    jwt = claims_jwt
+                });
             }
             else
             {
