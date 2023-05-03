@@ -6,15 +6,15 @@ namespace AA.PMTOGO.DAL;
 
 public class UsersDAO : IUsersDAO
 {
-     /*private readonly string _connectionString;
+     private readonly string _connectionString;
      //logging
 
      public UsersDAO(IConfiguration configuration)
      {
          _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
      }
-    */
-    private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
+    
+    //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)

@@ -21,7 +21,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task GetData_PASS()
         {
             //arrange
-            Result result = await logdao!.GetAnalysisLogs("CreateAccount");
+            Result result = await logdao!.GetAnalysisLogs("Authentication");
             
             //act
             IDictionary<DateTime, int> data = (Dictionary<DateTime, int>)result.Payload!;

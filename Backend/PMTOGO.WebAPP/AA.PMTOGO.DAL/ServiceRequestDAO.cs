@@ -11,15 +11,15 @@ namespace AA.PMTOGO.DAL
     //logging
     public class ServiceRequestDAO: IServiceRequestDAO
     {
-         /*private readonly string _connectionString;
+         private readonly string _connectionString;
          //logging
 
          public ServiceRequestDAO(IConfiguration configuration)
          {
              _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
-         }*/
+         }
 
-        private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
+        //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
 
         //Find request or userservice
 

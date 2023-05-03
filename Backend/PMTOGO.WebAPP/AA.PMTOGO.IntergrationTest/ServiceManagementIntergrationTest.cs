@@ -10,8 +10,9 @@ namespace AA.PMTOGO.IntergrationTest
     [TestClass]
     public class ServiceManagementIntergrationTest
     {
+        private readonly IConfiguration? configuration;
         UsersDAO _usersDAO = new UsersDAO();
-        ServiceDAO _serviceDAO = new ServiceDAO();
+        ServiceDAO _serviceDAO = new ServiceDAO(configuration);
         UserServiceDAO _userServiceDAO = new UserServiceDAO();
         ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO();
         LoggerDAO logdao = new LoggerDAO();
