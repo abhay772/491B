@@ -6,15 +6,15 @@ namespace AA.PMTOGO.DAL;
 
 public class UsersDAO : IUsersDAO
 {
-     private readonly string _connectionString;
+     /*private readonly string _connectionString;
      //logging
 
      public UsersDAO(IConfiguration configuration)
      {
          _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
      }
-    
-    //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
+    */
+    private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)
@@ -80,9 +80,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-           // string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role, IsActive FROM UserAccounts";
-
-            string query = "SELECT Username, FirstName, LastName, IsActive FROM UserProfiles INNER JOIN UserAccounts ON UserProfiles.Username = UserAccounts.Username";
+            string query = "SELECT UserProfiles.Username, Email, FirstName, LastName, UserProfiles.Role, IsActive FROM UserProfiles INNER JOIN UserAccounts ON UserProfiles.Username = UserAccounts.Username";
 
             var command = new SqlCommand(query, connection);
 
