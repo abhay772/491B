@@ -49,7 +49,7 @@ function loadLoginPage() {
 
       // add event listeners to register link, forgot password button
         registerLink.addEventListener('click', loadRegisterPage);
-        forgotPasswordButton.addEventListener('click', /*loadCrimeMapPage*/loadForgotPasswordPage);
+        forgotPasswordButton.addEventListener('click', loadForgotPasswordPage);
 
       // select login form
       const loginForm = document.getElementById('login-form');
@@ -433,19 +433,19 @@ function loadHomePage(userrole, username) {
       //select log out
       const logoutUser = document.getElementById("logout");
 
-      const homepageContent = document.getElementsByClassName("homepage-content")[0];
-      //select settings
-      const deleteAccount = document.getElementById("settings");
-      //select propertyEvaluation
-      const propertyEvalFeature = document.getElementById('propertyEvaluation');
-      //select request management
-      const requestFeature = document.getElementById('requestManagement');
-      //select service Management
-      const serviceFeature = document.getElementById('serviceManagement');
-      //select services
-      const spserviceFeature = document.getElementById('Services');
-      //select crime alert
-      const crimeMapFeature = document.getElementById('crimemap');
+            const homepageContent = document.getElementsByClassName("homepage-content")[0];
+            //select settings
+            const deleteAccount = document.getElementById("settings");
+            //select propertyEvaluation
+            const propertyEvalFeature = document.getElementById('propertyEvaluation');
+            //select request management
+            const requestFeature = document.getElementById('requestManagement');
+            //select service Management
+            const serviceFeature = document.getElementById('serviceManagement');
+            //select crime alert
+            const crimeMapFeature = document.getElementById('crimemap');
+            //select crime alert
+            const diyFeature = document.getElementById('diy');
 
       const adminFeature = document.getElementById('admin');
 
@@ -479,15 +479,16 @@ function loadHomePage(userrole, username) {
             loadServiceManagementPage(homepageContent);
         });
 
-        //add event listener to nav to reg and del services
-        spserviceFeature.addEventListener('click', () => {
-          loadServicePage(homepageContent);
-      });
+            //add event listener to nav to crime map
+            crimeMapFeature.addEventListener('click', () => {
+                loadCrimeMapPage(homepageContent, username, userrole);
+            });
 
-        //add event listener to nav to crime map
-        crimeMapFeature.addEventListener('click', () => {
-            loadCrimeMapPage(homepageContent, username);
-        });
+
+            //add event listener to nav to diy
+            diyFeature.addEventListener('click', () => {
+                loadDIYPage(homepageContent, username, userrole);
+            });
 
         // add event listeners to nav to property evaluation
         propertyEvalFeature.addEventListener('click', () => {

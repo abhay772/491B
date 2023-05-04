@@ -1,32 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Alert</title>
-    <link rel="stylesheet" type="text/css" href="./style.css">
+    <title>Crime Map</title>
+    <script src="CrimeAlertScript.js"></script>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #crime-map-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
-    <div id="add-alert-container">
+    <header>
         <h1>Add Crime Alert</h1>
-        <form>
-            <label for="name-input">Name:</label>
-            <input type="text" id="name-input" required><br>
+        <button id="backButton">Back</button>
+    </header>
+    <main>
+        <div class="homepage-content">
+            <!-- Content will be loaded here -->
+            <div id="crime-map-content">
+                
+                <div id="add-alert-container">
+                    <form>
+                        <label for="name-input">Name:</label>
+                        <input type="text" id="name-input" required><br>
 
-            <label for="location-input">Location:</label>
-            <input type="text" id="location-input" required><br>
+                        <label for="location-input">Location:</label>
+                        <input type="text" id="location-input" required><br>
 
-            <label for="description-input">Description:</label>
-            <textarea id="description-input" required></textarea><br>
+                        <label for="description-input">Description:</label>
+                        <textarea id="description-input" required></textarea><br>
 
-            <label for="time-input">Time:</label>
-            <input type="text" id="time-input" required><br>
+                        <label for="time-input">Time:</label>
+                        <input type="time" id="time-input" required><br>
 
-            <label for="date-input">Date:</label>
-            <input type="text" id="date-input" required><br>
+                        <label for="date-input">Date:</label>
+                        <input type="date" id="date-input" required><br>
 
-            <button id="submit-button" type="button">Submit</button>
-        </form>
-    </div>
-
-    <script src="./js/addAlert.js"></script>
+                        <button id="submit-button" type="button">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
