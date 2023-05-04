@@ -1,5 +1,8 @@
 using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Models.Entities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Web.Helpers;
 
 namespace CrimeMapIntegrationTests
 {
@@ -149,69 +152,96 @@ namespace CrimeMapIntegrationTests
             // Arrange
             var result = new Result();
             var crimeMapDAO = new CrimeMapDAO(result);
+            var newAlert = new CrimeAlert
+            {
+                Email = "NewTest5@gmail.com",
+                Name = "Test Alert",
+                Location = "location",
+                Description = "This is a test alert",
+                Time = "12:00",
+                Date = "5/1/2023",
+                X = 99.9,
+                Y = 99.9
+            };
 
             // Act
+            result = await crimeMapDAO.AddAlert(newAlert);
+            var alerts = crimeMapDAO.GetAlerts();
+            foreach (var alert in alerts.Result)
+            {
+                result = await crimeMapDAO.DeleteAlert(alert.Email, alert.ID);
+            }
+            alerts = crimeMapDAO.GetAlerts();
+
+            // Assert
+            Assert.IsTrue(alerts.Result.Count == 0);
+        }
+        
+        [TestMethod]
+        public async Task EditAlertSuccess()
+        {
+            // Arrange
+            var result = new Result();
+            var crimeMapDAO = new CrimeMapDAO(result);
+            var newAlert = new CrimeAlert
+            {
+                Email = "NewTest5@gmail.com",
+                Name = "Test Alert",
+                Location = "location",
+                Description = "This is a test alert",
+                Time = "12:00",
+                Date = "5/1/2023",
+                X = 99.9,
+                Y = 99.9
+            };
+
+            // Act
+            result = await crimeMapDAO.AddAlert(newAlert);
+            var alerts = crimeMapDAO.GetAlerts();
+            var alert = alerts.Result[0];
+            alert = new CrimeAlert
+            {
+                Email = "NewTest5@gmail.com",
+                Name = "test",
+                Location = "test",
+                Description = "test",
+                Time = "9:00",
+                Date = "1/1/2023",
+                X = 99.9,
+                Y = 99.9
+            };
+            await crimeMapDAO.EditAlert(alert.Email, alert.ID, alert);
+
+            alerts = crimeMapDAO.GetAlerts();
+            foreach (var a in alerts.Result)
+            {
+                if (a.ID == alert.ID)
+                {
+                    alert = a;
+                    break;
+                }
+            }
 
 
             // Assert
-
+            Assert.IsTrue(alert.Name == "test");
+            Assert.IsTrue(alert.Location == "test");
+            Assert.IsTrue(alert.Description == "test");
+            Assert.IsTrue(alert.Time == "9:00");
+            Assert.IsTrue(alert.Date == "1/1/2023");
         }
         [TestMethod]
-        public async Task DeleteAlertFailure()
+        public async Task GetAlertSuccess()
         {
             // Arrange
             var result = new Result();
             var crimeMapDAO = new CrimeMapDAO(result);
 
             // Act
-
-
+            var alerts = await crimeMapDAO.GetAlerts();
+            
             // Assert
-
-        }
-        [TestMethod]
-        public async Task EditAlertSuccess()
-        {
-            // Arrange
-
-            // Act
-
-
-            // Assert
-
-        }
-        [TestMethod]
-        public async Task EditAlertFailure()
-        {
-            // Arrange
-
-            // Act
-
-
-            // Assert
-
-        }
-        [TestMethod]
-        public async Task GetAlertSuccess()
-        {
-            // Arrange
-
-            // Act
-
-
-            // Assert
-
-        }
-        [TestMethod]
-        public async Task GetAlertFailure()
-        {
-            // Arrange
-
-            // Act
-
-
-            // Assert
-
+            Assert.IsNotNull(alerts);
         }
     }
 }

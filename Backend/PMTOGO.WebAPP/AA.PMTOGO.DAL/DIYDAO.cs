@@ -6,7 +6,7 @@ namespace AA.PMTOGO.DAL
 {
     public class DIYDAO
     {
-        private static readonly string _connectionString = @"Server=localhost\SQLEXPRESS;Database=master;Trusted_Connection=True;";
+        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=DIYDB;Trusted_Connection=True";
 
         public DIYDAO() { }
 
@@ -139,7 +139,7 @@ namespace AA.PMTOGO.DAL
 
             return diyList;
         }
-        public async Task<bool> ClearDIYTable()
+        /*public async Task<bool> ClearDIYTable()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -157,7 +157,7 @@ namespace AA.PMTOGO.DAL
 
                 return result > 0;
             }
-        }
+        }*/
 
         public List<DIYObject> SearchDIY(string searchTerm)
         {
@@ -227,22 +227,6 @@ namespace AA.PMTOGO.DAL
             }
             return null;
         }
-
-        /*public async Task<bool> AddDIY(string id, string email)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-
-                var command = new SqlCommand("INSERT INTO DIYDashboard (DIYID, DIYEmail) VALUES (@ID, @Email)", connection);
-                command.Parameters.AddWithValue("@ID", id);
-                command.Parameters.AddWithValue("@Email", email);
-
-                var count = (int)await command.ExecuteScalarAsync();
-
-                return count == 1;
-            }
-        }*/
 
         public async Task<bool> AddDIY(string id, string email)
         {

@@ -144,6 +144,7 @@ async function markAlertsOnMap(homepageContent, imageContainer, username, userro
         button.style.borderRadius = '50%';
         button.style.left = `${alert.x}px`;
         button.style.top = `${alert.y}px`;
+        button.setAttribute('id', alert.id);
         imageContainer.appendChild(button);
 
         if (alert.email == username) {
@@ -230,12 +231,12 @@ async function EditAlert(homepageContent, alert, username, userrole) {
     form.appendChild(dateLabel);
     form.appendChild(dateInput);
 
-    const saveButton = document.createElement('addbtn');
+    const saveButton = document.createElement('savebtn');
     saveButton.innerHTML = 'Save';
     saveButton.type = 'button';
     form.appendChild(saveButton);
 
-    const deleteButton = document.createElement('addbtn');
+    const deleteButton = document.createElement('deletebtn');
     deleteButton.innerHTML = 'Delete';
     deleteButton.type = 'button';
     form.appendChild(deleteButton);
