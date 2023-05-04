@@ -205,7 +205,24 @@ namespace AA.PMTOGO.Services
             }
             return result;
         }
-
+        //get service provider services from db
+        public async Task<Result> GatherSPServices(string username)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _serviceDAO.GetSPServices(username);
+                await _logger!.Log("GatherSPServices", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Load Services Unsuccessful. Try Again Later";
+                await _logger!.Log("GatherSPServices", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
         //create service for service providers
         public async Task<Result> CreateService(Service service)
         {
@@ -225,12 +242,12 @@ namespace AA.PMTOGO.Services
             return result;
         }
         //remove service for service providers
-        public async Task<Result> RemoveService(Service service)
+        public async Task<Result> RemoveService(Guid id)
         {
             Result result = new Result();
             try
             {
-                result = await _serviceDAO.DeleteService(service.Id);
+                result = await _serviceDAO.DeleteService(id);
                 await _logger!.Log("RemoveService", 4, LogCategory.Business, result);
                 return result;
             }

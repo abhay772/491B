@@ -6,7 +6,11 @@ namespace AA.PMTOGO.Managers.Interfaces
     {
         Task<Result> RateUserService(string id, int rate, string role);// rate service need role to insert rate in correct column
         Task<Result> GetAllServices();//get all services
+        Task<Result> GetSPServices(string username);
 
+        Task<Result> AddSPService(string username, Service service);
+
+        Task<Result> DeleteSPService(string id);
         Task<Result> GetAllUserServices(string username, string role);//get all user services
 
         Task<Result> AddServiceRequest(string id, string frequency, string comments, string username);//need to get propertyManager info and address

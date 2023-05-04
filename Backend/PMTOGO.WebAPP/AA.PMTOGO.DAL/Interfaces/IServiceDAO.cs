@@ -10,6 +10,8 @@ namespace AA.PMTOGO.DAL.Interfaces
     public interface IServiceDAO
     {
         Task<Result> GetServices();
+
+        Task<Result> GetSPServices(string username);
         Task<Result> FindService(Guid id);
         Task<Result> AddService(Service service);
         Task<Result> DeleteService(Guid id);

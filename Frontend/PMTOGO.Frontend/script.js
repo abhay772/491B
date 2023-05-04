@@ -442,6 +442,8 @@ function loadHomePage(userrole, username) {
       const requestFeature = document.getElementById('requestManagement');
       //select service Management
       const serviceFeature = document.getElementById('serviceManagement');
+      // service provider tool
+      const spServiceFeature = document.getElementById('Services');
       //select crime alert
       const crimeMapFeature = document.getElementById('crimemap');
 
@@ -476,6 +478,11 @@ function loadHomePage(userrole, username) {
         serviceFeature.addEventListener('click', () => {
             loadServiceManagementPage(homepageContent);
         });
+
+        //add event listener to nav to service management
+        spServiceFeature.addEventListener('click', () => {
+          loadServicePage(homepageContent);
+      });
 
         //add event listener to nav to crime map
         crimeMapFeature.addEventListener('click', () => {

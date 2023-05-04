@@ -85,6 +85,101 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
 
         }
+        [HttpGet]
+        [Route("getspservice")]
+        [Consumes("application/json", "application/problem+json")]
+        public async Task<IActionResult> GetServiceProviderServices()
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    //get all services service providers provide
+                    Result services = await _serviceManager.GetSPServices(user.ClaimUsername);
+                    if (services.IsSuccessful)
+                    {
+                        return Ok(services.Payload!);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Retry again or contact system admin." });
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+            return BadRequest("Invalid Credentials");
+        }
+
+        [HttpPost]
+        [Route("addspservice")]
+        [Consumes("application/json", "application/problem+json")]
+        public async Task<IActionResult> AddServiceProviderService(Service service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    //get all services service providers provide
+                    Result addservices = await _serviceManager.AddSPService(user.ClaimUsername, service);
+                    if (addservices.IsSuccessful)
+                    {
+                        return Ok(addservices.Payload!);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Retry again or contact system admin." });
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+            return BadRequest("Invalid Credentials");
+        }
+
+        [HttpDelete]
+        [Route("delspservice")]
+        [Consumes("application/json", "application/problem+json")]
+        public async Task<IActionResult> DeleteServiceProviderService(string id)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    //get all services service providers provide
+                    Result delservices = await _serviceManager.DeleteSPService(id);
+                    if (delservices.IsSuccessful)
+                    {
+                        return Ok(delservices.Payload!);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Retry again or contact system admin." });
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+            }
+            return BadRequest("Invalid Credentials");
+        }
 
         [HttpPost]
         [Route("addrequests")]

@@ -15,8 +15,9 @@ namespace AA.PMTOGO.Services.Interfaces
         bool CheckRate(int rate);
         Task<Result> GatherServices();
 
+        Task<Result> GatherSPServices(string username);
         Task<Result> CreateService(Service service);
-        Task<Result> RemoveService(Service service);
+        Task<Result> RemoveService(Guid id);
         Task<Result> RequestFrequencyChange(Guid id, string frequency, string type);
         Task<Result> CancellationRequest(Guid id, string frequency, string type);
 

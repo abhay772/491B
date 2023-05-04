@@ -63,6 +63,50 @@ namespace AA.PMTOGO.DAL
             result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
             return result;
         }
+        public async Task<Result> GetSPServices(string username) //list of services
+        {
+
+            Result result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT Id, ServiceProvider, ServiceProviderEmail, ServiceName, ServiceType, ServiceDescription, ServicePrice FROM Services WHERE ServiceProviderEmail = @ServiceProvdiderEmail";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceProviderEmail", username);
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    try
+                    {
+                        List<Service> listOfservice = new List<Service>();
+                        while (reader.Read())
+                        {
+                            Service service = new Service((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"], (string)reader["ServiceProvider"],
+                                (string)reader["ServiceProviderEmail"], (double)reader["ServicePrice"]);
+
+                            listOfservice.Add(service);
+
+                        }
+                        result.IsSuccessful = true;
+                        result.Payload = listOfservice;
+                        return result;
+                    }
+                    catch
+                    {
+
+                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        result.IsSuccessful = false;
+
+                    }
+                }
+            }
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+            return result;
+        }
 
         //single service
         public async Task<Result> FindService(Guid id)
