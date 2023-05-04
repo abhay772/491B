@@ -76,7 +76,7 @@ const createSPServiceTable = () =>{
         homepageContent.innerHTML = data;
   
         const backBtn = document.getElementById('BacktoServices');
-        backBtn.addEventListener('click', loadServicePage);
+        backBtn.addEventListener('click', loadHomePage);
   
         const spserviceForm = document.getElementById('newspservice-form');
         spserviceForm.addEventListener('submit', (event) => {
@@ -121,7 +121,7 @@ const createSPServiceTable = () =>{
         homepageContent.innerHTML = data;
   
         const backBtn = document.getElementById('BacktoServices');
-        backBtn.addEventListener('click', loadServicePage);
+        backBtn.addEventListener('click', loadHomePage);
   
         const delForm = document.getElementById('del-form');
         delForm.addEventListener('submit', (event) => {
