@@ -1,6 +1,7 @@
 const content = document.getElementById('content');
 const api = "https://localhost:7135/api";
 var userrole = "";
+
 function loadUnAuthPage(){
     // fetch login page
     fetch('./Views/unauthUser.html')
@@ -444,7 +445,10 @@ function loadHomePage(userrole, username) {
       const serviceFeature = document.getElementById('serviceManagement');
       //select crime alert
       const crimeMapFeature = document.getElementById('crimemap');
+      //select Maintenance And Renovation
+      const maintenanceFeature = document.getElementById('maintenance');
 
+      
       const adminFeature = document.getElementById('admin');
 
         //add event listeners
@@ -490,6 +494,11 @@ function loadHomePage(userrole, username) {
          // add event listeners to nav to admin
         adminFeature.addEventListener('click', () => {
           loadAdminPage(homepageContent);
+        });
+
+        // add event listeners to nav to MnR
+        maintenanceFeature.addEventListener('click', () => {
+          LoadMnRPage(homepageContent);
         });
 
     })
