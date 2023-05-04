@@ -5,7 +5,6 @@ async function loadCrimeMapPage(homepageContent, username, userrole) {
     fetch("./Views/crimeMap.html")
         .then((response) => response.text())
         .then(async (data) => {
-            // update homepage content div with crime map page html
             homepageContent.innerHTML = data;
 
             if (userrole !== "Property Manager" && userrole !== "Service Provider") {
@@ -70,20 +69,18 @@ async function loadCrimeMapPage(homepageContent, username, userrole) {
 async function loadImageContainer(homepageContent, crimeMapContent, username, userrole) {
     const imageContainer = document.createElement("div");
     imageContainer.classList.add("image-container");
-
+    // make container
     const image = document.createElement("img");
     image.src = "./images/crimemap.png";
     image.alt = "Crime map";
     imageContainer.appendChild(image);
-
-    // add styles to image container
     imageContainer.style.overflow = "auto";
     imageContainer.style.width = "calc(100% - 200px)";
     imageContainer.style.height = "calc(100% - 200px)";
     image.style.transform = "scale(1)";
     image.style.transition = "transform 0.5s";
 
-    // add event listener to image for panning
+    // add panning
     let isDragging = false;
     let lastX, lastY;
     image.addEventListener("mousedown", function (event) {
@@ -133,7 +130,7 @@ async function getAlerts() {
 
 async function markAlertsOnMap(homepageContent, imageContainer, username, userrole) {
     const alerts = await getAlerts();
-    // iterate through alerts and add buttons to map
+    // make buttons
     alerts.forEach(alert => {
         const button = document.createElement('button');
         button.classList.add('dot');

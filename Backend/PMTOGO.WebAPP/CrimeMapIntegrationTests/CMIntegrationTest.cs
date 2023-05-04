@@ -1,8 +1,6 @@
 using AA.PMTOGO.DAL;
-using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Models.Entities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Web.Helpers;
+
 
 namespace CrimeMapIntegrationTests
 {
