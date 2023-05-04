@@ -72,7 +72,7 @@ button {
   width: 100%;
 }
 
-.loginbtn, .submit, .rate-link, .servicerequest-link, .addproject-link{
+.loginbtn, .submit, .rate-link, .servicerequest-link, .addproject-link {
   background-color: #04AA6D;
   padding: 14px 20px;
   left: 0;
@@ -96,12 +96,15 @@ button {
   color: #271197; /* change color*/
 }
 
-.notifyAdmin{
+.notifyAdmin, .addservice{
   background-color: #fefefe;
   padding: 14px 20px;
   margin: 8px 0;
   left:0;
   color: black;
+}
+.addservice{
+  background-color: #0c7db1;
 }
 
 button:hover {
@@ -109,7 +112,7 @@ button:hover {
 }
 
 /* Extra styles for the cancel button */
-.cancelbtn, .cancel-link{
+.cancelbtn, .cancel-link, .del-link{
   margin: 8px 0; 
   padding: 14px 20px;
   border: none;
@@ -144,7 +147,7 @@ a:hover {
   background-color: #f44336;;
 }
 /*Request Management / Service Management css*/
-h1{
+h1, h3{
   font-weight: bold;
   text-align: center;
 }

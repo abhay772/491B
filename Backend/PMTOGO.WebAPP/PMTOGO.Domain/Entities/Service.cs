@@ -23,6 +23,15 @@ namespace AA.PMTOGO.Models.Entities
         
         public Service() { }
 
+        public Service(string name, string type, string description, double price)
+        {
+            ServiceName = name;
+            ServiceDescription = description;
+            ServiceType = type;
+            ServicePrice = price;
+
+        }
+
         public Service(Guid id, string name, string type, string description, string serviceProvider, string providerEmail, double price)
         {
             Id = id;

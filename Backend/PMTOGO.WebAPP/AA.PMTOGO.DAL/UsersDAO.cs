@@ -6,7 +6,7 @@ namespace AA.PMTOGO.DAL;
 
 public class UsersDAO : IUsersDAO
 {
-     private readonly string _connectionString;
+    private readonly string _connectionString;
      //logging
 
      public UsersDAO(IConfiguration configuration)
