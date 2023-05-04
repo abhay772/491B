@@ -21,7 +21,7 @@ namespace AA.PMTOGO.DAL
          {
              _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
          }
-
+        //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
 
         public async Task<Result> FindUserService(Guid id) //single request
         {

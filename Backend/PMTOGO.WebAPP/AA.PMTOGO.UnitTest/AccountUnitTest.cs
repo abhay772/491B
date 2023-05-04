@@ -12,21 +12,23 @@ namespace AA.PMTOGO.UnitTest
     [TestClass]
     public class AccountUnitTest
     {
-        private readonly IUsersDAO _usersDAO;
+        /*private readonly IUsersDAO _usersDAO;
         private readonly ILogger _logger;
 
         public AccountUnitTest(IUsersDAO usersDAO, ILogger logger)
         {
             _usersDAO = usersDAO;
             _logger = logger;
-        }
+        }*/
+        UsersDAO _usersDAO = new UsersDAO();
+        LoggerDAO logdao = new LoggerDAO();
 
         [TestMethod]
         public void ShouldCreateInstanceWithDefaultCtor()
         {
             // Arrange
             var expected = typeof(UserManagement);
-
+            Logger _logger = new Logger(logdao);
             // Act
             var actual = new UserManagement(_logger, _usersDAO);
 
@@ -40,6 +42,7 @@ namespace AA.PMTOGO.UnitTest
         public async Task ShouldAssignUniqueUsername()
         {
             // Arrange
+            Logger _logger = new Logger(logdao);
             var user = new UserManagement(_logger, _usersDAO);
             //clean up
             await user.DeleteAccount("sara2@gmail.com");
@@ -159,7 +162,7 @@ namespace AA.PMTOGO.UnitTest
         public async Task ShouldCreateAccountWithin5Seconds()
         {
             //aranage
-
+            Logger _logger = new Logger(logdao);
             var registration = new UserManagement(_logger, _usersDAO);
 
             //act
@@ -202,7 +205,7 @@ namespace AA.PMTOGO.UnitTest
         public async Task ShouldAllUserInfo()
         {
             //aranage
-
+            Logger _logger = new Logger(logdao);
             var account = new UserManagement(_logger, _usersDAO);
 
             //act

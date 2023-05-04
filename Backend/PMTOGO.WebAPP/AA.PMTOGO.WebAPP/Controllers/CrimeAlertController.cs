@@ -1,9 +1,7 @@
-﻿using AA.PMTOGO.Libary;
-using AA.PMTOGO.Managers.Interfaces;
+﻿using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -12,12 +10,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
     public class CrimeAlertController : ControllerBase
     {
         private readonly ICrimeMapManager _mapManager;
-        private readonly ClaimValidation _claims;
-        public CrimeAlertController(ICrimeMapManager mapManager, ClaimValidation claims)
+        public CrimeAlertController(ICrimeMapManager mapManager)
         {
             _mapManager = mapManager;
-            _claims = claims;
         }
+
 #if DEBUG
         [HttpGet]
         [Route("health")]   //make sure controller route works.
@@ -42,31 +39,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 else
                 {
 
-                    return BadRequest("Error");
-                }
-            }
-            catch
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
-        [HttpGet]
-        [Route("viewAlert")]
-        [ActionName("ViewCrimeAlert")]
-        public async Task<IActionResult> ViewCrimeAlert([FromBody] Alert alert)
-        {
-            try
-            {
-                var crimeAlert = await _mapManager.ViewCrimeAlert(alert.Email, alert.ID);
-                if (crimeAlert is not null)
-                {
-                    return Ok(new { message = "Crime alert added successfully." });
-                }
-                else
-                {
-
-                    return BadRequest("Error");
+                    return BadRequest("Error: Unable to add alert.");
                 }
             }
             catch
@@ -85,12 +58,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 Result result = await _mapManager.EditCrimeAlert(alert.Email, alert.ID, alert.Name, alert.Location, alert.Description, alert.Time, alert.Date, alert.X, alert.Y);
                 if (result.IsSuccessful)
                 {
-                    return Ok(new { message = "Crime alert added successfully." });
+                    return Ok(new { message = "Crime alert edited successfully." });
                 }
                 else
                 {
 
-                    return BadRequest("Error");
+                    return BadRequest("Error: Unable to edit alert.");
                 }
             }
             catch
@@ -109,12 +82,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 Result result = await _mapManager.DeleteCrimeAlert(alert.Email, alert.ID);
                 if (result.IsSuccessful)
                 {
-                    return Ok(new { message = "Crime alert added successfully." });
+                    return Ok(new { message = "Crime alert deleted successfully." });
                 }
                 else
                 {
 
-                    return BadRequest("Error");
+                    return BadRequest("Error: Unable to delete.");
                 }
             }
             catch
@@ -148,15 +121,17 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         public class Alert
         {
+            [Required]
+            [EmailAddress]
             public string Email { get; set; } = string.Empty;
-            public string ID { get; set; } = string.Empty;
+            public int ID { get; set; }
             public string Name { get; set; } = string.Empty;
             public string Location { get; set; } = string.Empty;
             public string Description { get; set; } = string.Empty;
             public string Time { get; set; } = string.Empty;
             public string Date { get; set; } = string.Empty;
-            public string X { get; set; } = string.Empty;
-            public string Y { get; set; } = string.Empty;
+            public float X { get; set; }
+            public float Y { get; set; }
         }
     }
 }

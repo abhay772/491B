@@ -7,6 +7,8 @@ namespace AA.PMTOGO.DAL.Interfaces
 
         Task<List<Service>> FindServicesWithQuery(string userQuery, int PageNumber, int PageLimit);
         Task<Result> GetServices();
+
+        Task<Result> GetSPServices(string username);
         Task<Result> FindService(Guid id);
         Task<Result> AddService(Service service);
         Task<Result> DeleteService(Guid id);

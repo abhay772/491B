@@ -6,7 +6,7 @@ namespace AA.PMTOGO.DAL;
 
 public class UsersDAO : IUsersDAO
 {
-     private readonly string _connectionString;
+    private readonly string _connectionString;
      //logging
 
      public UsersDAO(IConfiguration configuration)
@@ -80,9 +80,7 @@ public class UsersDAO : IUsersDAO
         {
             connection.Open();
 
-           // string sqlQuery = "SELECT Username, Email, FirstName, LastName, Role, IsActive FROM UserAccounts";
-
-            string query = "SELECT Username, FirstName, LastName, IsActive FROM UserProfiles INNER JOIN UserAccounts ON UserProfiles.Username = UserAccounts.Username";
+            string query = "SELECT UserProfiles.Username, Email, FirstName, LastName, UserProfiles.Role, IsActive FROM UserProfiles INNER JOIN UserAccounts ON UserProfiles.Username = UserAccounts.Username";
 
             var command = new SqlCommand(query, connection);
 

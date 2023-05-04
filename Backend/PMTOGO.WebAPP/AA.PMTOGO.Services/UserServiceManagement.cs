@@ -25,7 +25,7 @@ namespace AA.PMTOGO.Services
             _logger = logger;
         }
 
-        private async Task<string> GetUserInfo (string username)
+        private async Task<string> GetUserInfo(string username)
         {
             //get property manager name
             try
@@ -37,8 +37,8 @@ namespace AA.PMTOGO.Services
                 //get user info combine first and last name
                 string firstName = user.FirstName;
                 string lastName = user.LastName;
-                string propertyManagerName = firstName + " " + lastName;
-                return propertyManagerName;
+                string userName = firstName + " " + lastName;
+                return userName;
             }
             catch
             {
@@ -51,7 +51,7 @@ namespace AA.PMTOGO.Services
 
         }
         //create request for in progress user services
-        public async  Task<Result> CreateRequest(Guid id, string type, string frequency)
+        public async Task<Result> CreateRequest(Guid id, string type, string frequency)
         {
             Result result = new Result();
             try
@@ -121,7 +121,7 @@ namespace AA.PMTOGO.Services
                     return result;
 
                 }
-                if(role == "Property Manager")
+                if (role == "Property Manager")
                 {
                     string query = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceFrequency, ServiceProviderEmail, ServiceProviderName, PropertyManagerEmail, PropertyManagerName, Status, PMRating FROM UserServices WHERE PropertyManagerEmail = @PropertyManagerEmail";
                     result = await _userServiceDAO.GetUserServices(query, username, "PMRating");
@@ -152,7 +152,7 @@ namespace AA.PMTOGO.Services
                 if (CheckRate(rate))
                 {
                     //different column for user rating
-                    if(role == "Service Provider")
+                    if (role == "Service Provider")
                     {
                         string query = "UPDATE UserServices SET SPRating = @Rating WHERE Id = @ID";
                         rating = await _userServiceDAO.UpdateServiceRate(id, rate, query);
@@ -205,14 +205,34 @@ namespace AA.PMTOGO.Services
             }
             return result;
         }
-
-        //create service for service providers
-        public async Task<Result> CreateService(Service service)
+        //get service provider services from db
+        public async Task<Result> GatherSPServices(string username)
         {
             Result result = new Result();
             try
             {
-               result = await _serviceDAO.AddService(service);
+                result = await _serviceDAO.GetSPServices(username);
+                await _logger!.Log("GatherSPServices", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Load Services Unsuccessful. Try Again Later";
+                await _logger!.Log("GatherSPServices", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
+        //create service for service providers
+        public async Task<Result> CreateService(string username, Service service)
+        {
+            Result result = new Result();
+            try
+            {
+                Guid id = Guid.NewGuid();
+                string serviceProvider = await GetUserInfo(username);
+                Service newservice = new Service(id,service.ServiceName, service.ServiceType, service.ServiceDescription, serviceProvider, username, service.ServicePrice);
+                result = await _serviceDAO.AddService(newservice);
                 await _logger!.Log("CreateService", 4, LogCategory.Business, result);
                 return result;
             }
@@ -225,12 +245,12 @@ namespace AA.PMTOGO.Services
             return result;
         }
         //remove service for service providers
-        public async Task<Result> RemoveService(Service service)
+        public async Task<Result> RemoveService(Guid id)
         {
             Result result = new Result();
             try
             {
-                result = await _serviceDAO.DeleteService(service.Id);
+                result = await _serviceDAO.DeleteService(id);
                 await _logger!.Log("RemoveService", 4, LogCategory.Business, result);
                 return result;
             }
@@ -259,7 +279,8 @@ namespace AA.PMTOGO.Services
                 result = await _serviceRequestDAO.AddServiceRequest(request);
 
                 //if request successful change user service status to pending
-                if (result.IsSuccessful) {
+                if (result.IsSuccessful)
+                {
                     await ChangeStatus(id, "Pending Frequency Change");
                     await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
                 }
@@ -287,7 +308,8 @@ namespace AA.PMTOGO.Services
                 result = await _serviceRequestDAO.AddServiceRequest(request);
 
                 //if request successful change user service status to pending
-                if (result.IsSuccessful) {
+                if (result.IsSuccessful)
+                {
                     await ChangeStatus(id, "Pending Cancellation");
                     await _logger!.Log("CancellationRequest", 4, LogCategory.Business, result);
                 }

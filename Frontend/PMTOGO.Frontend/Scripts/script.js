@@ -50,7 +50,7 @@ function loadLoginPage() {
 
       // add event listeners to register link, forgot password button
         registerLink.addEventListener('click', loadRegisterPage);
-        forgotPasswordButton.addEventListener('click', /*loadCrimeMapPage*/loadForgotPasswordPage);
+        forgotPasswordButton.addEventListener('click', loadForgotPasswordPage);
 
       // select login form
       const loginForm = document.getElementById('login-form');
@@ -80,7 +80,7 @@ function loadLoginPage() {
         });
 
       });
-      
+
     })
     .catch(error => console.log(error));
 }
@@ -229,12 +229,12 @@ function loadRegisterPage() {
         const email = document.querySelector('#email').value;
         const password = document.querySelector('#pass').value;
         const firstName = document.querySelector('#firstName').value;
-        const lastName = document.querySelector('#lastName').value; 
+        const lastName = document.querySelector('#lastName').value;
         const role = UserRole();
-  
+
         url = api + '/UserManagement/register';
         data = {email: email, firstName: firstName, lastName: lastName, password: password, role: role }
-    
+
           send(url, data)
             .then(data => data.json())
             .then(response => console.log(response))
@@ -249,7 +249,7 @@ function loadRegisterPage() {
 const createServicesTable = (page) =>{
   const contentpage = "div." + page;
   const services = document.querySelector(contentpage);
-  let tableHeaders = ["Service Name", "Service Type",  "Service Description", 
+  let tableHeaders = ["Service Name", "Service Type",  "Service Description",
  "Service Provider Name", "Service Provider Email", "Price ($)", "Request Service?", "Add to Project"];
     while (services.firstChild) services.removeChild(services.firstChild)
     let ServiceTable = document.createElement('table');
@@ -280,7 +280,7 @@ const createServicesTable = (page) =>{
 
 const appendServices =(service, id) => {
   const ServiceTable = document.querySelector(".ServiceTable");
-  
+
   let ServiceTableBodyRow = document.createElement('tr');
   ServiceTableBodyRow.className = "ServiceTableBodyRow";
   ServiceTableBodyRow.id= String(id);
@@ -359,9 +359,9 @@ function loadNewRequest(id, userrole, homepageContent){
             fetch("./Views/NotAuthorized.html")
               .then(response => response.text())
               .then(text => {
-        
+
                 const homepageContent = document.getElementsByClassName("homepage-content")[0];
-            
+
                 homepageContent.innerHTML = text;
               })
               .catch(error => console.error(error))
@@ -371,29 +371,29 @@ function loadNewRequest(id, userrole, homepageContent){
           }
         })
         .catch(error => console.log(error));
-    
+
       });
     })
-    .catch(error => console.log(error)) 
+    .catch(error => console.log(error))
   }
 }
-function loadServices(userrole, page){     
+function loadServices(userrole, page){
   url = api + '/UserService/getservice';
   get(url)
     .then(response => response.json())
     .then(data => {
-      const Content = document.getElementsByClassName(page)[0]; 
+      const Content = document.getElementsByClassName(page)[0];
       Content.innerHTML = data;
 
       createServicesTable(page);
       let id = 0;
-      data.forEach((service) => {         
+      data.forEach((service) => {
         appendServices(service, id)
         id = id + 1;
       })
-      const requestlist = Array.from(document.getElementsByClassName("servicerequest-link")); 
+      const requestlist = Array.from(document.getElementsByClassName("servicerequest-link"));
       requestlist.forEach((key)=>{
-        key.addEventListener('click', function() 
+        key.addEventListener('click', function()
         {
           if(userrole === "Unauthorized User"){
             loadLoginPage();
@@ -401,9 +401,9 @@ function loadServices(userrole, page){
           loadNewRequest(key.id, userrole, Content)
         })
       })
-      const projectlist = Array.from(document.getElementsByClassName("addproject-link")); 
+      const projectlist = Array.from(document.getElementsByClassName("addproject-link"));
       projectlist.forEach((key)=>{
-        key.addEventListener('click', function() 
+        key.addEventListener('click', function()
         {
           if(userrole === "Unauthorized User"){
             loadLoginPage();
@@ -413,7 +413,7 @@ function loadServices(userrole, page){
         })
       })
   })
-  .catch(error => console.error(error));     
+  .catch(error => console.error(error));
 }
 //function to load homepage
 function loadHomePage(userrole, username) {
@@ -434,21 +434,25 @@ function loadHomePage(userrole, username) {
       //select log out
       const logoutUser = document.getElementById("logout");
 
-      const homepageContent = document.getElementsByClassName("homepage-content")[0];
-      //select settings
-      const deleteAccount = document.getElementById("settings");
-      //select propertyEvaluation
-      const propertyEvalFeature = document.getElementById('propertyEvaluation');
-      //select request management
-      const requestFeature = document.getElementById('requestManagement');
-      //select service Management
-      const serviceFeature = document.getElementById('serviceManagement');
-      //select crime alert
-      const crimeMapFeature = document.getElementById('crimemap');
-      //select Maintenance And Renovation
-      const maintenanceFeature = document.getElementById('maintenance');
+            const homepageContent = document.getElementsByClassName("homepage-content")[0];
+            //select settings
+            const deleteAccount = document.getElementById("settings");
+            //select propertyEvaluation
+            const propertyEvalFeature = document.getElementById('propertyEvaluation');
+            //select request management
+            const requestFeature = document.getElementById('requestManagement');
+            //select service Management
+            const serviceFeature = document.getElementById('serviceManagement');
+            //select crime alert
+            const crimeMapFeature = document.getElementById('crimemap');
+            //select crime alert
+            const diyFeature = document.getElementById('diy');
+            //select sp services
+            const spserviceFeature = document.getElementById('Services');
+            //select Maintenance And Renovation
+            const maintenanceFeature = document.getElementById('maintenance');
 
-      
+
       const adminFeature = document.getElementById('admin');
 
         //add event listeners
@@ -483,7 +487,13 @@ function loadHomePage(userrole, username) {
 
         //add event listener to nav to crime map
         crimeMapFeature.addEventListener('click', () => {
-            loadCrimeMapPage(homepageContent, username);
+            loadCrimeMapPage(homepageContent, username, userrole);
+        });
+
+
+        //add event listener to nav to diy
+        diyFeature.addEventListener('click', () => {
+            loadDIYPage(homepageContent, username, userrole);
         });
 
         // add event listeners to nav to property evaluation
@@ -499,6 +509,10 @@ function loadHomePage(userrole, username) {
         // add event listeners to nav to MnR
         maintenanceFeature.addEventListener('click', () => {
           LoadMnRPage(homepageContent);
+          });
+
+        spserviceFeature.addEventListener('click', () => {
+          loadServicePage(homepageContent);
         });
 
     })
@@ -544,13 +558,13 @@ function loadEmailPage(homepageContent){
 
         // perform registration action
         const firstName = document.querySelector('#firstName').value;
-        const lastName = document.querySelector('#lastName').value; 
+        const lastName = document.querySelector('#lastName').value;
         const description = document.querySelector('#description').value;
         var subject = "Request Management issue";
 
         url = api + '/Request/email';
         data = {FirstName: firstName, LastName: lastName, Subject: subject, Description: description}
-    
+
         send(url, data)
           .then(data => data.json())
           .then(response => console.log(response))
@@ -558,7 +572,7 @@ function loadEmailPage(homepageContent){
           .then(loadRequestManagementPage());
       });
 
-    })   
+    })
     .catch(error => console.log(error));
 }
 

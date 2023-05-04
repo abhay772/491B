@@ -1,4 +1,10 @@
-﻿namespace AA.PMTOGO.Models.Entities
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AA.PMTOGO.Models.Entities
 {
     public class ServiceInfo
     {
@@ -7,7 +13,14 @@
 
         public string frequency { get; set; } = string.Empty;
 
-        public string comments { get; set; } = string.Empty;
+        public string comments { get; set; } = string.Empty;   
+        
+        public string serviceName { get; set; } = string.Empty;
+        public string serviceDescription { get; set; } = string.Empty;
 
+        public string serviceType { get; set; } = string.Empty;
+
+        public double servicePrice { get; set; }
+         
     }
 }
