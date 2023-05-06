@@ -47,6 +47,7 @@ namespace AA.PMTOGO.DAL
 
                         }
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Get Services Successful";
                         result.Payload = listOfservice;
                         return result;
                     }
@@ -59,8 +60,6 @@ namespace AA.PMTOGO.DAL
                     }
                 }
             }
-            result.IsSuccessful = false;
-            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
             return result;
         }
         public async Task<Result> GetSPServices(string username) //list of services
@@ -91,6 +90,7 @@ namespace AA.PMTOGO.DAL
 
                         }
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Get Service Provider Services Successful";
                         result.Payload = listOfservice;
                         return result;
                     }
@@ -103,8 +103,6 @@ namespace AA.PMTOGO.DAL
                     }
                 }
             }
-            result.IsSuccessful = false;
-            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
             return result;
         }
 
@@ -143,6 +141,7 @@ namespace AA.PMTOGO.DAL
 
 
                 result.IsSuccessful = false;
+                result.ErrorMessage = "Find Service Unsuccessful";
                 return result;
             }
 
@@ -175,6 +174,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Add Services Successful";
                         return result;
                     }
                     else
@@ -218,6 +218,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Delete Services Successful";
                         return result;
                     }
 

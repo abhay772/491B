@@ -57,6 +57,7 @@ namespace AA.PMTOGO.DAL
                     }
                 }
                 result.IsSuccessful = false;
+                result.ErrorMessage = "Find User Service Unsuccessful";
                 return result;
             }
 
@@ -95,6 +96,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Add User Service Successful";
                         return result;
                     }
                     else
@@ -154,6 +156,7 @@ namespace AA.PMTOGO.DAL
 
                         }
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Get User Services Successful";
                         result.Payload = listOfUserServices;
                         return result;
                     }
@@ -166,8 +169,6 @@ namespace AA.PMTOGO.DAL
                     }
                 }
             }
-            result.IsSuccessful = false;
-            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
             return result;
         }
 
@@ -194,6 +195,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Update Service Frequency Successful";
                         return result;
                     }
 
@@ -212,8 +214,6 @@ namespace AA.PMTOGO.DAL
                 }
 
             }
-
-            result.IsSuccessful = false;
             return result;
         }
 
@@ -237,6 +237,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Delete User Service Successful";
                         return result;
                     }
 
@@ -282,6 +283,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Update User Service Rate Successful";
                         return result;
                     }
 
@@ -300,8 +302,6 @@ namespace AA.PMTOGO.DAL
                 }
 
             }
-
-            result.IsSuccessful = false;
             return result;
         }
 
@@ -326,6 +326,7 @@ namespace AA.PMTOGO.DAL
                         if ((int)reader[userRate] == rating)
                         {
                             result.IsSuccessful = true;
+                            result.ErrorMessage = "Check Rating Successful";
                             return result;
                         }
                         else
@@ -371,6 +372,7 @@ namespace AA.PMTOGO.DAL
                         if ((string)reader["ServiceFrequency"] == frequency)
                         {
                             result.IsSuccessful = true;
+                            result.ErrorMessage = "Check Frequency Successful";
                             return result;
                         }
                         else
@@ -412,6 +414,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Update Status Successful";
                         return result;
                     }
 
@@ -430,8 +433,6 @@ namespace AA.PMTOGO.DAL
                 }
 
             }
-
-            result.IsSuccessful = false;
             return result;
         }
     }

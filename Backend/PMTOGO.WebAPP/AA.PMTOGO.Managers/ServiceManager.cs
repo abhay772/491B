@@ -44,6 +44,7 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _userService.GatherServices();
+                result.ErrorMessage = "Gather Services Successful";
                 await _logger!.Log("GetAllServices", 4, LogCategory.Business, result);
                 return result;
             }

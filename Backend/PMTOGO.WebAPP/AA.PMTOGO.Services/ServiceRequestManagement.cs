@@ -35,7 +35,7 @@ namespace AA.PMTOGO.Services
 
                 if (insert.IsSuccessful == false)
                 {
-                    await _logger!.Log("AcceptRequest", 4, LogCategory.Business, result);
+                    await _logger!.Log("AcceptRequest", 4, LogCategory.Business, insert);
                     return insert;
                 }
                 else
@@ -65,16 +65,15 @@ namespace AA.PMTOGO.Services
                 if (delete.IsSuccessful == true)
                 {
                     await _serviceDAO.UpdateStatus(id, "In-Progress");
-                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, result);
+                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, delete);
                     result = await _requestDAO.GetServiceRequests(username);
                     return result;
 
                 }
                 else
                 {
-                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, result);
-                    delete = result;
-                    return result;
+                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, delete);
+                    return delete;
                     
                 }
             }
