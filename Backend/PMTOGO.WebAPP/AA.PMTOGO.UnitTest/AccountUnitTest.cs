@@ -4,6 +4,7 @@ using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
@@ -20,12 +21,15 @@ namespace AA.PMTOGO.UnitTest
             _usersDAO = usersDAO;
             _logger = logger;
         }*/
-        UsersDAO _usersDAO = new UsersDAO();
+
+        private readonly IConfiguration? _configuration;
+       
         LoggerDAO logdao = new LoggerDAO();
 
         [TestMethod]
         public void ShouldCreateInstanceWithDefaultCtor()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             // Arrange
             var expected = typeof(UserManagement);
             Logger _logger = new Logger(logdao);
@@ -41,6 +45,7 @@ namespace AA.PMTOGO.UnitTest
         // should provide sytstem-wide unique username
         public async Task ShouldAssignUniqueUsername()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             // Arrange
             Logger _logger = new Logger(logdao);
             var user = new UserManagement(_logger, _usersDAO);
@@ -161,6 +166,7 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task ShouldCreateAccountWithin5Seconds()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             //aranage
             Logger _logger = new Logger(logdao);
             var registration = new UserManagement(_logger, _usersDAO);
@@ -204,6 +210,7 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task ShouldAllUserInfo()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             //aranage
             Logger _logger = new Logger(logdao);
             var account = new UserManagement(_logger, _usersDAO);

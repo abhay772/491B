@@ -4,6 +4,6 @@ namespace AA.PMTOGO.Logging
 {
     public interface ILogger
     {
-        public Task Log(string requestName, byte logLevel, LogCategory logCategory, object result);
+        public Task Log(string requestName, byte logLevel, LogCategory logCategory, Result result);
     }
 }

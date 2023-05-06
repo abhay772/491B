@@ -27,16 +27,17 @@ namespace AA.PMTOGO.UnitTest
              _logger = logger;
              _connectionString = _configuration!.GetConnectionString("ServiceDbConnectionString")!;
          }*/
+        private readonly IConfiguration? _configuration;
 
-        UsersDAO _usersDAO = new UsersDAO();
-        ServiceDAO _serviceDAO = new ServiceDAO();
-        UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO();
         LoggerDAO logdao = new LoggerDAO();
         
         [TestMethod]
         public void CreateRequestManagementInstance()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange
             var expected = typeof(ServiceRequestManagement);
             Logger _logger = new Logger(logdao);
