@@ -7,14 +7,14 @@ namespace AA.PMTOGO.DAL;
 public class UsersDAO : IUsersDAO
 {
     private readonly string _connectionString;
-    //logging
+     //logging
 
-    public UsersDAO(IConfiguration configuration)
-    {
-        _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
-    }
-
- 
+     public UsersDAO(IConfiguration configuration)
+     {
+         _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
+     }
+    
+    //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
     public async Task<Result> FindUser(string username)
@@ -48,6 +48,7 @@ public class UsersDAO : IUsersDAO
 
 
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Find User Successful";
                         result.Payload = user;
                         return result;
                     }
@@ -67,11 +68,50 @@ public class UsersDAO : IUsersDAO
                 }
             }
         }
-        result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
 
+    public async Task<Result> GetUserAccounts()
+    {
+        Result result = new Result();
+
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            connection.Open();
+
+            string query = "SELECT UserProfiles.Username, Email, FirstName, LastName, UserProfiles.Role, IsActive FROM UserProfiles INNER JOIN UserAccounts ON UserProfiles.Username = UserAccounts.Username";
+
+            var command = new SqlCommand(query, connection);
+
+
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
+            {
+                try
+                {
+                    List<User> listOfusers = new List<User>();
+                    while (reader.Read())
+                    {
+                        User user = new User((string)reader["Username"], (string)reader["Email"], (string)reader["FirstName"], (string)reader["LastName"],
+                            (string)reader["Role"], (bool)reader["IsActive"]);
+                        listOfusers.Add(user);
+                        
+                    }
+                    result.IsSuccessful = true;
+                    result.ErrorMessage = "Get User Accounts Successful";
+                    result.Payload = listOfusers;
+                    return result;
+                }
+                catch
+                {
+
+                    result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                    result.IsSuccessful = false;
+
+                }
+            }
+        }
+        return result;
+    }
     public async Task<Result> GetUser(string username)
     {
         Result result = new Result();
@@ -103,6 +143,7 @@ public class UsersDAO : IUsersDAO
                             user.Role = (string)reader["Role"];
 
                             result.IsSuccessful = true;
+                            result.ErrorMessage = "Get User Successful";
                             result.Payload = user;
                             return result;
                         }
@@ -122,8 +163,6 @@ public class UsersDAO : IUsersDAO
                 }
             }
         }
-        result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
     public async Task<Result> DoesUserExist(string email)
@@ -176,6 +215,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Delete User Accounts Successful";
                     return result;
                 }
 
@@ -219,6 +259,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Delete User Profile Successful";
                     return result;
                 }
 
@@ -244,7 +285,7 @@ public class UsersDAO : IUsersDAO
         return result;
     }
 
-    public async Task<Result> UpdateUserActivation(string username, bool active)
+    public async Task<Result> UpdateUserActivation(string username, int active)
     {
         var result = new Result();
         using (var connection = new SqlConnection(_connectionString))
@@ -264,6 +305,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Update User Activation Successful";
                     return result;
                 }
 
@@ -320,6 +362,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Save User Account Successful";
                     return result;
                 }
 
@@ -370,6 +413,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Save User Profile Successful";
                     return result;
                 }
 
@@ -500,6 +544,7 @@ public class UsersDAO : IUsersDAO
 
 
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Request Recovery Successful";
                         result.Payload = user;
                         return result;
                     }
@@ -515,13 +560,10 @@ public class UsersDAO : IUsersDAO
 
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
-                    //_logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                 }
             }
         }
-        result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
 
@@ -549,6 +591,7 @@ public class UsersDAO : IUsersDAO
                         //command.ExecuteNonQuery();
 
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Validate OTP Successful";
                     }
                     else
                     {
@@ -589,6 +632,7 @@ public class UsersDAO : IUsersDAO
             else
             {
                 result.IsSuccessful = true;
+                result.ErrorMessage = "Update Password Successful";
             }
         }
         return result;
@@ -616,6 +660,7 @@ public class UsersDAO : IUsersDAO
             else
             {
                 result.IsSuccessful = true;
+                result.ErrorMessage = "Save OTP Successful";
             }
         }
         return result;

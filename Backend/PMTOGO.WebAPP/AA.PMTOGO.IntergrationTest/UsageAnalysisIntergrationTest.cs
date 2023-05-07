@@ -14,37 +14,48 @@ namespace AA.PMTOGO.IntergrationTest
     [TestClass]
     public class UsageAnalysisIntergrationTest
     {
+        LoggerDAO logdao = new LoggerDAO();
+        //private readonly ILogger? _logger;
 
-        private readonly IConfiguration? _configuration;
-        
-        private readonly ILogger? _logger;
-        private readonly string _connectionString;
-        
-        private readonly ILoggerDAO _loggerDAO;
-
-        public UsageAnalysisIntergrationTest( ILogger? logger, ILoggerDAO loggerDAO, IConfiguration _configuration)
-        {
-            _logger = logger;
-            _loggerDAO = loggerDAO;
-            _connectionString = _configuration!.GetConnectionString("ServiceDbConnectionString")!;
-        }
-        
 
         [TestMethod]
         public async Task GetData_PASS()
         {
             //arrange
-            LoggerDAO _loggerDAO = new LoggerDAO(_configuration!);
-
+            Result result = await logdao!.GetAnalysisLogs("Authentication");
+            
             //act
-
-            Result result = await _loggerDAO!.GetAnalysisLogs("Authenticate");
             IDictionary<DateTime, int> data = (Dictionary<DateTime, int>)result.Payload!;
+            foreach (var day in data)
+            {
+                Console.WriteLine($"{day.Key}: {day.Value}");
+            }
             Console.WriteLine(data);
             bool actual = result.IsSuccessful;
 
+            //assert
             Assert.IsNotNull(result);
             Assert.IsTrue(actual);
+
+
+        }
+        [TestMethod]
+        public async Task GetLog_PASS()
+        {
+            //arrange
+            Result result = new Result();
+            result.IsSuccessful = false;
+            result.ErrorMessage = "Testing Logger";
+            Logger _logger = new Logger(logdao);
+            await _logger!.Log("GetUserInfo", 4, LogCategory.Business, result);
+            
+
+            //act
+            bool actual = result.IsSuccessful;
+
+            //assert
+            Assert.IsNotNull(result);
+            Assert.IsTrue(!actual);
 
 
         }

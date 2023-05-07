@@ -49,7 +49,7 @@ function loadLoginPage() {
 
       // add event listeners to register link, forgot password button
         registerLink.addEventListener('click', loadRegisterPage);
-        forgotPasswordButton.addEventListener('click', /*loadCrimeMapPage*/loadForgotPasswordPage);
+        forgotPasswordButton.addEventListener('click', loadForgotPasswordPage);
 
       // select login form
       const loginForm = document.getElementById('login-form');
@@ -311,8 +311,17 @@ const appendServices =(service, id) => {
 
   requestAction.append(requestbtn);
 
+  let projectAction = document.createElement('td');
+  let projectbtn = document.createElement('button');
+  projectbtn.innerText = "Add to Project";
+  projectbtn.className="addproject-link";
+  //may change id
+  projectbtn.id=`${service.id}`;
+
+  projectAction.append(projectbtn);
+
   ServiceTableBodyRow.append(serviceName,serviceType,serviceDescription,
-    serviceProvider,serviceProviderEmail,price, requestAction);
+    serviceProvider,serviceProviderEmail,price, requestAction, projectAction);
 
   ServiceTable.append(ServiceTableBodyRow);
 }
@@ -391,6 +400,17 @@ function loadServices(userrole, page){
           loadNewRequest(key.id, userrole, Content)
         })
       })
+      const projectlist = Array.from(document.getElementsByClassName("addproject-link")); 
+      projectlist.forEach((key)=>{
+        key.addEventListener('click', function() 
+        {
+          if(userrole === "Unauthorized User"){
+            loadLoginPage();
+          }
+          //to be changed
+          loadNewRequest(key.id, userrole, Content)
+        })
+      })
   })
   .catch(error => console.error(error));     
 }
@@ -413,17 +433,23 @@ function loadHomePage(userrole, username) {
       //select log out
       const logoutUser = document.getElementById("logout");
 
-      const homepageContent = document.getElementsByClassName("homepage-content")[0];
-      //select settings
-      const deleteAccount = document.getElementById("settings");
-      //select propertyEvaluation
-      const propertyEvalFeature = document.getElementById('propertyEvaluation');
-      //select request management
-      const requestFeature = document.getElementById('requestManagement');
-      //select service Management
-      const serviceFeature = document.getElementById('serviceManagement');
-      //select crime alert
-      const crimeMapFeature = document.getElementById('crimemap');
+            const homepageContent = document.getElementsByClassName("homepage-content")[0];
+            //select settings
+            const deleteAccount = document.getElementById("settings");
+            //select propertyEvaluation
+            const propertyEvalFeature = document.getElementById('propertyEvaluation');
+            //select request management
+            const requestFeature = document.getElementById('requestManagement');
+            //select service Management
+            const serviceFeature = document.getElementById('serviceManagement');
+            //select crime alert
+            const crimeMapFeature = document.getElementById('crimemap');
+            //select crime alert
+            const diyFeature = document.getElementById('diy');
+            //select sp services
+            const spserviceFeature = document.getElementById('Services');
+
+      const adminFeature = document.getElementById('admin');
 
         //add event listeners
       logoutUser.addEventListener('click', () => {
@@ -457,12 +483,27 @@ function loadHomePage(userrole, username) {
 
         //add event listener to nav to crime map
         crimeMapFeature.addEventListener('click', () => {
-            loadCrimeMapPage(homepageContent, username);
+            loadCrimeMapPage(homepageContent, username, userrole);
+        });
+
+
+        //add event listener to nav to diy
+        diyFeature.addEventListener('click', () => {
+            loadDIYPage(homepageContent, username, userrole);
         });
 
         // add event listeners to nav to property evaluation
         propertyEvalFeature.addEventListener('click', () => {
             loadPropertyEvalPage(homepageContent);
+        });
+
+         // add event listeners to nav to admin
+        adminFeature.addEventListener('click', () => {
+          loadAdminPage(homepageContent);
+        });
+
+        spserviceFeature.addEventListener('click', () => {
+          loadServicePage(homepageContent);
         });
 
     })

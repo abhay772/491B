@@ -56,6 +56,7 @@ button {
   cursor: pointer;
   opacity: 0.9;
 }
+
  .registrationbtn{
   background-color: #0d49c9;
   padding: 14px 20px;
@@ -64,15 +65,53 @@ button {
   font-weight: bold;
   width: 60%;
 }
-
-.loginbtn, .submit{
-  background-color: #04AA6D;
+.fchange-link{
+  background-color: #0d49c9;
   padding: 14px 20px;
   left: 0;
   margin: 8px 0;
   width: 100%;
 }
 
+.loginbtn, .submit, .rate-link, .servicerequest-link, .addproject-link {
+  background-color: #04AA6D;
+  padding: 14px 20px;
+  left: 0;
+  margin: 8px 0;
+  width: 100%;
+}
+.addproject-link{
+  background-color: grey;
+}
+
+#addAlertButton{
+    background-color: #04AA6D;
+    padding: 14px 20px;
+    right: 0;
+    top: 0;
+    margin: 8px 0;
+    text-align: center;
+    width: 200px;
+}
+
+#backButton {
+    background-color: #04AA6D;
+    padding: 14px 20px;
+    right: 0;
+    top: 0;
+    margin: 8px 0;
+    text-align: center;
+    width: 200px;
+}
+
+addbtn, deletebtn, savebtn {
+    background-color: #04AA6D;
+    padding: 14px 20px;
+    left: 0;
+    margin: 8px 0;
+    text-align: center;
+    width: 100%;
+}
 
 .forgetbtn{
   background-color: #fefefe;
@@ -86,12 +125,15 @@ button {
   color: #271197; /* change color*/
 }
 
-.notifyAdmin{
+.notifyAdmin, .addservice{
   background-color: #fefefe;
   padding: 14px 20px;
   margin: 8px 0;
   left:0;
   color: black;
+}
+.addservice{
+  background-color: #0c7db1;
 }
 
 button:hover {
@@ -99,7 +141,7 @@ button:hover {
 }
 
 /* Extra styles for the cancel button */
-.cancelbtn {
+.cancelbtn, .cancel-link, .del-link{
   margin: 8px 0; 
   padding: 14px 20px;
   border: none;
@@ -134,7 +176,7 @@ a:hover {
   background-color: #f44336;;
 }
 /*Request Management / Service Management css*/
-h1{
+h1, h3{
   font-weight: bold;
   text-align: center;
 }
@@ -401,7 +443,6 @@ table {
   cursor: pointer;
 }
 
-
 /* Hover style for the Evaluate Property button */
 #evaluate-btn:hover {
   background-color: #3e8e41;
@@ -466,4 +507,65 @@ table {
 .error-message {
     color: red;
     margin-top: 10px;
+}
+
+.alert-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+}
+
+/* Layout for DIY dashboard */
+
+/* Grid container */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 1rem;
+    justify-items: center;
+    align-items: center;
+}
+
+/* Individual DIY box */
+.diy-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+}
+
+/* DIY box header */
+.diy-header {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* DIY box description */
+.diy-description {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* DIY box button */
+.diy-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.diy-button:hover {
+    background-color: #0062cc;
 }

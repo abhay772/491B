@@ -10,6 +10,17 @@ namespace AA.PMTOGO.Models.Entities
     {
         public string Id { get; set; } = string.Empty;
         public int rate { get; set; }
+
+        public string frequency { get; set; } = string.Empty;
+
+        public string comments { get; set; } = string.Empty;   
+        
+        public string serviceName { get; set; } = string.Empty;
+        public string serviceDescription { get; set; } = string.Empty;
+
+        public string serviceType { get; set; } = string.Empty;
+
+        public double servicePrice { get; set; }
          
     }
 }

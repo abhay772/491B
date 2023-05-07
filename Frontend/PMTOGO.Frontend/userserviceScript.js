@@ -50,7 +50,7 @@ function loadCancelRequest(id, homepageContent){
       homepageContent.innerHTML = data;
 
       const backBtn = document.getElementById('BacktoServices');
-      backBtn.addEventListener('click', loadHomePage);
+      backBtn.addEventListener('click', loadServiceManagementPage);
 
       const cancelForm = document.getElementById('cancel-form');
       cancelForm.addEventListener('submit', (event) => {

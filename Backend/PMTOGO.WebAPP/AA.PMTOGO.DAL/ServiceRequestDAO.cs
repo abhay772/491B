@@ -18,7 +18,8 @@ namespace AA.PMTOGO.DAL
          {
              _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
          }
-       
+
+        //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
 
         //Find request or userservice
 
@@ -49,6 +50,7 @@ namespace AA.PMTOGO.DAL
                     }
                 }
                 result.IsSuccessful = false;
+                result.ErrorMessage = "Find Service Request Unsuccessful";
                 return result;
             }
 
@@ -83,12 +85,14 @@ namespace AA.PMTOGO.DAL
 
 
                             result.IsSuccessful = true;
+                            result.ErrorMessage = "Get A Service Request Successful";
                             result.Payload = request;
                             return result;
                         }
                     }
                 }
                 result.IsSuccessful = false;
+                result.ErrorMessage = "Get A Service Request Unsuccessful";
                 return result;
             }
 
@@ -127,6 +131,7 @@ namespace AA.PMTOGO.DAL
 
                         }
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Get Service Request Successful";
                         result.Payload = listOfrequest;
                         return result;
                     }
@@ -175,6 +180,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Add Service Request Successful";
                         return result;
                     }
                     else
@@ -217,6 +223,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Delete Service Request Successful";
                         return result;
                     }
 

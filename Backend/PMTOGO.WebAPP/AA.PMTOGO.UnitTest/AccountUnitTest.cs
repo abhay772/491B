@@ -1,8 +1,11 @@
 using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
 namespace AA.PMTOGO.UnitTest
@@ -10,15 +13,28 @@ namespace AA.PMTOGO.UnitTest
     [TestClass]
     public class AccountUnitTest
     {
+        /*private readonly IUsersDAO _usersDAO;
+        private readonly ILogger _logger;
+
+        public AccountUnitTest(IUsersDAO usersDAO, ILogger logger)
+        {
+            _usersDAO = usersDAO;
+            _logger = logger;
+        }*/
+
+        private readonly IConfiguration? _configuration;
+       
+        LoggerDAO logdao = new LoggerDAO();
+
         [TestMethod]
         public void ShouldCreateInstanceWithDefaultCtor()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             // Arrange
             var expected = typeof(UserManagement);
-
+            Logger _logger = new Logger(logdao);
             // Act
-            var logger = new Logger();
-            var actual = new UserManagement(logger);
+            var actual = new UserManagement(_logger, _usersDAO);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -29,9 +45,10 @@ namespace AA.PMTOGO.UnitTest
         // should provide sytstem-wide unique username
         public async Task ShouldAssignUniqueUsername()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             // Arrange
-            var logger = new Logger();
-            var user = new UserManagement(logger);
+            Logger _logger = new Logger(logdao);
+            var user = new UserManagement(_logger, _usersDAO);
             //clean up
             await user.DeleteAccount("sara2@gmail.com");
 
@@ -149,10 +166,10 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task ShouldCreateAccountWithin5Seconds()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             //aranage
-
-            var logger = new Logger();
-            var registration = new UserManagement(logger);
+            Logger _logger = new Logger(logdao);
+            var registration = new UserManagement(_logger, _usersDAO);
 
             //act
             var time = Stopwatch.StartNew();
@@ -168,6 +185,7 @@ namespace AA.PMTOGO.UnitTest
             var timer = Stopwatch.StartNew();
             Thread.Sleep(6000);
             Result result1 = await registration.CreateAccount("OverTimegmail.com", "randomstring", "John", "Doe", "Property Manager");
+            
             bool OverTime = result1.IsSuccessful;
             timer.Stop();
             var seconds = timer.ElapsedMilliseconds / 1000;
@@ -192,19 +210,18 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task ShouldAllUserInfo()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             //aranage
-
-            var logger = new Logger();
-            var account = new UserManagement(logger);
-            var dao = new UsersDAO();
+            Logger _logger = new Logger(logdao);
+            var account = new UserManagement(_logger, _usersDAO);
 
             //act
             await account.CreateAccount("Delete@gmail.com", "randomstring", "John", "Doe", "Property Manager");
-            Result result1 = await dao.DoesUserExist("Delete@gmail.com");
+            Result result1 = await _usersDAO.DoesUserExist("Delete@gmail.com");
             bool found = result1.IsSuccessful;
 
             await account.DeleteAccount("Delete@gmail.com");
-            Result result = await dao.DoesUserExist("Delete@gmail,com");
+            Result result = await _usersDAO.DoesUserExist("Delete@gmail,com");
             bool actual = result.IsSuccessful;
 
             //private info
@@ -214,6 +231,6 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(found);
             Assert.IsFalse(actual);
 
-        }
+        } 
     }
 }
