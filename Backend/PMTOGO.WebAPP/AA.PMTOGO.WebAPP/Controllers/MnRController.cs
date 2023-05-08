@@ -69,6 +69,47 @@ public class MnRController : ControllerBase
         }
     }
 
+    [HttpGet("LoadProjects")]
+    public async Task<IActionResult> LoadProjects([FromBody] SaveProjectDTO saveProjectInput)
+    {
+        try
+        {
+
+            Result result = new Result();
+
+            Result claimValResult = _claimValidation.ClaimsValidation("Property Manager", Request);
+
+            if (claimValResult.IsSuccessful == false)
+            {
+                return Unauthorized();
+            }
+
+            string username = ((UserClaims)claimValResult.Payload).ClaimUsername;
+
+            result = await DoWithinTime(() => _serviceProjectManager.LoadProjects(username), 5000);
+
+            if (result.IsSuccessful)
+            {
+                return Ok("Project Added");
+            }
+
+
+            string errorMessage = string.IsNullOrEmpty(result.ErrorMessage) ? "Unable to Add Project" : result.ErrorMessage;
+
+            return Ok(errorMessage);
+        }
+
+        catch (TimeoutException t)
+        {
+            return StatusCode(StatusCodes.Status408RequestTimeout, "Request took longer than 5 seconds and timed out.");
+        }
+
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
+
     [HttpDelete("DeleteProject")]
     public async Task<IActionResult> DeleteProject(string projectName)
     {

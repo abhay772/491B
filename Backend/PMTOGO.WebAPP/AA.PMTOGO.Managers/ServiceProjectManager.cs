@@ -19,12 +19,24 @@ public class ServiceProjectManager : IServiceProjectManager
     public async Task<Result> SaveProject(
         string Username, double EvalChange, double OriginalEval, ProjectDetail projectDetail)
     {
-        await Task.Delay(5000);
         Result validatonResult = _inputValidation.ValidateProjectDetail(projectDetail);
 
         if (validatonResult.IsSuccessful) 
         {
             Result result = await _projectOrganizer.SaveProject(Username, EvalChange, OriginalEval, projectDetail);
+            return result;
+        }
+
+        return validatonResult;
+   }    
+    
+    public async Task<Result> LoadProjects(string Username)
+    {
+        Result validatonResult = _inputValidation.ValidateUsername(Username);
+
+        if (validatonResult.IsSuccessful) 
+        {
+            Result result = await _projectOrganizer.LoadProjects(Username);
             return result;
         }
 

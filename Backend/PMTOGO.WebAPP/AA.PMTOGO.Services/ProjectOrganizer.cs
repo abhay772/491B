@@ -24,6 +24,14 @@ public class ProjectOrganizer : IProjectOrganizer
         Result result = _serviceProjectDAO.SaveProject(Username, EvalChange, OriginalEval, projectDetail);
 
         return result;
+    }    
+    public async Task<Result> LoadProjects(string Username)
+    {
+        //log 
+
+        Result result = _serviceProjectDAO.LoadProjects(Username);
+
+        return result;
     }
 
     public async Task<Result> DeleteProject(string Username, string projectName)

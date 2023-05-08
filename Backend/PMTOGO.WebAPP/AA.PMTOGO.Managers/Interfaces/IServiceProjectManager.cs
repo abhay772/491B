@@ -6,5 +6,6 @@ namespace AA.PMTOGO.Managers.Interfaces
     {
         Task<Result> SaveProject(string Username, double EvalChange, double OriginalEval, ProjectDetail projectDetail);
         Task<Result> DeleteProject(string Username, string projectName);
+        Task<Result> LoadProjects(string Username);
     }
 }

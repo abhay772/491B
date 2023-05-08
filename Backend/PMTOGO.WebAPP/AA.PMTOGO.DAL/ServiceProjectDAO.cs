@@ -82,7 +82,7 @@ public class ServiceProjectDAO : IServiceProjectDAO
         return result;
     }
 
-    public Result LoadProject(int projectId)
+    public Result LoadProjects(string username)
     {
         var result = new Result();
 
@@ -94,18 +94,20 @@ public class ServiceProjectDAO : IServiceProjectDAO
             SELECT
                 ProjectName, ServiceIDs, StartDate, EndDate, ServiceTime, Budget, EvaluationChange, OriginalEvaluation
             FROM
-                ProjectDB.Projects
+                Projects
             WHERE
-                ProjectId = @ProjectId";
+                Username = @username";
 
             var command = new SqlCommand(sqlQuery, connection);
-            command.Parameters.AddWithValue("@ProjectId", projectId);
+            command.Parameters.AddWithValue("@Username", username);
 
             using (var reader = command.ExecuteReader())
             {
-                if (reader.Read())
+                List<Project> projects = new List<Project>();
+
+                while (reader.Read())
                 {
-                    SaveProjectDTO saveProjectDTO = new SaveProjectDTO()
+                    Project saveProjectDTO = new Project()
                     {
                         ProjectDetail = new ProjectDetail
                         {
@@ -121,13 +123,18 @@ public class ServiceProjectDAO : IServiceProjectDAO
                         OriginalEval = double.Parse(reader["OriginalEvaluation"].ToString())
                     };
 
-                    result.Payload = saveProjectDTO;
+                    projects.Add(saveProjectDTO);
+                }
+
+                if (projects.Count > 0)
+                {
+                    result.Payload = projects;
                     result.IsSuccessful = true;
                 }
                 else
                 {
                     result.IsSuccessful = false;
-                    result.ErrorMessage = "Project not found";
+                    result.ErrorMessage = "No projects found";
                 }
             }
         }
