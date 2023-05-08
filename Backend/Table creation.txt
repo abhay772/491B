@@ -102,3 +102,12 @@ CREATE TABLE Logs (
     LogCategory varchar(50) NOT NULL,
     Message varchar(500) NOT NULL
 );
+
+
+
+INSERT INTO [DIYDB].[dbo].[DIYDashboard] ([DIYEmail], [DIYID])
+VALUES ('test@gmail.com', '9'),
+       ('test@gmail.com', '10'),
+       ('test@gmail.com', '11'),
+       ('test@gmail.com', '12'),
+       ('test@gmail.com', '13')
