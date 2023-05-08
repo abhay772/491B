@@ -1,8 +1,8 @@
 ﻿using AA.PMTOGO.Authentication;
-using AA.PMTOGO.Logging;
 using AA.PMTOGO.DAL;
 using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Managers;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Services;
@@ -39,6 +39,17 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IPropertyEvaluator, PropertyEvaluator>();
             services.AddTransient<IPropEvalManager, PropEvalManager>();
             services.AddTransient<ISqlPropEvalDAO, SqlPropEvalDAO>();
+            services.AddTransient<IPriceChartDAO, PriceChartDAO>();
+            services.AddTransient<IServiceDAO, ServiceDAO>();
+            services.AddTransient<IServiceProjectDAO, ServiceProjectDAO>();
+            services.AddTransient<IMnRManager, MnRManager>();
+            services.AddTransient<IPriceChartDAO, PriceChartDAO>();
+            services.AddTransient<IPriceChartManager, PriceChartManager>();
+            services.AddTransient<IServiceProjectManager,ServiceProjectManager>();
+            services.AddTransient<IPriceChartAccessor,PriceChartAccessor>();
+            services.AddTransient<IProjectOrganizer,ProjectOrganizer>();
+            services.AddTransient<IServiceFinder, ServiceFinder>();
+
             services.AddTransient<IUsageAnalysisManager, UsageAnalysisManager>();
             services.AddTransient<InputValidation>();
             services.AddTransient<ClaimValidation>();

@@ -17,9 +17,13 @@ namespace AA.PMTOGO.DAL
         {
             _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
         }
-        //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
 
         // Service Provider - Services DAO
+
+        public ServiceDAO()
+        {
+
+        }
         public async Task<Result> GetServices() //list of services
         {
 
@@ -143,6 +147,49 @@ namespace AA.PMTOGO.DAL
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Find Service Unsuccessful";
                 return result;
+            }
+
+        }
+
+        public async Task<List<Service>> FindServicesWithQuery(string userQuery, int PageNumber, int PageLimit)
+        {
+            int OFFSET = (PageNumber - 1) * PageLimit;
+
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT Id, Name AS ServiceName, Type AS ServiceType, ServiceDescription, Price AS ServicePrice " +
+                                  "FROM Services " +
+                                  "WHERE CONTAINS(ServiceDescription, @Query) " +
+                                  "OFFSET @Offset ROWS " +
+                                  "FETCH NEXT @PageSize ROWS ONLY";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@Query", userQuery);
+                command.Parameters.AddWithValue("@Offset", OFFSET);
+                command.Parameters.AddWithValue("@PageSize", PageLimit);
+
+
+                List<Service> services = new List<Service>();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Guid id = (Guid)reader["Id"];
+                        string name = (string)reader["ServiceName"];
+                        string type = (string)reader["ServiceType"];
+                        string description = (string)reader["ServiceDescription"];
+                        double price = (double)reader["ServicePrice"];
+
+                        Service service = new Service(id, name, type, description, price);
+                        services.Add(service);
+                    }
+                }
+                return services;
             }
 
         }

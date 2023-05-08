@@ -14,16 +14,17 @@ public class HistoricalSalesDAO : IHistoricalSalesDAO
 
         List<HistoricalSale> salesList = JsonSerializer.Deserialize<List<HistoricalSale>>(jsonString)!;
 
-        if(salesList!.Count == 0 )
+        // return 0
+        if (salesList!.Count == 0)
         {
             return null!;
         }
 
         List<double> sales = new List<double>();
 
-        foreach(HistoricalSale sale in salesList)
+        foreach (HistoricalSale sale in salesList)
         {
-            if(expectedZip == sale.Zip)
+            if (expectedZip == sale.Zip)
             {
                 double saleValue = Double.Parse(sale.SalesValue.Substring(1, sale.SalesValue.Length - 1));
                 sales.Add(saleValue);
@@ -40,7 +41,7 @@ public class HistoricalSale
     public int SqFeet { get; set; }
     public string Address1 { get; set; } = string.Empty;
     public string Address2 { get; set; } = string.Empty;
-    public string City { get; set; } = string.Empty; 
+    public string City { get; set; } = string.Empty;
     public string State { get; set; } = string.Empty;
     public string Zip { get; set; } = string.Empty;
     public string? Description { get; set; } = string.Empty;

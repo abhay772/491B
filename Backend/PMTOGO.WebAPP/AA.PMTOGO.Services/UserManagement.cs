@@ -1,4 +1,10 @@
-﻿using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.Libary;
+using AA.PMTOGO.Logging;
+using AA.PMTOGO.Models.Entities;
+using AA.PMTOGO.Services.Interfaces;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using AA.PMTOGO.Libary;
@@ -63,12 +69,12 @@ namespace AA.PMTOGO.Services
         }
 
         //byte[] to string
-        public async Task<Result> CreateAccount(string email,string password, string firstname, string lastname, string role)
+        public async Task<Result> CreateAccount(string email, string password, string firstname, string lastname, string role)
         {
             Result result = new Result();
             if (valid.ValidateEmail(email).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
             {
-                Result result1= new Result();
+                Result result1 = new Result();
                 result1 = await _authNDAO.FindUser(email);
                 if (result1.IsSuccessful == false)//user doesnt exist so procceed
                 {
@@ -79,7 +85,7 @@ namespace AA.PMTOGO.Services
                     await _authNDAO.SaveUserAccount(email, passDigest, salt, role);
                     await _authNDAO.SaveUserProfile(email, firstname, lastname, role);
 
-                    //log account created succesfully  
+                    //log account created succesfully
                     await _logger!.Log("CreateAccount", 4, LogCategory.Server, result);
 
                     User user = new User(email, email, firstname, lastname, role);
@@ -99,7 +105,7 @@ namespace AA.PMTOGO.Services
             {
                 result.ErrorMessage = "Invalid email provided.Retry again or contact system administrator";
                 result.IsSuccessful = false;
-                
+
             }
             result.IsSuccessful = false;
             return result;
@@ -189,7 +195,7 @@ namespace AA.PMTOGO.Services
                     //deactivate user account
 
                     await _authNDAO.UpdateUserActivation(username,active);
-                    
+
                     //log account activate succesfully
                     await _logger!.Log("EnableAccount", 4, LogCategory.Server, result);
                     result.IsSuccessful = true;
@@ -226,7 +232,7 @@ namespace AA.PMTOGO.Services
             var user_salt = Encoding.UTF8.GetBytes(salt);
             var pass = Encoding.UTF8.GetBytes(password);
 
-            // Lecture Vong 12/13 
+            // Lecture Vong 12/13
             var hash = new Rfc2898DeriveBytes(pass, user_salt, 1000, HashAlgorithmName.SHA512);
             var encryptedPass = hash.GetBytes(64);
             string passDigest = Convert.ToBase64String(encryptedPass);
@@ -237,8 +243,8 @@ namespace AA.PMTOGO.Services
         {
             Result result = new Result();
             result = await _authNDAO.FindUser(email);
-            
-            if (result.IsSuccessful) 
+
+            if (result.IsSuccessful)
             {
                 await EmailOTP(email);
             }
@@ -285,8 +291,7 @@ namespace AA.PMTOGO.Services
                 Console.WriteLine("Error sending email");
             }
             return false;*/
-            
+
         }
     }
 }
-

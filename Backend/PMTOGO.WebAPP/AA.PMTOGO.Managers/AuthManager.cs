@@ -2,7 +2,6 @@
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using System.Security.Claims;
-using System.Security.Principal;
 
 namespace AA.PMTOGO.Managers;
 

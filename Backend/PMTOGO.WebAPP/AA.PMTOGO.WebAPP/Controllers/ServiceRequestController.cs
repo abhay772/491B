@@ -1,9 +1,7 @@
 ﻿using AA.PMTOGO.Libary;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using AA.PMTOGO.Managers.Interfaces;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -59,7 +57,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
             }
             return BadRequest("Not Authorized");
-            
+
         }
         [HttpPost]
         [Route("accept")]
@@ -123,10 +121,41 @@ namespace AA.PMTOGO.WebAPP.Controllers
                 }
 
             }
+            return BadRequest("Invalid Credentials");
+
+        }
+        [HttpPost]
+        [Route("frequencychange")]
+        public async Task<IActionResult> AcceptFrequencyRequest([FromBody] ServiceInfo service)
+        {
+            Result result = new Result();
+            result = _claims.ClaimsValidation("Service Provider", Request);
+            UserClaims user = (UserClaims)result.Payload!;
+
+            if (result.IsSuccessful)
+            {
+                try
+                {
+                    Result accept = await _requestManager.AcceptFrequencyChange(service.Id, service.frequency, user.ClaimUsername);
+                    if (accept.IsSuccessful)
+                    {
+                        return Ok(accept.Payload); //payload is update service requests list
+                    }
+                    else
+                    {
+                        return BadRequest(result.ErrorMessage);
+                    }
+                }
+                catch
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                }
+
+
+            }
             return BadRequest("Cookie not found");
-            
+
         }
 
     }
 }
-

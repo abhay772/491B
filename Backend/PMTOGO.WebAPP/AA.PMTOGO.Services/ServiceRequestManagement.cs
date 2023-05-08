@@ -64,9 +64,11 @@ namespace AA.PMTOGO.Services
                 }
                 else
                 {
-                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, delete);
-                    return delete;
-                    
+
+                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, result);
+                    delete = result;
+                    return result;
+
                 }
             }
             catch
@@ -115,7 +117,7 @@ namespace AA.PMTOGO.Services
                 result.ErrorMessage = "Could not find User Service. Try Again Later";
                 await _logger!.Log("CreateUserService", 4, LogCategory.Business, result);
             }
-            
+
             return null!;
         }
 
@@ -144,7 +146,7 @@ namespace AA.PMTOGO.Services
             try
             {
                 result = await _serviceDAO.UpdateServiceFrequency(id, frequency);
-                if (result.IsSuccessful) 
+                if (result.IsSuccessful)
                 {
                     await _serviceDAO.UpdateStatus(id, "In-Progress");
                     await _logger!.Log("FrequencyChange", 4, LogCategory.Business, result);
@@ -196,5 +198,5 @@ namespace AA.PMTOGO.Services
         }
 
     }
-    
+
 }

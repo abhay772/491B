@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AA.PMTOGO.UnitTest
 {
-    //clean up test 
+    //clean up test
     [TestClass]
     public class ServiceManagementUnitTest
     {

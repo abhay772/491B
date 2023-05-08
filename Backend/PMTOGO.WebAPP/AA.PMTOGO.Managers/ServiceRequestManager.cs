@@ -58,8 +58,8 @@ namespace AA.PMTOGO.Managers
             }
             return result;
         }
-        
-        //get all request for service provider user    
+
+        //get all request for service provider user
         public async Task<Result> GetUserRequests(string username)
         {
             Result result = new Result();

@@ -32,7 +32,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 #endif
 
         [HttpGet]
-        public async Task<IActionResult> GetUserAppointment([FromQuery]string jwt)
+        public async Task<IActionResult> GetUserAppointment([FromQuery] string jwt)
         {
             Result result = new Result();
             result = _claims.ClaimsValidation(null!, jwt);
@@ -52,7 +52,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         return BadRequest(new { message = "Retry again or contact system admin." });
                     }
                 }
-                catch 
+                catch
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
@@ -61,7 +61,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAppointmentRequest(InsertAppointmentRequest appointmentRequest, [FromQuery]string jwt)
+        public async Task<IActionResult> AddAppointmentRequest(InsertAppointmentRequest appointmentRequest, [FromQuery] string jwt)
         {
             Result result = new Result();
             result = _claims.ClaimsValidation(null!, jwt);
@@ -75,12 +75,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result insert = await _appointmentManager.InsertAppointment(appointment, user.ClaimUsername);
                     if (insert.IsSuccessful)
                     {
-                        return Ok(new { message = insert.Payload});
+                        return Ok(new { message = insert.Payload });
                     }
                     else
                     {
 
-                        return BadRequest(new { message = "Retry again or contact system admin" } );
+                        return BadRequest(new { message = "Retry again or contact system admin" });
                     }
                 }
                 catch
@@ -91,9 +91,9 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
             return BadRequest("Invalid Credentials");
         }
-        
+
         [HttpPut]
-        public async Task<IActionResult> UpdateAppointment(UpdateAppointmentRequest appointmentRequest, [FromQuery]string jwt)
+        public async Task<IActionResult> UpdateAppointment(UpdateAppointmentRequest appointmentRequest, [FromQuery] string jwt)
         {
             Result result = new Result();
             result = _claims.ClaimsValidation(null!, jwt);
@@ -115,7 +115,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                         return BadRequest("Invalid username or password provided. Retry again or contact system admin" + result.Payload);
                     }
                 }
-                catch 
+                catch
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
@@ -125,12 +125,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteAppointment(int appointmentId, [FromQuery]string jwt)
+        public async Task<IActionResult> DeleteAppointment(int appointmentId, [FromQuery] string jwt)
         {
             Result result = new Result();
             result = _claims.ClaimsValidation(null!, jwt);
 
-            if (result.IsSuccessful )
+            if (result.IsSuccessful)
             {
                 try
                 {

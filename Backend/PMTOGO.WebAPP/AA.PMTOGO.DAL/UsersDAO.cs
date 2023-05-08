@@ -13,7 +13,7 @@ public class UsersDAO : IUsersDAO
      {
          _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
      }
-    
+
     //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.UsersDB;Trusted_Connection=True;Encrypt=false";
 
     //for account authentication // look for the users username/unique ID in sensitive info Table UserAccount
@@ -94,7 +94,7 @@ public class UsersDAO : IUsersDAO
                         User user = new User((string)reader["Username"], (string)reader["Email"], (string)reader["FirstName"], (string)reader["LastName"],
                             (string)reader["Role"], (bool)reader["IsActive"]);
                         listOfusers.Add(user);
-                        
+
                     }
                     result.IsSuccessful = true;
                     result.ErrorMessage = "Get User Accounts Successful";

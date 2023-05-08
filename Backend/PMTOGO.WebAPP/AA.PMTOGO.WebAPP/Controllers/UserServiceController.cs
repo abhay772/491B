@@ -3,8 +3,6 @@ using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 
 namespace AA.PMTOGO.WebAPP.Controllers

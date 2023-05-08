@@ -6,9 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AA.PMTOGO.DAL
 {
@@ -120,7 +119,7 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        
+
 
         //user service list
         public async Task<Result> GetUserServices(string sqlQuery, string email, string rating) // return all user services
@@ -181,7 +180,7 @@ namespace AA.PMTOGO.DAL
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                
+
                 string sqlQuery = "UPDATE UserServices SET ServiceFrequency = @ServiceFrequency WHERE Id = @ID";
 
                 var command = new SqlCommand(sqlQuery, connection);
@@ -207,7 +206,7 @@ namespace AA.PMTOGO.DAL
                     }
                 }
 
-                catch 
+                catch
                 {
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
@@ -295,7 +294,7 @@ namespace AA.PMTOGO.DAL
                     }
                 }
 
-                catch 
+                catch
                 {
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
@@ -357,7 +356,7 @@ namespace AA.PMTOGO.DAL
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-            
+
                 string sqlQuery = "SELECT ServiceFrequency FROM UserServices WHERE Id = @ID";
 
                 var command = new SqlCommand(sqlQuery, connection);

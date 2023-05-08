@@ -88,7 +88,7 @@ public class Authenticator : IAuthenticator
         return -1;
 
     }
-     
+
     public async void ResetFailedAttempts(string username)
     {
         Result result = await _authNDAO.FindUser(username);

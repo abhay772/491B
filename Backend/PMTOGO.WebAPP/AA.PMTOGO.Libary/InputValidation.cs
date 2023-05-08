@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.Models.Entities;
+using System.Data;
 using System.Text.RegularExpressions;
 
 namespace AA.PMTOGO.Libary
@@ -144,15 +145,87 @@ namespace AA.PMTOGO.Libary
 
         public bool ValidatePropertyProfile(PropertyProfile propertyProfile)
         {
-            bool isValid = (propertyProfile.NoOfBedrooms != 0) && 
-                (propertyProfile.NoOfBathrooms != 0) && 
-                (propertyProfile.SqFeet != 0) && 
-                (propertyProfile.Address1 != string.Empty) && 
-                (propertyProfile.Address2 != string.Empty) && 
-                (propertyProfile.City != string.Empty) &&     
+            bool isValid = (propertyProfile.NoOfBedrooms != 0) &&
+                (propertyProfile.NoOfBathrooms != 0) &&
+                (propertyProfile.SqFeet != 0) &&
+                (propertyProfile.Address1 != string.Empty) &&
+                (propertyProfile.Address2 != string.Empty) &&
+                (propertyProfile.City != string.Empty) &&
                 (propertyProfile.State != string.Empty) &&
                            (propertyProfile.Zip != string.Empty);
             return isValid;
+        }
+
+        public bool ValidateChangeInProfile(ProfileChange profileChange,PropertyProfile propertyProfile)
+        {
+
+            if (profileChange == null || propertyProfile == null)
+            {
+                return false;
+            }
+
+            if(propertyProfile.NoOfBedrooms - profileChange.CBathrooms < 1)
+            {
+                return false;
+            }
+
+            if (propertyProfile.NoOfBathrooms - profileChange.CBathrooms < 1)
+            {
+                return false;
+            }
+
+            if (propertyProfile.SqFeet - profileChange.CSqFeet < 1)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public Result ValidateProjectDetail(ProjectDetail projectDetail)
+        {
+            Result result = new Result();
+
+            if(ValidateProjectName(projectDetail.ProjectName) == false)
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Invalide Project Name";
+                return result;
+            }
+
+            if (ValidateDates(projectDetail.StartDate, projectDetail.EndDate) == false)
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Invalide Project Timeline";
+                return result;
+            }
+
+            result.IsSuccessful = true;
+            return result;
+        }
+
+        public bool ValidateProjectName(string projectName)
+        {
+            if(projectName == null || projectName.Length <= 50) 
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool ValidateDates(DateOnly startDate, DateOnly endDate)
+        {
+
+            DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+            ;
+
+            if (startDate >= today && startDate <= endDate)
+            {
+                return true;    
+            }
+
+            return false;
+
         }
     }
 }
