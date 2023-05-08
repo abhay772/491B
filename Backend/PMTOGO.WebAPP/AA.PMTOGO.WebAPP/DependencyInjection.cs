@@ -1,6 +1,5 @@
 ﻿using AA.PMTOGO.Authentication;
 using AA.PMTOGO.DAL;
-using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
@@ -9,6 +8,9 @@ using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Services;
 using AA.PMTOGO.Services.Interfaces;
 using ILogger = AA.PMTOGO.Logging.ILogger;
+using AA.PMTOGO.Models;
+using AA.PMTOGO.WebAPP.Controllers;
+using AA.PMTOGO.DAL.Interfaces;
 
 namespace AA.PMTOGO.Infrastructure
 {
@@ -22,12 +24,10 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IAccountManager, AccountManager>();
             services.AddTransient<IUserManagement, UserManagement>();
             services.AddTransient<IServiceManager, ServiceManager>();
+            services.AddTransient<IServiceManagement, ServiceManagement>();
             services.AddTransient<IServiceRequestManagement, ServiceRequestManagement>();
             services.AddTransient<IServiceRequestManager, ServiceRequestManager>();
             services.AddTransient<IUserServiceManagement, UserServiceManagement>();
-            services.AddTransient<IUserServiceDAO, UserServiceDAO>();
-            services.AddTransient<IServiceRequestDAO, ServiceRequestDAO>();
-            services.AddTransient<IServiceDAO, ServiceDAO>();
             services.AddSingleton<IAuthenticator, Authenticator>();
             services.AddTransient<IAuthManager, AuthManager>();
             services.AddTransient<IDIYManager, DIYManager>();
@@ -51,15 +51,8 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IServiceFinder, ServiceFinder>();
 
             services.AddTransient<IUsageAnalysisManager, UsageAnalysisManager>();
-            services.AddTransient<IUsageAnalysisDashboard, UsageAnalysisDashboard>();
             services.AddTransient<InputValidation>();
             services.AddTransient<ClaimValidation>();
-
-            services.AddTransient<ILoggerDAO, LoggerDAO>();
-            services.AddTransient<IUsersDAO, UsersDAO>();
-            services.AddScoped<IAppointmentManager, AppointmentManager>();
-            services.AddScoped<IAppointmentService, AppointmentService>();
-            services.AddScoped<IAppointmentDAO, AppointmentDAO>();
             return services;
         }
     }

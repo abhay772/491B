@@ -10,13 +10,12 @@ namespace AA.PMTOGO.Managers
     {
         //ERROR HANDLING
         private readonly IServiceRequestManagement _serviceRequest;
-        private readonly ILogger? _logger;
+        Logger _logger = new Logger();
 
 
-        public ServiceRequestManager(IServiceRequestManagement serviceRequest, ILogger logger)
+        public ServiceRequestManager(IServiceRequestManagement serviceRequest)
         {
             _serviceRequest = serviceRequest;
-            _logger = logger;
 
         }
 

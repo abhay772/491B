@@ -48,6 +48,7 @@ public class UsersDAO : IUsersDAO
 
 
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Find User Successful";
                         result.Payload = user;
                         return result;
                     }
@@ -67,8 +68,6 @@ public class UsersDAO : IUsersDAO
                 }
             }
         }
-        result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
 
@@ -98,6 +97,7 @@ public class UsersDAO : IUsersDAO
 
                     }
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Get User Accounts Successful";
                     result.Payload = listOfusers;
                     return result;
                 }
@@ -110,8 +110,6 @@ public class UsersDAO : IUsersDAO
                 }
             }
         }
-        result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
     public async Task<Result> GetUser(string username)
@@ -145,6 +143,7 @@ public class UsersDAO : IUsersDAO
                             user.Role = (string)reader["Role"];
 
                             result.IsSuccessful = true;
+                            result.ErrorMessage = "Get User Successful";
                             result.Payload = user;
                             return result;
                         }
@@ -164,8 +163,6 @@ public class UsersDAO : IUsersDAO
                 }
             }
         }
-        result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
     public async Task<Result> DoesUserExist(string email)
@@ -218,6 +215,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Delete User Accounts Successful";
                     return result;
                 }
 
@@ -261,6 +259,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Delete User Profile Successful";
                     return result;
                 }
 
@@ -306,6 +305,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Update User Activation Successful";
                     return result;
                 }
 
@@ -362,6 +362,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Save User Account Successful";
                     return result;
                 }
 
@@ -412,6 +413,7 @@ public class UsersDAO : IUsersDAO
                 if (rows == 1)
                 {
                     result.IsSuccessful = true;
+                    result.ErrorMessage = "Save User Profile Successful";
                     return result;
                 }
 
@@ -542,6 +544,7 @@ public class UsersDAO : IUsersDAO
 
 
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Request Recovery Successful";
                         result.Payload = user;
                         return result;
                     }
@@ -557,13 +560,10 @@ public class UsersDAO : IUsersDAO
 
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
-                    //_logger!.Log("FindUser", 4, LogCategory.Server, result);
 
                 }
             }
         }
-        result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
         return result;
     }
 
@@ -591,6 +591,7 @@ public class UsersDAO : IUsersDAO
                         //command.ExecuteNonQuery();
 
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Validate OTP Successful";
                     }
                     else
                     {
@@ -631,6 +632,7 @@ public class UsersDAO : IUsersDAO
             else
             {
                 result.IsSuccessful = true;
+                result.ErrorMessage = "Update Password Successful";
             }
         }
         return result;
@@ -658,6 +660,7 @@ public class UsersDAO : IUsersDAO
             else
             {
                 result.IsSuccessful = true;
+                result.ErrorMessage = "Save OTP Successful";
             }
         }
         return result;

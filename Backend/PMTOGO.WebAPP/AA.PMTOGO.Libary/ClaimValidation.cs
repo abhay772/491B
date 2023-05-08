@@ -50,7 +50,7 @@ namespace AA.PMTOGO.Libary
 
                         if (validationCheck && userrole == role || role == null)
                         {
-                            UserClaims user = new UserClaims(username, userrole);
+                            UserClaims user = new UserClaims(username, role!);
 
                             result.IsSuccessful = true;
                             result.Payload = user;

@@ -22,13 +22,10 @@ namespace AA.PMTOGO.Models.Entities
         public string Status { get; set; } = string.Empty;
         public int Rating { get; set; }
 
-        public int SPRating { get; set; }
-        public int PMRating { get; set; }
-
         public UserService() { }
 
-        public UserService(Guid id, string serviceName, string serviceType, string serviceDescription,string serviceFrequency, string serviceProviderEmail,
-            string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
+        public UserService(Guid id, string serviceName, string serviceDescription, string serviceType,
+            string serviceFrequency, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
         {
             Id = id;
             ServiceName = serviceName;

@@ -104,7 +104,7 @@ namespace AA.PMTOGO.DAL
                 {
                     while (idReader.Read())
                     {
-                        idList.Add(idReader["DIYID"].ToString()!);
+                        idList.Add(idReader["DIYID"].ToString());
                     }
                 }
 
@@ -120,10 +120,10 @@ namespace AA.PMTOGO.DAL
                         {
                             var diy = new DIYObject
                             {
-                                ID = reader["DIYID"].ToString()!,
-                                Email = reader["DIYEmail"].ToString()!,
-                                Name = reader["DIYName"].ToString()!,
-                                Description = reader["DIYDescription"].ToString()!,
+                                ID = reader["DIYID"].ToString(),
+                                Email = reader["DIYEmail"].ToString(),
+                                Name = reader["DIYName"].ToString(),
+                                Description = reader["DIYDescription"].ToString(),
                             };
 
                             if (reader["DIYVideo"] != DBNull.Value)
@@ -178,10 +178,10 @@ namespace AA.PMTOGO.DAL
                     {
                         var diy = new DIYObject
                         {
-                            ID = reader["DIYID"].ToString()!,
-                            Email = reader["DIYEmail"].ToString()!,
-                            Name = reader["DIYName"].ToString()!,
-                            Description = reader["DIYDescription"].ToString()!,
+                            ID = reader["DIYID"].ToString(),
+                            Email = reader["DIYEmail"].ToString(),
+                            Name = reader["DIYName"].ToString(),
+                            Description = reader["DIYDescription"].ToString(),
                         };
 
                         if (reader["DIYVideo"] != DBNull.Value)
@@ -211,10 +211,10 @@ namespace AA.PMTOGO.DAL
                     {
                         var diy = new DIYObject
                         {
-                            ID = reader["DIYID"].ToString()!,
-                            Email = reader["DIYEmail"].ToString()!,
-                            Name = reader["DIYName"].ToString()!,
-                            Description = reader["DIYDescription"].ToString()!,
+                            ID = reader["DIYID"].ToString(),
+                            Email = reader["DIYEmail"].ToString(),
+                            Name = reader["DIYName"].ToString(),
+                            Description = reader["DIYDescription"].ToString(),
                         };
 
                         if (reader["DIYVideo"] != DBNull.Value)
@@ -225,7 +225,7 @@ namespace AA.PMTOGO.DAL
                     }
                 }
             }
-            return null!;
+            return null;
         }
 
         public async Task<bool> AddDIY(string id, string email)

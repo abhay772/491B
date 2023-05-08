@@ -1,7 +1,6 @@
 ﻿using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
-using AA.PMTOGO.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,19 +12,13 @@ namespace AA.PMTOGO.Managers
     //input validation, error handling , logging
     public class UsageAnalysisManager : IUsageAnalysisManager
     {
-        private readonly IUsageAnalysisDashboard _usageDashboard;
-
-        public UsageAnalysisManager(IUsageAnalysisDashboard usageDashboard)
-        {
-            _usageDashboard = usageDashboard;
-        }
-
+        UsageAnalysisDashboard usageDashboard = new UsageAnalysisDashboard();
         public async Task<Result> GetAnalysis()
         {
             Result result = new Result();
             try
             {
-                result = await _usageDashboard.GenerateAnalysis();
+                result = await usageDashboard.GenerateAnalysis();
                 return result;
             }
             catch

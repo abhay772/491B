@@ -10,17 +10,22 @@ namespace AA.PMTOGO.IntergrationTest
     [TestClass]
     public class ServiceManagementIntergrationTest
     {
-        private readonly IConfiguration? configuration;
-        UsersDAO _usersDAO = new UsersDAO();
-        ServiceDAO _serviceDAO = new ServiceDAO(configuration);
-        UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO();
+        private readonly IConfiguration? _configuration;
+
+        /*UsersDAO _usersDAO = new UsersDAO(_configuration!);
+        ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
+        UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);*/
+
         LoggerDAO logdao = new LoggerDAO();
 
 
         [TestMethod]
         public async Task AddAService_PASS()
         {
+            ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
+
+
             // Arrange
 
             Guid id = Guid.NewGuid();
@@ -45,7 +50,9 @@ namespace AA.PMTOGO.IntergrationTest
 
         [TestMethod]
         public async Task GetServices_PASS()
-        {
+        { 
+            ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
+
             // Arrange
             Result result = await _serviceDAO.GetServices();
 
@@ -59,6 +66,9 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task GetUserServicesPM_PASS()
         {
+
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+
             // Arrange
             Guid id = Guid.NewGuid();
             ServiceRequest service = new (id,"New Request", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -82,6 +92,8 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task GetUserServicesSP_PASS()
         {
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+ 
             // Arrange
 
             Guid id = Guid.NewGuid();
@@ -106,6 +118,8 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task AddServiceRequest_PASS()
         {
+
+            ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange
             Guid id = Guid.NewGuid();
 
@@ -131,6 +145,10 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task RateAUserServiceSP_PASS()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
             //arrange
             Logger _logger = new Logger(logdao);
             var service = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
@@ -160,6 +178,10 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task RateAUserServicePM_PASS()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
             //arrange
             Logger _logger = new Logger(logdao);
             var userserviceM = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
@@ -189,6 +211,10 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task RateIsNotHigherThan5_FAIL()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
             //arrange
             Logger _logger = new Logger(logdao);
             var service = new UserServiceManagement(_usersDAO, _serviceDAO, _userServiceDAO, _serviceRequestDAO, _logger!);
