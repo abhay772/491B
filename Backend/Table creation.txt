@@ -86,3 +86,19 @@ CREATE TABLE CrimeAlerts (
     Y FLOAT NOT NULL
 );
 GO
+
+
+CREATE DATABASE [AA.LogDB];
+GO
+
+USE [AA.LogDB];
+GO
+
+CREATE TABLE Logs (
+    LogId int PRIMARY KEY,
+    Timestamp datetime NOT NULL,
+    LogLevel varchar(50) NOT NULL,
+    Operation varchar(50) NOT NULL,
+    LogCategory varchar(50) NOT NULL,
+    Message varchar(500) NOT NULL
+);

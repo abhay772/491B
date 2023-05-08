@@ -65,6 +65,7 @@ namespace AA.PMTOGO.Infrastructure
 
             services.AddTransient<InputValidation>();
             services.AddTransient<ClaimValidation>();
+            services.AddTransient<AutomaticEmail>();
             return services;
         }
     }
