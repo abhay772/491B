@@ -1,6 +1,7 @@
 ﻿using AA.PMTOGO.Managers.Interfaces;
-using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+
 namespace AA.PMTOGO.WebAPP.Controllers
 {
     [ApiController]
@@ -8,10 +9,8 @@ namespace AA.PMTOGO.WebAPP.Controllers
     public class DIYController : ControllerBase
     {
         private readonly IDIYManager _diyManager;
-        private DIYObject _diyObject;
-        public DIYController(IDIYManager diyManager, DIYObject dIYObject)
+        public DIYController(IDIYManager diyManager)
         {
-            _diyObject = dIYObject;
             _diyManager = diyManager;
         }
 
@@ -26,9 +25,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         [HttpPost]
         [Route("uploadinfo")]
-        public async Task<IActionResult> UploadInfo(string email, string name, string description)
+        [ActionName("UploadInfo")]
+        public async Task<IActionResult> UploadDIY([FromForm] DIY diy)
         {
-            var result = await _diyManager.UploadInfoAsync(email, name, description);
+            var result = await _diyManager.UploadInfoAsync(diy.email, diy.name, diy.description);
+
+            var result2 = await _diyManager.UploadVideoAsync(diy.email, diy.name, diy.videofile);
 
             if (result)
             {
@@ -39,25 +41,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpPost]
-        [Route("uploadvideo")]
-        public async Task<IActionResult> UploadVideo(string email, string name, IFormFile videoFile)
-        {
-            var result = await _diyManager.UploadVideoAsync(email, name, videoFile);
-
-            if (result)
-            {
-                return Ok();
-            }
-
-            return BadRequest();
-        }
-
-        [HttpGet]
         [Route("getDashboardDIY")]
-        public IActionResult GetDashboardDIY(string email)
+        [ActionName("GetDashboardDIY")]
+        public IActionResult GetDashboardDIY([FromBody] JsonElement data)
         {
-            var result = _diyManager.GetDashboardDIY(email);
-            //  result is a List<DIYObject>
+            var username = data.GetProperty("username").GetString();
+            var result = _diyManager.GetDashboardDIY(username);
+
             if (result != null)
             {
                 return Ok(result);
@@ -66,11 +56,12 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return NotFound();
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("searchDIY")]
-        public IActionResult SearchDIY(string searchTerm)
+        [ActionName("SearchDIY")]
+        public IActionResult SearchDIY([FromBody] DIY diy)
         {
-            var result = _diyManager.SearchDIY(searchTerm);
+            var result = _diyManager.SearchDIY(diy.searchTerm);
 
             if (result != null)
             {
@@ -78,13 +69,14 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
 
             return NotFound();
-        }
+        }*/
 
         [HttpGet]
         [Route("getDIY")]
-        public IActionResult GetDIY(string email, string name)
+        [ActionName("GetDIY")]
+        public IActionResult GetDIY([FromBody] DIY diy)
         {
-            var result = _diyManager.GetDIY(email, name);
+            var result = _diyManager.GetDIY(diy.email, diy.name);
 
             if (result != null)
             {
@@ -95,9 +87,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
         [HttpGet]
         [Route("getVideo")]
-        public IActionResult GetVideo(DIYObject dIYObject)
+        [ActionName("GetVideo")]
+        public IActionResult GetVideo([FromBody] DIY diy)
         {
-            MemoryStream videoStream = _diyManager.GetDIY(dIYObject.Email, dIYObject.Name).Video!;
+            MemoryStream videoStream = _diyManager.GetDIY(diy.email, diy.name).Video!;
             if (videoStream == null)
             {
                 return null!;
@@ -105,18 +98,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return new FileStreamResult(videoStream, "video/mp4");
         }
 
-        [HttpPost]
-        [Route("addDIY")]
-        public IActionResult AddDIY(string id, string email)
+
+        public class DIY
         {
-            var result = _diyManager.AddDIY(id, email);
-
-            if (result)
-            {
-                return Ok();
-            }
-
-            return BadRequest();
+            public string email { get; set; }
+            public string name { get; set; }
+            public string description { get; set; }
+            public IFormFile videofile { get; set; }
         }
     }
 }

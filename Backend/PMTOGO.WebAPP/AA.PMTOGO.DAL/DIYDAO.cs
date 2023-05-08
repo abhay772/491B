@@ -87,9 +87,9 @@ namespace AA.PMTOGO.DAL
                 }
             }
         }
-        public List<DIYObject> GetDashboardDIY(string email)
+        public List<DIYDashboardObject> GetDashboardDIY(string email)
         {
-            var diyList = new List<DIYObject>();
+            var diyList = new List<DIYDashboardObject>();
             var idList = new List<string>();
 
             using (var connection = new SqlConnection(_connectionString))
@@ -118,19 +118,13 @@ namespace AA.PMTOGO.DAL
                     {
                         while (reader.Read())
                         {
-                            var diy = new DIYObject
+                            var diy = new DIYDashboardObject
                             {
                                 ID = reader["DIYID"].ToString()!,
                                 Email = reader["DIYEmail"].ToString()!,
                                 Name = reader["DIYName"].ToString()!,
                                 Description = reader["DIYDescription"].ToString()!,
                             };
-
-                            if (reader["DIYVideo"] != DBNull.Value)
-                            {
-                                diy.Video = new MemoryStream((byte[])reader["DIYVideo"]);
-                            }
-
                             diyList.Add(diy);
                         }
                     }

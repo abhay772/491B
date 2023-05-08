@@ -31,6 +31,8 @@ builder.Services.AddControllers()
 
 var app = builder.Build();
 
+app.UseMiddleware<CorsMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -38,7 +40,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<CorsMiddleware>();
 app.MapControllers();
 
 app.Run();

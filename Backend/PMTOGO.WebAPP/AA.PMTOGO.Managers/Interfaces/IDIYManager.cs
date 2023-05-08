@@ -15,7 +15,7 @@ namespace AA.PMTOGO.Managers.Interfaces
 
         Task<bool> UploadVideoAsync(string email, string name, IFormFile videoFile);
 
-        List<DIYObject> GetDashboardDIY(string email);
+        List<DIYDashboardObject> GetDashboardDIY(string email);
 
         List<DIYObject> SearchDIY(string searchTerm);
 
