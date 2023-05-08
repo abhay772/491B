@@ -42,6 +42,7 @@ namespace AA.PMTOGO.Infrastructure
             services.AddTransient<IUsageAnalysisManager, UsageAnalysisManager>();
             services.AddTransient<InputValidation>();
             services.AddTransient<ClaimValidation>();
+            services.AddTransient<AutomaticEmail>();
             return services;
         }
     }
