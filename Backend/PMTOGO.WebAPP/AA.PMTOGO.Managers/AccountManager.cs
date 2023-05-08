@@ -1,5 +1,5 @@
 using AA.PMTOGO.DAL;
-﻿using AA.PMTOGO.Logging;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
@@ -52,7 +52,7 @@ namespace AA.PMTOGO.Managers
                     Result resultLog = new Result();
                     resultLog.ErrorMessage = "Took" + seconds + "seconds to create user, longer than alloted ";
                     await _logger!.Log("RegisterUser", 1, LogCategory.Data, resultLog);
-                    //log it took longer than 5 seconds
+                    //log it took longer than 5 seconds 
                 }
             }
             catch

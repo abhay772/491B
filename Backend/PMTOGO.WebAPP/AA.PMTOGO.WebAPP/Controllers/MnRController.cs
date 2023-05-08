@@ -25,7 +25,7 @@ public class MnRController : ControllerBase
     }
 
     [HttpPut("SaveProject")]
-    public async Task<IActionResult> SaveProject([FromBody] SaveProjectDTO saveProjectInput)
+    public async Task<IActionResult> SaveProject([FromBody] Project saveProjectInput)
     {
         try
         {
@@ -70,7 +70,7 @@ public class MnRController : ControllerBase
     }
 
     [HttpGet("LoadProjects")]
-    public async Task<IActionResult> LoadProjects([FromBody] SaveProjectDTO saveProjectInput)
+    public async Task<IActionResult> LoadProjects()
     {
         try
         {
