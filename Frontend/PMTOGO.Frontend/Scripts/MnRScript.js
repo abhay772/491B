@@ -39,14 +39,15 @@ function LoadMnRPage(homepageContent)
     
 }
 
-function LoadProjectsPage(homepageContent)
-{
-    fetch('./Views/MnRProjectsPage.html')
+function LoadProjectsPage(homepageContent) {
+  fetch('./Views/MnRProjectsPage.html')
     .then(response => response.text())
     .then(data => {
       // Handle the response data
       homepageContent.innerHTML = data;
 
-      
+      // Call the initializeProjectsPage function to set up the Projects Page
+      initializeProjectsPage(homepageContent);
     })
+    .catch(error => console.error(error));
 }

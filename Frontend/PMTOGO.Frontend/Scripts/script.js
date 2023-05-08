@@ -246,6 +246,8 @@ function loadRegisterPage() {
     })
     .catch(error => console.log(error))
 }
+
+
 const createServicesTable = (page) =>{
   const contentpage = "div." + page;
   const services = document.querySelector(contentpage);
