@@ -69,8 +69,8 @@ function loadLoginPage() {
         .then((response) => {
           if (response.ok) {
             response.json().then(data => {
-              userrole=`${data.claims[1].value}`;
-              loadHomePage(userrole);
+                userrole = `${data.claims[1].value}`;
+              loadHomePage(userrole, username);
             })
           }
         })

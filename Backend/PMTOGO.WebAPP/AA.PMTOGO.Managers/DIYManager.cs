@@ -32,7 +32,7 @@ namespace AA.PMTOGO.Managers
             return result;
         }
 
-        public List<DIYObject> GetDashboardDIY(string email)
+        public List<DIYDashboardObject> GetDashboardDIY(string email)
         {
             var dao = new DIYDAO();
             var result = dao.GetDashboardDIY(email);

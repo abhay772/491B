@@ -10,6 +10,7 @@ namespace AA.PMTOGO.Services
         private readonly DIYDAO _diyDao;
         public async Task<bool> UploadVideo(string email, string name, IFormFile videoFile)
         {
+            var dao = new DIYDAO();
             // Convert IFormFile to byte[]
             byte[] videoBytes;
             using (var stream = videoFile.OpenReadStream())
@@ -21,7 +22,7 @@ namespace AA.PMTOGO.Services
                 }
             }
 
-            return await _diyDao.UploadVideo(email, name, videoBytes);
+            return await dao.UploadVideo(email, name, videoBytes);
         }
         public List<DIYObject> SearchDIY(string name)
         {

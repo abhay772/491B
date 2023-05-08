@@ -1,5 +1,6 @@
 ﻿using AA.PMTOGO.Managers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace AA.PMTOGO.WebAPP.Controllers
 {
@@ -25,9 +26,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [HttpPost]
         [Route("uploadinfo")]
         [ActionName("UploadInfo")]
-        public async Task<IActionResult> UploadInfo([FromBody] DIY diy)
+        public async Task<IActionResult> UploadDIY([FromForm] DIY diy)
         {
             var result = await _diyManager.UploadInfoAsync(diy.email, diy.name, diy.description);
+
+            var result2 = await _diyManager.UploadVideoAsync(diy.email, diy.name, diy.videofile);
 
             if (result)
             {
@@ -38,27 +41,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
         }
 
         [HttpPost]
-        [Route("uploadvideo")]
-        [ActionName("UploadVideo")]
-        public async Task<IActionResult> UploadVideo([FromBody] DIY diy)
-        {
-            var result = await _diyManager.UploadVideoAsync(diy.email, diy.name, diy.videoFile);
-
-            if (result)
-            {
-                return Ok();
-            }
-
-            return BadRequest();
-        }
-
-        [HttpGet]
         [Route("getDashboardDIY")]
         [ActionName("GetDashboardDIY")]
-        public IActionResult GetDashboardDIY([FromBody] DIY diy)
+        public IActionResult GetDashboardDIY([FromBody] JsonElement data)
         {
-            var result = _diyManager.GetDashboardDIY(diy.email);
-            //  result is a List<DIYObject>
+            var username = data.GetProperty("username").GetString();
+            var result = _diyManager.GetDashboardDIY(username);
+
             if (result != null)
             {
                 return Ok(result);
@@ -67,7 +56,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return NotFound();
         }
 
-        [HttpGet]
+        /*[HttpGet]
         [Route("searchDIY")]
         [ActionName("SearchDIY")]
         public IActionResult SearchDIY([FromBody] DIY diy)
@@ -80,7 +69,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
 
             return NotFound();
-        }
+        }*/
 
         [HttpGet]
         [Route("getDIY")]
@@ -109,29 +98,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return new FileStreamResult(videoStream, "video/mp4");
         }
 
-        [HttpPost]
-        [Route("addDIY")]
-        [ActionName("AddDIY")]
-        public IActionResult AddDIY([FromBody] DIY diy)
-        {
-            /*var result = _diyManager.AddDIY(diy.id, diy.email);
-
-            if (result)
-            {
-                return Ok();
-            }
-*/
-            return BadRequest();
-        }
 
         public class DIY
         {
-            public int? id {  get; set; }
-            public string? email { get; set; }
-            public string? name { get; set; }
-            public string? description { get; set; }
-            public IFormFile? videoFile { get; set; }
-            public string? searchTerm { get; set; }
+            public string email { get; set; }
+            public string name { get; set; }
+            public string description { get; set; }
+            public IFormFile videofile { get; set; }
         }
     }
 }

@@ -18,7 +18,7 @@ namespace AA.PMTOGO.Infrastructure.Middleware
             context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:8080"); //"*");
             context.Response.Headers.Add("Access-Control-Max-Age", "86400"); // 24 hours in seconds
             context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-            context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,PUT,DELETE");
+            context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 
             if (context.Request.Method == "OPTIONS")
             {
