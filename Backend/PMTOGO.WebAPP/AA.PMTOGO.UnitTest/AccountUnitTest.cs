@@ -13,14 +13,6 @@ namespace AA.PMTOGO.UnitTest
     [TestClass]
     public class AccountUnitTest
     {
-        /*private readonly IUsersDAO _usersDAO;
-        private readonly ILogger _logger;
-
-        public AccountUnitTest(IUsersDAO usersDAO, ILogger logger)
-        {
-            _usersDAO = usersDAO;
-            _logger = logger;
-        }*/
 
         private readonly IConfiguration? _configuration;
        

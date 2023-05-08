@@ -2,6 +2,7 @@
 using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 
 namespace AA.PMTOGO.DAL;
 
@@ -38,7 +39,7 @@ public class PriceChartDAO : IPriceChartDAO
                         ChartItems item = new ChartItems
                         {
                             Id = Convert.ToInt32(reader["Id"]),
-                            Name = reader["Name"].ToString(),
+                            Name = reader["Name"].ToString()!,
                             Price = Convert.ToDouble(reader["Price"])
                         };
 
@@ -48,11 +49,11 @@ public class PriceChartDAO : IPriceChartDAO
                     result.IsSuccessful = true;
                     return result;
                 }
+             
             }
+            
         }
-        result.ErrorMessage = "No Price Items was found";
-        result.IsSuccessful = false;
-        return result;
+        
     }
 
     public async Task<Result> GetChartData(int itemID, int time)
@@ -65,33 +66,33 @@ public class PriceChartDAO : IPriceChartDAO
 
             string sqlQuery = "Select * FROM PriceData Where ItemID = ItemID ORDER BY Date ASC";
 
-            using (var command = new SqlCommand(sqlQuery, connection))
+            var command = new SqlCommand(sqlQuery, connection);
+
+            command.Parameters.AddWithValue("@ItemID", itemID);
+
+            using (SqlDataReader reader = await command.ExecuteReaderAsync())
             {
-                command.Parameters.AddWithValue("@ItemID", itemID);
+                List<ChartData> ChartData = new List<ChartData>();
 
-                using (var reader = await command.ExecuteReaderAsync())
+                while (await reader.ReadAsync())
                 {
-                    List<ChartData> ChartData = new List<ChartData>();
-
-                    while (await reader.ReadAsync())
+                    ChartData data = new ChartData
                     {
-                        ChartData data = new ChartData
-                        {
-                            Id = Convert.ToInt32(reader["Id"]),
-                            Date = DateOnly.Parse(reader["Date"].ToString()),
-                            Price = Convert.ToDouble(reader["Price"])
-                        };
+                        Id = Convert.ToInt32(reader["Id"]),
+                        Date = DateOnly.Parse(reader["Date"].ToString()!),
+                        Price = Convert.ToDouble(reader["Price"])
+                    };
 
-                        ChartData.Add(data);
-                    }
-                    result.Payload = ChartData;
-                    result.IsSuccessful = true;
-                    return result;
+                    ChartData.Add(data);
                 }
+                result.Payload = ChartData;
+                result.IsSuccessful = true;
+                return result;
             }
+
+            /*result.ErrorMessage = "No Item Data was found";
+            result.IsSuccessful = false;
+            return result;*/
         }
-        result.ErrorMessage = "No Item Data was found";
-        result.IsSuccessful = false;
-        return result;
     }
 }

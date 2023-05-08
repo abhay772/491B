@@ -83,10 +83,8 @@ namespace AA.PMTOGO.DAL
                     _result.IsSuccessful = false;
                     _result.ErrorMessage = e.Message;
 
-                    return _result;
                 }
             }
-            _result.IsSuccessful = false;
             return _result;
         }
 
@@ -115,11 +113,8 @@ namespace AA.PMTOGO.DAL
                 {
                     _result.IsSuccessful = false;
                     _result.ErrorMessage = e.Message;
-
-                    return _result;
                 }
             }
-            _result.IsSuccessful = false;
             return _result;
         }
 

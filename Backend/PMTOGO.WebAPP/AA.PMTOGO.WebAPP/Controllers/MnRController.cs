@@ -43,7 +43,7 @@ public class MnRController : ControllerBase
                 return Unauthorized();
             }
 
-            string username = ((UserClaims)claimValResult.Payload).ClaimUsername;
+            string username = ((UserClaims)claimValResult.Payload!).ClaimUsername;
 
             result = await DoWithinTime(() => _serviceProjectManager.SaveProject(username, EvalChange, OriginalEval, projectDetail), 5000);
 
@@ -63,7 +63,7 @@ public class MnRController : ControllerBase
             return StatusCode(StatusCodes.Status408RequestTimeout, "Request took longer than 5 seconds and timed out.");
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -84,7 +84,7 @@ public class MnRController : ControllerBase
                 return Unauthorized();
             }
 
-            string username = ((UserClaims)claimValResult.Payload).ClaimUsername;
+            string username = ((UserClaims)claimValResult.Payload!).ClaimUsername;
 
             result = await DoWithinTime(() => _serviceProjectManager.LoadProjects(username), 5000);
 
@@ -104,7 +104,7 @@ public class MnRController : ControllerBase
             return StatusCode(StatusCodes.Status408RequestTimeout, "Request took longer than 5 seconds and timed out.");
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -124,7 +124,7 @@ public class MnRController : ControllerBase
                 return Unauthorized();
             }
 
-            string username = ((UserClaims)claimValResult.Payload).ClaimUsername;
+            string username = ((UserClaims)claimValResult.Payload!).ClaimUsername;
 
             result = await DoWithinTime(() => _serviceProjectManager.DeleteProject(username, projectName), 5000);
 
@@ -144,7 +144,7 @@ public class MnRController : ControllerBase
             return StatusCode(StatusCodes.Status408RequestTimeout, "Request took longer than 5 seconds and timed out.");
         }
 
-        catch (Exception ex)
+        catch
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -161,7 +161,7 @@ public class MnRController : ControllerBase
 
             if (result.IsSuccessful)
             {
-                return Ok((List<Service>)result.Payload);
+                return Ok((List<Service>)result.Payload!);
             }
 
             string errorMessage = string.IsNullOrEmpty(result.ErrorMessage) ?  "Unable to find any matching services" : result.ErrorMessage;
@@ -173,7 +173,7 @@ public class MnRController : ControllerBase
         {
             return StatusCode(StatusCodes.Status408RequestTimeout, "Request took longer than 5 seconds and timed out.");
         }
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -197,13 +197,13 @@ public class MnRController : ControllerBase
                 return Unauthorized();
             }
 
-            string username = ((UserClaims)claimValResult.Payload).ClaimUsername;
+            string username = ((UserClaims)claimValResult.Payload!).ClaimUsername;
 
             result = await DoWithinTime(() => _mnRManager.EstimateProject(username, profileChange), 5000);
             
             if (result.IsSuccessful)
             {
-                return Ok((EstimateDTO)result.Payload);
+                return Ok((EstimateDTO)result.Payload!);
             }
 
             string errorMessage = string.IsNullOrEmpty(result.ErrorMessage) ? "Unable to Estimate the Project" : result.ErrorMessage;
@@ -216,7 +216,7 @@ public class MnRController : ControllerBase
             return StatusCode(StatusCodes.Status408RequestTimeout, "Request took longer than 5 seconds and timed out.");
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -237,7 +237,7 @@ public class MnRController : ControllerBase
 
             if (result.IsSuccessful)
             {
-                return Ok((List<ChartItems>)result.Payload);
+                return Ok((List<ChartItems>)result.Payload!);
             }
 
             string errorMessage = string.IsNullOrEmpty(result.ErrorMessage) ? "Unable to Load Chart Items" : result.ErrorMessage;
@@ -250,7 +250,7 @@ public class MnRController : ControllerBase
             return StatusCode(StatusCodes.Status408RequestTimeout, "Request took longer than 5 seconds and timed out.");
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
@@ -268,7 +268,7 @@ public class MnRController : ControllerBase
 
             if (result.IsSuccessful)
             {
-                return Ok((List<PriceChartDataDTO>)result.Payload);
+                return Ok((List<PriceChartDataDTO>)result.Payload!);
             }
 
             string errorMessage = string.IsNullOrEmpty(result.ErrorMessage) ? "Unable to Load Chart Items" : result.ErrorMessage;
@@ -281,7 +281,7 @@ public class MnRController : ControllerBase
             return StatusCode(StatusCodes.Status408RequestTimeout, "Request took longer than 5 seconds and timed out.");
         }
 
-        catch (Exception ex)
+        catch 
         {
             return StatusCode(StatusCodes.Status500InternalServerError);
         }

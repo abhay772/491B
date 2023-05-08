@@ -19,11 +19,6 @@ namespace AA.PMTOGO.DAL
         }
 
         // Service Provider - Services DAO
-
-        public ServiceDAO()
-        {
-
-        }
         public async Task<Result> GetServices() //list of services
         {
 

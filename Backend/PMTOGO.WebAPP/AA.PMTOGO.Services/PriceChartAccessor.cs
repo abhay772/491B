@@ -60,7 +60,7 @@ public class PriceChartAccessor : IPriceChartAccessor
 
         if (result.IsSuccessful)
         {
-            List<ChartData> chartData = (List<ChartData>)result.Payload;
+            List<ChartData> chartData = (List<ChartData>)result.Payload!;
 
             DateOnly currentDate = chartData[0].Date;
 

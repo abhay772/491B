@@ -13,10 +13,6 @@ namespace AA.PMTOGO.UnitTest
     public class ServiceManagementUnitTest
     {
        private readonly IConfiguration? _configuration;
-        /*UsersDAO _usersDAO = new UsersDAO();
-        ServiceDAO _serviceDAO = new ServiceDAO();
-        UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO();*/
         LoggerDAO logdao = new LoggerDAO();
         
 

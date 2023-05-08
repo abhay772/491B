@@ -70,7 +70,7 @@ namespace AA.PMTOGO.Services
                 smtpClient.Send(message);
                 return true;
             }
-            catch (Exception ex)
+            catch 
             {
                 Console.WriteLine("Error sending email");
             }

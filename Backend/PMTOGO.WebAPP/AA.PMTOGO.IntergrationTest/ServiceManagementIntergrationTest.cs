@@ -11,12 +11,6 @@ namespace AA.PMTOGO.IntergrationTest
     public class ServiceManagementIntergrationTest
     {
         private readonly IConfiguration? _configuration;
-
-        /*UsersDAO _usersDAO = new UsersDAO(_configuration!);
-        ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
-        UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
-        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);*/
-
         LoggerDAO logdao = new LoggerDAO();
 
 
@@ -24,8 +18,6 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task AddAService_PASS()
         {
             ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
-
-
             // Arrange
 
             Guid id = Guid.NewGuid();
@@ -139,7 +131,6 @@ namespace AA.PMTOGO.IntergrationTest
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
 
-
         }
 
         [TestMethod]
@@ -171,8 +162,6 @@ namespace AA.PMTOGO.IntergrationTest
             //assert
             Assert.IsNotNull(actual);
             Assert.IsTrue(actual);
-
-
         }
 
         [TestMethod]
@@ -237,10 +226,7 @@ namespace AA.PMTOGO.IntergrationTest
             //assert
             Assert.IsNotNull(actual);
             Assert.IsFalse(actual);
-
-
         }
-
 
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net;
 
-namespace AA.PMTOGO.Infrastructure.NewFolder
+namespace AA.PMTOGO.Infrastructure.Middleware
 {
     public class CorsMiddleware
     {

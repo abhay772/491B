@@ -37,8 +37,8 @@ namespace AA.PMTOGO.IntergrationTest
             Assert.IsNotNull(result);
             Assert.IsTrue(actual);
 
-
         }
+        //testing logging
         [TestMethod]
         public async Task GetLog_PASS()
         {

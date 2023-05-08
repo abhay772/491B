@@ -46,13 +46,7 @@ public class UnitTests
             .Returns(Task.FromResult(new Result { IsSuccessful = true }));
 
         // Act
-        Result result = mockServiceProjectManager.SaveProject(
-            username,
-            evalChange,
-            OEval,
-            projectDetail
-            )
-            .Result;
+        Result result = mockServiceProjectManager.SaveProject(username, evalChange, OEval, projectDetail).Result;
 
         // Assert
         Assert.IsTrue(result.IsSuccessful);
@@ -96,13 +90,7 @@ public class UnitTests
             .Returns(Task.FromResult(new Result { IsSuccessful = true }));
 
         // Act
-        Result result = mockServiceProjectManager.SaveProject(
-            username,
-            evalChange,
-            OEval,
-            projectDetail
-            )
-            .Result;
+        Result result = mockServiceProjectManager.SaveProject(username, evalChange, OEval, projectDetail).Result;
 
         // Assert
         Assert.IsFalse(result.IsSuccessful);
@@ -146,13 +134,7 @@ public class UnitTests
             .Returns(Task.FromResult(new Result { IsSuccessful = true }));
 
         // Act
-        Result result = mockServiceProjectManager.SaveProject(
-            username,
-            evalChange,
-            OEval,
-            projectDetail
-            )
-            .Result;
+        Result result = mockServiceProjectManager.SaveProject( username, evalChange,OEval,projectDetail).Result;
 
         // Assert
         Assert.IsFalse(result.IsSuccessful);
@@ -196,13 +178,7 @@ public class UnitTests
             .Returns(Task.FromResult(new Result { IsSuccessful = true }));
 
         // Act
-        Result result = mockServiceProjectManager.SaveProject(
-            username,
-            evalChange,
-            OEval,
-            projectDetail
-            )
-            .Result;
+        Result result = mockServiceProjectManager.SaveProject( username,evalChange,OEval,projectDetail).Result;
 
         // Assert
         Assert.IsFalse(result.IsSuccessful);
@@ -246,13 +222,7 @@ public class UnitTests
             .Returns(Task.FromResult(new Result { IsSuccessful = true }));
 
         // Act
-        Result result = mockServiceProjectManager.SaveProject(
-            username,
-            evalChange,
-            OEval,
-            projectDetail
-            )
-            .Result;
+        Result result = mockServiceProjectManager.SaveProject(username,evalChange, OEval,projectDetail).Result;
 
         // Assert
         Assert.IsFalse(result.IsSuccessful);
@@ -295,13 +265,7 @@ public class UnitTests
             .Returns(Task.FromResult(new Result { IsSuccessful = true }));
 
         // Act
-        Result result = mockServiceProjectManager.SaveProject(
-            username,
-            evalChange,
-            OEval,
-            projectDetail
-            )
-            .Result;
+        Result result = mockServiceProjectManager.SaveProject(username,evalChange,OEval,projectDetail).Result;
 
         // Assert
         Assert.IsFalse(result.IsSuccessful);
@@ -345,13 +309,7 @@ public class UnitTests
             .Returns(Task.FromResult(new Result { IsSuccessful = true }));
 
         // Act
-        Result result = mockServiceProjectManager.SaveProject(
-            username,
-            evalChange,
-            OEval,
-            projectDetail
-            )
-            .Result;
+        Result result = mockServiceProjectManager.SaveProject(username, evalChange, OEval, projectDetail).Result;
 
         // Assert
         Assert.IsFalse(result.IsSuccessful);
@@ -378,16 +336,11 @@ public class UnitTests
 
         // Set up mock objects to return expected results
         mockServiceProjectDAO.Setup(
-            mock => mock.DeleteProject(
-                It.IsAny<string>(),
-                It.IsAny<int>()))
+            mock => mock.DeleteProject(It.IsAny<string>(),It.IsAny<int>()))
             .Returns(Task.FromResult(new Result { IsSuccessful = true }));
 
         // Act
-        Result result = mockServiceProjectManager.DeleteProject(
-            username,
-            projectID)
-            .Result;
+        Result result = mockServiceProjectManager.DeleteProject(username,projectID).Result;
 
         // Assert
         Assert.IsFalse(result.IsSuccessful);

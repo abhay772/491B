@@ -67,9 +67,9 @@ public class MnRManager : IMnRManager
             result.ErrorMessage = "No Profile Found";
         }
 
-        PropertyProfile propertyProfile = (PropertyProfile)LoadProfileResult.Payload;
+        PropertyProfile propertyProfile = (PropertyProfile)LoadProfileResult.Payload!;
 
-        Result evaluationResult = await _propertyEvaluator.Evaluate(propertyProfile);
+        Result evaluationResult = await _propertyEvaluator!.Evaluate(propertyProfile);
 
         if(evaluationResult.IsSuccessful == false)
         {
@@ -78,7 +78,7 @@ public class MnRManager : IMnRManager
             return result;
         }
 
-        double OEval = double.Parse(evaluationResult.Payload.ToString());
+        double OEval = double.Parse(evaluationResult.Payload!.ToString()!);
 
         if (_inputValidation.ValidateChangeInProfile(profileChange, propertyProfile) == false)
         {
@@ -95,7 +95,7 @@ public class MnRManager : IMnRManager
 
         Result CEvaluationResult = await _propertyEvaluator.Evaluate(CPropertyProfile);
 
-        Double CEval = double.Parse(CEvaluationResult.Payload.ToString());
+        Double CEval = double.Parse(CEvaluationResult.Payload!.ToString()!);
 
         double EvalChange = OEval - CEval;
 

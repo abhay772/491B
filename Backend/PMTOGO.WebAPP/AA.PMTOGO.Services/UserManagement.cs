@@ -7,12 +7,6 @@ using System.Net;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
-using AA.PMTOGO.Libary;
-using AA.PMTOGO.DAL;
-using System.Net.Mail;
-using System.Net;
-using AA.PMTOGO.Services.Interfaces;
-using AA.PMTOGO.Logging;
 using AA.PMTOGO.DAL.Interfaces;
 
 namespace AA.PMTOGO.Services

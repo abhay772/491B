@@ -16,8 +16,7 @@ public class ProjectOrganizer : IProjectOrganizer
         _logger = logger;
     }
 
-    public async Task<Result> SaveProject(
-        string Username, double EvalChange, double OriginalEval, ProjectDetail projectDetail)
+    public async Task<Result> SaveProject(string Username, double EvalChange, double OriginalEval, ProjectDetail projectDetail)
     {
         //log 
 
@@ -38,7 +37,7 @@ public class ProjectOrganizer : IProjectOrganizer
     {
         //log 
 
-        Result result = _serviceProjectDAO.DeleteProject(Username, projectName);
+        Result result =  _serviceProjectDAO.DeleteProject(Username, projectName);
 
         return result;
     }

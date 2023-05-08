@@ -1,10 +1,5 @@
 ﻿using AA.PMTOGO.Models.Entities;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Configuration;
-using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
-using System.Linq.Expressions;
-using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace AA.PMTOGO.DAL
@@ -12,15 +7,14 @@ namespace AA.PMTOGO.DAL
     public class LoggerDAO : ILoggerDAO
     {
 
-
         /*private readonly string _connectionString;
-
-        //logging
 
         public LoggerDAO(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
         }*/
+
+
         private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.LogDB;Trusted_Connection=True;Encrypt=false";
         public async Task<Result> InsertLog(Log log)
         {
@@ -29,10 +23,10 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Operation, @LogLevel, @LogCategory, @Message, @Timestamp)";
+                string sqlQuery = "INSERT into Logs VALUES(@LogId, @Timestamp, @LogLevel, @Operation, @LogCategory, @Message)";
 
                 var command = new SqlCommand(sqlQuery, connection);
-                
+
                 command.Parameters.AddWithValue("@LogId", log.LogId);
                 command.Parameters.AddWithValue("@Operation", log.Operation);
                 command.Parameters.AddWithValue("@LogLevel", log.LogLevel);
@@ -118,7 +112,7 @@ namespace AA.PMTOGO.DAL
                 result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
                 return result;
             }
-            
+
         }
     }
 }

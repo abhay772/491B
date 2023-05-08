@@ -4,10 +4,6 @@ public class Project
 {
     public double EvalChange { get; set; }
     public double OriginalEval { get; set; }
-    public ProjectDetail ProjectDetail { get; set; }
+    public ProjectDetail? ProjectDetail { get; set; }
 
-    public Project()
-    {
-
-    }
 }

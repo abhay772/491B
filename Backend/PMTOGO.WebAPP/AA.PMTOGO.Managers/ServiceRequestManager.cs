@@ -8,14 +8,13 @@ namespace AA.PMTOGO.Managers
     //input validation, logging
     public class ServiceRequestManager : IServiceRequestManager
     {
-        //ERROR HANDLING
         private readonly IServiceRequestManagement _serviceRequest;
-        Logger _logger = new Logger();
+        private readonly ILogger? _logger;
 
-
-        public ServiceRequestManager(IServiceRequestManagement serviceRequest)
+        public ServiceRequestManager(IServiceRequestManagement serviceRequest, ILogger logger)
         {
             _serviceRequest = serviceRequest;
+            _logger = logger;
 
         }
 

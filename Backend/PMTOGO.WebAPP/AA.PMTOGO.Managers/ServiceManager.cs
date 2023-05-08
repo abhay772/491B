@@ -10,11 +10,12 @@ namespace AA.PMTOGO.Managers
     public class ServiceManager: IServiceManager
     {
         private readonly IUserServiceManagement _userService;
-        Logger _logger = new Logger();
+        private readonly ILogger _logger;
 
-        public ServiceManager(IUserServiceManagement userService) 
+        public ServiceManager(IUserServiceManagement userService, ILogger logger)
         {
             _userService = userService;
+            _logger = logger;
         }
         // rate service
         public async Task<Result> RateUserService(string serviceId, int rate, string role)

@@ -155,13 +155,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         }
         //update user
-        //disable
 
 
         //admin
         [HttpPut]
         [Route("disable")]
-        //[Consumes("application/json")]
         [ActionName("DisableUser")]
         public async Task<IActionResult> DisableUser([FromBody] string username)
         {
@@ -193,7 +191,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
         //enable
         [HttpPut]
         [Route("enable")]
-        //[Consumes("application/json")]
         [ActionName("EnableUser")]
         public async Task<IActionResult> EnableUser([FromBody] string username)
         {

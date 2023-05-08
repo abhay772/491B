@@ -8,8 +8,7 @@ public class ServiceProjectDAO : IServiceProjectDAO
 {
     private readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.ProjectDB;Trusted_Connection=True";
 
-    public Result SaveProject(
-        string Username, double EvalChange, double OriginalEval, ProjectDetail projectDetail)
+    public Result SaveProject(string Username, double EvalChange, double OriginalEval, ProjectDetail projectDetail)
     {
         var result = new Result();
 
@@ -56,7 +55,7 @@ public class ServiceProjectDAO : IServiceProjectDAO
                 command = new SqlCommand(sqlQuery, connection);
 
                 command.Parameters.AddWithValue("@ProjectName", projectDetail.ProjectName);
-                command.Parameters.AddWithValue("@ServiceIDs", string.Join(",", projectDetail.ServiceIDs));
+                command.Parameters.AddWithValue("@ServiceIDs", string.Join(",", projectDetail.ServiceIDs!));
                 command.Parameters.AddWithValue("@StartDate", startDateString);
                 command.Parameters.AddWithValue("@EndDate", endDateString);
                 command.Parameters.AddWithValue("@ServiceTime", timeString);
@@ -111,16 +110,16 @@ public class ServiceProjectDAO : IServiceProjectDAO
                     {
                         ProjectDetail = new ProjectDetail
                         {
-                            ProjectName = reader["ProjectName"].ToString(),
-                            ServiceIDs = reader["ServiceIDs"].ToString().Split(',').Select(int.Parse).ToList(),
-                            StartDate = DateOnly.Parse(reader["StartDate"].ToString()),
-                            EndDate = DateOnly.Parse(reader["EndDate"].ToString()),
-                            ServiceTime = TimeOnly.Parse(reader["ServiceTime"].ToString()),
-                            Budget = double.Parse(reader["Budget"].ToString()),
+                            ProjectName = reader["ProjectName"].ToString()!,
+                            ServiceIDs = reader["ServiceIDs"].ToString()!.Split(',').Select(int.Parse).ToList(),
+                            StartDate = DateOnly.Parse(reader["StartDate"].ToString()!),
+                            EndDate = DateOnly.Parse(reader["EndDate"].ToString()!),
+                            ServiceTime = TimeOnly.Parse(reader["ServiceTime"].ToString()!),
+                            Budget = double.Parse(reader["Budget"].ToString()!),
                         },
 
-                        EvalChange = double.Parse(reader["EvaluationChange"].ToString()),
-                        OriginalEval = double.Parse(reader["OriginalEvaluation"].ToString())
+                        EvalChange = double.Parse(reader["EvaluationChange"].ToString()!),
+                        OriginalEval = double.Parse(reader["OriginalEvaluation"].ToString()!)
                     };
 
                     projects.Add(saveProjectDTO);

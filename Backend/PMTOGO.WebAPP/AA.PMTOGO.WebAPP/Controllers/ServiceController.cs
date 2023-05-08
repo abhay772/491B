@@ -2,7 +2,7 @@
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.WebAPP.Contracts.Appointment;
+//using AA.PMTOGO.WebAPP.Contracts.Appointment;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AA.PMTOGO.WebAPP.Controllers
@@ -11,7 +11,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
     [Route("api/[controller]")]
     public class AppointmentController : ControllerBase
     {
-        private readonly IAppointmentManager _appointmentManager;
+       /* private readonly IAppointmentManager _appointmentManager;
         private readonly ClaimValidation _claims;
 
         public AppointmentController(IAppointmentManager appointmentManager, ClaimValidation claims)
@@ -152,6 +152,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
             }
             return BadRequest("Invalid Credentials");
-        }
+        }*/
     }
 }

@@ -139,7 +139,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result accept = await _requestManager.AcceptFrequencyChange(service.Id, service.frequency, user.ClaimUsername);
                     if (accept.IsSuccessful)
                     {
-                        return Ok(accept.Payload); //payload is update service requests list
+                        return Ok(accept.Payload); //payload is updated service requests list
                     }
                     else
                     {

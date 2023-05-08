@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
@@ -9,11 +10,20 @@ namespace AA.PMTOGO.Services
     //input validation, logging
     public class UserServiceManagement : IUserServiceManagement
     {
-        UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
-        ServiceDAO _serviceDAO = new ServiceDAO();
-        UsersDAO _authNDAO = new UsersDAO();
-        Logger _logger = new Logger();
+        private readonly IUsersDAO _authNDAO;
+        private readonly IServiceDAO _serviceDAO;
+        private readonly IUserServiceDAO _userServiceDAO;
+        private readonly IServiceRequestDAO _serviceRequestDAO;
+        private readonly ILogger? _logger;
+
+        public UserServiceManagement(IUsersDAO usersDAO, IServiceDAO serviceDAO, IUserServiceDAO userserviceDAO, IServiceRequestDAO servicerequestDAO, ILogger logger)
+        {
+            _authNDAO = usersDAO;
+            _serviceDAO = serviceDAO;
+            _serviceRequestDAO = servicerequestDAO;
+            _userServiceDAO = userserviceDAO;
+            _logger = logger;
+        }
 
         private async Task<string> GetUserInfo(string username)
         {
@@ -83,7 +93,7 @@ namespace AA.PMTOGO.Services
                 ServiceRequest request = new ServiceRequest(serviceRequestId, "New Service", service.ServiceName, service.ServiceType, service.ServiceDescription, frequency, comments, service.ServiceProviderEmail, service.ServiceProvider,
                     username, propertyManagerName);
 
-                result = await _requestDAO.AddServiceRequest(request);
+                result = await _serviceRequestDAO.AddServiceRequest(request);
                 await _logger!.Log("Add Request", 4, LogCategory.Business, result);
                 return result;
             }
@@ -177,6 +187,88 @@ namespace AA.PMTOGO.Services
             }
             return true;
         }
+
+        //new frequency change request is created
+        public async Task<Result> RequestFrequencyChange(Guid id, string frequency, string type)
+        {
+            Result result = new Result();
+            try
+            {
+                //create a frequency change service request using found user service
+                Result findRequest = await CreateRequest(id, type, frequency);
+                ServiceRequest request = (ServiceRequest)findRequest.Payload!;
+
+
+                //add to service providers request
+                result = await _serviceRequestDAO.AddServiceRequest(request);
+
+                //if request successful change user service status to pending
+                if (result.IsSuccessful)
+                {
+                    await ChangeStatus(id, "Pending Frequency Change");
+                    await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
+                }
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Frequency Request Unsuccessful. Try Again Later";
+                await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
+
+        //new cancellation request is created
+        public async Task<Result> CancellationRequest(Guid id, string frequency, string type)
+        {
+            Result result = new Result();
+            try
+            {
+                //create a frequency change service request using found user service
+                Result findRequest = await CreateRequest(id, type, frequency);
+                ServiceRequest request = (ServiceRequest)findRequest.Payload!;
+
+                result = await _serviceRequestDAO.AddServiceRequest(request);
+
+                //if request successful change user service status to pending
+                if (result.IsSuccessful)
+                {
+                    await ChangeStatus(id, "Pending Cancellation");
+                    await _logger!.Log("CancellationRequest", 4, LogCategory.Business, result);
+                }
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Cancellation Request Unsuccessful. Try Again Later";
+                await _logger!.Log("CancellationRequest", 4, LogCategory.Business, result);
+
+            }
+            return result;
+        }
+
+        public async Task<Result> ChangeStatus(Guid id, string status)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _userServiceDAO.UpdateStatus(id, status);
+                await _logger!.Log("ChangeStatus", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Service Status Update Unsuccessful. Try Again Later";
+                await _logger!.Log("ChangeStatus", 4, LogCategory.Business, result);
+            }
+            return result;
+        }
+
+        //service provider management
+
         //get all services from db
         public async Task<Result> GatherServices()
         {
@@ -221,7 +313,7 @@ namespace AA.PMTOGO.Services
             {
                 Guid id = Guid.NewGuid();
                 string serviceProvider = await GetUserInfo(username);
-                Service newservice = new Service(id,service.ServiceName, service.ServiceType, service.ServiceDescription, serviceProvider, username, service.ServicePrice);
+                Service newservice = new Service(id, service.ServiceName, service.ServiceType, service.ServiceDescription, serviceProvider, username, service.ServicePrice);
                 result = await _serviceDAO.AddService(newservice);
                 await _logger!.Log("CreateService", 4, LogCategory.Business, result);
                 return result;
@@ -249,86 +341,6 @@ namespace AA.PMTOGO.Services
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Remove Service Unsuccessful. Try Again Later";
                 await _logger!.Log("RemoveService", 4, LogCategory.Business, result);
-            }
-            return result;
-        }
-
-
-        //new frequency change request is created
-        public async Task<Result> RequestFrequencyChange(Guid id, string frequency, string type)
-        {
-            Result result = new Result();
-            try
-            {
-                //create a frequency change service request using found user service
-                Result findRequest = await CreateRequest(id, type, frequency);
-                ServiceRequest request = (ServiceRequest)findRequest.Payload!;
-
-
-                //add to service providers request
-                result = await _requestDAO.AddServiceRequest(request);
-
-                //if request successful change user service status to pending
-                if (result.IsSuccessful)
-                {
-                    await ChangeStatus(id, "Pending Frequency Change");
-                    await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
-                }
-                return result;
-            }
-            catch
-            {
-                result.IsSuccessful = false;
-                result.ErrorMessage = "Frequency Request Unsuccessful. Try Again Later";
-                await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
-            }
-            return result;
-        }
-
-        //new cancellation request is created
-        public async Task<Result> CancellationRequest(Guid id, string frequency, string type)
-        {
-            Result result = new Result();
-            try
-            {
-                //create a frequency change service request using found user service
-                Result findRequest = await CreateRequest(id, type, frequency);
-                ServiceRequest request = (ServiceRequest)findRequest.Payload!;
-
-                result = await _requestDAO.AddServiceRequest(request);
-
-                //if request successful change user service status to pending
-                if (result.IsSuccessful)
-                {
-                    await ChangeStatus(id, "Pending Cancellation");
-                    await _logger!.Log("CancellationRequest", 4, LogCategory.Business, result);
-                }
-                return result;
-            }
-            catch
-            {
-                result.IsSuccessful = false;
-                result.ErrorMessage = "Cancellation Request Unsuccessful. Try Again Later";
-                await _logger!.Log("CancellationRequest", 4, LogCategory.Business, result);
-
-            }
-            return result;
-        }
-
-        public async Task<Result> ChangeStatus(Guid id, string status)
-        {
-            Result result = new Result();
-            try
-            {
-                result = await _userServiceDAO.UpdateStatus(id, status);
-                await _logger!.Log("ChangeStatus", 4, LogCategory.Business, result);
-                return result;
-            }
-            catch
-            {
-                result.IsSuccessful = false;
-                result.ErrorMessage = "Service Status Update Unsuccessful. Try Again Later";
-                await _logger!.Log("ChangeStatus", 4, LogCategory.Business, result);
             }
             return result;
         }

@@ -97,10 +97,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
         [Route("getVideo")]
         public IActionResult GetVideo(DIYObject dIYObject)
         {
-            MemoryStream videoStream = _diyManager.GetDIY(dIYObject.Email, dIYObject.Name).Video;
+            MemoryStream videoStream = _diyManager.GetDIY(dIYObject.Email, dIYObject.Name).Video!;
             if (videoStream == null)
             {
-                return null;
+                return null!;
             }
             return new FileStreamResult(videoStream, "video/mp4");
         }

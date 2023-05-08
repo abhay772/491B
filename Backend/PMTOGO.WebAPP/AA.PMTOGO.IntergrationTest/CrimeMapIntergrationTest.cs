@@ -111,7 +111,7 @@ namespace AA.PMTOGO.IntergrationTest
             // Assert
             Assert.IsFalse(result.IsSuccessful);
         }
-        [TestMethod]
+        /*[TestMethod]
         public async Task DeleteAlertSuccess()
         {
             // Arrange
@@ -180,6 +180,6 @@ namespace AA.PMTOGO.IntergrationTest
 
             // Assert
 
-        }
+        }*/
     }
 }

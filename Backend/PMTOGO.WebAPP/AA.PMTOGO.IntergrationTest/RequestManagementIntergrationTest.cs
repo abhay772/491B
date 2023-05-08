@@ -18,7 +18,6 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task GetServiceRequest()
         {
-            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
             ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange
             Guid id = Guid.NewGuid();
@@ -73,7 +72,6 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task DeclineServiceRequest_Pass()
         {
-            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
             ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange
 
@@ -176,7 +174,6 @@ namespace AA.PMTOGO.IntergrationTest
             Assert.IsTrue(actual);
 
         }
-
 
     }
 }
