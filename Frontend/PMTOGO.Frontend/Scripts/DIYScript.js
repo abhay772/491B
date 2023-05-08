@@ -12,14 +12,14 @@ async function loadDIYPage(homepageContent, username, userrole)
             }
 
             // call function to get DIY dashboard and display it
-            await getDIYDashboard(homepageContent, username);
+            //await getDIYDashboard(homepageContent, username);
 
             // add button to upload DIY info and video
             const addDIYBtn = document.createElement("button");
             addDIYBtn.innerText = "Add DIY";
             addDIYBtn.addEventListener("click", async () => {
-                await uploadDIYInfo();
-                await uploadDIYVideo();
+                const addDIYForm = await addDIY(homepageContent);
+                document.body.appendChild(addDIYForm);
             });
             homepageContent.appendChild(addDIYBtn);
         });
@@ -74,96 +74,111 @@ async function getDIYDashboard(homepageContent, username) {
     }
 }
 
+function addDIY(homepageContent) {
+    const popupContainer = document.createElement('div');
+    popupContainer.classList.add('popup-container');
+    const form = document.createElement('form');
+    form.classList.add('popup-form');
 
-async function uploadDIYInfo(form) {
-    const email = form.elements.email.value;
-    const name = form.elements.name.value;
-    const description = form.elements.description.value;
+    // Add file input field for video upload
+    const fileInput = document.createElement('input');
+    fileInput.setAttribute('type', 'file');
+    fileInput.setAttribute('name', 'video');
+    fileInput.setAttribute('accept', 'video/*');
+    fileInput.required = true;
+    form.appendChild(fileInput);
+
+    // Add name input field
+    const nameInput = document.createElement('input');
+    nameInput.setAttribute('type', 'text');
+    nameInput.setAttribute('name', 'name');
+    nameInput.setAttribute('placeholder', 'Name');
+    nameInput.required = true;
+    form.appendChild(nameInput);
+
+    // Add description input field
+    const descriptionInput = document.createElement('textarea');
+    descriptionInput.setAttribute('name', 'description');
+    descriptionInput.setAttribute('placeholder', 'Description');
+    descriptionInput.required = true;
+    form.appendChild(descriptionInput);
+
+    // Add email input field
+    const emailInput = document.createElement('input');
+    emailInput.setAttribute('type', 'email');
+    emailInput.setAttribute('name', 'email');
+    emailInput.setAttribute('placeholder', 'Email');
+    emailInput.required = true;
+    form.appendChild(emailInput);
+
+    // Add submit button
+    const submitButton = document.createElement('button');
+    submitButton.setAttribute('type', 'submit');
+    submitButton.textContent = 'Submit';
+    form.appendChild(submitButton);
+
+    // Add event listener for form submission
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const data = {
+        email: emailInput,
+        name: nameInput,
+        description: descriptionInput,
+        videoFile: fileInput
+    };
+
 
     try {
-        const response = await fetch(api + '/DIY/uploadinfo', {
+        // Upload DIY information
+        const infoResponse = await fetch(api + '/DIY/UploadInfo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, name, description }),
+            body: JSON.stringify(data)
         });
-        if (!response.ok) {
-            throw new Error('Error');
+
+        if (!infoResponse.ok) {
+            throw new Error('Failed to upload DIY information');
         }
-        const result = await response.json();
-        console.log(result.message);
-        // display success message
-        form.reset();
-        const message = document.createElement('div');
-        message.textContent = 'DIY information uploaded successfully.';
-        message.classList.add('success-message');
-        form.appendChild(message);
-    } catch (error) {
-        console.error(error);
-        // display error message
-        const message = document.createElement('div');
-        message.textContent = 'Failed to upload DIY information. Please try again later.';
-        message.classList.add('error-message');
-        form.appendChild(message);
-    }
-}
 
-async function uploadDIYVideo(form) {
-    const email = form.elements.email.value;
-    const name = form.elements.name.value;
-    const videoFile = form.elements.video.files[0];
-
-    try {
-        const formData = new FormData();
-        formData.append('email', email);
-        formData.append('name', name);
-        formData.append('videoFile', videoFile);
-
-        const response = await fetch(api + '/DIY/uploadvideo', {
-            method: 'POST',
-            body: formData,
-        });
-        if (!response.ok) {
-            throw new Error('Error');
-        }
-        const result = await response.json();
-        console.log(result.message);
-        // display success message
-        form.reset();
-        const message = document.createElement('div');
-        message.textContent = 'DIY video uploaded successfully.';
-        message.classList.add('success-message');
-        form.appendChild(message);
-    } catch (error) {
-        console.error(error);
-        // display error message
-        const message = document.createElement('div');
-        message.textContent = 'Failed to upload DIY video. Please try again later.';
-        message.classList.add('error-message');
-        form.appendChild(message);
-    }
-}
-
-async function addDIY(homepageContent, crimeMapContent, username, userrole)
-{
-    //add stuff here
-    try {
-        const response = await fetch(api + '/DIY/addDIY', {
+        // Upload video file
+        const videoFormData = new FormData();
+        videoFormData.append('email', email);
+        videoFormData.append('name', name);
+        videoFormData.append('videoFile', videoFile, videoFile.name); // Append video file with IFormFile
+        const videoResponse = await fetch(api+'/DIY/UploadVideo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(data)
         });
-        if (!response.ok) {
-            throw new Error('Error');
+        if (!videoResponse.ok) {
+            throw new Error('Failed to upload video file');
         }
-        const result = await response.json();
-        console.log(result.message);
+
+        // Display success message
+        console.log('DIY information and video uploaded successfully');
+        form.reset();
+        const message = document.createElement('div');
+        message.textContent = 'DIY information and video uploaded successfully.';
+        message.classList.add('success-message');
+        form.appendChild(message);
+
+        // Close popup after successful upload
+        setTimeout(() => {
+            closePopup();
+        }, 2000);
     } catch (error) {
         console.error(error);
+        // Display error message
+        const message = document.createElement('div');
+        message.textContent = 'Failed to upload DIY information and/or video. Please try again later.';
+        message.classList.add('error-message');
+        form.appendChild(message);
     }
+});
+homepageContent.appendChild(form);
 }
-
-//create rest of functions below

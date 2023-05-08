@@ -657,3 +657,14 @@ table {
   padding: 10px;
 }
 
+
+/* DIY Sytle*/
+#addDIYButton {
+    background-color: #04AA6D;
+    padding: 14px 20px;
+    right: 0;
+    top: 0;
+    margin: 8px 0;
+    text-align: center;
+    width: 200px;
+}
