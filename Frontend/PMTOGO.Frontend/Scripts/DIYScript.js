@@ -153,7 +153,7 @@ async function loadDashboardContainer(homepageContent, diyContent, username, use
             detailsButton.textContent = 'Details';
             detailsButton.classList.add('diy-details-button');
             detailsButton.addEventListener('click', () => {
-                DIYDetails(diyObject.id);
+                DIYDetails(diyContent, diyObject);
             });
             diyBox.appendChild(detailsButton);
         }
@@ -162,16 +162,18 @@ async function loadDashboardContainer(homepageContent, diyContent, username, use
     }
 }
 
-async function DIYDetails(diyId) {
+async function DIYDetails(diyContent, diyObject) {
     try {
         const response = await fetch(api + '/DIY/getVideo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ id: diyId })
+            body: JSON.stringify(diyObject)
         });
 
+
+        
         if (!response.ok) {
             throw new Error('Failed to load DIY video');
         }
@@ -189,7 +191,7 @@ async function DIYDetails(diyId) {
 
         popupContainer.appendChild(videoPlayer);
 
-        document.body.appendChild(popupContainer);
+        diyContent.appendChild(popupContainer);
     } catch (error) {
         console.error(error);
     }

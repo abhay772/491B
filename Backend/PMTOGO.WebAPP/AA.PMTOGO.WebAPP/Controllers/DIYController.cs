@@ -24,7 +24,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
 #endif
 
         [HttpPost]
-        [Route("uploadinfo")]
+        [Route("uploadDIY")]
         [ActionName("UploadInfo")]
         public async Task<IActionResult> UploadDIY([FromForm] DIY diy)
         {
@@ -85,10 +85,10 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
             return NotFound();
         }
-        [HttpGet]
+        [HttpPost]
         [Route("getVideo")]
         [ActionName("GetVideo")]
-        public IActionResult GetVideo([FromBody] DIY diy)
+        public IActionResult GetVideo([FromBody] DIYDashboard diy)
         {
             MemoryStream videoStream = _diyManager.GetDIY(diy.email, diy.name).Video!;
             if (videoStream == null)
@@ -105,6 +105,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
             public string name { get; set; }
             public string description { get; set; }
             public IFormFile videofile { get; set; }
+        }
+        public class DIYDashboard
+        {
+            public string id { get; set; }
+            public string email { get; set; }
+            public string name { get; set; }
+            public string description { get; set; }
         }
     }
 }
