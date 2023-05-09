@@ -38,10 +38,10 @@ namespace AA.PMTOGO.Managers
             var result = dao.GetDashboardDIY(email);
             return result;
         }
-        public List<DIYObject> SearchDIY(string searchTerm)
+        public List<DIYObject> SearchDIY()
         {
 
-            var result = _diyService.SearchDIY(searchTerm);
+            var result = _diyService.SearchDIY();
             return result;
         }
         public DIYObject GetDIY(string email, string name)

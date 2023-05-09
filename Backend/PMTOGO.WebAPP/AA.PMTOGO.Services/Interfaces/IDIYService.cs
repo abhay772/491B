@@ -7,7 +7,7 @@ namespace AA.PMTOGO.Infrastructure.Interfaces
     {
         Task<bool> UploadVideo(string email, string name, IFormFile videoFile);
 
-        List<DIYObject> SearchDIY(string name);
+        List<DIYObject> SearchDIY();
 
         bool AddDIY(string id, string email);
 
