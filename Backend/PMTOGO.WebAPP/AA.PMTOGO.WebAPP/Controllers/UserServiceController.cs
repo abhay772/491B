@@ -3,7 +3,6 @@ using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 
 
 namespace AA.PMTOGO.WebAPP.Controllers
@@ -14,12 +13,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
     {
         private readonly IServiceManager _serviceManager;
         private readonly ClaimValidation _claims;
-        private readonly AutomaticEmail _emailer;
-        public UserServiceController(IServiceManager serviceManager, ClaimValidation claims, AutomaticEmail emailer)
+
+        public UserServiceController(IServiceManager serviceManager, ClaimValidation claims)
         {
             _serviceManager = serviceManager;
             _claims = claims;//uses input validation
-            _emailer = emailer;
         }
 #if DEBUG
         [HttpGet]
@@ -195,11 +193,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result insert = await _serviceManager.AddServiceRequest(service.Id, service.frequency, service.comments, user.ClaimUsername);
                     if (insert.IsSuccessful)
                     {
-                        ServiceRequest request = (ServiceRequest)insert.Payload!;
-                        var emailSubject = "You have a Service Request";
-                        var emailBody = request.PropertyManagerName + "requested" + request.ServiceName;
-
-                        await _emailer.EmailNotification(request.ServiceProviderEmail, emailSubject , emailBody);
                         return Ok(insert.Payload);
                     }
                     else
@@ -264,11 +257,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result frequency = await _serviceManager.FrequencyChangeRequest(service.Id, service.frequency);
                     if (frequency.IsSuccessful)
                     {
-                        ServiceRequest request = (ServiceRequest)frequency.Payload!;
-                        var emailSubject = "You have a Frequency Change Request";
-                        var emailBody = request.PropertyManagerName + "requested frequency change to: " + request.ServiceFrequency;
-
-                        await _emailer.EmailNotification(request.ServiceProviderEmail, emailSubject, emailBody);
                         return Ok(frequency.Payload);
                     }
                     else
@@ -302,11 +290,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     Result cancel = await _serviceManager.CancelRequest(service.Id);
                     if (cancel.IsSuccessful)
                     {
-                        ServiceRequest request = (ServiceRequest)cancel.Payload!;
-                        var emailSubject = "You have a Cancellation Request";
-                        var emailBody = request.PropertyManagerName + "requested a service cancellation.";
-
-                        await _emailer.EmailNotification(request.ServiceProviderEmail, emailSubject, emailBody);
                         return Ok(cancel.Payload);
                     }
                     else

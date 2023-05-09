@@ -24,7 +24,7 @@ namespace AA.PMTOGO.Models.Entities
 
         public UserService() { }
 
-        public UserService(Guid id, string serviceName,  string serviceType, string serviceDescription,
+        public UserService(Guid id, string serviceName, string serviceDescription, string serviceType,
             string serviceFrequency, string serviceProviderEmail, string serviceProviderName, string propertyManagerEmail, string propertyManagerName)
         {
             Id = id;
