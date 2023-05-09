@@ -17,7 +17,7 @@ namespace AA.PMTOGO.Managers.Interfaces
 
         List<DIYDashboardObject> GetDashboardDIY(string email);
 
-        List<DIYObject> SearchDIY(string searchTerm);
+        List<DIYObject> SearchDIY();
 
         DIYObject GetDIY(string email, string name);
 

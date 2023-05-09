@@ -68,6 +68,7 @@ namespace AA.PMTOGO.DAL
                 checkCommand.Parameters.AddWithValue("@Name", name);
                 var count = (int)await checkCommand.ExecuteScalarAsync();
 
+
                 if (count > 0)
                 {
                     // if row exists, update it with the video file
@@ -153,7 +154,7 @@ namespace AA.PMTOGO.DAL
             }
         }*/
 
-        public List<DIYObject> SearchDIY(string searchTerm)
+        public List<DIYObject> SearchDIY()
         {
             var diyList = new List<DIYObject>();
 
@@ -161,10 +162,9 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM DIYTable WHERE DIYName LIKE '%' + @SearchTerm + '%'";
+                string sqlQuery = "SELECT * FROM DIYTable";
 
                 var command = new SqlCommand(sqlQuery, connection);
-                command.Parameters.AddWithValue("@SearchTerm", searchTerm);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {

@@ -24,10 +24,10 @@ namespace AA.PMTOGO.Services
 
             return await dao.UploadVideo(email, name, videoBytes);
         }
-        public List<DIYObject> SearchDIY(string name)
+        public List<DIYObject> SearchDIY()
         {
             var dao = new DIYDAO();
-            var result = dao.SearchDIY(name);
+            var result = dao.SearchDIY();
             return result;
         }
 

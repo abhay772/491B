@@ -95,7 +95,6 @@ namespace AA.PMTOGO.Services
 
                 result = await _serviceRequestDAO.AddServiceRequest(request);
                 await _logger!.Log("Add Request", 4, LogCategory.Business, result);
-                result.Payload = request;
                 return result;
             }
             catch
@@ -207,10 +206,8 @@ namespace AA.PMTOGO.Services
                 if (result.IsSuccessful)
                 {
                     await ChangeStatus(id, "Pending Frequency Change");
-
                     await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
                 }
-                result.Payload = request;
                 return result;
             }
             catch
@@ -240,7 +237,6 @@ namespace AA.PMTOGO.Services
                     await ChangeStatus(id, "Pending Cancellation");
                     await _logger!.Log("CancellationRequest", 4, LogCategory.Business, result);
                 }
-                result.Payload = request;
                 return result;
             }
             catch

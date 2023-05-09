@@ -163,7 +163,6 @@ function getUsageAnalysis(admincontent){
         response.json().then(data => {
           console.log(data);
 
-          const dataTimes = data[0];
           const formattedDates = data[1];
           const registerData = data[2];
           const loginData = data[3];
@@ -176,8 +175,6 @@ function getUsageAnalysis(admincontent){
           .sort()
           .map(key => registerData[key]);
         
-          const loginChart = document.getElementById('logChart').getContext('2d');
-          const regChart = document.getElementById('regChart').getContext('2d');
 
           const logdata = {
             labels : formattedDates,
@@ -204,6 +201,7 @@ function getUsageAnalysis(admincontent){
               }
             ]
           };
+
           const options = {
             scales: {
               x: {
@@ -228,6 +226,8 @@ function getUsageAnalysis(admincontent){
               }
             }
           };
+          const loginChart = document.getElementById('logChart').getContext('2d');
+          const regChart = document.getElementById('regChart').getContext('2d');
           
           function drawChart(chart, chartdata) {        
             const myChart = new Chart(chart, {
