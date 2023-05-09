@@ -69,7 +69,7 @@ public class PropEvalController : ControllerBase
 
                         else
                         {
-                            return BadRequest(result.ErrorMessage);
+                            return Ok(result.ErrorMessage);
                         }
                     }
                 }
@@ -130,7 +130,7 @@ public class PropEvalController : ControllerBase
 
                         else
                         {
-                            return BadRequest(result.ErrorMessage);
+                            return Ok(result.ErrorMessage);
                         }
                     }
                 }
@@ -185,7 +185,7 @@ public class PropEvalController : ControllerBase
 
                         if (result.IsSuccessful == false)
                         {
-                            return BadRequest(result.ErrorMessage);
+                            return Ok(result.ErrorMessage);
                         }
 
                         PropertyProfile propertyProfile = (PropertyProfile)result.Payload!;
@@ -208,7 +208,7 @@ public class PropEvalController : ControllerBase
 
                         else
                         {
-                            return BadRequest(result.ErrorMessage);
+                            return Ok(result.ErrorMessage);
                         }
                     }
                 }

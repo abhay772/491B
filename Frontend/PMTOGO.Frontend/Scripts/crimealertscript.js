@@ -1,3 +1,4 @@
+const api = "https://localhost:7135/api"
 
 async function loadCrimeMapPage(homepageContent, username, userrole) {
     // fetch crime map page html

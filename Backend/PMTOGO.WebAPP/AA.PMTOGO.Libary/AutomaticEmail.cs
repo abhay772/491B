@@ -9,7 +9,7 @@ namespace AA.PMTOGO.Libary
         public async Task<bool> EmailNotification(string userEmail, string emailSubject, string emailBody)
         {
             string companyEmail = "pmtogo.prod@gmail.com";
-            string companyEmailKey = "phztfkjpizmhbqiy";
+            string companyEmailKey = "*********";
             var smtpClient = new SmtpClient("smtp.gmail.com", 587);
             smtpClient.UseDefaultCredentials = false;
             smtpClient.Credentials = new NetworkCredential(companyEmail, companyEmailKey);

@@ -1,3 +1,4 @@
+const api = "https://localhost:7135/api"
 const content = document.getElementById('content');
 const api = "https://localhost:7135/api"
 var userrole = "";
@@ -246,7 +247,6 @@ function loadRegisterPage() {
     })
     .catch(error => console.log(error))
 }
-
 
 const createServicesTable = (page) =>{
   const contentpage = "div." + page;

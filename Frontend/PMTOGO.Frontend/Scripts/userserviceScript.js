@@ -148,7 +148,6 @@ const appendUserService =(userservice, id) => {
   else{
     userInfo.innerText= `${userservice.ServiceProviderName}`;
   }
-  
 
   let userServiceTableBodyRow = document.createElement('tr');
   userServiceTableBodyRow.className = "userServiceTableBodyRow";
