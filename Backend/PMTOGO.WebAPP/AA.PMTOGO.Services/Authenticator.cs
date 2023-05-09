@@ -110,6 +110,28 @@ public class Authenticator : IAuthenticator
         {
             await _authNDAO.UpdateFailedAttempts(username);
         }
+<<<<<<< Updated upstream
+=======
+
+        public string GenerateOTP()
+        {
+            string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            Random rand = new Random();
+            string otp = "";
+            for (int i = 0; i < 8; i++)
+            {
+                otp += allowedChars[rand.Next(0, allowedChars.Length)];
+            }
+            return otp;
+        }
+        public bool CheckValidOTP(string otp)
+        {
+            string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            return otp.All(c => allowedChars.Contains(c));
+        }
+
+>>>>>>> Stashed changes
     }
 
     public string GenerateOTP()

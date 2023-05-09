@@ -53,7 +53,15 @@ public class AuthManager : IAuthManager
 
         string otp = _authenticator.GenerateOTP();
 
+<<<<<<< Updated upstream
         var claims = new List<Claim>();
+=======
+        var claims = new List<Claim>
+        {
+        new Claim(ClaimTypes.Name, username),
+        new Claim(ClaimTypes.Role, role)
+        };
+>>>>>>> Stashed changes
 
         claims.Add(new Claim(ClaimTypes.Email, username));
         claims.Add(new Claim(ClaimTypes.Role, role));
