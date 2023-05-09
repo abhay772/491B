@@ -206,6 +206,7 @@ namespace AA.PMTOGO.Services
                 if (result.IsSuccessful)
                 {
                     await ChangeStatus(id, "Pending Frequency Change");
+
                     await _logger!.Log("RequestFrequencyChange", 4, LogCategory.Business, result);
                 }
                 return result;
