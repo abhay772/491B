@@ -151,7 +151,6 @@ namespace AA.PMTOGO.WebAPP.Controllers
                     return StatusCode(StatusCodes.Status500InternalServerError);
                 }
 
-
             }
             return BadRequest("Cookie not found");
 
