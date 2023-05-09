@@ -1,4 +1,5 @@
 const content = document.getElementById('content');
+const api = "https://localhost:7135/api"
 var userrole = "";
 
 function loadUnAuthPage(){
