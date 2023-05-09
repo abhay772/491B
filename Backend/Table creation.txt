@@ -22,6 +22,8 @@ CREATE TABLE UserProfiles (
     Role VARCHAR(200) NOT NULL
 );
 
+GO
+
 CREATE TABLE UserAccounts (
     Username VARCHAR(200) PRIMARY KEY,
     Role VARCHAR(200) NOT NULL,
@@ -34,6 +36,8 @@ CREATE TABLE UserAccounts (
     OTPTimestamp DATETIME NULL,
     RecoveryRequest BIT NULL
 );
+
+GO
 
 
 
@@ -51,13 +55,15 @@ CREATE TABLE DIYTable (
     DIYVideo VARBINARY(MAX)
 );
 
+GO
+
 CREATE TABLE DIYDashboard (
     DIYEmail NVARCHAR(50) NOT NULL,
     DIYID INT NOT NULL,
     FOREIGN KEY (DIYID) REFERENCES DIYTable(DIYID)
 );
 
-
+GO
 
 
 
@@ -103,11 +109,4 @@ CREATE TABLE Logs (
     Message varchar(500) NOT NULL
 );
 
-
-
-INSERT INTO [DIYDB].[dbo].[DIYDashboard] ([DIYEmail], [DIYID])
-VALUES ('test@gmail.com', '9'),
-       ('test@gmail.com', '10'),
-       ('test@gmail.com', '11'),
-       ('test@gmail.com', '12'),
-       ('test@gmail.com', '13')
+GO

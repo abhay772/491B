@@ -24,6 +24,14 @@ async function loadDIYPage(homepageContent, username, userrole) {
 
             header.appendChild(addDIYBtn);
 
+            /*// add button to view all DIYs
+            const viewAllBtn = document.getElementById("viewAllButton");
+            viewAllBtn.innerText = "View All";
+            viewAllBtn.addEventListener("click", () => {
+                await viewAllDIY(homepageContent, diyContent, username, userrole);
+            });
+            header.appendChild(viewAllBtn);*/
+            
         });
 }
 
@@ -104,11 +112,14 @@ async function AddDIY(homepageContent, username, userrole) {
             const result = await response.json();
             console.log(result.message);
             loadDIYPage(homepageContent, username, userrole)
+            popup.remove();
         } catch (error) {
             console.error(error);
         }
         loadDIYPage(homepageContent, username, userrole)
+        popup.remove();
     });
+    
 }
 
 async function loadDashboardContainer(homepageContent, diyContent, username, userrole) {
@@ -196,3 +207,54 @@ async function DIYDetails(diyContent, diyObject) {
         console.error(error);
     }
 }
+
+/*async function viewAllDIY(homepageContent, diyContent, username, userrole) {
+    try {
+        const response = await fetch(api + '/DIY/searchDIY', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load DIY');
+        }
+        const data = await response.json();
+
+        console.log(data);
+
+        const viewAllContainer = document.createElement('div');
+        viewAllContainer.classList.add('dashboard-container');
+        diyContent.appendChild(viewAllContainer);
+
+        // create 5 boxes with DIY object information
+        for (let i = 0; i < 10 && i < data.length; i++) {
+            const diyObject = data[i];
+            const diyBox = document.createElement('div');
+            diyBox.classList.add('diy-box');
+            viewAllContainer.appendChild(diyBox);
+
+            const name = document.createElement('div');
+            name.classList.add('diy-name');
+            name.textContent = diyObject.name;
+            diyBox.appendChild(name);
+
+            const description = document.createElement('div');
+            description.classList.add('diy-description');
+            description.textContent = diyObject.description;
+            diyBox.appendChild(description);
+
+            const detailsButton = document.createElement('button');
+            detailsButton.textContent = 'Details';
+            detailsButton.classList.add('diy-details-button');
+            detailsButton.addEventListener('click', () => {
+                
+                console.log("bye");
+            });
+            diyBox.appendChild(detailsButton);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}*/

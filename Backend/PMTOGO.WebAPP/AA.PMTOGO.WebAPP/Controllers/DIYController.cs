@@ -32,6 +32,11 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
             var result2 = await _diyManager.UploadVideoAsync(diy.email, diy.name, diy.videofile);
 
+            var getdiy = _diyManager.GetDIY(diy.email, diy.name);
+
+            var result3 = _diyManager.AddDIY(getdiy.ID, diy.email);
+
+
             if (result)
             {
                 return Ok();
@@ -56,12 +61,13 @@ namespace AA.PMTOGO.WebAPP.Controllers
             return NotFound();
         }
 
-        /*[HttpGet]
+        [HttpPost]
         [Route("searchDIY")]
         [ActionName("SearchDIY")]
-        public IActionResult SearchDIY([FromBody] DIY diy)
+        public IActionResult SearchDIY()
         {
-            var result = _diyManager.SearchDIY(diy.searchTerm);
+            var result = _diyManager.SearchDIY();
+
 
             if (result != null)
             {
@@ -69,7 +75,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
             }
 
             return NotFound();
-        }*/
+        }
 
         [HttpGet]
         [Route("getDIY")]
