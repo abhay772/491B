@@ -8,21 +8,21 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AA.PMTOGO.UnitTest
 {
-    //clean up test 
+    //clean up test
     [TestClass]
     public class ServiceManagementUnitTest
     {
-       
-        UsersDAO _usersDAO = new UsersDAO();
-        ServiceDAO _serviceDAO = new ServiceDAO();
-        UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO();
+       private readonly IConfiguration? _configuration;
         LoggerDAO logdao = new LoggerDAO();
         
 
         [TestMethod]
         public void CreateServiceManagementInstance()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
             var expected = typeof(UserServiceManagement);
             Logger _logger = new Logger(logdao);
             // Arrange
@@ -38,12 +38,11 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task GetUserAccountsTest()
         {
-
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             // Arrange
-            var dao = new UsersDAO();
 
             // Act
-            Result test = await dao.GetUserAccounts();
+            Result test = await _usersDAO.GetUserAccounts();
             bool actual = test.IsSuccessful;
 
             // Assert

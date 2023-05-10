@@ -11,32 +11,15 @@ namespace AA.PMTOGO.UnitTest
     [TestClass]
     public class RequestManagementUnitTest
     {
+        private readonly IConfiguration? _configuration;
 
-
-        /* private readonly IServiceDAO _serviceDAO;
-         private readonly IUserServiceDAO _userServiceDAO;
-         private readonly IServiceRequestDAO _serviceRequestDAO;
-         private readonly ILogger? _logger;
-         private readonly string _connectionString;
-         private readonly IConfiguration? _configuration;
-         public RequestManagementUnitTest(IServiceDAO serviceDAO, IServiceRequestDAO servicerequestDAO, IUserServiceDAO userServiceDAO, ILogger logger, IConfiguration _configuration)
-         {
-             _serviceDAO = serviceDAO;
-             _serviceRequestDAO = servicerequestDAO;
-             _userServiceDAO = userServiceDAO;
-             _logger = logger;
-             _connectionString = _configuration!.GetConnectionString("ServiceDbConnectionString")!;
-         }*/
-
-        UsersDAO _usersDAO = new UsersDAO();
-        ServiceDAO _serviceDAO = new ServiceDAO();
-        UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO();
         LoggerDAO logdao = new LoggerDAO();
         
         [TestMethod]
         public void CreateRequestManagementInstance()
         {
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange
             var expected = typeof(ServiceRequestManagement);
             Logger _logger = new Logger(logdao);
@@ -51,4 +34,3 @@ namespace AA.PMTOGO.UnitTest
 
     }
 }
-

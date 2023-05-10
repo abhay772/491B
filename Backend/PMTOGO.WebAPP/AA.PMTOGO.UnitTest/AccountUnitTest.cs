@@ -4,6 +4,7 @@ using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
@@ -12,20 +13,15 @@ namespace AA.PMTOGO.UnitTest
     [TestClass]
     public class AccountUnitTest
     {
-        /*private readonly IUsersDAO _usersDAO;
-        private readonly ILogger _logger;
 
-        public AccountUnitTest(IUsersDAO usersDAO, ILogger logger)
-        {
-            _usersDAO = usersDAO;
-            _logger = logger;
-        }*/
-        UsersDAO _usersDAO = new UsersDAO();
+        private readonly IConfiguration? _configuration;
+       
         LoggerDAO logdao = new LoggerDAO();
 
         [TestMethod]
         public void ShouldCreateInstanceWithDefaultCtor()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             // Arrange
             var expected = typeof(UserManagement);
             Logger _logger = new Logger(logdao);
@@ -41,6 +37,7 @@ namespace AA.PMTOGO.UnitTest
         // should provide sytstem-wide unique username
         public async Task ShouldAssignUniqueUsername()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             // Arrange
             Logger _logger = new Logger(logdao);
             var user = new UserManagement(_logger, _usersDAO);
@@ -50,7 +47,7 @@ namespace AA.PMTOGO.UnitTest
             //username = email
 
             Result result = await user.CreateAccount("sara2@gmail.com", "randomstring", "John", "Doe", "Property Manager");
-            
+
             bool accountCreated = result.IsSuccessful;
 
             // Act
@@ -63,8 +60,8 @@ namespace AA.PMTOGO.UnitTest
             Assert.IsTrue(accountCreated);
             Assert.IsFalse(account2Created);
 
-            
-            
+
+
         }
 
         //The user provides a valid email address that belongs to the user.
@@ -161,6 +158,7 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task ShouldCreateAccountWithin5Seconds()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             //aranage
             Logger _logger = new Logger(logdao);
             var registration = new UserManagement(_logger, _usersDAO);
@@ -187,9 +185,9 @@ namespace AA.PMTOGO.UnitTest
             {
                 OverTime = true;
             }
-                //private info
+            //private info
 
-                //assert
+            //assert
             Assert.IsNotNull(OnTime);
             Assert.IsNotNull(OverTime);
             Assert.IsTrue(OnTime);
@@ -204,6 +202,7 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task ShouldAllUserInfo()
         {
+            UsersDAO _usersDAO = new UsersDAO(_configuration!);
             //aranage
             Logger _logger = new Logger(logdao);
             var account = new UserManagement(_logger, _usersDAO);
