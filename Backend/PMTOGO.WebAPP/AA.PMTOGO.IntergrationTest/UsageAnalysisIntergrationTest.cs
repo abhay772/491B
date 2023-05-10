@@ -14,7 +14,7 @@ namespace AA.PMTOGO.IntergrationTest
     [TestClass]
     public class UsageAnalysisIntergrationTest
     {
-        LoggerDAO logdao = new LoggerDAO();
+        private readonly IConfiguration? _configuration;
         //private readonly ILogger? _logger;
 
 
@@ -22,6 +22,7 @@ namespace AA.PMTOGO.IntergrationTest
         public async Task GetData_PASS()
         {
             //arrange
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             Result result = await logdao!.GetAnalysisLogs("Authentication");
             
             //act
@@ -42,6 +43,7 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task GetLog_PASS()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             //arrange
             Result result = new Result();
             result.IsSuccessful = false;

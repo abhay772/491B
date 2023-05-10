@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.Models.Entities;
+using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Text;
 

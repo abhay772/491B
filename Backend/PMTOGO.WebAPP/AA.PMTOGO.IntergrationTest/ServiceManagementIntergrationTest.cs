@@ -11,7 +11,7 @@ namespace AA.PMTOGO.IntergrationTest
     public class ServiceManagementIntergrationTest
     {
         private readonly IConfiguration? _configuration;
-        LoggerDAO logdao = new LoggerDAO();
+       
 
 
         [TestMethod]
@@ -136,6 +136,7 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task RateAUserServiceSP_PASS()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UsersDAO _usersDAO = new UsersDAO(_configuration!);
             ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
             UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
@@ -167,6 +168,7 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task RateAUserServicePM_PASS()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UsersDAO _usersDAO = new UsersDAO(_configuration!);
             ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
             UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
@@ -200,6 +202,7 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task RateIsNotHigherThan5_FAIL()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UsersDAO _usersDAO = new UsersDAO(_configuration!);
             ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
             UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);

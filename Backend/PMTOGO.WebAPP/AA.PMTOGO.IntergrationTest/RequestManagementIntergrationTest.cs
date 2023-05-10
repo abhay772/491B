@@ -13,7 +13,7 @@ namespace AA.PMTOGO.IntergrationTest
     {
         private readonly IConfiguration? _configuration;
 
-        LoggerDAO logdao = new LoggerDAO();
+
 
         [TestMethod]
         public async Task GetServiceRequest()
@@ -41,6 +41,7 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task AcceptServiceRequest_Pass()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
             ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange  
@@ -121,6 +122,7 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task ChangeUserServiceFrequency_PASS()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
             ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             //arrange
@@ -153,6 +155,7 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task CancelUserService_PASS()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
             ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             //arrange

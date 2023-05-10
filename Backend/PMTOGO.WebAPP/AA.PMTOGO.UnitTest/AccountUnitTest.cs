@@ -16,17 +16,20 @@ namespace AA.PMTOGO.UnitTest
 
         private readonly IConfiguration? _configuration;
        
-        LoggerDAO logdao = new LoggerDAO();
+        
 
         [TestMethod]
         public void ShouldCreateInstanceWithDefaultCtor()
         {
             UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
+            InputValidation _validate = new InputValidation();
+            AutomaticEmail _emailer = new AutomaticEmail();
             // Arrange
             var expected = typeof(UserManagement);
             Logger _logger = new Logger(logdao);
             // Act
-            var actual = new UserManagement(_logger, _usersDAO);
+            var actual = new UserManagement(_validate, _emailer, _logger, _usersDAO);
 
             // Assert
             Assert.IsNotNull(actual);
@@ -37,10 +40,13 @@ namespace AA.PMTOGO.UnitTest
         // should provide sytstem-wide unique username
         public async Task ShouldAssignUniqueUsername()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            InputValidation _validate = new InputValidation();
+            AutomaticEmail _emailer = new AutomaticEmail();
             // Arrange
             Logger _logger = new Logger(logdao);
-            var user = new UserManagement(_logger, _usersDAO);
+            var user = new UserManagement(_validate, _emailer, _logger, _usersDAO);
             //clean up
             await user.DeleteAccount("sara2@gmail.com");
 
@@ -158,10 +164,13 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task ShouldCreateAccountWithin5Seconds()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            InputValidation _validate = new InputValidation();
+            AutomaticEmail _emailer = new AutomaticEmail();
             //aranage
             Logger _logger = new Logger(logdao);
-            var registration = new UserManagement(_logger, _usersDAO);
+            var registration = new UserManagement(_validate, _emailer, _logger, _usersDAO);
 
             //act
             var time = Stopwatch.StartNew();
@@ -202,10 +211,14 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task ShouldAllUserInfo()
         {
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             UsersDAO _usersDAO = new UsersDAO(_configuration!);
+            InputValidation _validate = new InputValidation();
+            AutomaticEmail _emailer = new AutomaticEmail();
+
             //aranage
             Logger _logger = new Logger(logdao);
-            var account = new UserManagement(_logger, _usersDAO);
+            var account = new UserManagement(_validate, _emailer, _logger, _usersDAO);
 
             //act
             await account.CreateAccount("Delete@gmail.com", "randomstring", "John", "Doe", "Property Manager");

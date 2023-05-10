@@ -13,8 +13,7 @@ namespace AA.PMTOGO.UnitTest
     public class ServiceManagementUnitTest
     {
        private readonly IConfiguration? _configuration;
-        LoggerDAO logdao = new LoggerDAO();
-        
+     
 
         [TestMethod]
         public void CreateServiceManagementInstance()
@@ -23,6 +22,7 @@ namespace AA.PMTOGO.UnitTest
             ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
             UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
             ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             var expected = typeof(UserServiceManagement);
             Logger _logger = new Logger(logdao);
             // Arrange

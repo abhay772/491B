@@ -12,14 +12,13 @@ namespace AA.PMTOGO.UnitTest
     public class RequestManagementUnitTest
     {
         private readonly IConfiguration? _configuration;
-
-        LoggerDAO logdao = new LoggerDAO();
         
         [TestMethod]
         public void CreateRequestManagementInstance()
         {
             UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
             ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
+            LoggerDAO logdao = new LoggerDAO(_configuration!);
             // Arrange
             var expected = typeof(ServiceRequestManagement);
             Logger _logger = new Logger(logdao);
