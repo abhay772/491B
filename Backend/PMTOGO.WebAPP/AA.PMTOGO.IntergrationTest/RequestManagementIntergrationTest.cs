@@ -11,13 +11,14 @@ namespace AA.PMTOGO.IntergrationTest
     [TestClass]
     public class RequestManagementIntergrationTest // RequestDAO only test
     {
-        UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
+        private readonly IConfiguration? _configuration;
+
         LoggerDAO logdao = new LoggerDAO();
 
         [TestMethod]
         public async Task GetServiceRequest()
         {
+            ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange
             Guid id = Guid.NewGuid();
             ServiceRequest request = new ServiceRequest(id, "Get Service", "Landscape", "soil installation ", "material delivery", "1x/month", "random comment",
@@ -40,7 +41,9 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task AcceptServiceRequest_Pass()
         {
-            // Arrange
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
+            // Arrange  
             Logger _logger = new Logger(logdao);
             var serviceRequest = new ServiceRequestManagement(_logger!, _requestDAO, _userServiceDAO);
 
@@ -56,7 +59,7 @@ namespace AA.PMTOGO.IntergrationTest
             bool actual = result.IsSuccessful;
 
             //clean up
-            var service = new UserServiceDAO();// _configuration!);
+            var service = new UserServiceDAO(_configuration!);
             await service.DeleteUserService(id);
 
             // Assert
@@ -69,6 +72,7 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task DeclineServiceRequest_Pass()
         {
+            ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange
 
             Guid id = Guid.NewGuid();
@@ -90,6 +94,8 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task AddAUserService_Pass()
         {
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             // Arrange
             Guid id = Guid.NewGuid();
 
@@ -115,6 +121,8 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task ChangeUserServiceFrequency_PASS()
         {
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             //arrange
 
             Logger _logger = new Logger(logdao);
@@ -145,6 +153,8 @@ namespace AA.PMTOGO.IntergrationTest
         [TestMethod]
         public async Task CancelUserService_PASS()
         {
+            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
+            ServiceRequestDAO _requestDAO = new ServiceRequestDAO(_configuration!);
             //arrange
             Logger _logger = new Logger(logdao);
             var request = new ServiceRequestManagement(_logger!, _requestDAO, _userServiceDAO);
@@ -164,7 +174,6 @@ namespace AA.PMTOGO.IntergrationTest
             Assert.IsTrue(actual);
 
         }
-
 
     }
 }

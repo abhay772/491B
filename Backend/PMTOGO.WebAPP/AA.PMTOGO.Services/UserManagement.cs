@@ -1,26 +1,28 @@
-﻿using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.Libary;
+using AA.PMTOGO.Logging;
+using AA.PMTOGO.Models.Entities;
+using AA.PMTOGO.Services.Interfaces;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
-using AA.PMTOGO.Libary;
-using AA.PMTOGO.DAL;
-using System.Net.Mail;
-using System.Net;
-using AA.PMTOGO.Services.Interfaces;
-using AA.PMTOGO.Logging;
 using AA.PMTOGO.DAL.Interfaces;
+using System.Net.Http;
 
 namespace AA.PMTOGO.Services
 {
-    //input validation, error handling , logging
     public class UserManagement : IUserManagement
     {
-        IUsersDAO _authNDAO;
-
-        InputValidation valid = new InputValidation();
+        private InputValidation _validation;
+        private readonly AutomaticEmail _emailer;
+        private IUsersDAO _authNDAO;
         private readonly ILogger? _logger;
 
-        public UserManagement(ILogger logger, IUsersDAO usersDAO)
+        public UserManagement(InputValidation validate, AutomaticEmail emailer, ILogger logger, IUsersDAO usersDAO)
         {
+            _validation = validate;
+            _emailer = emailer;
             _logger = logger;
             _authNDAO = usersDAO;
         }
@@ -46,7 +48,7 @@ namespace AA.PMTOGO.Services
         {
             Result result = new();
 
-            if (valid.ValidateEmail(username).IsSuccessful)
+            if (_validation.ValidateEmail(username).IsSuccessful)
             {
                 Result origin = await _authNDAO.FindUser(username);
 
@@ -63,12 +65,12 @@ namespace AA.PMTOGO.Services
         }
 
         //byte[] to string
-        public async Task<Result> CreateAccount(string email,string password, string firstname, string lastname, string role)
+        public async Task<Result> CreateAccount(string email, string password, string firstname, string lastname, string role)
         {
             Result result = new Result();
-            if (valid.ValidateEmail(email).IsSuccessful && valid.ValidatePassphrase(password).IsSuccessful)
+            if (_validation.ValidateEmail(email).IsSuccessful && _validation.ValidatePassphrase(password).IsSuccessful)
             {
-                Result result1= new Result();
+                Result result1 = new Result();
                 result1 = await _authNDAO.FindUser(email);
                 if (result1.IsSuccessful == false)//user doesnt exist so procceed
                 {
@@ -79,7 +81,7 @@ namespace AA.PMTOGO.Services
                     await _authNDAO.SaveUserAccount(email, passDigest, salt, role);
                     await _authNDAO.SaveUserProfile(email, firstname, lastname, role);
 
-                    //log account created succesfully  
+                    //log account created succesfully
                     await _logger!.Log("CreateAccount", 4, LogCategory.Server, result);
 
                     User user = new User(email, email, firstname, lastname, role);
@@ -99,7 +101,7 @@ namespace AA.PMTOGO.Services
             {
                 result.ErrorMessage = "Invalid email provided.Retry again or contact system administrator";
                 result.IsSuccessful = false;
-                
+
             }
             result.IsSuccessful = false;
             return result;
@@ -108,7 +110,7 @@ namespace AA.PMTOGO.Services
         public async Task<Result> DeleteAccount(string username)
         {
             Result result = new Result();
-            if (valid.ValidateEmail(username).IsSuccessful)
+            if (_validation.ValidateEmail(username).IsSuccessful)
             {
                 Result result1 = new Result();
                 result1 = await _authNDAO.FindUser(username);
@@ -144,7 +146,7 @@ namespace AA.PMTOGO.Services
         public async Task<Result> DisableAccount(string username, int active)
         {
             Result result = new Result();
-            if (valid.ValidateEmail(username).IsSuccessful)
+            if (_validation.ValidateEmail(username).IsSuccessful)
             {
                 Result result1 = new Result();
                 result1 = await _authNDAO.FindUser(username);
@@ -180,7 +182,7 @@ namespace AA.PMTOGO.Services
         public async Task<Result> EnableAccount(string username, int active)
         {
             Result result = new Result();
-            if (valid.ValidateEmail(username).IsSuccessful)
+            if (_validation.ValidateEmail(username).IsSuccessful)
             {
                 Result result1 = new Result();
                 result1 = await _authNDAO.GetUser(username);
@@ -189,7 +191,7 @@ namespace AA.PMTOGO.Services
                     //deactivate user account
 
                     await _authNDAO.UpdateUserActivation(username,active);
-                    
+
                     //log account activate succesfully
                     await _logger!.Log("EnableAccount", 4, LogCategory.Server, result);
                     result.IsSuccessful = true;
@@ -226,7 +228,7 @@ namespace AA.PMTOGO.Services
             var user_salt = Encoding.UTF8.GetBytes(salt);
             var pass = Encoding.UTF8.GetBytes(password);
 
-            // Lecture Vong 12/13 
+            // Lecture Vong 12/13
             var hash = new Rfc2898DeriveBytes(pass, user_salt, 1000, HashAlgorithmName.SHA512);
             var encryptedPass = hash.GetBytes(64);
             string passDigest = Convert.ToBase64String(encryptedPass);
@@ -237,8 +239,8 @@ namespace AA.PMTOGO.Services
         {
             Result result = new Result();
             result = await _authNDAO.FindUser(email);
-            
-            if (result.IsSuccessful) 
+
+            if (result.IsSuccessful)
             {
                 await EmailOTP(email);
             }
@@ -246,47 +248,30 @@ namespace AA.PMTOGO.Services
         }
         public async Task<bool> EmailOTP(string userEmail)
         {
-            string companyEmail = "DemonicKhmer@gmail.com";
-            string companyEmailKey = "Your Email third party application key. 2 factor authN must be activated for the gmail account";
             string emailSubject = "Account Recovery - OTP";
             string emailBody = "Your One-Time Password is : ";
             var otp = "";
-
-            var smtpClient = new SmtpClient("smtp.gmail.com", 587);
-            smtpClient.UseDefaultCredentials = false;
-            smtpClient.Credentials = new NetworkCredential(companyEmail, companyEmailKey);
-            smtpClient.EnableSsl = true;
 
             string allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.-@";
             Random rand = new Random();
             for (int i = 0; i < 8; i++)
             {
                 otp += allowedChars[rand.Next(0, allowedChars.Length)];
-                emailBody += allowedChars[rand.Next(0, allowedChars.Length)];
+                
             }
-
-            var message = new MailMessage(companyEmail, userEmail, emailSubject, emailBody);
-
-            return false;
-
-           /* // delete
-            Console.WriteLine(otp);
-            await _authNDAO.SaveOTP(userEmail, otp);
-            return true;
-            //delete
+                emailBody += otp;
             try
             {
+                await _emailer.EmailNotification(userEmail, emailSubject, emailBody);
                 await _authNDAO.SaveOTP(userEmail, otp);
-                smtpClient.Send(message);
+                
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Console.WriteLine("Error sending email");
             }
-            return false;*/
-            
+            return false;
         }
     }
 }
-

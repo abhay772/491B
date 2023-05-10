@@ -13,15 +13,15 @@ namespace AA.PMTOGO.DAL
     {
 
 
-        /*private readonly string _connectionString;
+        private readonly string _connectionString;
 
         //logging
 
         public LoggerDAO(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
-        }*/
-        private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.LogDB;Trusted_Connection=True;Encrypt=false";
+        }
+        //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.LogDB;Trusted_Connection=True;Encrypt=false";
         public async Task<Result> InsertLog(Log log)
         {
             var result = new Result();
