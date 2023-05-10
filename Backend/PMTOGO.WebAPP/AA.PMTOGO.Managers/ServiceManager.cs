@@ -7,7 +7,7 @@ using System.Data;
 namespace AA.PMTOGO.Managers
 {
     //input validation, logging
-    public class ServiceManager : IServiceManager
+    public class ServiceManager: IServiceManager
     {
         private readonly IUserServiceManagement _userService;
         private readonly ILogger _logger;
@@ -30,7 +30,7 @@ namespace AA.PMTOGO.Managers
             }
             catch
             {
-                result.IsSuccessful = false;
+                result.IsSuccessful= false;
                 result.ErrorMessage = "Rate Unsuccessful. Try Again Later";
                 await _logger!.Log("RateUserService", 4, LogCategory.Business, result);
             }
@@ -44,14 +44,78 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _userService.GatherServices();
+                result.ErrorMessage = "Gather Services Successful";
                 await _logger!.Log("GetAllServices", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful= false;
+                result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
+                await _logger!.Log("GetAllServices", 4, LogCategory.Business, result);
+
+            }
+
+            return result;
+        }
+        //get service provider services
+        public async Task<Result> GetSPServices(string username)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _userService.GatherSPServices(username);
+                await _logger!.Log("GetSPServices", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
                 result.IsSuccessful = false;
                 result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
-                await _logger!.Log("GetAllServices", 4, LogCategory.Business, result);
+                await _logger!.Log("GetSPServices", 4, LogCategory.Business, result);
+
+            }
+
+            return result;
+        }
+        //create service provider services
+        public async Task<Result> AddSPService(string username, string serviceName, string serviceType, string serviceDescription, double servicePrice)
+        {
+            Result result = new Result();
+            try
+            {
+                Service service = new Service(serviceName, serviceType, serviceDescription, servicePrice);
+                result = await _userService.CreateService(username, service);
+                await _logger!.Log("AddSPServices", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
+                await _logger!.Log("AddSPServices", 4, LogCategory.Business, result);
+
+            }
+
+            return result;
+        }
+
+        //delete service provider services
+        public async Task<Result> DeleteSPService(string id)
+        {
+            Guid Id = new Guid(id);
+            Result result = new Result();
+            try
+            {
+                result = await _userService.RemoveService(Id);
+                await _logger!.Log("DeleteSPServices", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
+                await _logger!.Log("DeleteSPServices", 4, LogCategory.Business, result);
 
             }
 
@@ -154,7 +218,7 @@ namespace AA.PMTOGO.Managers
             }
             catch
             {
-                result.IsSuccessful = false;
+                result.IsSuccessful= false;
                 result.ErrorMessage = "Load User Services Unsuccssful. Try Again Later";
                 await _logger!.Log("GetAllUserServices", 4, LogCategory.Business, result);
             }

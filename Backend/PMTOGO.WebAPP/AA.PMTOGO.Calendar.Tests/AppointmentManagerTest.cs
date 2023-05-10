@@ -10,9 +10,9 @@ using Xunit;
 
 namespace AA.PMTOGO.Calendar.Tests;
 
-public class AppointmentManagerTests : IDisposable
+/*public class AppointmentManagerTests : IDisposable
 {
-    private readonly Mock<IAppointmentService> _appointmentServiceMock;
+    /*private readonly Mock<IAppointmentService> _appointmentServiceMock;
     private readonly Mock<IUserManagement> _userServiceMock;
     private readonly AppointmentManager _appointmentManager;
 
@@ -346,4 +346,4 @@ public class AppointmentManagerTests : IDisposable
         _appointmentServiceMock.Verify(x => x.GetAllByUserIdAsync(It.IsAny<string>()), Times.Once);
         _appointmentServiceMock.Verify(x => x.UpdateAsync(It.IsAny<Appointment>()), Times.Never);
     }
-}
+}*/

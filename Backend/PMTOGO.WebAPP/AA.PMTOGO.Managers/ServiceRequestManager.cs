@@ -8,10 +8,8 @@ namespace AA.PMTOGO.Managers
     //input validation, logging
     public class ServiceRequestManager : IServiceRequestManager
     {
-        //ERROR HANDLING
         private readonly IServiceRequestManagement _serviceRequest;
         private readonly ILogger? _logger;
-
 
         public ServiceRequestManager(IServiceRequestManagement serviceRequest, ILogger logger)
         {
@@ -59,8 +57,8 @@ namespace AA.PMTOGO.Managers
             }
             return result;
         }
-        
-        //get all request for service provider user    
+
+        //get all request for service provider user
         public async Task<Result> GetUserRequests(string username)
         {
             Result result = new Result();

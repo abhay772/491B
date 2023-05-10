@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
-using AA.PMTOGO.DAL;
-using AA.PMTOGO.Models.Entities;
+﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Infrastructure.Interfaces;
+using AA.PMTOGO.Models.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace AA.PMTOGO.Services
 {
     public class DIYService : IDIYService
     {
-        private readonly DIYDAO? _diyDao;
+        private readonly DIYDAO _diyDao;
         public async Task<bool> UploadVideo(string email, string name, IFormFile videoFile)
         {
+            var dao = new DIYDAO();
             // Convert IFormFile to byte[]
             byte[] videoBytes;
             using (var stream = videoFile.OpenReadStream())
@@ -21,12 +22,12 @@ namespace AA.PMTOGO.Services
                 }
             }
 
-            return await _diyDao!.UploadVideo(email, name, videoBytes);
+            return await dao.UploadVideo(email, name, videoBytes);
         }
-        public List<DIYObject> SearchDIY(string name)
+        public List<DIYObject> SearchDIY()
         {
             var dao = new DIYDAO();
-            var result = dao.SearchDIY(name);
+            var result = dao.SearchDIY();
             return result;
         }
 

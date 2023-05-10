@@ -1,9 +1,8 @@
-﻿using AA.PMTOGO.DAL;
+﻿using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
-using System.Data;
 using System.Net;
 using System.Net.Mail;
 
@@ -34,7 +33,7 @@ public class PropEvalManager : IPropEvalManager
         Result result = new Result();
 
         result.IsSuccessful = false;
-        result.ErrorMessage = "Invalid Username" ;
+        result.ErrorMessage = "Invalid Username";
 
         return result;
     }
@@ -69,10 +68,12 @@ public class PropEvalManager : IPropEvalManager
 
                 return result;
             }
-            Result evaluationResult = await _evaluator.evaluate(propertyProfile);
+            Result evaluationResult = await _evaluator.Evaluate(propertyProfile);
 
             if (result.IsSuccessful)
             {
+                // can be added prop eval service
+
                 // Updating the profile with the evaluation
                 Result saveEvalResult = await _sqlPropEvalDAO.updatePropEval(username, (int)evaluationResult.Payload!);
 
@@ -83,7 +84,8 @@ public class PropEvalManager : IPropEvalManager
                 // this is to make that the task does not take more than 5 secs
                 Task taskDone = await Task.WhenAny(sendNotificationtoEmailAsync, Task.Delay(TimeSpan.FromSeconds(5)));
 
-                if(taskDone == sendNotificationtoEmailAsync)
+
+                if (taskDone == sendNotificationtoEmailAsync)
                 {
                     Result notificationResult = await sendNotificationtoEmailAsync;
 
@@ -94,8 +96,6 @@ public class PropEvalManager : IPropEvalManager
                 {
                     // log the error
                 }
-
-                return evaluationResult;
             }
 
             return evaluationResult;

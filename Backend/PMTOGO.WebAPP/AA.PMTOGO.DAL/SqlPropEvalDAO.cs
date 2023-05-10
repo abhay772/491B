@@ -1,4 +1,5 @@
 ﻿
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using System.Data.SqlClient;
 
@@ -9,6 +10,10 @@ public class SqlPropEvalDAO : ISqlPropEvalDAO
 {
     private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=AA.PropertyProfilesDB;Trusted_Connection=True;Encrypt=false";
 
+    public SqlPropEvalDAO()
+    {
+
+    }
     public async Task<Result> loadProfileAsync(string username)
     {
         Result result = new Result();

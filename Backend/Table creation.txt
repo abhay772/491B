@@ -22,6 +22,8 @@ CREATE TABLE UserProfiles (
     Role VARCHAR(200) NOT NULL
 );
 
+GO
+
 CREATE TABLE UserAccounts (
     Username VARCHAR(200) PRIMARY KEY,
     Role VARCHAR(200) NOT NULL,
@@ -35,9 +37,33 @@ CREATE TABLE UserAccounts (
     RecoveryRequest BIT NULL
 );
 
+GO
 
 
 
+CREATE DATABASE DIYDB;
+GO
+
+USE DIYDB;
+GO
+
+CREATE TABLE DIYTable (
+    DIYID INT IDENTITY(1,1) PRIMARY KEY,
+    DIYEmail NVARCHAR(50),
+    DIYName NVARCHAR(50),
+    DIYDescription NVARCHAR(200),
+    DIYVideo VARBINARY(MAX)
+);
+
+GO
+
+CREATE TABLE DIYDashboard (
+    DIYEmail NVARCHAR(50) NOT NULL,
+    DIYID INT NOT NULL,
+    FOREIGN KEY (DIYID) REFERENCES DIYTable(DIYID)
+);
+
+GO
 
 
 
@@ -62,7 +88,25 @@ CREATE TABLE CrimeAlerts (
     Description VARCHAR(255) NOT NULL,
     Time VARCHAR(255) NOT NULL,
     Date VARCHAR(255) NOT NULL,
-    X VARCHAR(255) NOT NULL,
-    Y VARCHAR(255) NOT NULL
+    X FLOAT NOT NULL,
+    Y FLOAT NOT NULL
 );
+GO
+
+
+CREATE DATABASE [AA.LogDB];
+GO
+
+USE [AA.LogDB];
+GO
+
+CREATE TABLE Logs (
+    LogId int PRIMARY KEY,
+    Timestamp datetime NOT NULL,
+    LogLevel varchar(50) NOT NULL,
+    Operation varchar(50) NOT NULL,
+    LogCategory varchar(50) NOT NULL,
+    Message varchar(500) NOT NULL
+);
+
 GO

@@ -6,9 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AA.PMTOGO.DAL
 {
@@ -57,6 +56,7 @@ namespace AA.PMTOGO.DAL
                     }
                 }
                 result.IsSuccessful = false;
+                result.ErrorMessage = "Find User Service Unsuccessful";
                 return result;
             }
 
@@ -95,6 +95,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Add User Service Successful";
                         return result;
                     }
                     else
@@ -118,7 +119,7 @@ namespace AA.PMTOGO.DAL
             return result;
         }
 
-        
+
 
         //user service list
         public async Task<Result> GetUserServices(string sqlQuery, string email, string rating) // return all user services
@@ -154,6 +155,7 @@ namespace AA.PMTOGO.DAL
 
                         }
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Get User Services Successful";
                         result.Payload = listOfUserServices;
                         return result;
                     }
@@ -166,8 +168,6 @@ namespace AA.PMTOGO.DAL
                     }
                 }
             }
-            result.IsSuccessful = false;
-            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
             return result;
         }
 
@@ -180,7 +180,7 @@ namespace AA.PMTOGO.DAL
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                
+
                 string sqlQuery = "UPDATE UserServices SET ServiceFrequency = @ServiceFrequency WHERE Id = @ID";
 
                 var command = new SqlCommand(sqlQuery, connection);
@@ -194,6 +194,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Update Service Frequency Successful";
                         return result;
                     }
 
@@ -205,15 +206,13 @@ namespace AA.PMTOGO.DAL
                     }
                 }
 
-                catch 
+                catch
                 {
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
                 }
 
             }
-
-            result.IsSuccessful = false;
             return result;
         }
 
@@ -237,6 +236,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Delete User Service Successful";
                         return result;
                     }
 
@@ -282,6 +282,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Update User Service Rate Successful";
                         return result;
                     }
 
@@ -293,15 +294,13 @@ namespace AA.PMTOGO.DAL
                     }
                 }
 
-                catch 
+                catch
                 {
                     result.ErrorMessage = "There was an unexpected server error. Please try again later.";
                     result.IsSuccessful = false;
                 }
 
             }
-
-            result.IsSuccessful = false;
             return result;
         }
 
@@ -326,6 +325,7 @@ namespace AA.PMTOGO.DAL
                         if ((int)reader[userRate] == rating)
                         {
                             result.IsSuccessful = true;
+                            result.ErrorMessage = "Check Rating Successful";
                             return result;
                         }
                         else
@@ -356,7 +356,7 @@ namespace AA.PMTOGO.DAL
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-            
+
                 string sqlQuery = "SELECT ServiceFrequency FROM UserServices WHERE Id = @ID";
 
                 var command = new SqlCommand(sqlQuery, connection);
@@ -371,6 +371,7 @@ namespace AA.PMTOGO.DAL
                         if ((string)reader["ServiceFrequency"] == frequency)
                         {
                             result.IsSuccessful = true;
+                            result.ErrorMessage = "Check Frequency Successful";
                             return result;
                         }
                         else
@@ -412,6 +413,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Update Status Successful";
                         return result;
                     }
 
@@ -430,8 +432,6 @@ namespace AA.PMTOGO.DAL
                 }
 
             }
-
-            result.IsSuccessful = false;
             return result;
         }
     }

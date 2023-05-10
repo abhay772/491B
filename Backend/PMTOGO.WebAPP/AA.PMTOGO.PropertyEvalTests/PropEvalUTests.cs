@@ -1,6 +1,7 @@
+using AA.PMTOGO.DAL;
 using AA.PMTOGO.Managers;
 using AA.PMTOGO.Models.Entities;
-using AA.PMTOGO.DAL;
+using AA.PMTOGO.Services;
 
 namespace AA.PMTOGO.PropertyEvalTests;
 
@@ -14,7 +15,7 @@ public class PropEvalUTests
         // Arrage
         var sqlPropEvalDao = new SqlPropEvalDAO();
         var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+        var evaluator = new PropertyEvaluator(historicalDAO, sqlPropEvalDao);
 
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
 
@@ -50,7 +51,7 @@ public class PropEvalUTests
 
         var sqlPropEvalDao = new SqlPropEvalDAO();
         var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+        var evaluator = new PropertyEvaluator(historicalDAO, sqlPropEvalDao);
 
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
 
@@ -85,7 +86,7 @@ public class PropEvalUTests
 
         var sqlPropEvalDao = new SqlPropEvalDAO();
         var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+        var evaluator = new PropertyEvaluator(historicalDAO, sqlPropEvalDao);
 
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
 
@@ -116,7 +117,7 @@ public class PropEvalUTests
 
         var sqlPropEvalDao = new SqlPropEvalDAO();
         var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+        var evaluator = new PropertyEvaluator(historicalDAO, sqlPropEvalDao);
 
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
 
@@ -141,7 +142,7 @@ public class PropEvalUTests
         // Arrage
         var sqlPropEvalDao = new SqlPropEvalDAO();
         var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+        var evaluator = new PropertyEvaluator(historicalDAO, sqlPropEvalDao);
 
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
         var expected = typeof(PropertyProfile);
@@ -163,7 +164,7 @@ public class PropEvalUTests
         // Arrage
         var sqlPropEvalDao = new SqlPropEvalDAO();
         var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+        var evaluator = new PropertyEvaluator(historicalDAO, sqlPropEvalDao);
 
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
         var expected = typeof(PropertyProfile);
@@ -189,7 +190,7 @@ public class PropEvalUTests
 
         var sqlPropEvalDao = new SqlPropEvalDAO();
         var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+        var evaluator = new PropertyEvaluator(historicalDAO, sqlPropEvalDao);
 
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
 
@@ -224,7 +225,7 @@ public class PropEvalUTests
 
         var sqlPropEvalDao = new SqlPropEvalDAO();
         var historicalDAO = new HistoricalSalesDAO();
-        var evaluator = new Services.PropertyEvaluator(historicalDAO);
+        var evaluator = new PropertyEvaluator(historicalDAO, sqlPropEvalDao);
 
         var propEvalManager = new PropEvalManager(sqlPropEvalDao, evaluator);
 

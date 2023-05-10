@@ -1,9 +1,4 @@
 ﻿using AA.PMTOGO.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AA.PMTOGO.Services.Interfaces
 {
@@ -12,7 +7,7 @@ namespace AA.PMTOGO.Services.Interfaces
         Task<User?> GetUser(string username);
 
         Task<Result> GatherUsers();
-        Task<Result> CreateAccount(string email, string password, string firstname, string lastname, string role); 
+        Task<Result> CreateAccount(string email, string password, string firstname, string lastname, string role);
         Task<Result> DeleteAccount(string username);
 
         Task<Result> EnableAccount(string username, int active);

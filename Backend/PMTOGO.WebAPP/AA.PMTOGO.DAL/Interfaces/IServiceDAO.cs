@@ -1,14 +1,11 @@
 ﻿using AA.PMTOGO.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AA.PMTOGO.DAL.Interfaces
 {
     public interface IServiceDAO
     {
+
+        Task<List<Service>> FindServicesWithQuery(string userQuery, int PageNumber, int PageLimit);
         Task<Result> GetServices();
 
         Task<Result> GetSPServices(string username);

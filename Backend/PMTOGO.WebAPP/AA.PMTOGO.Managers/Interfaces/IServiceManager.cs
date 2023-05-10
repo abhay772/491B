@@ -8,7 +8,7 @@ namespace AA.PMTOGO.Managers.Interfaces
         Task<Result> GetAllServices();//get all services
         Task<Result> GetSPServices(string username);
 
-        Task<Result> AddSPService(string username, Service service);
+        Task<Result> AddSPService(string username, string serviceName, string serviceType, string serviceDescription, double servicePrice);
 
         Task<Result> DeleteSPService(string id);
         Task<Result> GetAllUserServices(string username, string role);//get all user services

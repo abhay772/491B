@@ -6,7 +6,7 @@ namespace AA.PMTOGO.DAL
 {
     public class DIYDAO
     {
-        private static readonly string _connectionString = @"Server=localhost\SQLEXPRESS;Database=master;Trusted_Connection=True;";
+        private static readonly string _connectionString = @"Server=.\SQLEXPRESS;Database=DIYDB;Trusted_Connection=True";
 
         public DIYDAO() { }
 
@@ -68,6 +68,7 @@ namespace AA.PMTOGO.DAL
                 checkCommand.Parameters.AddWithValue("@Name", name);
                 var count = (int)await checkCommand.ExecuteScalarAsync();
 
+
                 if (count > 0)
                 {
                     // if row exists, update it with the video file
@@ -87,9 +88,9 @@ namespace AA.PMTOGO.DAL
                 }
             }
         }
-        public List<DIYObject> GetDashboardDIY(string email)
+        public List<DIYDashboardObject> GetDashboardDIY(string email)
         {
-            var diyList = new List<DIYObject>();
+            var diyList = new List<DIYDashboardObject>();
             var idList = new List<string>();
 
             using (var connection = new SqlConnection(_connectionString))
@@ -118,19 +119,13 @@ namespace AA.PMTOGO.DAL
                     {
                         while (reader.Read())
                         {
-                            var diy = new DIYObject
+                            var diy = new DIYDashboardObject
                             {
                                 ID = reader["DIYID"].ToString()!,
                                 Email = reader["DIYEmail"].ToString()!,
                                 Name = reader["DIYName"].ToString()!,
                                 Description = reader["DIYDescription"].ToString()!,
                             };
-
-                            if (reader["DIYVideo"] != DBNull.Value)
-                            {
-                                diy.Video = new MemoryStream((byte[])reader["DIYVideo"]);
-                            }
-
                             diyList.Add(diy);
                         }
                     }
@@ -139,7 +134,7 @@ namespace AA.PMTOGO.DAL
 
             return diyList;
         }
-        public async Task<bool> ClearDIYTable()
+        /*public async Task<bool> ClearDIYTable()
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -157,9 +152,9 @@ namespace AA.PMTOGO.DAL
 
                 return result > 0;
             }
-        }
+        }*/
 
-        public List<DIYObject> SearchDIY(string searchTerm)
+        public List<DIYObject> SearchDIY()
         {
             var diyList = new List<DIYObject>();
 
@@ -167,10 +162,9 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                string sqlQuery = "SELECT * FROM DIYTable WHERE DIYName LIKE '%' + @SearchTerm + '%'";
+                string sqlQuery = "SELECT * FROM DIYTable";
 
                 var command = new SqlCommand(sqlQuery, connection);
-                command.Parameters.AddWithValue("@SearchTerm", searchTerm);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -227,22 +221,6 @@ namespace AA.PMTOGO.DAL
             }
             return null!;
         }
-
-        /*public async Task<bool> AddDIY(string id, string email)
-        {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                await connection.OpenAsync();
-
-                var command = new SqlCommand("INSERT INTO DIYDashboard (DIYID, DIYEmail) VALUES (@ID, @Email)", connection);
-                command.Parameters.AddWithValue("@ID", id);
-                command.Parameters.AddWithValue("@Email", email);
-
-                var count = (int)await command.ExecuteScalarAsync();
-
-                return count == 1;
-            }
-        }*/
 
         public async Task<bool> AddDIY(string id, string email)
         {

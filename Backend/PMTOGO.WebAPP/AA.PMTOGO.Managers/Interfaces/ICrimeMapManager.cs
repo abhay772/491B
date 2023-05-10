@@ -9,10 +9,9 @@ namespace AA.PMTOGO.Managers.Interfaces
 {
     public interface ICrimeMapManager
     {
-        Task<Result> AddCrimeAlert(string email, string name, string location, string description, string time, string date, string x, string y);
-        Task<Result> DeleteCrimeAlert(string email, string id);
-        Task<Result> EditCrimeAlert(string email, string id, string name, string location, string description, string time, string date, string x, string y);
+        Task<Result> AddCrimeAlert(string email, string name, string location, string description, string time, string date, float x, float y);
+        Task<Result> DeleteCrimeAlert(string email, int id);
+        Task<Result> EditCrimeAlert(string email, int id, string name, string location, string description, string time, string date, float x, float y);
         Task<List<CrimeAlert>> GetCrimeAlerts();
-        Task<CrimeAlert> ViewCrimeAlert(string email, string id);
     }
 }

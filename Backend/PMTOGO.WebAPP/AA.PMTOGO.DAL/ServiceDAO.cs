@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 namespace AA.PMTOGO.DAL
 {
     //logging
-    public class ServiceDAO: IServiceDAO
+    public class ServiceDAO : IServiceDAO
     {
         private readonly string _connectionString;
         //logging
@@ -17,7 +17,6 @@ namespace AA.PMTOGO.DAL
         {
             _connectionString = configuration.GetConnectionString("ServiceDbConnectionString")!;
         }
-        //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.ServiceDB;Trusted_Connection=True;Encrypt=false";
 
         // Service Provider - Services DAO
         public async Task<Result> GetServices() //list of services
@@ -47,6 +46,7 @@ namespace AA.PMTOGO.DAL
 
                         }
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Get Services Successful";
                         result.Payload = listOfservice;
                         return result;
                     }
@@ -59,8 +59,49 @@ namespace AA.PMTOGO.DAL
                     }
                 }
             }
-            result.IsSuccessful = false;
-            result.ErrorMessage = "Invalid Username or Passphrase. Please try again later.";
+            return result;
+        }
+        public async Task<Result> GetSPServices(string username) //list of services
+        {
+
+            Result result = new Result();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT Id, ServiceName, ServiceType, ServiceDescription, ServiceProvider, ServiceProviderEmail, ServicePrice FROM Services WHERE ServiceProviderEmail = @ServiceProviderEmail";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@ServiceProviderEmail", username);
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    try
+                    {
+                        List<Service> listOfservice = new List<Service>();
+                        while (reader.Read())
+                        {
+                            Service service = new Service((Guid)reader["Id"], (string)reader["ServiceName"], (string)reader["ServiceType"], (string)reader["ServiceDescription"], (string)reader["ServiceProvider"],
+                                (string)reader["ServiceProviderEmail"], (double)reader["ServicePrice"]);
+
+                            listOfservice.Add(service);
+
+                        }
+                        result.IsSuccessful = true;
+                        result.ErrorMessage = "Get Service Provider Services Successful";
+                        result.Payload = listOfservice;
+                        return result;
+                    }
+                    catch
+                    {
+
+                        result.ErrorMessage = "There was an unexpected server error. Please try again later.";
+                        result.IsSuccessful = false;
+
+                    }
+                }
+            }
             return result;
         }
         public async Task<Result> GetSPServices(string username) //list of services
@@ -143,7 +184,51 @@ namespace AA.PMTOGO.DAL
 
 
                 result.IsSuccessful = false;
+                result.ErrorMessage = "Find Service Unsuccessful";
                 return result;
+            }
+
+        }
+
+        public async Task<List<Service>> FindServicesWithQuery(string userQuery, int PageNumber, int PageLimit)
+        {
+            int OFFSET = (PageNumber - 1) * PageLimit;
+
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sqlQuery = "SELECT Id, Name AS ServiceName, Type AS ServiceType, ServiceDescription, Price AS ServicePrice " +
+                                  "FROM Services " +
+                                  "WHERE CONTAINS(ServiceDescription, @Query) " +
+                                  "OFFSET @Offset ROWS " +
+                                  "FETCH NEXT @PageSize ROWS ONLY";
+
+                var command = new SqlCommand(sqlQuery, connection);
+
+                command.Parameters.AddWithValue("@Query", userQuery);
+                command.Parameters.AddWithValue("@Offset", OFFSET);
+                command.Parameters.AddWithValue("@PageSize", PageLimit);
+
+
+                List<Service> services = new List<Service>();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Guid id = (Guid)reader["Id"];
+                        string name = (string)reader["ServiceName"];
+                        string type = (string)reader["ServiceType"];
+                        string description = (string)reader["ServiceDescription"];
+                        double price = (double)reader["ServicePrice"];
+
+                        Service service = new Service(id, name, type, description, price);
+                        services.Add(service);
+                    }
+                }
+                return services;
             }
 
         }
@@ -175,6 +260,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Add Services Successful";
                         return result;
                     }
                     else
@@ -207,9 +293,9 @@ namespace AA.PMTOGO.DAL
             {
                 connection.Open();
 
-                var command = new SqlCommand("DELETE FROM Services WHERE Id = @ID", connection);
+                var command = new SqlCommand("DELETE FROM Services WHERE Id = @Id", connection);
 
-                command.Parameters.AddWithValue("@ID", id);
+                command.Parameters.AddWithValue("@Id", id);
 
                 try
                 {
@@ -218,6 +304,7 @@ namespace AA.PMTOGO.DAL
                     if (rows == 1)
                     {
                         result.IsSuccessful = true;
+                        result.ErrorMessage = "Delete Services Successful";
                         return result;
                     }
 
@@ -237,7 +324,6 @@ namespace AA.PMTOGO.DAL
 
                     }
                 }
-
 
             }
             result.IsSuccessful = false;

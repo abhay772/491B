@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AA.PMTOGO.Models.Entities
 {
@@ -13,15 +8,24 @@ namespace AA.PMTOGO.Models.Entities
         public Guid Id { get; set; } = Guid.NewGuid();
         public string ServiceName { get; set; } = string.Empty;
         public string ServiceDescription { get; set; } = string.Empty;
-        [Key]
+
         public string ServiceType { get; set; } = string.Empty;
         public string ServiceProvider { get; set; } = string.Empty;
-        [Key]
+
         public string ServiceProviderEmail { get; set; } = string.Empty;
 
         public double ServicePrice { get; set; }
-        
+
         public Service() { }
+
+        public Service(string name, string type, string description, double price)
+        {
+            ServiceName = name;
+            ServiceDescription = description;
+            ServiceType = type;
+            ServicePrice = price;
+
+        }
 
         public Service(Guid id, string name, string type, string description, string serviceProvider, string providerEmail, double price)
         {
@@ -33,7 +37,15 @@ namespace AA.PMTOGO.Models.Entities
             ServiceProviderEmail = providerEmail;
             ServicePrice = price;
 
-        }     
+        }
 
+        public Service(Guid id, string name, string type, string description, double price)
+        {
+            this.Id = id;
+            this.ServiceName = name;
+            this.ServiceType = type;
+            this.ServiceDescription = description;
+            this.ServicePrice = price;
+        }
     }
 }

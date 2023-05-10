@@ -1,11 +1,8 @@
-using AA.PMTOGO.DAL;
 using AA.PMTOGO.DAL.Interfaces;
-using AA.PMTOGO.Infrastructure.Interfaces;
-﻿using AA.PMTOGO.Logging;
+using AA.PMTOGO.Logging;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
-using System.Data;
 using System.Diagnostics;
 
 namespace AA.PMTOGO.Managers

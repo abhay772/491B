@@ -17,10 +17,10 @@ public class Authenticator : IAuthenticator
     InputValidation valid = new InputValidation();
     private readonly ILogger _logger;
 
-    public Authenticator(ILogger logger, IUsersDAO usersDAO)
+    public Authenticator(ILogger logger, IUsersDAO authNDAO)
     {
         _logger = logger;
-        _authNDAO = usersDAO;
+        _authNDAO= authNDAO;
     }
 
 
@@ -90,7 +90,7 @@ public class Authenticator : IAuthenticator
         return -1;
 
     }
-     
+
     public async void ResetFailedAttempts(string username)
     {
         Result result = await _authNDAO.FindUser(username);

@@ -1,14 +1,11 @@
 ﻿
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mail;
-using System.Net;
-using System.Text.Json;
-using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using static System.Net.WebRequestMethods;
-using AA.PMTOGO.Managers.Interfaces;
-using Azure.Core;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Claims;
 
 namespace AA.PMTOGO.WebAPP.Controllers;
 

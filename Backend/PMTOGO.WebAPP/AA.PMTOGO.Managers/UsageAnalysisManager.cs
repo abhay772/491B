@@ -1,4 +1,5 @@
-﻿using AA.PMTOGO.Managers.Interfaces;
+﻿using AA.PMTOGO.Logging;
+using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services;
 using AA.PMTOGO.Services.Interfaces;
@@ -14,10 +15,12 @@ namespace AA.PMTOGO.Managers
     public class UsageAnalysisManager : IUsageAnalysisManager
     {
         private readonly IUsageAnalysisDashboard _usageDashboard;
+        private readonly ILogger? _logger;
 
-        public UsageAnalysisManager(IUsageAnalysisDashboard usageDashboard)
+        public UsageAnalysisManager(IUsageAnalysisDashboard usageDashboard, ILogger logger)
         {
             _usageDashboard = usageDashboard;
+            _logger = logger;
         }
 
         public async Task<Result> GetAnalysis()
@@ -26,12 +29,14 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _usageDashboard.GenerateAnalysis();
+                await _logger!.Log("GetAnalysis", 4, LogCategory.Business, result); 
                 return result;
             }
             catch
             {
-                result.IsSuccessful= false;
+                result.IsSuccessful = false;
                 result.ErrorMessage = "Load Usage Analysis Dashboard Unsuccessful";
+                await _logger!.Log("GetAnalysis", 4, LogCategory.Business, result);
             }
             return result;
 

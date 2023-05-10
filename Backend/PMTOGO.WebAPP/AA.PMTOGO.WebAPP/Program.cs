@@ -1,7 +1,8 @@
+using AA.PMTOGO.WebAPP.Data;
 using AA.PMTOGO.Infrastructure;
-using AA.PMTOGO.Infrastructure.Data;
-using AA.PMTOGO.Infrastructure.NewFolder;
+using AA.PMTOGO.Infrastructure.JSONConverters;
 using Microsoft.EntityFrameworkCore;
+using AA.PMTOGO.Infrastructure.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure();
 
-builder.Services.AddDbContext<UsersDbContext>(options => 
+builder.Services.AddDbContext<UsersDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("UsersDbConnectionString"),
         b => b.MigrationsAssembly("AA.PMTOGO.WebAPP")
@@ -22,10 +23,15 @@ builder.Services.AddDbContext<UsersDbContext>(options =>
 );
 builder.Services.AddDbContext<ServiceDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ServiceDbConnectionString")));
 
+builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new TimeOnlyConverter());
+        });
 
 var app = builder.Build();
 
-
+app.UseMiddleware<CorsMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -34,7 +40,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<CorsMiddleware>();
 app.MapControllers();
 
 app.Run();
