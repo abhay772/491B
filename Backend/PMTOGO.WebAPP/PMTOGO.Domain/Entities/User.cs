@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
 namespace AA.PMTOGO.Models.Entities
@@ -15,11 +16,14 @@ namespace AA.PMTOGO.Models.Entities
         public string PassDigest { get; set; } = string.Empty;
         public string Salt { get; set; } = string.Empty;
         public bool IsActive { get; set; }
+        [Column("Attempts")]
         public int Attempt { get; set; }
         public DateTime Timestamp { get; set; }
         public string OTP { get; set; } = string.Empty;
         public DateTime OTPTimestamp { get; set; }
         public bool RecoveryRequest { get; set; }
+
+        public virtual List<Appointment>? Appointments { get; set; }
 
         public User()
         {

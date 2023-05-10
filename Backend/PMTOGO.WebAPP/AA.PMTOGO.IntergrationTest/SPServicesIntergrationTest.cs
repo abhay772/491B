@@ -1,7 +1,6 @@
 ﻿using AA.PMTOGO.DAL;
 using AA.PMTOGO.Models.Entities;
 
-
 namespace AA.PMTOGO.IntergrationTest
 {
     public class SPServicesIntergrationTest

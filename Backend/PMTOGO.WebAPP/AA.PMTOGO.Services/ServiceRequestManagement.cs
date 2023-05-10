@@ -1,4 +1,5 @@
 ﻿using AA.PMTOGO.DAL;
+using AA.PMTOGO.DAL.Interfaces;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using AA.PMTOGO.Services.Interfaces;
@@ -11,9 +12,16 @@ namespace AA.PMTOGO.Services
     //input validation, logging
     public class ServiceRequestManagement : IServiceRequestManagement
     {
-        ServiceRequestDAO _requestDAO = new ServiceRequestDAO();
-        UserServiceDAO _serviceDAO= new UserServiceDAO();
-        Logger _logger = new Logger();
+        private readonly IServiceRequestDAO _requestDAO;
+        private readonly IUserServiceDAO _serviceDAO;
+        private readonly ILogger? _logger;
+        public ServiceRequestManagement(ILogger logger, IServiceRequestDAO serviceRequestDAO, IUserServiceDAO userserviceDAO)
+        {
+            _requestDAO = serviceRequestDAO;
+            _serviceDAO = userserviceDAO;
+            _logger = logger;
+
+        }
 
         public async Task<Result> AcceptRequest(Guid requestId)
         {
@@ -27,7 +35,7 @@ namespace AA.PMTOGO.Services
 
                 if (insert.IsSuccessful == false)
                 {
-                    await _logger!.Log("AcceptRequest", 4, LogCategory.Business, insert);
+                    await _logger!.Log("AcceptRequest", 4, LogCategory.Business, result);
                     return insert;
                 }
                 else
@@ -57,14 +65,13 @@ namespace AA.PMTOGO.Services
                 if (delete.IsSuccessful == true)
                 {
                     await _serviceDAO.UpdateStatus(id, "In-Progress");
-                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, delete);
+                    await _logger!.Log("DeclineRequest", 4, LogCategory.Business, result);
                     result = await _requestDAO.GetServiceRequests(username);
                     return result;
 
                 }
                 else
                 {
-
                     await _logger!.Log("DeclineRequest", 4, LogCategory.Business, result);
                     delete = result;
                     return result;

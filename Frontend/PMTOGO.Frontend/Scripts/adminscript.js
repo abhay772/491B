@@ -15,8 +15,8 @@ function loadAdminPage(homepageContent)
 
       const usage = document.getElementById('adminusage');
       usage.addEventListener('click', () => {
-        getUsageAnalysis(admincontent);
-
+        console.log("nothing yet");
+        //getUsersManagement();
       });
 
     })   
@@ -25,6 +25,33 @@ function loadAdminPage(homepageContent)
 }
 //user management
 
+/*function loadRateUserService(id, homepageContent){
+  fetch("./Views/rateservice.html")
+    .then(response => response.text())
+    .then(data => {
+      // update content div with rate user page
+      homepageContent.innerHTML = data;
+
+      const backBtn = document.getElementById('BacktoServices');
+      backBtn.addEventListener('click', loadHomePage);
+
+      const rateForm = document.getElementById('rate-form');
+      rateForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const rate = document.querySelector('#rating').value;
+
+        url = api + '/UserService/rate';
+        data = {id: id, rate:rate}   
+        put(url, data)
+        .then(response => console.log(response))
+        .then(loadServiceManagementPage(homepageContent))
+        .catch(error => console.log(error))  
+
+      });
+    })
+    .catch(error => console.log(error))  
+}*/
 const createUsersTable = () =>{
   const users = document.querySelector("div.users");
   let tableHeaders = ["","Username","First Name", "Last Name", "Role", "IsActive?"];
@@ -136,112 +163,4 @@ function getUsersManagement(admincontent){
   })
   .catch(error => console.error(error));
   
-}
-
-//usage dashboard analysis
-function getUsageAnalysis(admincontent){
-  url = api + '/Admin/getusageanalysis';
-  get(url)
-  .then(response => {
-    if(!response.ok){
-      fetch("./Views/NotAuthorized.html")
-        .then(response => response.text())
-        .then(text => {
-  
-          const homepageContent = document.getElementsByClassName("homepage-content")[0];
-      
-          homepageContent.innerHTML = text;
-        })
-        .catch(error => console.error(error))
-    } 
-    else{
-      fetch('./Views/usageAnalysis.html')
-      .then(response => response.text())
-      .then(data => {
-      // Handle the response data
-        admincontent.innerHTML = data;
-        response.json().then(data => {
-          console.log(data);
-
-          const formattedDates = data[1];
-          const registerData = data[2];
-          const loginData = data[3];
-
-          var loginCounts = Object.keys(loginData)
-          .sort()
-          .map(key => loginData[key]);
-
-          var registerCounts = Object.keys(registerData)
-          .sort()
-          .map(key => registerData[key]);
-        
-
-          const logdata = {
-            labels : formattedDates,
-            datasets: [
-              {
-                label: 'Login Count',
-                data: loginCounts,
-                fill: false,
-                borderColor: 'blue',
-                tension: 0.1
-              }
-            ]
-          };
-
-          const regdata = {
-            labels : formattedDates,
-            datasets: [
-              {
-                label: 'Registartion Count',
-                data: registerCounts,
-                fill: false,
-                borderColor: 'green',
-                tension: 0.1
-              }
-            ]
-          };
-
-          const options = {
-            scales: {
-              x: {
-                type: 'time',
-                time: {
-                  unit: 'month',
-                  displayFormats: {
-                    month: 'MMM YYYY'
-                  }
-                },
-                title: {
-                  display: true,
-                  text: 'Date'
-                }
-              },
-              y: {
-                beginAtZero: true,
-                title: {
-                  display: true,
-                  text: 'Count'
-                }
-              }
-            }
-          };
-          const loginChart = document.getElementById('logChart').getContext('2d');
-          const regChart = document.getElementById('regChart').getContext('2d');
-          
-          function drawChart(chart, chartdata) {        
-            const myChart = new Chart(chart, {
-              type: 'line',
-              data: chartdata,
-              options: options
-            });
-          }
-          drawChart(loginChart, logdata);
-          drawChart(regChart, regdata);
-        })    
-      })
-      .catch(error => console.error(error))
-    }
-  })
-  .catch(error => console.error(error))
 }

@@ -12,21 +12,17 @@ namespace AA.PMTOGO.UnitTest
     [TestClass]
     public class ServiceManagementUnitTest
     {
-       private readonly IConfiguration? _configuration;
-        /*UsersDAO _usersDAO = new UsersDAO();
+       
+        UsersDAO _usersDAO = new UsersDAO();
         ServiceDAO _serviceDAO = new ServiceDAO();
         UserServiceDAO _userServiceDAO = new UserServiceDAO();
-        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO();*/
+        ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO();
         LoggerDAO logdao = new LoggerDAO();
         
 
         [TestMethod]
         public void CreateServiceManagementInstance()
         {
-            UsersDAO _usersDAO = new UsersDAO(_configuration!);
-            ServiceDAO _serviceDAO = new ServiceDAO(_configuration!);
-            UserServiceDAO _userServiceDAO = new UserServiceDAO(_configuration!);
-            ServiceRequestDAO _serviceRequestDAO = new ServiceRequestDAO(_configuration!);
             var expected = typeof(UserServiceManagement);
             Logger _logger = new Logger(logdao);
             // Arrange
@@ -42,11 +38,12 @@ namespace AA.PMTOGO.UnitTest
         [TestMethod]
         public async Task GetUserAccountsTest()
         {
-            UsersDAO _usersDAO = new UsersDAO(_configuration!);
+
             // Arrange
+            var dao = new UsersDAO();
 
             // Act
-            Result test = await _usersDAO.GetUserAccounts();
+            Result test = await dao.GetUserAccounts();
             bool actual = test.IsSuccessful;
 
             // Assert

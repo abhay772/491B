@@ -7,14 +7,15 @@ using System.Data;
 namespace AA.PMTOGO.Managers
 {
     //input validation, logging
-    public class ServiceManager: IServiceManager
+    public class ServiceManager : IServiceManager
     {
         private readonly IUserServiceManagement _userService;
-        Logger _logger = new Logger();
+        private readonly ILogger _logger;
 
-        public ServiceManager(IUserServiceManagement userService) 
+        public ServiceManager(IUserServiceManagement userService, ILogger logger)
         {
             _userService = userService;
+            _logger = logger;
         }
         // rate service
         public async Task<Result> RateUserService(string serviceId, int rate, string role)
@@ -29,7 +30,7 @@ namespace AA.PMTOGO.Managers
             }
             catch
             {
-                result.IsSuccessful= false;
+                result.IsSuccessful = false;
                 result.ErrorMessage = "Rate Unsuccessful. Try Again Later";
                 await _logger!.Log("RateUserService", 4, LogCategory.Business, result);
             }
@@ -43,13 +44,12 @@ namespace AA.PMTOGO.Managers
             try
             {
                 result = await _userService.GatherServices();
-                result.ErrorMessage = "Gather Services Successful";
                 await _logger!.Log("GetAllServices", 4, LogCategory.Business, result);
                 return result;
             }
             catch
             {
-                result.IsSuccessful= false;
+                result.IsSuccessful = false;
                 result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
                 await _logger!.Log("GetAllServices", 4, LogCategory.Business, result);
 
@@ -153,7 +153,7 @@ namespace AA.PMTOGO.Managers
             }
             catch
             {
-                result.IsSuccessful= false;
+                result.IsSuccessful = false;
                 result.ErrorMessage = "Load User Services Unsuccssful. Try Again Later";
                 await _logger!.Log("GetAllUserServices", 4, LogCategory.Business, result);
             }

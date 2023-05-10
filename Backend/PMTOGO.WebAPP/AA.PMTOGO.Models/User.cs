@@ -28,6 +28,8 @@ namespace AA.PMTOGO.Models
 
         }
 
+        public virtual List<Appointment> Appointments { get; set; }
+
         public User(int id, string username, string email, string firstName, string lastName, string role)
         {
             Id = id;

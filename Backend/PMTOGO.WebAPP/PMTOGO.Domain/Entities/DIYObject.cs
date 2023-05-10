@@ -2,10 +2,10 @@
 {
     public class DIYObject
     {
-        public string ID { get; set; }
-        public string Email { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public MemoryStream Video { get; set; }
+        public string ID { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Name { get; set; }= string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public MemoryStream? Video { get; set; }
     }
 }
