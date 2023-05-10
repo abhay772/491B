@@ -110,6 +110,7 @@ public class Authenticator : IAuthenticator
         {
             await _authNDAO.UpdateFailedAttempts(username);
         }
+
     }
 
     public string GenerateOTP()

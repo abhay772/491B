@@ -486,6 +486,11 @@ function loadHomePage(userrole, username) {
             loadServiceManagementPage(homepageContent);
         });
 
+        //add event listener to nav to service management
+        spServiceFeature.addEventListener('click', () => {
+          loadServicePage(homepageContent);
+      });
+
         //add event listener to nav to crime map
         crimeMapFeature.addEventListener('click', () => {
             loadCrimeMapPage(homepageContent, username, userrole);

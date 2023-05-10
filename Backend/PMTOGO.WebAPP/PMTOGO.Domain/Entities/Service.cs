@@ -5,7 +5,7 @@ namespace AA.PMTOGO.Models.Entities
     public class Service
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string ServiceName { get; set; } = string.Empty;
         public string ServiceDescription { get; set; } = string.Empty;
 

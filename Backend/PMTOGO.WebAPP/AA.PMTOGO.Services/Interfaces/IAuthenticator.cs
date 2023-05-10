@@ -7,6 +7,7 @@ namespace AA.PMTOGO.Authentication
         Task<Result> Authenticate(string username, string password);
         bool CheckValidOTP(string otp);
         string GenerateOTP();
+
         Task<int> GetFailedAttempts(string username);
         void ResetFailedAttempts(string username);
         void UpdateFailedAttempts(string username);

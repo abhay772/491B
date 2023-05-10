@@ -7,15 +7,15 @@ namespace AA.PMTOGO.DAL
     public class LoggerDAO : ILoggerDAO
     {
 
-        /*private readonly string _connectionString;
+
+        private readonly string _connectionString;
 
         public LoggerDAO(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("UsersDbConnectionString")!;
-        }*/
+        }
 
-
-        private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.LogDB;Trusted_Connection=True;Encrypt=false";
+        //private string _connectionString = "Server=.\\SQLEXPRESS;Database=AA.LogDB;Trusted_Connection=True;Encrypt=false";
         public async Task<Result> InsertLog(Log log)
         {
             var result = new Result();

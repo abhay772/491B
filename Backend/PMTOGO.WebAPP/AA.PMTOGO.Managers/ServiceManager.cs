@@ -121,6 +121,70 @@ namespace AA.PMTOGO.Managers
 
             return result;
         }
+        //get service provider services
+        public async Task<Result> GetSPServices(string username)
+        {
+            Result result = new Result();
+            try
+            {
+                result = await _userService.GatherSPServices(username);
+                await _logger!.Log("GetSPServices", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
+                await _logger!.Log("GetSPServices", 4, LogCategory.Business, result);
+
+            }
+
+            return result;
+        }
+        //create service provider services
+        public async Task<Result> AddSPService(string username, Service service)
+        {
+            Guid guid= Guid.NewGuid();
+            service.Id = guid;
+            Result result = new Result();
+            try
+            {
+                result = await _userService.CreateService(service);
+                await _logger!.Log("AddSPServices", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
+                await _logger!.Log("AddSPServices", 4, LogCategory.Business, result);
+
+            }
+
+            return result;
+        }
+
+        //delete service provider services
+        public async Task<Result> DeleteSPService(string id)
+        {
+            Guid Id = new Guid(id);
+            Result result = new Result();
+            try
+            {
+                result = await _userService.RemoveService(Id);
+                await _logger!.Log("DeleteSPServices", 4, LogCategory.Business, result);
+                return result;
+            }
+            catch
+            {
+                result.IsSuccessful = false;
+                result.ErrorMessage = "Load services Unsuccessful. Try Again Later";
+                await _logger!.Log("DeleteSPServices", 4, LogCategory.Business, result);
+
+            }
+
+            return result;
+        }
 
         public async Task<Result> AddServiceRequest(string Id, string frequency, string comments, string username)
         {
