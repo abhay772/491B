@@ -488,7 +488,7 @@ function loadHomePage(userrole, username) {
         //add event listener to nav to service management
         spserviceFeature.addEventListener('click', () => {
           loadServicePage(homepageContent);
-      });
+        });
 
         //add event listener to nav to crime map
         crimeMapFeature.addEventListener('click', () => {
@@ -529,7 +529,7 @@ function loadAccountDeletionPage(homepageContent){
       const cancel = document.getElementById("cancel");
       const confirm = document.getElementById("confirm");
 
-      cancel.addEventListener('click', loadHomePage(userrole));
+      cancel.addEventListener('click', loadHomePage);
       confirm.addEventListener('click', ()=>{
         url = api + '/UserManagement/delete';
         del(url)

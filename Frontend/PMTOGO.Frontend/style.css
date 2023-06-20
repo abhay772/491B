@@ -273,11 +273,11 @@ table {
   width: 100%; /* Full width */
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
-  background-color: #465473;
+  background-color: whitesmoke;
 }
 
 .wrapper .sidebar{
-  background: rgb(5, 68, 104);
+  background: whitesmoke;
   position: fixed;
   top: 0;
   left: 0;
@@ -302,12 +302,12 @@ table {
 }
 
 .wrapper .sidebar .profile h3{
-  color: #ffffff;
+  color:black;
   margin: 10px 0 5px;
 }
 
 .wrapper .sidebar .profile p{
-  color: rgb(206, 240, 253);
+  color:#10558d ;
   font-size: 14px;
 }
 
@@ -315,13 +315,13 @@ table {
   display: block;
   padding: 13px 30px;
   border-bottom: 1px solid #10558d;
-  color: rgb(241, 237, 237);
+  color: #10558d;
   font-size: 16px;
   position: relative;
 }
 
 .wrapper .sidebar ul li a .icon{
-  color: #dee4ec;
+  color: black;
   width: 30px;
   display: inline-block;
 }
@@ -596,7 +596,6 @@ table {
 .diy-button:hover {
     background-color: #0062cc;
 }
-
 
 .card-container {
   display: flex;
