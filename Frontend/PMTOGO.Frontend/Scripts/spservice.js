@@ -202,7 +202,6 @@ const createSPServiceTable = () =>{
         homepageContent.innerHTML = data;
 
         getSPService();
-
   
       })   
       .catch(error => console.error(error));

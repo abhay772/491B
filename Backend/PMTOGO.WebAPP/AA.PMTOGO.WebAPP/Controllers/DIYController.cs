@@ -51,7 +51,7 @@ namespace AA.PMTOGO.WebAPP.Controllers
         public IActionResult GetDashboardDIY([FromBody] JsonElement data)
         {
             var username = data.GetProperty("username").GetString();
-            var result = _diyManager.GetDashboardDIY(username);
+            var result = _diyManager.GetDashboardDIY(username!);
 
             if (result != null)
             {
@@ -107,17 +107,17 @@ namespace AA.PMTOGO.WebAPP.Controllers
 
         public class DIY
         {
-            public string email { get; set; }
-            public string name { get; set; }
-            public string description { get; set; }
+            public string email { get; set; } = string.Empty;
+            public string name { get; set; } = string.Empty;
+            public string description { get; set; } = string.Empty;
             public IFormFile videofile { get; set; }
         }
         public class DIYDashboard
         {
-            public string id { get; set; }
-            public string email { get; set; }
-            public string name { get; set; }
-            public string description { get; set; }
+            public string id { get; set; } = string.Empty;
+            public string email { get; set; } = string.Empty;
+            public string name { get; set; } = string.Empty;
+            public string description { get; set; } = string.Empty;
         }
     }
 }

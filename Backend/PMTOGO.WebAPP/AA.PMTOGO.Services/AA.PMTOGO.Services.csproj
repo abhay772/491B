@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AppointmentService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AA.PMTOGO.DAL\AA.PMTOGO.DAL.csproj" />
     <ProjectReference Include="..\PMTOGO.Infrastructure\AA.PMTOGO.Infrastructure.csproj" />
   </ItemGroup>

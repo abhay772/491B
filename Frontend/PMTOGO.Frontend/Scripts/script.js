@@ -448,13 +448,12 @@ function loadHomePage(userrole, username) {
             const crimeMapFeature = document.getElementById('crimemap');
             //select crime alert
             const diyFeature = document.getElementById('diy');
-            //select sp services
+            //select service provider services
             const spserviceFeature = document.getElementById('Services');
             //select Maintenance And Renovation
             const maintenanceFeature = document.getElementById('maintenance');
-
-
-      const adminFeature = document.getElementById('admin');
+            //select admin
+            const adminFeature = document.getElementById('admin');
 
         //add event listeners
       logoutUser.addEventListener('click', () => {
@@ -487,7 +486,7 @@ function loadHomePage(userrole, username) {
         });
 
         //add event listener to nav to service management
-        spServiceFeature.addEventListener('click', () => {
+        spserviceFeature.addEventListener('click', () => {
           loadServicePage(homepageContent);
       });
 
@@ -495,7 +494,6 @@ function loadHomePage(userrole, username) {
         crimeMapFeature.addEventListener('click', () => {
             loadCrimeMapPage(homepageContent, username, userrole);
         });
-
 
         //add event listener to nav to diy
         diyFeature.addEventListener('click', () => {
@@ -516,11 +514,6 @@ function loadHomePage(userrole, username) {
         maintenanceFeature.addEventListener('click', () => {
           LoadMnRPage(homepageContent);
           });
-
-        spserviceFeature.addEventListener('click', () => {
-          loadServicePage(homepageContent);
-        });
-
     })
     .catch(error => console.log(error));
 }

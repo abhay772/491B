@@ -1,5 +1,4 @@
 ﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Managers.Interfaces;
 using AA.PMTOGO.Models.Entities;

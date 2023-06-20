@@ -1,9 +1,9 @@
 ﻿using AA.PMTOGO.DAL;
-using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Logging;
 using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Http;
 using AA.PMTOGO.Managers.Interfaces;
+using AA.PMTOGO.Services.Interfaces;
 
 
 namespace AA.PMTOGO.Managers

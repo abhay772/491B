@@ -26,6 +26,15 @@ namespace AA.PMTOGO.Models.Entities
             ServicePrice = price;
 
         }
+        public Service(Guid id, string name, string type, string description, double price)
+        {
+            Id = id;
+            ServiceName = name;
+            ServiceDescription = description;
+            ServiceType = type;
+            ServicePrice = price;
+
+        }
 
         public Service(Guid id, string name, string type, string description, string serviceProvider, string providerEmail, double price)
         {
@@ -39,13 +48,5 @@ namespace AA.PMTOGO.Models.Entities
 
         }
 
-        public Service(Guid id, string name, string type, string description, double price)
-        {
-            this.Id = id;
-            this.ServiceName = name;
-            this.ServiceType = type;
-            this.ServiceDescription = description;
-            this.ServicePrice = price;
-        }
     }
 }

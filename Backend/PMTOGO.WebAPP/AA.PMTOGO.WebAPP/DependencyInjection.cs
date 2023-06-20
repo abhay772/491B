@@ -1,16 +1,13 @@
 ﻿using AA.PMTOGO.Authentication;
 using AA.PMTOGO.DAL;
-using AA.PMTOGO.Infrastructure.Interfaces;
 using AA.PMTOGO.Libary;
 using AA.PMTOGO.Logging;
-using AA.PMTOGO.Managers;
 using AA.PMTOGO.Managers.Interfaces;
-using AA.PMTOGO.Services;
 using AA.PMTOGO.Services.Interfaces;
 using ILogger = AA.PMTOGO.Logging.ILogger;
-using AA.PMTOGO.Models;
-using AA.PMTOGO.WebAPP.Controllers;
 using AA.PMTOGO.DAL.Interfaces;
+using AA.PMTOGO.Managers;
+using AA.PMTOGO.Services;
 
 namespace AA.PMTOGO.Infrastructure
 {

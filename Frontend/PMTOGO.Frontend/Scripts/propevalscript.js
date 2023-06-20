@@ -1,6 +1,5 @@
 // function to load property evaluation page
 function loadPropertyEvalPage(homepageContent) {
-
     // fetch property evaluation page html
     fetch('./Views/propEval.html')
       .then(response => response.text())

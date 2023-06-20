@@ -1,7 +1,7 @@
 ﻿using AA.PMTOGO.Models.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace AA.PMTOGO.Infrastructure.Interfaces
+namespace AA.PMTOGO.Services.Interfaces
 {
     public interface IDIYService
     {
